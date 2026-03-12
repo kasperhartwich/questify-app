@@ -34,6 +34,7 @@ return [
     'flagged' => 'Quest has been flagged for review.',
     'discover_description' => 'Explore quests near you and around the world.',
     'by_creator' => 'by :name',
+    'no_questions' => 'No questions added yet.',
 
     'validation' => [
         'category_required' => 'A category is required.',

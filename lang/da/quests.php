@@ -34,6 +34,7 @@ return [
     'flagged' => 'Quest er blevet markeret til gennemgang.',
     'discover_description' => 'Udforsk quests i nærheden og rundt i verden.',
     'by_creator' => 'af :name',
+    'no_questions' => 'Ingen spørgsmål tilføjet endnu.',
 
     'validation' => [
         'category_required' => 'En kategori er påkrævet.',

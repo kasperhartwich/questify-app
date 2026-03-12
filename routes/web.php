@@ -25,6 +25,16 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/my-quests', 'pages::my-quests.played-quests')->name('my-quests');
     Route::livewire('/my-quests/created', 'pages::my-quests.created-quests')->name('my-quests.created');
 
+    // Quest Creation
+    Route::livewire('/create', 'pages::create.quest-wizard')->name('quests.create');
+
+    // Session / Gameplay
+    Route::livewire('/session/{code}', 'pages::session.lobby')->name('session.lobby');
+    Route::livewire('/session/{code}/play', 'pages::session.active-quest')->name('session.play');
+    Route::livewire('/session/{code}/question/{checkpoint}', 'pages::session.question-screen')->name('session.question');
+    Route::livewire('/session/{code}/complete', 'pages::session.quest-complete')->name('session.complete');
+    Route::livewire('/session/{code}/host', 'pages::session.host-dashboard')->name('session.host');
+
     // Profile
     Route::livewire('/profile', 'pages::profile.settings')->name('profile');
 });
