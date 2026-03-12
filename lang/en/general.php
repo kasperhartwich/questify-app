@@ -26,4 +26,7 @@ return [
     'language' => 'Language',
     'english' => 'English',
     'danish' => 'Danish',
+    'deleted' => 'Deleted successfully.',
+    'reordered' => 'Order updated successfully.',
+    'account_deleted' => 'Your account has been deleted.',
 ];

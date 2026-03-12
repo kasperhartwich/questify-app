@@ -30,4 +30,18 @@ return [
     'no_quests' => 'No quests found.',
     'play' => 'Play Quest',
     'join' => 'Join Quest',
+    'deleted' => 'Quest deleted successfully.',
+    'flagged' => 'Quest has been flagged for review.',
+
+    'validation' => [
+        'category_required' => 'A category is required.',
+        'category_invalid' => 'The selected category is invalid.',
+        'title_required' => 'A quest title is required.',
+        'title_max' => 'The title may not be greater than 255 characters.',
+        'difficulty_required' => 'A difficulty level is required.',
+        'rating_required' => 'A rating is required.',
+        'rating_min' => 'The rating must be at least 1.',
+        'rating_max' => 'The rating may not be greater than 5.',
+        'flag_reason_required' => 'A reason for flagging is required.',
+    ],
 ];

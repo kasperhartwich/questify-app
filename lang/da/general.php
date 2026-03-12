@@ -26,4 +26,7 @@ return [
     'language' => 'Sprog',
     'english' => 'Engelsk',
     'danish' => 'Dansk',
+    'deleted' => 'Slettet.',
+    'reordered' => 'Rækkefølge opdateret.',
+    'account_deleted' => 'Din konto er blevet slettet.',
 ];

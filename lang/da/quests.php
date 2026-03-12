@@ -30,4 +30,18 @@ return [
     'no_quests' => 'Ingen quests fundet.',
     'play' => 'Spil quest',
     'join' => 'Deltag i quest',
+    'deleted' => 'Quest er blevet slettet.',
+    'flagged' => 'Quest er blevet markeret til gennemgang.',
+
+    'validation' => [
+        'category_required' => 'En kategori er påkrævet.',
+        'category_invalid' => 'Den valgte kategori er ugyldig.',
+        'title_required' => 'En quest-titel er påkrævet.',
+        'title_max' => 'Titlen må ikke være længere end 255 tegn.',
+        'difficulty_required' => 'En sværhedsgrad er påkrævet.',
+        'rating_required' => 'En bedømmelse er påkrævet.',
+        'rating_min' => 'Bedømmelsen skal være mindst 1.',
+        'rating_max' => 'Bedømmelsen må ikke være større end 5.',
+        'flag_reason_required' => 'En begrundelse for markering er påkrævet.',
+    ],
 ];
