@@ -15,8 +15,18 @@ class Checkpoint extends Model
         'quest_id',
         'title',
         'description',
+        'latitude',
+        'longitude',
         'sort_order',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
+        ];
+    }
 
     public function quest(): BelongsTo
     {

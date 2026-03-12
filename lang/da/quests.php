@@ -32,6 +32,8 @@ return [
     'join' => 'Deltag i quest',
     'deleted' => 'Quest er blevet slettet.',
     'flagged' => 'Quest er blevet markeret til gennemgang.',
+    'discover_description' => 'Udforsk quests i nærheden og rundt i verden.',
+    'by_creator' => 'af :name',
 
     'validation' => [
         'category_required' => 'En kategori er påkrævet.',

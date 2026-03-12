@@ -32,6 +32,8 @@ return [
     'join' => 'Join Quest',
     'deleted' => 'Quest deleted successfully.',
     'flagged' => 'Quest has been flagged for review.',
+    'discover_description' => 'Explore quests near you and around the world.',
+    'by_creator' => 'by :name',
 
     'validation' => [
         'category_required' => 'A category is required.',
