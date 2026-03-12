@@ -17,8 +17,20 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * @group Sessions
+ *
+ * Manage quest sessions: create, join, start, and end.
+ */
 class SessionController extends Controller
 {
+    /**
+     * Create session
+     *
+     * Create a new quest session with a unique 6-character join code.
+     *
+     * @response 201 {"session": {"id": 1, "join_code": "ABC123", "status": "waiting", "play_mode": "solo", "quest": {"id": 1, "title": "City Walk"}, "participants_count": 0}}
+     */
     public function store(StoreSessionRequest $request): JsonResponse
     {
         $quest = Quest::findOrFail($request->validated('quest_id'));
@@ -39,6 +51,17 @@ class SessionController extends Controller
         ], 201);
     }
 
+    /**
+     * Show session
+     *
+     * Get session details by join code. Publicly accessible.
+     *
+     * @unauthenticated
+     *
+     * @urlParam code string required The 6-character join code. Example: ABC123
+     *
+     * @response 200 {"data": {"id": 1, "join_code": "ABC123", "status": "waiting", "quest": {"id": 1, "title": "City Walk"}, "participants": [], "participants_count": 0}}
+     */
     public function show(string $code): SessionResource
     {
         $session = QuestSession::where('join_code', $code)
@@ -49,6 +72,17 @@ class SessionController extends Controller
         return new SessionResource($session);
     }
 
+    /**
+     * Join session
+     *
+     * Join a waiting session as a participant. Each player can only be in one active session at a time.
+     *
+     * @urlParam code string required The 6-character join code. Example: ABC123
+     *
+     * @response 201 {"message": "Joined session.", "participant": {"id": 1, "display_name": "Player1", "score": 0}}
+     * @response 409 scenario="Already in session" {"message": "You are already in an active session."}
+     * @response 422 scenario="Session full" {"message": "This session is full."}
+     */
     public function join(JoinSessionRequest $request, string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
@@ -91,6 +125,16 @@ class SessionController extends Controller
         ], 201);
     }
 
+    /**
+     * Start session
+     *
+     * Start a waiting session. Only the host can start the session. Broadcasts SessionStarted event.
+     *
+     * @urlParam code string required The 6-character join code. Example: ABC123
+     *
+     * @response 200 {"message": "Session started.", "session": {"id": 1, "status": "in_progress"}}
+     * @response 403 scenario="Not host" {"message": "Only the host can perform this action."}
+     */
     public function start(Request $request, string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
@@ -116,6 +160,16 @@ class SessionController extends Controller
         ]);
     }
 
+    /**
+     * End session
+     *
+     * End an in-progress session. Marks unfinished participants as DNF. Only the host can end the session.
+     *
+     * @urlParam code string required The 6-character join code. Example: ABC123
+     *
+     * @response 200 {"message": "Session ended.", "session": {"id": 1, "status": "completed"}}
+     * @response 403 scenario="Not host" {"message": "Only the host can perform this action."}
+     */
     public function end(Request $request, string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
@@ -146,6 +200,16 @@ class SessionController extends Controller
         ]);
     }
 
+    /**
+     * Host dashboard
+     *
+     * Get session details with full participant progress. Only accessible by the session host.
+     *
+     * @urlParam code string required The 6-character join code. Example: ABC123
+     *
+     * @response 200 {"session": {"id": 1, "join_code": "ABC123", "status": "in_progress", "participants": [], "participants_count": 5}}
+     * @response 403 scenario="Not host" {"message": "Only the host can perform this action."}
+     */
     public function dashboard(Request $request, string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)

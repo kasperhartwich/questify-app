@@ -1,0 +1,570 @@
+name: Checkpoints
+description: |-
+
+  Manage checkpoints within a quest. Requires quest ownership.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/quests/{quest_id}/checkpoints'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List checkpoints'
+      description: 'Get all checkpoints for a quest with their questions and answers.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      quest: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data": [{"id": 1, "title": "Start Point", "description": "Begin here", "sort_order": 0, "questions": []}]}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/quests/{quest_id}/checkpoints'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create checkpoint'
+      description: 'Add a new checkpoint to a quest. Sort order auto-increments if not provided.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      quest: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Must not be greater than 2000 characters.'
+        required: false
+        example: 'Et animi quos velit et fugiat.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      sort_order:
+        custom: []
+        name: sort_order
+        description: 'Must be at least 0.'
+        required: false
+        example: 42
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      title: b
+      description: 'Et animi quos velit et fugiat.'
+      sort_order: 42
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: '{"checkpoint": {"id": 1, "title": "Start Point", "description": "Begin here", "sort_order": 0, "questions": []}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/quests/{quest_id}/checkpoints/{id}'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show checkpoint'
+      description: 'Get a specific checkpoint with its questions and answers.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the checkpoint.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      checkpoint:
+        custom: []
+        name: checkpoint
+        description: 'The checkpoint ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      id: 1
+      quest: 1
+      checkpoint: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data": {"id": 1, "title": "Start Point", "description": "Begin here", "sort_order": 0, "questions": []}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v1/quests/{quest_id}/checkpoints/{id}'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update checkpoint'
+      description: "Update a checkpoint's details."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the checkpoint.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      checkpoint:
+        custom: []
+        name: checkpoint
+        description: 'The checkpoint ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      id: 1
+      quest: 1
+      checkpoint: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Must not be greater than 2000 characters.'
+        required: false
+        example: 'Et animi quos velit et fugiat.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      sort_order:
+        custom: []
+        name: sort_order
+        description: 'Must be at least 0.'
+        required: false
+        example: 42
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      title: b
+      description: 'Et animi quos velit et fugiat.'
+      sort_order: 42
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data": {"id": 1, "title": "Updated Title", "sort_order": 0, "questions": []}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/quests/{quest_id}/checkpoints/{id}'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete checkpoint'
+      description: 'Remove a checkpoint from a quest.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the checkpoint.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      checkpoint:
+        custom: []
+        name: checkpoint
+        description: 'The checkpoint ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      id: 1
+      quest: 1
+      checkpoint: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"message": "Deleted."}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/quests/{quest_id}/checkpoints/reorder'
+    metadata:
+      custom: []
+      groupName: Checkpoints
+      groupDescription: |-
+
+        Manage checkpoints within a quest. Requires quest ownership.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reorder checkpoints'
+      description: 'Set the sort order of checkpoints by providing an ordered array of checkpoint IDs.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 1
+      quest: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      order:
+        custom: []
+        name: order
+        description: 'Ordered array of checkpoint IDs.'
+        required: true
+        example:
+          - 3
+          - 1
+          - 2
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      order:
+        - 3
+        - 1
+        - 2
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"message": "Reordered."}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -22,12 +22,27 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+/**
+ * @group Gameplay
+ *
+ * Real-time gameplay endpoints for active quest sessions.
+ */
 class GameplayController extends Controller
 {
     public function __construct(
         private ScoringService $scoringService,
     ) {}
 
+    /**
+     * Arrive at checkpoint
+     *
+     * Record arrival at a checkpoint and receive its questions. Broadcasts CheckpointArrived event.
+     *
+     * @urlParam code string required The 6-character session join code. Example: ABC123
+     * @urlParam checkpoint integer required The checkpoint ID. Example: 1
+     *
+     * @response 200 {"checkpoint": {"id": 1, "title": "Start Point", "questions": [{"id": 1, "type": "multiple_choice", "body": "What year?", "answers": []}]}}
+     */
     public function arrived(Request $request, string $code, Checkpoint $checkpoint): JsonResponse
     {
         $session = $this->getActiveSession($code);
@@ -43,6 +58,19 @@ class GameplayController extends Controller
         ]);
     }
 
+    /**
+     * Answer question
+     *
+     * Submit an answer to a question. Returns correctness and points earned. Broadcasts leaderboard updates.
+     *
+     * @urlParam code string required The 6-character session join code. Example: ABC123
+     * @urlParam checkpoint integer required The checkpoint ID. Example: 1
+     * @urlParam question integer required The question ID. Example: 1
+     *
+     * @response 200 scenario="Correct answer" {"is_correct": true, "points_earned": 85, "checkpoint_complete": false, "quest_complete": false}
+     * @response 200 scenario="Wrong answer" {"is_correct": false, "points_earned": 0, "wrong_answer": {"action": "retry_free", "can_retry": true}}
+     * @response 200 scenario="Already answered" {"message": "Already answered correctly.", "points_earned": 85}
+     */
     public function answer(AnswerQuestionRequest $request, string $code, Checkpoint $checkpoint, Question $question): JsonResponse
     {
         $session = $this->getActiveSession($code);
@@ -172,6 +200,15 @@ class GameplayController extends Controller
         ]);
     }
 
+    /**
+     * Get leaderboard
+     *
+     * Get the current session leaderboard sorted by score descending.
+     *
+     * @urlParam code string required The 6-character session join code. Example: ABC123
+     *
+     * @response 200 {"leaderboard": [{"id": 1, "display_name": "Player1", "score": 250, "rank": 1}]}
+     */
     public function leaderboard(Request $request, string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)->firstOrFail();

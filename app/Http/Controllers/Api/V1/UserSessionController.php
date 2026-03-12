@@ -7,8 +7,20 @@ use App\Models\QuestSession;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group User Sessions
+ */
 class UserSessionController extends Controller
 {
+    /**
+     * List sessions
+     *
+     * Get a paginated list of sessions where the user is host or participant.
+     *
+     * @queryParam page integer The page number. Example: 1
+     *
+     * @response 200 {"data": [{"id": 1, "join_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}]}
+     */
     public function index(Request $request): JsonResponse
     {
         $sessions = QuestSession::query()

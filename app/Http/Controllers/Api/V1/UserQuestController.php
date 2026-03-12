@@ -8,8 +8,20 @@ use App\Models\Quest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * @group User Quests
+ */
 class UserQuestController extends Controller
 {
+    /**
+     * Created quests
+     *
+     * Get a paginated list of quests created by the authenticated user.
+     *
+     * @queryParam page integer The page number. Example: 1
+     *
+     * @response 200 {"data": [{"id": 1, "title": "City Walk", "status": "draft", "category": {"id": 1, "name": "History"}}]}
+     */
     public function created(Request $request): AnonymousResourceCollection
     {
         $quests = $request->user()->quests()
@@ -22,6 +34,15 @@ class UserQuestController extends Controller
         return QuestResource::collection($quests);
     }
 
+    /**
+     * Played quests
+     *
+     * Get a paginated list of quests the authenticated user has participated in.
+     *
+     * @queryParam page integer The page number. Example: 1
+     *
+     * @response 200 {"data": [{"id": 1, "title": "City Walk", "category": {"id": 1, "name": "History"}}]}
+     */
     public function played(Request $request): AnonymousResourceCollection
     {
         $quests = Quest::query()

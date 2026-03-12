@@ -11,8 +11,21 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
+/**
+ * @group Authentication
+ */
 class ResetPasswordController extends Controller
 {
+    /**
+     * Reset password
+     *
+     * Reset a user's password using a valid reset token.
+     *
+     * @unauthenticated
+     *
+     * @response 200 {"message": "Your password has been reset."}
+     * @response 422 scenario="Invalid token" {"message": "This password reset token is invalid."}
+     */
     public function store(ResetPasswordRequest $request): JsonResponse
     {
         $status = Password::reset(

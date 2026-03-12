@@ -6,8 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
+/**
+ * @group Authentication
+ */
 class MeController extends Controller
 {
+    /**
+     * Current user
+     *
+     * Get the authenticated user's profile.
+     *
+     * @response 200 {"data": {"id": 1, "name": "John Doe", "email": "john@example.com", "avatar_path": null, "locale": "en", "is_admin": false, "created_at": "2026-03-12T00:00:00.000000Z"}}
+     */
     public function show(Request $request): UserResource
     {
         return new UserResource($request->user());

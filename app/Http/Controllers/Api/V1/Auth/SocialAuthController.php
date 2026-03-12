@@ -10,8 +10,24 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Enum;
 use Laravel\Socialite\Facades\Socialite;
 
+/**
+ * @group Social Authentication
+ *
+ * OAuth social login endpoints. These are web routes that handle the OAuth redirect flow.
+ */
 class SocialAuthController extends Controller
 {
+    /**
+     * Redirect to provider
+     *
+     * Redirect the user to the OAuth provider's authorization page.
+     *
+     * @unauthenticated
+     *
+     * @urlParam provider string required The social provider. Example: google
+     *
+     * @response 302 scenario="Redirect to provider"
+     */
     public function redirect(string $provider): RedirectResponse
     {
         $this->validateProvider($provider);
@@ -19,6 +35,17 @@ class SocialAuthController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
+    /**
+     * Provider callback
+     *
+     * Handle the callback from the OAuth provider, create or update the user, and redirect to the app with a token.
+     *
+     * @unauthenticated
+     *
+     * @urlParam provider string required The social provider. Example: google
+     *
+     * @response 302 scenario="Redirect to app with token"
+     */
     public function callback(string $provider): RedirectResponse
     {
         $this->validateProvider($provider);

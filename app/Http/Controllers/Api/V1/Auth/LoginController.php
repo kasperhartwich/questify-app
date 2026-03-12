@@ -9,8 +9,21 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Authentication
+ */
 class LoginController extends Controller
 {
+    /**
+     * Login
+     *
+     * Authenticate a user and return an API token.
+     *
+     * @unauthenticated
+     *
+     * @response 200 {"user": {"id": 1, "name": "John Doe", "email": "john@example.com", "avatar_path": null, "locale": "en", "is_admin": false, "created_at": "2026-03-12T00:00:00.000000Z"}, "token": "1|abcdef123456"}
+     * @response 422 scenario="Invalid credentials" {"message": "These credentials do not match our records."}
+     */
     public function store(LoginRequest $request): JsonResponse
     {
         if (! Auth::attempt($request->validated())) {
@@ -28,6 +41,13 @@ class LoginController extends Controller
         ]);
     }
 
+    /**
+     * Logout
+     *
+     * Revoke the current access token.
+     *
+     * @response 200 {"message": "Logged out successfully."}
+     */
     public function destroy(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
