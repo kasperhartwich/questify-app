@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\PlayMode;
 use App\Enums\SessionStatus;
 use App\Models\Quest;
 use App\Models\QuestSession;
@@ -25,7 +26,8 @@ class QuestSessionFactory extends Factory
             'quest_id' => Quest::factory(),
             'host_id' => User::factory(),
             'status' => SessionStatus::Waiting,
-            'join_code' => strtoupper(Str::random(8)),
+            'join_code' => strtoupper(Str::random(6)),
+            'play_mode' => fake()->randomElement(PlayMode::cases()),
             'started_at' => null,
             'completed_at' => null,
         ];

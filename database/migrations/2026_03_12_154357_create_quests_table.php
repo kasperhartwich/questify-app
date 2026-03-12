@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('status')->default('draft');
             $table->string('visibility')->default('public');
             $table->string('play_mode')->default('solo');
-            $table->string('wrong_answer_behaviour')->default('retry');
+            $table->string('wrong_answer_behaviour')->default('retry_free');
             $table->unsignedInteger('time_limit_per_question')->nullable();
             $table->boolean('shuffle_questions')->default(false);
             $table->boolean('shuffle_answers')->default(false);

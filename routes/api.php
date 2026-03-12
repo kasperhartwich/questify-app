@@ -7,8 +7,10 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CheckpointController;
+use App\Http\Controllers\Api\V1\GameplayController;
 use App\Http\Controllers\Api\V1\QuestController;
 use App\Http\Controllers\Api\V1\QuestionController;
+use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserProfileController;
 use App\Http\Controllers\Api\V1\UserQuestController;
 use App\Http\Controllers\Api\V1\UserSessionController;
@@ -31,6 +33,7 @@ Route::prefix('v1')->group(function () {
 
     // Public routes
     Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('sessions/{code}', [SessionController::class, 'show'])->name('sessions.show');
 
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -48,6 +51,21 @@ Route::prefix('v1')->group(function () {
 
         // Questions (nested under quests.checkpoints)
         Route::apiResource('quests.checkpoints.questions', QuestionController::class);
+
+        // Sessions
+        Route::post('sessions', [SessionController::class, 'store'])->name('sessions.store');
+        Route::post('sessions/{code}/join', [SessionController::class, 'join'])->name('sessions.join');
+        Route::post('sessions/{code}/start', [SessionController::class, 'start'])->name('sessions.start');
+        Route::post('sessions/{code}/end', [SessionController::class, 'end'])->name('sessions.end');
+        Route::get('sessions/{code}/dashboard', [SessionController::class, 'dashboard'])->name('sessions.dashboard');
+
+        // Gameplay
+        Route::post('sessions/{code}/checkpoints/{checkpoint}/arrived', [GameplayController::class, 'arrived'])
+            ->name('gameplay.arrived');
+        Route::post('sessions/{code}/checkpoints/{checkpoint}/questions/{question}/answer', [GameplayController::class, 'answer'])
+            ->name('gameplay.answer');
+        Route::get('sessions/{code}/leaderboard', [GameplayController::class, 'leaderboard'])
+            ->name('gameplay.leaderboard');
 
         // User quests
         Route::get('user/quests/created', [UserQuestController::class, 'created'])->name('user.quests.created');

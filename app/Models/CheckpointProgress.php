@@ -21,6 +21,7 @@ class CheckpointProgress extends Model
         'is_correct',
         'points_earned',
         'time_taken_seconds',
+        'wrong_attempts',
     ];
 
     protected function casts(): array

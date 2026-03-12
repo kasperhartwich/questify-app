@@ -34,7 +34,7 @@ class QuestFactory extends Factory
             'status' => QuestStatus::Draft,
             'visibility' => QuestVisibility::Public,
             'play_mode' => PlayMode::Solo,
-            'wrong_answer_behaviour' => WrongAnswerBehaviour::Retry,
+            'wrong_answer_behaviour' => WrongAnswerBehaviour::RetryFree,
             'time_limit_per_question' => fake()->optional()->numberBetween(10, 120),
             'shuffle_questions' => false,
             'shuffle_answers' => false,

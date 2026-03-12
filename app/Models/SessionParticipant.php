@@ -14,6 +14,7 @@ class SessionParticipant extends Model
     protected $fillable = [
         'quest_session_id',
         'user_id',
+        'display_name',
         'score',
         'finished_at',
     ];

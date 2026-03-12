@@ -4,7 +4,8 @@ namespace App\Enums;
 
 enum WrongAnswerBehaviour: string
 {
-    case Retry = 'retry';
-    case ShowAnswer = 'show_answer';
-    case SkipToNext = 'skip_to_next';
+    case RetryFree = 'retry_free';
+    case RetryPenalty = 'retry_penalty';
+    case Lockout = 'lockout';
+    case ThreeStrikesHint = 'three_strikes_hint';
 }

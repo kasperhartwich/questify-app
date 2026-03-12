@@ -22,6 +22,7 @@ class SessionParticipantFactory extends Factory
         return [
             'quest_session_id' => QuestSession::factory(),
             'user_id' => User::factory(),
+            'display_name' => fake()->userName(),
             'score' => 0,
             'finished_at' => null,
         ];

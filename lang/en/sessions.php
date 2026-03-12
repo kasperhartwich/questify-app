@@ -24,4 +24,23 @@ return [
     'solo' => 'Solo',
     'multiplayer' => 'Multiplayer',
     'no_sessions' => 'No sessions found.',
+
+    // Session actions
+    'joined' => 'Successfully joined the session.',
+    'started' => 'Session has been started.',
+    'ended' => 'Session has been ended.',
+    'already_in_session' => 'You are already in an active session.',
+    'session_full' => 'This session is full.',
+    'host_only' => 'Only the host can perform this action.',
+    'already_answered' => 'You have already answered this question correctly.',
+
+    // Validation
+    'validation' => [
+        'quest_required' => 'A quest is required to create a session.',
+        'quest_not_found' => 'The selected quest was not found.',
+        'play_mode_required' => 'A play mode is required.',
+        'display_name_required' => 'A display name is required to join.',
+        'answer_required' => 'An answer is required.',
+        'time_required' => 'Time taken is required.',
+    ],
 ];

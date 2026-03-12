@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PlayMode;
 use App\Enums\SessionStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +19,7 @@ class QuestSession extends Model
         'host_id',
         'status',
         'join_code',
+        'play_mode',
         'started_at',
         'completed_at',
     ];
@@ -26,6 +28,7 @@ class QuestSession extends Model
     {
         return [
             'status' => SessionStatus::class,
+            'play_mode' => PlayMode::class,
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
