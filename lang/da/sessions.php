@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'session' => 'Session',
+    'sessions' => 'Sessioner',
+    'create' => 'Opret session',
+    'join' => 'Deltag i session',
+    'leave' => 'Forlad session',
+    'start' => 'Start session',
+    'end' => 'Afslut session',
+    'waiting' => 'Venter på spillere...',
+    'in_progress' => 'I gang',
+    'completed' => 'Afsluttet',
+    'cancelled' => 'Annulleret',
+    'host' => 'Vært',
+    'participants' => 'Deltagere',
+    'participant_count' => ':count deltager|:count deltagere',
+    'join_code' => 'Tilmeldingskode',
+    'enter_code' => 'Indtast tilmeldingskode',
+    'score' => 'Score',
+    'results' => 'Resultater',
+    'leaderboard' => 'Rangliste',
+    'play_mode' => 'Spiltilstand',
+    'solo' => 'Solo',
+    'multiplayer' => 'Flerspiller',
+    'no_sessions' => 'Ingen sessioner fundet.',
+];
