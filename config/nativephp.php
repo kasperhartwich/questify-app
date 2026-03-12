@@ -256,12 +256,12 @@ return [
 
     'permissions' => [
         'biometric' => false,
-        'camera' => false,
+        'camera' => true,
         'microphone' => false,
         'microphone_background' => false,
         'push_notifications' => false,
-        'location' => false,
-        'vibrate' => false,
+        'location' => true,
+        'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
         'scanner' => false,

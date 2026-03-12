@@ -11,6 +11,9 @@
     ],
     "sail": false,
     "skills": [
-        "pest-testing"
+        "configuring-horizon",
+        "socialite-development",
+        "pest-testing",
+        "tailwindcss-development"
     ]
 }
