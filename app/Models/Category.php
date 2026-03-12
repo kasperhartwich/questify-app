@@ -14,7 +14,9 @@ class Category extends Model
         'name',
         'slug',
         'icon',
+        'color',
         'description',
+        'sort_order',
     ];
 
     public function quests(): HasMany

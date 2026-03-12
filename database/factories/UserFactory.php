@@ -53,6 +53,7 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'name' => 'Admin',
             'email' => 'admin@questify.app',
+            'is_admin' => true,
         ]);
     }
 }
