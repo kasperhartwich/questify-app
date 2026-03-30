@@ -6,6 +6,7 @@ use App\Enums\SocialProvider;
 use App\Http\Controllers\Controller;
 use App\Models\SocialAccount;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Enum;
 use Laravel\Socialite\Facades\Socialite;
@@ -98,6 +99,34 @@ class SocialAuthController extends Controller
         $token = $user->createToken('auth')->plainTextToken;
 
         return redirect()->away("questify://auth/callback?token={$token}");
+    }
+
+    /**
+     * Unlink social account
+     *
+     * Remove a linked social account from the authenticated user.
+     *
+     * @urlParam provider string required The social provider. Example: google
+     *
+     * @response 200 {"message": "Social account unlinked successfully."}
+     * @response 404 {"message": "Social account not linked."}
+     * @response 422 {"message": "The provider field is invalid."}
+     */
+    public function unlink(string $provider): JsonResponse
+    {
+        $this->validateProvider($provider);
+
+        $socialAccount = auth()->user()->socialAccounts()
+            ->where('provider', $provider)
+            ->first();
+
+        if (! $socialAccount) {
+            return response()->json(['message' => 'Social account not linked.'], 404);
+        }
+
+        $socialAccount->delete();
+
+        return response()->json(['message' => 'Social account unlinked successfully.']);
     }
 
     private function validateProvider(string $provider): void

@@ -15,10 +15,9 @@ class QuestRatingResource extends JsonResource
         return [
             'id' => $this->id,
             'rating' => $this->rating,
-            'review' => $this->review,
+            'comment' => $this->comment,
             'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

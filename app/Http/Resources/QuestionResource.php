@@ -14,15 +14,9 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => $this->type,
-            'body' => $this->body,
-            'image_path' => $this->image_path,
-            'hint' => $this->hint,
-            'points' => $this->points,
-            'sort_order' => $this->sort_order,
+            'question_text' => $this->body,
+            'question_type' => $this->type,
             'answers' => AnswerResource::collection($this->whenLoaded('answers')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace App\Enums;
 enum SessionStatus: string
 {
     case Waiting = 'waiting';
-    case InProgress = 'in_progress';
+    case Active = 'active';
     case Completed = 'completed';
-    case Abandoned = 'abandoned';
 }

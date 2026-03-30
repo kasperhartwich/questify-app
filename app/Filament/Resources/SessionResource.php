@@ -102,9 +102,8 @@ class SessionResource extends Resource
                     ->badge()
                     ->color(fn (SessionStatus $state): string => match ($state) {
                         SessionStatus::Waiting => 'gray',
-                        SessionStatus::InProgress => 'info',
+                        SessionStatus::Active => 'info',
                         SessionStatus::Completed => 'success',
-                        SessionStatus::Abandoned => 'danger',
                     }),
                 Tables\Columns\TextColumn::make('play_mode')
                     ->label('Mode')

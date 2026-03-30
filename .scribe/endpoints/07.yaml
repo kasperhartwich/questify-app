@@ -5,15 +5,15 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/v1/user/quests/created
+    uri: api/v1/user/quests
     metadata:
       custom: []
       groupName: 'User Quests'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Created quests'
-      description: 'Get a paginated list of quests created by the authenticated user.'
+      title: "List user's created quests"
+      description: 'Get a cursor-paginated list of quests created by the authenticated user.'
       authenticated: true
       deprecated: false
     headers:
@@ -22,20 +22,8 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters:
-      page:
-        custom: []
-        name: page
-        description: 'The page number.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-    cleanQueryParameters:
-      page: 1
+    queryParameters: []
+    cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -43,60 +31,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data": [{"id": 1, "title": "City Walk", "status": "draft", "category": {"id": 1, "name": "History"}}]}'
-        headers: []
-        description: ''
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/user/quests/played
-    metadata:
-      custom: []
-      groupName: 'User Quests'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Played quests'
-      description: 'Get a paginated list of quests the authenticated user has participated in.'
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      page:
-        custom: []
-        name: page
-        description: 'The page number.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-    cleanQueryParameters:
-      page: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 200
-        content: '{"data": [{"id": 1, "title": "City Walk", "category": {"id": 1, "name": "History"}}]}'
+        content: '{"data": [{"id": 1, "title": "City Walk", "status": "draft", "category": {"id": 1, "name": "History"}, "sessions_count": 3}]}'
         headers: []
         description: ''
     responseFields: []

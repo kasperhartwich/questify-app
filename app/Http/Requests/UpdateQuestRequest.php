@@ -2,10 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Difficulty;
-use App\Enums\PlayMode;
-use App\Enums\QuestVisibility;
-use App\Enums\WrongAnswerBehaviour;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,18 +18,34 @@ class UpdateQuestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => ['sometimes', 'exists:categories,id'],
             'title' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:2000'],
-            'cover_image_path' => ['nullable', 'string', 'max:255'],
-            'difficulty' => ['sometimes', Rule::enum(Difficulty::class)],
-            'visibility' => ['sometimes', Rule::enum(QuestVisibility::class)],
-            'play_mode' => ['sometimes', Rule::enum(PlayMode::class)],
-            'wrong_answer_behaviour' => ['sometimes', Rule::enum(WrongAnswerBehaviour::class)],
-            'time_limit_per_question' => ['nullable', 'integer', 'min:5', 'max:300'],
-            'shuffle_questions' => ['boolean'],
-            'shuffle_answers' => ['boolean'],
-            'max_participants' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'description' => ['sometimes', 'string'],
+            'category_id' => ['sometimes', 'integer', 'exists:categories,id'],
+            'difficulty' => ['sometimes', 'string', Rule::in(['easy', 'medium', 'hard'])],
+            'visibility' => ['sometimes', 'string', Rule::in(['public', 'private', 'school'])],
+            'estimated_duration_minutes' => ['sometimes', 'integer', 'min:1'],
+            'cover_image' => ['nullable', 'image', 'max:2048'],
+            'access_code' => ['nullable', 'string', 'max:20'],
+            'checkpoint_arrival_radius_meters' => ['nullable', 'integer', 'min:10', 'max:500'],
+            'wrong_answer_behaviour' => ['nullable', 'string', Rule::in(['retry_free', 'retry_penalty', 'lockout', 'three_strikes_hint'])],
+            'wrong_answer_penalty_points' => ['nullable', 'integer', 'min:0'],
+            'wrong_answer_lockout_seconds' => ['nullable', 'integer', 'min:0'],
+            'scoring_points_per_correct' => ['nullable', 'integer', 'min:0'],
+            'scoring_speed_bonus_enabled' => ['nullable', 'boolean'],
+            'scoring_wrong_attempt_penalty_enabled' => ['nullable', 'boolean'],
+            'scoring_quest_completion_time_bonus_enabled' => ['nullable', 'boolean'],
+            'checkpoints' => ['sometimes', 'array', 'min:1'],
+            'checkpoints.*.title' => ['required', 'string', 'max:255'],
+            'checkpoints.*.description' => ['nullable', 'string'],
+            'checkpoints.*.latitude' => ['required', 'numeric', 'between:-90,90'],
+            'checkpoints.*.longitude' => ['required', 'numeric', 'between:-180,180'],
+            'checkpoints.*.hint' => ['nullable', 'string'],
+            'checkpoints.*.questions' => ['required', 'array', 'min:1'],
+            'checkpoints.*.questions.*.question_text' => ['required', 'string'],
+            'checkpoints.*.questions.*.question_type' => ['required', 'string', Rule::in(['multiple_choice', 'true_false', 'open_text'])],
+            'checkpoints.*.questions.*.answers' => ['required', 'array', 'min:1'],
+            'checkpoints.*.questions.*.answers.*.answer_text' => ['required', 'string', 'max:255'],
+            'checkpoints.*.questions.*.answers.*.is_correct' => ['required', 'boolean'],
         ];
     }
 

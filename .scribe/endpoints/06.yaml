@@ -7,7 +7,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/v1/sessions/{code}/checkpoints/{checkpoint_id}/arrived'
+    uri: 'api/v1/sessions/{code}/arrived'
     metadata:
       custom: []
       groupName: Gameplay
@@ -28,7 +28,7 @@ endpoints:
       code:
         custom: []
         name: code
-        description: 'The 6-character session join code.'
+        description: 'The 6-character session code.'
         required: true
         example: ABC123
         type: string
@@ -36,42 +36,66 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-      checkpoint_id:
+    cleanUrlParameters:
+      code: ABC123
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      participant_id:
         custom: []
-        name: checkpoint_id
-        description: 'The ID of the checkpoint.'
+        name: participant_id
+        description: 'The participant ID.'
         required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      checkpoint:
-        custom: []
-        name: checkpoint
-        description: 'The checkpoint ID.'
-        required: true
-        example: 1
+        example: 7
         type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-    cleanUrlParameters:
-      code: ABC123
-      checkpoint_id: 1
-      checkpoint: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      checkpoint_id:
+        custom: []
+        name: checkpoint_id
+        description: 'The checkpoint ID.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      latitude:
+        custom: []
+        name: latitude
+        description: 'The arrival latitude.'
+        required: true
+        example: '55.6763'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      longitude:
+        custom: []
+        name: longitude
+        description: 'The arrival longitude.'
+        required: true
+        example: '12.5681'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      participant_id: 7
+      checkpoint_id: 3
+      latitude: '55.6763'
+      longitude: '12.5681'
     fileParameters: []
     responses:
       -
         custom: []
         status: 200
-        content: '{"checkpoint": {"id": 1, "title": "Start Point", "questions": [{"id": 1, "type": "multiple_choice", "body": "What year?", "answers": []}]}}'
+        content: '{"data": {"id": 3, "title": "Norreport Station", "description": "...", "order_index": 2, "questions": [{"id": 11, "question_text": "What year?", "question_type": "multiple_choice", "answers": [{"id": 41, "answer_text": "1917"}]}]}}'
         headers: []
         description: ''
     responseFields: []
@@ -86,7 +110,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/v1/sessions/{code}/checkpoints/{checkpoint_id}/questions/{question_id}/answer'
+    uri: 'api/v1/sessions/{code}/answer'
     metadata:
       custom: []
       groupName: Gameplay
@@ -96,7 +120,7 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Answer question'
-      description: 'Submit an answer to a question. Returns correctness and points earned. Broadcasts leaderboard updates.'
+      description: 'Submit an answer to a question. Returns correctness and score.'
       authenticated: true
       deprecated: false
     headers:
@@ -107,7 +131,7 @@ endpoints:
       code:
         custom: []
         name: code
-        description: 'The 6-character session join code.'
+        description: 'The 6-character session code.'
         required: true
         example: ABC123
         type: string
@@ -115,116 +139,74 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-      checkpoint_id:
+    cleanUrlParameters:
+      code: ABC123
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      participant_id:
         custom: []
-        name: checkpoint_id
-        description: 'The ID of the checkpoint.'
+        name: participant_id
+        description: 'The participant ID.'
         required: true
-        example: 1
+        example: 7
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
       question_id:
         custom: []
         name: question_id
-        description: 'The ID of the question.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      checkpoint:
-        custom: []
-        name: checkpoint
-        description: 'The checkpoint ID.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-      question:
-        custom: []
-        name: question
         description: 'The question ID.'
         required: true
-        example: 1
+        example: 11
         type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-    cleanUrlParameters:
-      code: ABC123
-      checkpoint_id: 1
-      question_id: 1
-      checkpoint: 1
-      question: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       answer_id:
         custom: []
         name: answer_id
-        description: 'This field is required when <code>open_ended_answer</code> is not present. The <code>id</code> of an existing record in the answers table.'
+        description: 'optional The selected answer ID (for multiple_choice/true_false).'
         required: false
-        example: 16
+        example: 42
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: true
         deprecated: false
-      open_ended_answer:
+      answer_text:
         custom: []
-        name: open_ended_answer
-        description: 'This field is required when <code>answer_id</code> is not present. Must not be greater than 1000 characters.'
+        name: answer_text
+        description: 'optional The text answer (for open_text).'
         required: false
-        example: 'n'
+        example: '1934'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: true
         deprecated: false
-      time_taken_seconds:
-        custom: []
-        name: time_taken_seconds
-        description: 'Must be at least 0.'
-        required: true
-        example: 84
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
     cleanBodyParameters:
-      answer_id: 16
-      open_ended_answer: 'n'
-      time_taken_seconds: 84
+      participant_id: 7
+      question_id: 11
+      answer_id: 42
+      answer_text: '1934'
     fileParameters: []
     responses:
       -
         custom: []
         status: 200
-        content: '{"is_correct": true, "points_earned": 85, "checkpoint_complete": false, "quest_complete": false}'
+        content: '{"data": {"correct": true, "score_earned": 115, "speed_bonus": 15, "total_score": 315, "next": "question"}}'
         headers: []
-        description: 'Correct answer'
+        description: Correct
       -
         custom: []
         status: 200
-        content: '{"is_correct": false, "points_earned": 0, "wrong_answer": {"action": "retry_free", "can_retry": true}}'
+        content: '{"data": {"correct": false, "behaviour": "retry_free", "attempts": 2}}'
         headers: []
-        description: 'Wrong answer'
-      -
-        custom: []
-        status: 200
-        content: '{"message": "Already answered correctly.", "points_earned": 85}'
-        headers: []
-        description: 'Already answered'
+        description: Incorrect
     responseFields: []
     auth:
       - headers
@@ -247,7 +229,7 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Get leaderboard'
-      description: 'Get the current session leaderboard sorted by score descending.'
+      description: 'Get the current session leaderboard sorted by score descending. No auth required.'
       authenticated: true
       deprecated: false
     headers:
@@ -258,7 +240,7 @@ endpoints:
       code:
         custom: []
         name: code
-        description: 'The 6-character session join code.'
+        description: 'The 6-character session code.'
         required: true
         example: ABC123
         type: string
@@ -277,7 +259,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"leaderboard": [{"id": 1, "display_name": "Player1", "score": 250, "rank": 1}]}'
+        content: '{"data": [{"id": 1, "display_name": "Player1", "total_score": 250, "current_checkpoint_index": 2, "quest_completed_at": null}]}'
         headers: []
         description: ''
     responseFields: []

@@ -29,15 +29,18 @@ class LoginController extends Controller
         if (! Auth::attempt($request->validated())) {
             return response()->json([
                 'message' => __('auth.failed'),
-            ], 422);
+            ], 401);
         }
 
         $user = Auth::user();
         $token = $user->createToken('auth')->plainTextToken;
 
         return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token,
+            'data' => [
+                'user' => new UserResource($user),
+                'token' => $token,
+            ],
+            'message' => 'Login successful.',
         ]);
     }
 

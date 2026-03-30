@@ -16,6 +16,7 @@ class JoinSessionRequest extends FormRequest
     {
         return [
             'display_name' => ['required', 'string', 'max:50'],
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 

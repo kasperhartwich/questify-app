@@ -2,10 +2,8 @@
 
 use App\Enums\Difficulty;
 use App\Enums\ModerationStatus;
-use App\Enums\PlayMode;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
-use App\Enums\WrongAnswerBehaviour;
 use App\Models\Category;
 use App\Models\Quest;
 use App\Models\User;
@@ -15,7 +13,7 @@ beforeEach(function () {
     $this->category = Category::factory()->create();
 });
 
-it('lists published public quests', function () {
+it('lists published public quests without auth', function () {
     Quest::factory()->count(3)->create([
         'status' => QuestStatus::Published,
         'visibility' => QuestVisibility::Public,
@@ -27,38 +25,56 @@ it('lists published public quests', function () {
         'visibility' => QuestVisibility::Private,
     ]);
 
-    $response = $this->actingAs($this->user)->getJson('/api/v1/quests');
+    $response = $this->getJson('/api/v1/quests');
 
     $response->assertOk()
         ->assertJsonCount(3, 'data');
 });
 
-it('creates a quest as draft', function () {
+it('creates a quest with nested checkpoints', function () {
     $response = $this->actingAs($this->user)->postJson('/api/v1/quests', [
         'category_id' => $this->category->id,
         'title' => 'My Quest',
         'description' => 'A test quest',
         'difficulty' => Difficulty::Medium->value,
         'visibility' => QuestVisibility::Public->value,
-        'play_mode' => PlayMode::Solo->value,
-        'wrong_answer_behaviour' => WrongAnswerBehaviour::RetryFree->value,
+        'estimated_duration_minutes' => 60,
+        'checkpoints' => [
+            [
+                'title' => 'First Stop',
+                'latitude' => 55.6761,
+                'longitude' => 12.5683,
+                'questions' => [
+                    [
+                        'question_text' => 'What year?',
+                        'question_type' => 'multiple_choice',
+                        'answers' => [
+                            ['answer_text' => '1889', 'is_correct' => true],
+                            ['answer_text' => '1903', 'is_correct' => false],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ]);
 
     $response->assertStatus(201)
-        ->assertJsonPath('quest.title', 'My Quest')
-        ->assertJsonPath('quest.status', QuestStatus::Draft->value);
+        ->assertJsonPath('data.title', 'My Quest')
+        ->assertJsonPath('data.status', QuestStatus::Draft->value);
 
     $this->assertDatabaseHas('quests', [
         'title' => 'My Quest',
         'status' => QuestStatus::Draft->value,
         'creator_id' => $this->user->id,
     ]);
+    $this->assertDatabaseHas('checkpoints', ['title' => 'First Stop']);
+    $this->assertDatabaseHas('questions', ['body' => 'What year?']);
 });
 
-it('shows a quest', function () {
+it('shows a quest without auth', function () {
     $quest = Quest::factory()->create();
 
-    $response = $this->actingAs($this->user)->getJson("/api/v1/quests/{$quest->id}");
+    $response = $this->getJson("/api/v1/quests/{$quest->id}");
 
     $response->assertOk()
         ->assertJsonPath('data.title', $quest->title);
@@ -67,8 +83,9 @@ it('shows a quest', function () {
 it('updates own quest', function () {
     $quest = Quest::factory()->create(['creator_id' => $this->user->id]);
 
-    $response = $this->actingAs($this->user)->patchJson("/api/v1/quests/{$quest->id}", [
+    $response = $this->actingAs($this->user)->putJson("/api/v1/quests/{$quest->id}", [
         'title' => 'Updated Title',
+        'description' => 'Updated description',
     ]);
 
     $response->assertOk()
@@ -78,23 +95,29 @@ it('updates own quest', function () {
 it('cannot update another users quest', function () {
     $quest = Quest::factory()->create();
 
-    $response = $this->actingAs($this->user)->patchJson("/api/v1/quests/{$quest->id}", [
+    $response = $this->actingAs($this->user)->putJson("/api/v1/quests/{$quest->id}", [
         'title' => 'Hacked Title',
+        'description' => 'Hacked',
     ]);
 
     $response->assertStatus(403);
 });
 
-it('deletes own quest', function () {
+it('archives own quest instead of deleting', function () {
     $quest = Quest::factory()->create(['creator_id' => $this->user->id]);
 
     $response = $this->actingAs($this->user)->deleteJson("/api/v1/quests/{$quest->id}");
 
-    $response->assertOk();
-    $this->assertDatabaseMissing('quests', ['id' => $quest->id]);
+    $response->assertOk()
+        ->assertJsonPath('message', 'Quest archived successfully.');
+
+    $this->assertDatabaseHas('quests', [
+        'id' => $quest->id,
+        'status' => QuestStatus::Archived->value,
+    ]);
 });
 
-it('cannot delete another users quest', function () {
+it('cannot archive another users quest', function () {
     $quest = Quest::factory()->create();
 
     $response = $this->actingAs($this->user)->deleteJson("/api/v1/quests/{$quest->id}");
@@ -102,20 +125,33 @@ it('cannot delete another users quest', function () {
     $response->assertStatus(403);
 });
 
-it('publishes own quest', function () {
+it('publishes public quest as pending_review', function () {
     $quest = Quest::factory()->create([
         'creator_id' => $this->user->id,
         'status' => QuestStatus::Draft,
+        'visibility' => QuestVisibility::Public,
+    ]);
+
+    $response = $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/publish");
+
+    $response->assertOk()
+        ->assertJsonPath('data.status', QuestStatus::PendingReview->value);
+
+    $quest->refresh();
+    expect($quest->status)->toBe(QuestStatus::PendingReview);
+});
+
+it('publishes private quest directly', function () {
+    $quest = Quest::factory()->create([
+        'creator_id' => $this->user->id,
+        'status' => QuestStatus::Draft,
+        'visibility' => QuestVisibility::Private,
     ]);
 
     $response = $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/publish");
 
     $response->assertOk()
         ->assertJsonPath('data.status', QuestStatus::Published->value);
-
-    $quest->refresh();
-    expect($quest->status)->toBe(QuestStatus::Published);
-    expect($quest->published_at)->not->toBeNull();
 });
 
 it('cannot publish another users quest', function () {
@@ -131,7 +167,7 @@ it('rates another users quest', function () {
 
     $response = $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/rate", [
         'rating' => 5,
-        'review' => 'Great quest!',
+        'comment' => 'Great quest!',
     ]);
 
     $response->assertStatus(201);
@@ -152,47 +188,19 @@ it('cannot rate own quest', function () {
     $response->assertStatus(403);
 });
 
-it('updates existing rating on re-rate', function () {
+it('flags a quest without auth', function () {
     $quest = Quest::factory()->create();
 
-    $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/rate", [
-        'rating' => 3,
-    ]);
-
-    $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/rate", [
-        'rating' => 5,
-        'review' => 'Changed my mind!',
-    ]);
-
-    expect($quest->ratings()->where('user_id', $this->user->id)->count())->toBe(1);
-    expect($quest->ratings()->where('user_id', $this->user->id)->first()->rating)->toBe(5);
-});
-
-it('flags another users quest', function () {
-    $quest = Quest::factory()->create();
-
-    $response = $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/flag", [
+    $response = $this->postJson("/api/v1/quests/{$quest->id}/flag", [
         'reason' => 'Inappropriate content',
-        'description' => 'Contains offensive language',
     ]);
 
     $response->assertStatus(201);
     $this->assertDatabaseHas('moderation_flags', [
         'flaggable_type' => Quest::class,
         'flaggable_id' => $quest->id,
-        'reporter_id' => $this->user->id,
         'status' => ModerationStatus::Pending->value,
     ]);
-});
-
-it('cannot flag own quest', function () {
-    $quest = Quest::factory()->create(['creator_id' => $this->user->id]);
-
-    $response = $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/flag", [
-        'reason' => 'Test',
-    ]);
-
-    $response->assertStatus(403);
 });
 
 it('requires authentication for quest creation', function () {
@@ -207,5 +215,5 @@ it('validates required fields on quest creation', function () {
     $response = $this->actingAs($this->user)->postJson('/api/v1/quests', []);
 
     $response->assertStatus(422)
-        ->assertJsonValidationErrors(['category_id', 'title', 'difficulty', 'visibility', 'play_mode', 'wrong_answer_behaviour']);
+        ->assertJsonValidationErrors(['title', 'description', 'category_id', 'difficulty', 'visibility', 'estimated_duration_minutes', 'checkpoints']);
 });

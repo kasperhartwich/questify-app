@@ -14,8 +14,8 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List sessions'
-      description: 'Get a paginated list of sessions where the user is host or participant.'
+      title: "List user's session history"
+      description: 'Get a paginated list of sessions the user participated in, with session and quest details.'
       authenticated: true
       deprecated: false
     headers:
@@ -45,7 +45,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data": [{"id": 1, "join_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}]}'
+        content: '{"data": [{"participant_id": 1, "display_name": "Lars", "total_score": 500, "quest_completed_at": null, "session": {"id": 1, "session_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}}]}'
         headers: []
         description: ''
     responseFields: []

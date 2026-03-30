@@ -15,6 +15,7 @@ class SessionParticipant extends Model
         'quest_session_id',
         'user_id',
         'display_name',
+        'current_checkpoint_index',
         'score',
         'finished_at',
     ];

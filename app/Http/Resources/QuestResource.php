@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class QuestResource extends JsonResource
 {
@@ -16,19 +17,22 @@ class QuestResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'cover_image_path' => $this->cover_image_path,
+            'cover_image_url' => $this->cover_image_path ? Storage::url($this->cover_image_path) : null,
+            'category' => $this->whenLoaded('category', fn () => [
+                'id' => $this->category->id,
+                'name' => $this->category->name,
+                'icon' => $this->category->icon,
+                'color' => $this->category->color,
+            ]),
             'difficulty' => $this->difficulty,
-            'status' => $this->status,
-            'visibility' => $this->visibility,
-            'play_mode' => $this->play_mode,
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'creator' => new UserResource($this->whenLoaded('creator')),
-            'average_rating' => $this->whenAggregated('ratings', 'rating', 'avg'),
-            'ratings_count' => $this->whenAggregated('ratings', 'rating', 'count'),
-            'checkpoints_count' => $this->whenCounted('checkpoints'),
-            'published_at' => $this->published_at,
+            'estimated_duration_minutes' => $this->estimated_duration_minutes,
+            'average_rating' => $this->ratings_avg_rating ? round((float) $this->ratings_avg_rating, 1) : null,
+            'sessions_count' => $this->whenCounted('sessions'),
+            'creator' => $this->whenLoaded('creator', fn () => [
+                'id' => $this->creator->id,
+                'name' => $this->creator->name,
+            ]),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

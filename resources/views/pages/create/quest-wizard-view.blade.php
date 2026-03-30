@@ -179,7 +179,7 @@
                                     <input type="text" wire:model="questions.{{ $cpIndex }}.{{ $qIndex }}.hint" class="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="Hint (optional)" />
 
                                     {{-- Answers (not for OpenEnded) --}}
-                                    @if ($question['type'] !== \App\Enums\QuestionType::OpenEnded->value)
+                                    @if ($question['type'] !== \App\Enums\QuestionType::OpenText->value)
                                         <div class="mt-2 space-y-2">
                                             <label class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ __('quests.answers') }}</label>
                                             @foreach ($question['answers'] as $aIndex => $answer)

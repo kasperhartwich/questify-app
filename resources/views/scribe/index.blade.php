@@ -101,28 +101,13 @@
                             </li>
                                                                         </ul>
                             </ul>
-                    <ul id="tocify-header-checkpoints" class="tocify-header">
-                <li class="tocify-item level-1" data-unique="checkpoints">
-                    <a href="#checkpoints">Checkpoints</a>
+                    <ul id="tocify-header-endpoints" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="endpoints">
+                    <a href="#endpoints">Endpoints</a>
                 </li>
-                                    <ul id="tocify-subheader-checkpoints" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="checkpoints-GETapi-v1-quests--quest_id--checkpoints">
-                                <a href="#checkpoints-GETapi-v1-quests--quest_id--checkpoints">List checkpoints</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="checkpoints-POSTapi-v1-quests--quest_id--checkpoints">
-                                <a href="#checkpoints-POSTapi-v1-quests--quest_id--checkpoints">Create checkpoint</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="checkpoints-GETapi-v1-quests--quest_id--checkpoints--id-">
-                                <a href="#checkpoints-GETapi-v1-quests--quest_id--checkpoints--id-">Show checkpoint</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="checkpoints-PUTapi-v1-quests--quest_id--checkpoints--id-">
-                                <a href="#checkpoints-PUTapi-v1-quests--quest_id--checkpoints--id-">Update checkpoint</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="checkpoints-DELETEapi-v1-quests--quest_id--checkpoints--id-">
-                                <a href="#checkpoints-DELETEapi-v1-quests--quest_id--checkpoints--id-">Delete checkpoint</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="checkpoints-POSTapi-v1-quests--quest_id--checkpoints-reorder">
-                                <a href="#checkpoints-POSTapi-v1-quests--quest_id--checkpoints-reorder">Reorder checkpoints</a>
+                                    <ul id="tocify-subheader-endpoints" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-health">
+                                <a href="#endpoints-GETapi-v1-health">GET api/v1/health</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -131,36 +116,14 @@
                     <a href="#gameplay">Gameplay</a>
                 </li>
                                     <ul id="tocify-subheader-gameplay" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">
-                                <a href="#gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">Arrive at checkpoint</a>
+                                                    <li class="tocify-item level-2" data-unique="gameplay-POSTapi-v1-sessions--code--arrived">
+                                <a href="#gameplay-POSTapi-v1-sessions--code--arrived">Arrive at checkpoint</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">
-                                <a href="#gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">Answer question</a>
+                                                                                <li class="tocify-item level-2" data-unique="gameplay-POSTapi-v1-sessions--code--answer">
+                                <a href="#gameplay-POSTapi-v1-sessions--code--answer">Answer question</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="gameplay-GETapi-v1-sessions--code--leaderboard">
                                 <a href="#gameplay-GETapi-v1-sessions--code--leaderboard">Get leaderboard</a>
-                            </li>
-                                                                        </ul>
-                            </ul>
-                    <ul id="tocify-header-questions" class="tocify-header">
-                <li class="tocify-item level-1" data-unique="questions">
-                    <a href="#questions">Questions</a>
-                </li>
-                                    <ul id="tocify-subheader-questions" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-                                <a href="#questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">List questions</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="questions-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-                                <a href="#questions-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">Create question</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-                                <a href="#questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Show question</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="questions-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-                                <a href="#questions-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Update question</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="questions-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-                                <a href="#questions-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Delete question</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -172,26 +135,26 @@
                                                     <li class="tocify-item level-2" data-unique="quests-GETapi-v1-quests">
                                 <a href="#quests-GETapi-v1-quests">List quests</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests">
-                                <a href="#quests-POSTapi-v1-quests">Create quest</a>
-                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-GETapi-v1-quests--id-">
                                 <a href="#quests-GETapi-v1-quests--id-">Show quest</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests--quest_id--flag">
+                                <a href="#quests-POSTapi-v1-quests--quest_id--flag">Flag quest</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests">
+                                <a href="#quests-POSTapi-v1-quests">Create quest</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-PUTapi-v1-quests--id-">
                                 <a href="#quests-PUTapi-v1-quests--id-">Update quest</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-DELETEapi-v1-quests--id-">
-                                <a href="#quests-DELETEapi-v1-quests--id-">Delete quest</a>
+                                <a href="#quests-DELETEapi-v1-quests--id-">Archive quest</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests--quest_id--publish">
                                 <a href="#quests-POSTapi-v1-quests--quest_id--publish">Publish quest</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests--quest_id--rate">
                                 <a href="#quests-POSTapi-v1-quests--quest_id--rate">Rate quest</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="quests-POSTapi-v1-quests--quest_id--flag">
-                                <a href="#quests-POSTapi-v1-quests--quest_id--flag">Flag quest</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -203,11 +166,11 @@
                                                     <li class="tocify-item level-2" data-unique="sessions-GETapi-v1-sessions--code-">
                                 <a href="#sessions-GETapi-v1-sessions--code-">Show session</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="sessions-POSTapi-v1-sessions">
-                                <a href="#sessions-POSTapi-v1-sessions">Create session</a>
-                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="sessions-POSTapi-v1-sessions--code--join">
                                 <a href="#sessions-POSTapi-v1-sessions--code--join">Join session</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="sessions-POSTapi-v1-sessions">
+                                <a href="#sessions-POSTapi-v1-sessions">Create session</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="sessions-POSTapi-v1-sessions--code--start">
                                 <a href="#sessions-POSTapi-v1-sessions--code--start">Start session</a>
@@ -220,13 +183,26 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-social-authentication" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="social-authentication">
+                    <a href="#social-authentication">Social Authentication</a>
+                </li>
+                                    <ul id="tocify-subheader-social-authentication" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="social-authentication-DELETEapi-v1-auth-social--provider-">
+                                <a href="#social-authentication-DELETEapi-v1-auth-social--provider-">Unlink social account</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-user-profile" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="user-profile">
                     <a href="#user-profile">User Profile</a>
                 </li>
                                     <ul id="tocify-subheader-user-profile" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="user-profile-DELETEapi-v1-user-profile">
-                                <a href="#user-profile-DELETEapi-v1-user-profile">Delete account</a>
+                                                    <li class="tocify-item level-2" data-unique="user-profile-PUTapi-v1-user-profile">
+                                <a href="#user-profile-PUTapi-v1-user-profile">Update profile</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-profile-DELETEapi-v1-user">
+                                <a href="#user-profile-DELETEapi-v1-user">Delete account</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -235,11 +211,8 @@
                     <a href="#user-quests">User Quests</a>
                 </li>
                                     <ul id="tocify-subheader-user-quests" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="user-quests-GETapi-v1-user-quests-created">
-                                <a href="#user-quests-GETapi-v1-user-quests-created">Created quests</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="user-quests-GETapi-v1-user-quests-played">
-                                <a href="#user-quests-GETapi-v1-user-quests-played">Played quests</a>
+                                                    <li class="tocify-item level-2" data-unique="user-quests-GETapi-v1-user-quests">
+                                <a href="#user-quests-GETapi-v1-user-quests">List user's created quests</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -249,7 +222,7 @@
                 </li>
                                     <ul id="tocify-subheader-user-sessions" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="user-sessions-GETapi-v1-user-sessions">
-                                <a href="#user-sessions-GETapi-v1-user-sessions">List sessions</a>
+                                <a href="#user-sessions-GETapi-v1-user-sessions">List user's session history</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -262,7 +235,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: March 12, 2026</li>
+        <li>Last updated: March 30, 2026</li>
     </ul>
 </div>
 
@@ -1391,25 +1364,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                <h1 id="checkpoints">Checkpoints</h1>
+                <h1 id="endpoints">Endpoints</h1>
 
-    <p>Manage checkpoints within a quest. Requires quest ownership.</p>
+    
 
-                                <h2 id="checkpoints-GETapi-v1-quests--quest_id--checkpoints">List checkpoints</h2>
+                                <h2 id="endpoints-GETapi-v1-health">GET api/v1/health</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get all checkpoints for a quest with their questions and answers.</p>
 
-<span id="example-requests-GETapi-v1-quests--quest_id--checkpoints">
+
+<span id="example-requests-GETapi-v1-health">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests/1/checkpoints" \
+    --get "http://questify-app.test:8000/api/v1/health" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1417,7 +1390,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints"
+    "http://questify-app.test:8000/api/v1/health"
 );
 
 const headers = {
@@ -1434,62 +1407,61 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-GETapi-v1-quests--quest_id--checkpoints">
+<span id="example-responses-GETapi-v1-health">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
-                <pre>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: [
-        {
-            &quot;id&quot;: 1,
-            &quot;title&quot;: &quot;Start Point&quot;,
-            &quot;description&quot;: &quot;Begin here&quot;,
-            &quot;sort_order&quot;: 0,
-            &quot;questions&quot;: []
-        }
-    ]
+    &quot;status&quot;: &quot;ok&quot;
 }</code>
  </pre>
     </span>
-<span id="execution-results-GETapi-v1-quests--quest_id--checkpoints" hidden>
+<span id="execution-results-GETapi-v1-health" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-quests--quest_id--checkpoints"></span>:
+                id="execution-response-status-GETapi-v1-health"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-quests--quest_id--checkpoints"
+    <pre class="json"><code id="execution-response-content-GETapi-v1-health"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-quests--quest_id--checkpoints" hidden>
+<span id="execution-error-GETapi-v1-health" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-quests--quest_id--checkpoints">
+    <pre><code id="execution-error-message-GETapi-v1-health">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-v1-quests--quest_id--checkpoints" data-method="GET"
-      data-path="api/v1/quests/{quest_id}/checkpoints"
+<form id="form-GETapi-v1-health" data-method="GET"
+      data-path="api/v1/health"
       data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-quests--quest_id--checkpoints', this);">
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-health', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-quests--quest_id--checkpoints"
-                    onclick="tryItOut('GETapi-v1-quests--quest_id--checkpoints');">Try it out ⚡
+                    id="btn-tryout-GETapi-v1-health"
+                    onclick="tryItOut('GETapi-v1-health');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-quests--quest_id--checkpoints"
-                    onclick="cancelTryOut('GETapi-v1-quests--quest_id--checkpoints');" hidden>Cancel 🛑
+                    id="btn-canceltryout-GETapi-v1-health"
+                    onclick="cancelTryOut('GETapi-v1-health');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-quests--quest_id--checkpoints"
+                    id="btn-executetryout-GETapi-v1-health"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -1497,7 +1469,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints</code></b>
+            <b><code>api/v1/health</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -1506,7 +1478,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-quests--quest_id--checkpoints"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-health"
                value="Bearer {YOUR_AUTH_KEY}"
                data-component="header">
     <br>
@@ -1518,7 +1490,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints"
+                              name="Content-Type"                data-endpoint="GETapi-v1-health"
                value="application/json"
                data-component="header">
     <br>
@@ -1530,1066 +1502,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints"
+                              name="Accept"                data-endpoint="GETapi-v1-health"
                value="application/json"
                data-component="header">
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="checkpoints-POSTapi-v1-quests--quest_id--checkpoints">Create checkpoint</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Add a new checkpoint to a quest. Sort order auto-increments if not provided.</p>
-
-<span id="example-requests-POSTapi-v1-quests--quest_id--checkpoints">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"title\": \"b\",
-    \"description\": \"Et animi quos velit et fugiat.\",
-    \"sort_order\": 42
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "title": "b",
-    "description": "Et animi quos velit et fugiat.",
-    "sort_order": 42
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-quests--quest_id--checkpoints">
-            <blockquote>
-            <p>Example response (201):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;checkpoint&quot;: {
-        &quot;id&quot;: 1,
-        &quot;title&quot;: &quot;Start Point&quot;,
-        &quot;description&quot;: &quot;Begin here&quot;,
-        &quot;sort_order&quot;: 0,
-        &quot;questions&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-quests--quest_id--checkpoints" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-quests--quest_id--checkpoints"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests--quest_id--checkpoints"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-quests--quest_id--checkpoints" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-quests--quest_id--checkpoints">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-quests--quest_id--checkpoints" data-method="POST"
-      data-path="api/v1/quests/{quest_id}/checkpoints"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests--quest_id--checkpoints', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-quests--quest_id--checkpoints"
-                    onclick="tryItOut('POSTapi-v1-quests--quest_id--checkpoints');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-quests--quest_id--checkpoints"
-                    onclick="cancelTryOut('POSTapi-v1-quests--quest_id--checkpoints');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-quests--quest_id--checkpoints"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="title"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>b</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="description"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="Et animi quos velit et fugiat."
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>Et animi quos velit et fugiat.</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="sort_order"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints"
-               value="42"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>42</code></p>
-        </div>
-        </form>
-
-                    <h2 id="checkpoints-GETapi-v1-quests--quest_id--checkpoints--id-">Show checkpoint</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Get a specific checkpoint with its questions and answers.</p>
-
-<span id="example-requests-GETapi-v1-quests--quest_id--checkpoints--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-quests--quest_id--checkpoints--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: {
-        &quot;id&quot;: 1,
-        &quot;title&quot;: &quot;Start Point&quot;,
-        &quot;description&quot;: &quot;Begin here&quot;,
-        &quot;sort_order&quot;: 0,
-        &quot;questions&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-quests--quest_id--checkpoints--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-quests--quest_id--checkpoints--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-quests--quest_id--checkpoints--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-quests--quest_id--checkpoints--id-" data-method="GET"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-quests--quest_id--checkpoints--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="tryItOut('GETapi-v1-quests--quest_id--checkpoints--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="cancelTryOut('GETapi-v1-quests--quest_id--checkpoints--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-quests--quest_id--checkpoints--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="checkpoints-PUTapi-v1-quests--quest_id--checkpoints--id-">Update checkpoint</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Update a checkpoint's details.</p>
-
-<span id="example-requests-PUTapi-v1-quests--quest_id--checkpoints--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request PUT \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"title\": \"b\",
-    \"description\": \"Et animi quos velit et fugiat.\",
-    \"sort_order\": 42
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "title": "b",
-    "description": "Et animi quos velit et fugiat.",
-    "sort_order": 42
-};
-
-fetch(url, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-PUTapi-v1-quests--quest_id--checkpoints--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: {
-        &quot;id&quot;: 1,
-        &quot;title&quot;: &quot;Updated Title&quot;,
-        &quot;sort_order&quot;: 0,
-        &quot;questions&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-PUTapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-PUTapi-v1-quests--quest_id--checkpoints--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTapi-v1-quests--quest_id--checkpoints--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-PUTapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTapi-v1-quests--quest_id--checkpoints--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-PUTapi-v1-quests--quest_id--checkpoints--id-" data-method="PUT"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-quests--quest_id--checkpoints--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-PUTapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="tryItOut('PUTapi-v1-quests--quest_id--checkpoints--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-PUTapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="cancelTryOut('PUTapi-v1-quests--quest_id--checkpoints--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTapi-v1-quests--quest_id--checkpoints--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-darkblue">PUT</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{id}</code></b>
-        </p>
-            <p>
-            <small class="badge badge-purple">PATCH</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="title"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>b</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="description"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="Et animi quos velit et fugiat."
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>Et animi quos velit et fugiat.</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="sort_order"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--id-"
-               value="42"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>42</code></p>
-        </div>
-        </form>
-
-                    <h2 id="checkpoints-DELETEapi-v1-quests--quest_id--checkpoints--id-">Delete checkpoint</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Remove a checkpoint from a quest.</p>
-
-<span id="example-requests-DELETEapi-v1-quests--quest_id--checkpoints--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request DELETE \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "DELETE",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-DELETEapi-v1-quests--quest_id--checkpoints--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Deleted.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-DELETEapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-DELETEapi-v1-quests--quest_id--checkpoints--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-quests--quest_id--checkpoints--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-DELETEapi-v1-quests--quest_id--checkpoints--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-quests--quest_id--checkpoints--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-DELETEapi-v1-quests--quest_id--checkpoints--id-" data-method="DELETE"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-quests--quest_id--checkpoints--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-DELETEapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="tryItOut('DELETEapi-v1-quests--quest_id--checkpoints--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-DELETEapi-v1-quests--quest_id--checkpoints--id-"
-                    onclick="cancelTryOut('DELETEapi-v1-quests--quest_id--checkpoints--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-quests--quest_id--checkpoints--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-red">DELETE</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="checkpoints-POSTapi-v1-quests--quest_id--checkpoints-reorder">Reorder checkpoints</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Set the sort order of checkpoints by providing an ordered array of checkpoint IDs.</p>
-
-<span id="example-requests-POSTapi-v1-quests--quest_id--checkpoints-reorder">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/reorder" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"order\": [
-        3,
-        1,
-        2
-    ]
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/reorder"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "order": [
-        3,
-        1,
-        2
-    ]
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-quests--quest_id--checkpoints-reorder">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Reordered.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-quests--quest_id--checkpoints-reorder" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-quests--quest_id--checkpoints-reorder"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests--quest_id--checkpoints-reorder"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-quests--quest_id--checkpoints-reorder" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-quests--quest_id--checkpoints-reorder">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-quests--quest_id--checkpoints-reorder" data-method="POST"
-      data-path="api/v1/quests/{quest_id}/checkpoints/reorder"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests--quest_id--checkpoints-reorder', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-quests--quest_id--checkpoints-reorder"
-                    onclick="tryItOut('POSTapi-v1-quests--quest_id--checkpoints-reorder');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-quests--quest_id--checkpoints-reorder"
-                    onclick="cancelTryOut('POSTapi-v1-quests--quest_id--checkpoints-reorder');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-quests--quest_id--checkpoints-reorder"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/reorder</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
-<small>integer[]</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="order[0]"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               data-component="body">
-        <input type="number" style="display: none"
-               name="order[1]"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints-reorder"
-               data-component="body">
-    <br>
-<p>Ordered array of checkpoint IDs.</p>
-        </div>
-        </form>
+                        </form>
 
                 <h1 id="gameplay">Gameplay</h1>
 
     <p>Real-time gameplay endpoints for active quest sessions.</p>
 
-                                <h2 id="gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">Arrive at checkpoint</h2>
+                                <h2 id="gameplay-POSTapi-v1-sessions--code--arrived">Arrive at checkpoint</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -2597,210 +1522,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Record arrival at a checkpoint and receive its questions. Broadcasts CheckpointArrived event.</p>
 
-<span id="example-requests-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">
+<span id="example-requests-POSTapi-v1-sessions--code--arrived">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/checkpoints/1/arrived" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/checkpoints/1/arrived"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "POST",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;checkpoint&quot;: {
-        &quot;id&quot;: 1,
-        &quot;title&quot;: &quot;Start Point&quot;,
-        &quot;questions&quot;: [
-            {
-                &quot;id&quot;: 1,
-                &quot;type&quot;: &quot;multiple_choice&quot;,
-                &quot;body&quot;: &quot;What year?&quot;,
-                &quot;answers&quot;: []
-            }
-        ]
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived" data-method="POST"
-      data-path="api/v1/sessions/{code}/checkpoints/{checkpoint_id}/arrived"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-                    onclick="tryItOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-                    onclick="cancelTryOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/sessions/{code}/checkpoints/{checkpoint_id}/arrived</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="code"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="ABC123"
-               data-component="url">
-    <br>
-<p>The 6-character session join code. Example: <code>ABC123</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--arrived"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="gameplay-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">Answer question</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Submit an answer to a question. Returns correctness and points earned. Broadcasts leaderboard updates.</p>
-
-<span id="example-requests-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/checkpoints/1/questions/1/answer" \
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/arrived" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"answer_id\": 16,
-    \"open_ended_answer\": \"n\",
-    \"time_taken_seconds\": 84
+    \"participant_id\": 7,
+    \"checkpoint_id\": 3,
+    \"latitude\": \"55.6763\",
+    \"longitude\": \"12.5681\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/checkpoints/1/questions/1/answer"
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/arrived"
 );
 
 const headers = {
@@ -2810,9 +1553,10 @@ const headers = {
 };
 
 let body = {
-    "answer_id": 16,
-    "open_ended_answer": "n",
-    "time_taken_seconds": 84
+    "participant_id": 7,
+    "checkpoint_id": 3,
+    "latitude": "55.6763",
+    "longitude": "12.5681"
 };
 
 fetch(url, {
@@ -2823,81 +1567,72 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">
+<span id="example-responses-POSTapi-v1-sessions--code--arrived">
             <blockquote>
-            <p>Example response (200, Correct answer):</p>
+            <p>Example response (200):</p>
         </blockquote>
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;is_correct&quot;: true,
-    &quot;points_earned&quot;: 85,
-    &quot;checkpoint_complete&quot;: false,
-    &quot;quest_complete&quot;: false
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (200, Wrong answer):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;is_correct&quot;: false,
-    &quot;points_earned&quot;: 0,
-    &quot;wrong_answer&quot;: {
-        &quot;action&quot;: &quot;retry_free&quot;,
-        &quot;can_retry&quot;: true
+    &quot;data&quot;: {
+        &quot;id&quot;: 3,
+        &quot;title&quot;: &quot;Norreport Station&quot;,
+        &quot;description&quot;: &quot;...&quot;,
+        &quot;order_index&quot;: 2,
+        &quot;questions&quot;: [
+            {
+                &quot;id&quot;: 11,
+                &quot;question_text&quot;: &quot;What year?&quot;,
+                &quot;question_type&quot;: &quot;multiple_choice&quot;,
+                &quot;answers&quot;: [
+                    {
+                        &quot;id&quot;: 41,
+                        &quot;answer_text&quot;: &quot;1917&quot;
+                    }
+                ]
+            }
+        ]
     }
 }</code>
  </pre>
-            <blockquote>
-            <p>Example response (200, Already answered):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Already answered correctly.&quot;,
-    &quot;points_earned&quot;: 85
-}</code>
- </pre>
     </span>
-<span id="execution-results-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer" hidden>
+<span id="execution-results-POSTapi-v1-sessions--code--arrived" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"></span>:
+                id="execution-response-status-POSTapi-v1-sessions--code--arrived"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--arrived"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer" hidden>
+<span id="execution-error-POSTapi-v1-sessions--code--arrived" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer">
+    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--arrived">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer" data-method="POST"
-      data-path="api/v1/sessions/{code}/checkpoints/{checkpoint_id}/questions/{question_id}/answer"
+<form id="form-POSTapi-v1-sessions--code--arrived" data-method="POST"
+      data-path="api/v1/sessions/{code}/arrived"
       data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--arrived', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-                    onclick="tryItOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer');">Try it out ⚡
+                    id="btn-tryout-POSTapi-v1-sessions--code--arrived"
+                    onclick="tryItOut('POSTapi-v1-sessions--code--arrived');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-                    onclick="cancelTryOut('POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-v1-sessions--code--arrived"
+                    onclick="cancelTryOut('POSTapi-v1-sessions--code--arrived');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+                    id="btn-executetryout-POSTapi-v1-sessions--code--arrived"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -2905,7 +1640,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-black">POST</small>
-            <b><code>api/v1/sessions/{code}/checkpoints/{checkpoint_id}/questions/{question_id}/answer</code></b>
+            <b><code>api/v1/sessions/{code}/arrived</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -2914,7 +1649,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-sessions--code--arrived"
                value="Bearer {YOUR_AUTH_KEY}"
                data-component="header">
     <br>
@@ -2926,7 +1661,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--arrived"
                value="application/json"
                data-component="header">
     <br>
@@ -2938,7 +1673,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--arrived"
                value="application/json"
                data-component="header">
     <br>
@@ -2951,96 +1686,290 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="code"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
+                              name="code"                data-endpoint="POSTapi-v1-sessions--code--arrived"
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character session join code. Example: <code>ABC123</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>question_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="question_id"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the question. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>question</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="question"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="1"
-               data-component="url">
-    <br>
-<p>The question ID. Example: <code>1</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>participant_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="participant_id"                data-endpoint="POSTapi-v1-sessions--code--arrived"
+               value="7"
+               data-component="body">
+    <br>
+<p>The participant ID. Example: <code>7</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoint_id"                data-endpoint="POSTapi-v1-sessions--code--arrived"
+               value="3"
+               data-component="body">
+    <br>
+<p>The checkpoint ID. Example: <code>3</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>numeric</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="latitude"                data-endpoint="POSTapi-v1-sessions--code--arrived"
+               value="55.6763"
+               data-component="body">
+    <br>
+<p>The arrival latitude. Example: <code>55.6763</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>numeric</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="longitude"                data-endpoint="POSTapi-v1-sessions--code--arrived"
+               value="12.5681"
+               data-component="body">
+    <br>
+<p>The arrival longitude. Example: <code>12.5681</code></p>
+        </div>
+        </form>
+
+                    <h2 id="gameplay-POSTapi-v1-sessions--code--answer">Answer question</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Submit an answer to a question. Returns correctness and score.</p>
+
+<span id="example-requests-POSTapi-v1-sessions--code--answer">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/answer" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"participant_id\": 7,
+    \"question_id\": 11,
+    \"answer_id\": 42,
+    \"answer_text\": \"1934\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/answer"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "participant_id": 7,
+    "question_id": 11,
+    "answer_id": 42,
+    "answer_text": "1934"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-sessions--code--answer">
+            <blockquote>
+            <p>Example response (200, Correct):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;correct&quot;: true,
+        &quot;score_earned&quot;: 115,
+        &quot;speed_bonus&quot;: 15,
+        &quot;total_score&quot;: 315,
+        &quot;next&quot;: &quot;question&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (200, Incorrect):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;correct&quot;: false,
+        &quot;behaviour&quot;: &quot;retry_free&quot;,
+        &quot;attempts&quot;: 2
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-sessions--code--answer" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-sessions--code--answer"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--answer"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-sessions--code--answer" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--answer">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-sessions--code--answer" data-method="POST"
+      data-path="api/v1/sessions/{code}/answer"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--answer', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-sessions--code--answer"
+                    onclick="tryItOut('POSTapi-v1-sessions--code--answer');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-sessions--code--answer"
+                    onclick="cancelTryOut('POSTapi-v1-sessions--code--answer');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-sessions--code--answer"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/sessions/{code}/answer</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="code"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="ABC123"
+               data-component="url">
+    <br>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>participant_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="participant_id"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="7"
+               data-component="body">
+    <br>
+<p>The participant ID. Example: <code>7</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>question_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="question_id"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="11"
+               data-component="body">
+    <br>
+<p>The question ID. Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>answer_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="answer_id"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="16"
+               step="any"               name="answer_id"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="42"
                data-component="body">
     <br>
-<p>This field is required when <code>open_ended_answer</code> is not present. The <code>id</code> of an existing record in the answers table. Example: <code>16</code></p>
+<p>optional The selected answer ID (for multiple_choice/true_false). Example: <code>42</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>open_ended_answer</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>answer_text</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="open_ended_answer"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="n"
+                              name="answer_text"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="1934"
                data-component="body">
     <br>
-<p>This field is required when <code>answer_id</code> is not present. Must not be greater than 1000 characters. Example: <code>n</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>time_taken_seconds</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="time_taken_seconds"                data-endpoint="POSTapi-v1-sessions--code--checkpoints--checkpoint_id--questions--question_id--answer"
-               value="84"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>84</code></p>
+<p>optional The text answer (for open_text). Example: <code>1934</code></p>
         </div>
         </form>
 
@@ -3050,7 +1979,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get the current session leaderboard sorted by score descending.</p>
+<p>Get the current session leaderboard sorted by score descending. No auth required.</p>
 
 <span id="example-requests-GETapi-v1-sessions--code--leaderboard">
 <blockquote>Example request:</blockquote>
@@ -3090,12 +2019,13 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;leaderboard&quot;: [
+    &quot;data&quot;: [
         {
             &quot;id&quot;: 1,
             &quot;display_name&quot;: &quot;Player1&quot;,
-            &quot;score&quot;: 250,
-            &quot;rank&quot;: 1
+            &quot;total_score&quot;: 250,
+            &quot;current_checkpoint_index&quot;: 2,
+            &quot;quest_completed_at&quot;: null
         }
     ]
 }</code>
@@ -3195,1377 +2125,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character session join code. Example: <code>ABC123</code></p>
-            </div>
-                    </form>
-
-                <h1 id="questions">Questions</h1>
-
-    <p>Manage questions within a checkpoint. Requires quest ownership.</p>
-
-                                <h2 id="questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">List questions</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Get all questions for a checkpoint with their answers.</p>
-
-<span id="example-requests-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: [
-        {
-            &quot;id&quot;: 1,
-            &quot;type&quot;: &quot;multiple_choice&quot;,
-            &quot;body&quot;: &quot;What year?&quot;,
-            &quot;points&quot;: 10,
-            &quot;answers&quot;: []
-        }
-    ]
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" data-method="GET"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    onclick="tryItOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    onclick="cancelTryOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="questions-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">Create question</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Add a new question to a checkpoint with optional inline answers.</p>
-
-<span id="example-requests-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"type\": \"true_false\",
-    \"body\": \"b\",
-    \"image_path\": \"n\",
-    \"hint\": \"g\",
-    \"points\": 16,
-    \"sort_order\": 77,
-    \"answers\": [
-        {
-            \"body\": \"i\",
-            \"is_correct\": true,
-            \"sort_order\": 76
-        }
-    ]
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "type": "true_false",
-    "body": "b",
-    "image_path": "n",
-    "hint": "g",
-    "points": 16,
-    "sort_order": 77,
-    "answers": [
-        {
-            "body": "i",
-            "is_correct": true,
-            "sort_order": 76
-        }
-    ]
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-            <blockquote>
-            <p>Example response (201):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;question&quot;: {
-        &quot;id&quot;: 1,
-        &quot;type&quot;: &quot;multiple_choice&quot;,
-        &quot;body&quot;: &quot;What year?&quot;,
-        &quot;points&quot;: 10,
-        &quot;answers&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" data-method="POST"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    onclick="tryItOut('POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    onclick="cancelTryOut('POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="type"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="true_false"
-               data-component="body">
-    <br>
-<p>Example: <code>true_false</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_ended</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>body</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="body"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>b</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>image_path</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="image_path"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="n"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>n</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>hint</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="hint"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="g"
-               data-component="body">
-    <br>
-<p>Must not be greater than 500 characters. Example: <code>g</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>points</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="points"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="16"
-               data-component="body">
-    <br>
-<p>Must be at least 1. Must not be greater than 1000. Example: <code>16</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="sort_order"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="77"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>77</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>answers</code></b>&nbsp;&nbsp;
-<small>object[]</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>body</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="answers.0.body"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="i"
-               data-component="body">
-    <br>
-<p>This field is required when <code>answers</code> is present. Must not be greater than 500 characters. Example: <code>i</code></p>
-                    </div>
-                                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>is_correct</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <label data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" style="display: none">
-            <input type="radio" name="answers.0.is_correct"
-                   value="true"
-                   data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions" style="display: none">
-            <input type="radio" name="answers.0.is_correct"
-                   value="false"
-                   data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
-    <br>
-<p>This field is required when <code>answers</code> is present. Example: <code>true</code></p>
-                    </div>
-                                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="answers.0.sort_order"                data-endpoint="POSTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions"
-               value="76"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>76</code></p>
-                    </div>
-                                    </details>
-        </div>
-        </form>
-
-                    <h2 id="questions-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Show question</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Get a specific question with its answers.</p>
-
-<span id="example-requests-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: {
-        &quot;id&quot;: 1,
-        &quot;type&quot;: &quot;multiple_choice&quot;,
-        &quot;body&quot;: &quot;What year?&quot;,
-        &quot;points&quot;: 10,
-        &quot;answers&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" data-method="GET"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="tryItOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="cancelTryOut('GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the question. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>question</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="question"                data-endpoint="GETapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The question ID. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="questions-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Update question</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Update a question and optionally manage its answers inline. Answers not included in the array will be deleted.</p>
-
-<span id="example-requests-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request PUT \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"type\": \"open_ended\",
-    \"body\": \"b\",
-    \"image_path\": \"n\",
-    \"hint\": \"g\",
-    \"points\": 16,
-    \"sort_order\": 77,
-    \"answers\": [
-        {
-            \"id\": 16,
-            \"body\": \"n\",
-            \"is_correct\": true,
-            \"sort_order\": 84
-        }
-    ]
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "type": "open_ended",
-    "body": "b",
-    "image_path": "n",
-    "hint": "g",
-    "points": 16,
-    "sort_order": 77,
-    "answers": [
-        {
-            "id": 16,
-            "body": "n",
-            "is_correct": true,
-            "sort_order": 84
-        }
-    ]
-};
-
-fetch(url, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: {
-        &quot;id&quot;: 1,
-        &quot;type&quot;: &quot;multiple_choice&quot;,
-        &quot;body&quot;: &quot;Updated?&quot;,
-        &quot;points&quot;: 10,
-        &quot;answers&quot;: []
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" data-method="PUT"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="tryItOut('PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="cancelTryOut('PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-darkblue">PUT</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}</code></b>
-        </p>
-            <p>
-            <small class="badge badge-purple">PATCH</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the question. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>question</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="question"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The question ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="type"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="open_ended"
-               data-component="body">
-    <br>
-<p>Example: <code>open_ended</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_ended</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>body</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="body"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>b</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>image_path</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="image_path"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="n"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>n</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>hint</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="hint"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="g"
-               data-component="body">
-    <br>
-<p>Must not be greater than 500 characters. Example: <code>g</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>points</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="points"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="16"
-               data-component="body">
-    <br>
-<p>Must be at least 1. Must not be greater than 1000. Example: <code>16</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="sort_order"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="77"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>77</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>answers</code></b>&nbsp;&nbsp;
-<small>object[]</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="answers.0.id"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="16"
-               data-component="body">
-    <br>
-<p>The <code>id</code> of an existing record in the answers table. Example: <code>16</code></p>
-                    </div>
-                                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>body</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="answers.0.body"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="n"
-               data-component="body">
-    <br>
-<p>This field is required when <code>answers</code> is present. Must not be greater than 500 characters. Example: <code>n</code></p>
-                    </div>
-                                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>is_correct</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <label data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" style="display: none">
-            <input type="radio" name="answers.0.is_correct"
-                   value="true"
-                   data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" style="display: none">
-            <input type="radio" name="answers.0.is_correct"
-                   value="false"
-                   data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
-    <br>
-<p>This field is required when <code>answers</code> is present. Example: <code>true</code></p>
-                    </div>
-                                                                <div style="margin-left: 14px; clear: unset;">
-                        <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="answers.0.sort_order"                data-endpoint="PUTapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="84"
-               data-component="body">
-    <br>
-<p>Must be at least 0. Example: <code>84</code></p>
-                    </div>
-                                    </details>
-        </div>
-        </form>
-
-                    <h2 id="questions-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">Delete question</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Remove a question from a checkpoint.</p>
-
-<span id="example-requests-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request DELETE \
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/checkpoints/1/questions/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "DELETE",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Deleted.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-" data-method="DELETE"
-      data-path="api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="tryItOut('DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    onclick="cancelTryOut('DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-red">DELETE</small>
-            <b><code>api/v1/quests/{quest_id}/checkpoints/{checkpoint_id}/questions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint_id"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the checkpoint. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the question. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>checkpoint</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="checkpoint"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The checkpoint ID. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>question</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="question"                data-endpoint="DELETEapi-v1-quests--quest_id--checkpoints--checkpoint_id--questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The question ID. Example: <code>1</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                     </form>
 
@@ -4579,7 +2139,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get a paginated list of published and visible quests.</p>
+<p>Get a cursor-paginated list of published and visible quests.</p>
 
 <span id="example-requests-GETapi-v1-quests">
 <blockquote>Example request:</blockquote>
@@ -4587,7 +2147,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests?page=1" \
+    --get "http://questify-app.test:8000/api/v1/quests?category_id=1&amp;difficulty=easy&amp;search=City" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4599,7 +2159,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "page": "1",
+    "category_id": "1",
+    "difficulty": "easy",
+    "search": "City",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -4635,13 +2197,7 @@ fetch(url, {
                 &quot;id&quot;: 1,
                 &quot;name&quot;: &quot;History&quot;
             },
-            &quot;creator&quot;: {
-                &quot;id&quot;: 1,
-                &quot;name&quot;: &quot;John&quot;
-            },
-            &quot;ratings_avg_rating&quot;: &quot;4.5&quot;,
-            &quot;ratings_count&quot;: 10,
-            &quot;checkpoints_count&quot;: 5
+            &quot;sessions_count&quot;: 5
         }
     ]
 }</code>
@@ -4732,382 +2288,42 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                             <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
+                <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="page"                data-endpoint="GETapi-v1-quests"
+               step="any"               name="category_id"                data-endpoint="GETapi-v1-quests"
                value="1"
                data-component="query">
     <br>
-<p>The page number. Example: <code>1</code></p>
+<p>Filter by category. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="difficulty"                data-endpoint="GETapi-v1-quests"
+               value="easy"
+               data-component="query">
+    <br>
+<p>Filter by difficulty (easy, medium, hard). Example: <code>easy</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-v1-quests"
+               value="City"
+               data-component="query">
+    <br>
+<p>Search by title. Example: <code>City</code></p>
             </div>
                 </form>
-
-                    <h2 id="quests-POSTapi-v1-quests">Create quest</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Create a new quest in draft status.</p>
-
-<span id="example-requests-POSTapi-v1-quests">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"category_id\": \"architecto\",
-    \"title\": \"n\",
-    \"description\": \"Animi quos velit et fugiat.\",
-    \"cover_image_path\": \"d\",
-    \"difficulty\": \"hard\",
-    \"visibility\": \"public\",
-    \"play_mode\": \"solo\",
-    \"wrong_answer_behaviour\": \"retry_free\",
-    \"time_limit_per_question\": 5,
-    \"shuffle_questions\": false,
-    \"shuffle_answers\": true,
-    \"max_participants\": 19
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "category_id": "architecto",
-    "title": "n",
-    "description": "Animi quos velit et fugiat.",
-    "cover_image_path": "d",
-    "difficulty": "hard",
-    "visibility": "public",
-    "play_mode": "solo",
-    "wrong_answer_behaviour": "retry_free",
-    "time_limit_per_question": 5,
-    "shuffle_questions": false,
-    "shuffle_answers": true,
-    "max_participants": 19
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-quests">
-            <blockquote>
-            <p>Example response (201):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;quest&quot;: {
-        &quot;id&quot;: 1,
-        &quot;title&quot;: &quot;City Walk&quot;,
-        &quot;status&quot;: &quot;draft&quot;,
-        &quot;category&quot;: {
-            &quot;id&quot;: 1,
-            &quot;name&quot;: &quot;History&quot;
-        },
-        &quot;creator&quot;: {
-            &quot;id&quot;: 1,
-            &quot;name&quot;: &quot;John&quot;
-        }
-    }
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (422, Validation error):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The title field is required.&quot;,
-    &quot;errors&quot;: {
-        &quot;title&quot;: [
-            &quot;The title field is required.&quot;
-        ]
-    }
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-quests" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-quests"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-quests" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-quests">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-quests" data-method="POST"
-      data-path="api/v1/quests"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-quests"
-                    onclick="tryItOut('POSTapi-v1-quests');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-quests"
-                    onclick="cancelTryOut('POSTapi-v1-quests');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-quests"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/quests</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-quests"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-quests"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="category_id"                data-endpoint="POSTapi-v1-quests"
-               value="architecto"
-               data-component="body">
-    <br>
-<p>The <code>id</code> of an existing record in the categories table. Example: <code>architecto</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="title"                data-endpoint="POSTapi-v1-quests"
-               value="n"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>n</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="description"                data-endpoint="POSTapi-v1-quests"
-               value="Animi quos velit et fugiat."
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>Animi quos velit et fugiat.</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>cover_image_path</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="cover_image_path"                data-endpoint="POSTapi-v1-quests"
-               value="d"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>d</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="difficulty"                data-endpoint="POSTapi-v1-quests"
-               value="hard"
-               data-component="body">
-    <br>
-<p>Example: <code>hard</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>visibility</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="visibility"                data-endpoint="POSTapi-v1-quests"
-               value="public"
-               data-component="body">
-    <br>
-<p>Example: <code>public</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>unlisted</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>play_mode</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="play_mode"                data-endpoint="POSTapi-v1-quests"
-               value="solo"
-               data-component="body">
-    <br>
-<p>Example: <code>solo</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive</code></li> <li><code>cooperative</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>wrong_answer_behaviour</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="wrong_answer_behaviour"                data-endpoint="POSTapi-v1-quests"
-               value="retry_free"
-               data-component="body">
-    <br>
-<p>Example: <code>retry_free</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>time_limit_per_question</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="time_limit_per_question"                data-endpoint="POSTapi-v1-quests"
-               value="5"
-               data-component="body">
-    <br>
-<p>Must be at least 5. Must not be greater than 300. Example: <code>5</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>shuffle_questions</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <label data-endpoint="POSTapi-v1-quests" style="display: none">
-            <input type="radio" name="shuffle_questions"
-                   value="true"
-                   data-endpoint="POSTapi-v1-quests"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="POSTapi-v1-quests" style="display: none">
-            <input type="radio" name="shuffle_questions"
-                   value="false"
-                   data-endpoint="POSTapi-v1-quests"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
-    <br>
-<p>Example: <code>false</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>shuffle_answers</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <label data-endpoint="POSTapi-v1-quests" style="display: none">
-            <input type="radio" name="shuffle_answers"
-                   value="true"
-                   data-endpoint="POSTapi-v1-quests"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="POSTapi-v1-quests" style="display: none">
-            <input type="radio" name="shuffle_answers"
-                   value="false"
-                   data-endpoint="POSTapi-v1-quests"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
-    <br>
-<p>Example: <code>true</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>max_participants</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="max_participants"                data-endpoint="POSTapi-v1-quests"
-               value="19"
-               data-component="body">
-    <br>
-<p>Must be at least 1. Must not be greater than 100. Example: <code>19</code></p>
-        </div>
-        </form>
 
                     <h2 id="quests-GETapi-v1-quests--id-">Show quest</h2>
 
@@ -5123,7 +2339,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/quests/1" \
+    --get "http://questify-app.test:8000/api/v1/quests/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5131,7 +2347,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1"
+    "http://questify-app.test:8000/api/v1/quests/16"
 );
 
 const headers = {
@@ -5262,10 +2478,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v1-quests--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the quest. Example: <code>1</code></p>
+<p>The ID of the quest. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
@@ -5281,6 +2497,777 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                     </form>
 
+                    <h2 id="quests-POSTapi-v1-quests--quest_id--flag">Flag quest</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Report a quest for moderation. Public endpoint — no authentication required.</p>
+
+<span id="example-requests-POSTapi-v1-quests--quest_id--flag">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://questify-app.test:8000/api/v1/quests/16/flag" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"reason\": \"b\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/quests/16/flag"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "reason": "b"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-quests--quest_id--flag">
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Quest flagged for review.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-quests--quest_id--flag" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-quests--quest_id--flag"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests--quest_id--flag"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-quests--quest_id--flag" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-quests--quest_id--flag">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-quests--quest_id--flag" data-method="POST"
+      data-path="api/v1/quests/{quest_id}/flag"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests--quest_id--flag', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-quests--quest_id--flag"
+                    onclick="tryItOut('POSTapi-v1-quests--quest_id--flag');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-quests--quest_id--flag"
+                    onclick="cancelTryOut('POSTapi-v1-quests--quest_id--flag');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-quests--quest_id--flag"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/quests/{quest_id}/flag</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the quest. Example: <code>16</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quest"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="1"
+               data-component="url">
+    <br>
+<p>The quest ID. Example: <code>1</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="reason"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>b</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quests-POSTapi-v1-quests">Create quest</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Create a new quest with checkpoints, questions, and answers in a single transaction.</p>
+
+<span id="example-requests-POSTapi-v1-quests">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://questify-app.test:8000/api/v1/quests" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "title=b"\
+    --form "description=Eius et animi quos velit et."\
+    --form "category_id=16"\
+    --form "difficulty=hard"\
+    --form "visibility=school"\
+    --form "estimated_duration_minutes=22"\
+    --form "access_code=gzmiyvdljnikhway"\
+    --form "checkpoint_arrival_radius_meters=18"\
+    --form "wrong_answer_behaviour=retry_penalty"\
+    --form "wrong_answer_penalty_points=54"\
+    --form "wrong_answer_lockout_seconds=38"\
+    --form "scoring_points_per_correct=50"\
+    --form "scoring_speed_bonus_enabled=1"\
+    --form "scoring_wrong_attempt_penalty_enabled="\
+    --form "scoring_quest_completion_time_bonus_enabled="\
+    --form "checkpoints[][title]=b"\
+    --form "checkpoints[][description]=Eius et animi quos velit et."\
+    --form "checkpoints[][latitude]=-89"\
+    --form "checkpoints[][longitude]=-179"\
+    --form "checkpoints[][hint]=architecto"\
+    --form "checkpoints[][questions][][question_text]=architecto"\
+    --form "checkpoints[][questions][][question_type]=multiple_choice"\
+    --form "checkpoints[][questions][][answers][][answer_text]=b"\
+    --form "checkpoints[][questions][][answers][][is_correct]=1"\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phplebo4k7lthhtdfSB6sZ" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/quests"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('title', 'b');
+body.append('description', 'Eius et animi quos velit et.');
+body.append('category_id', '16');
+body.append('difficulty', 'hard');
+body.append('visibility', 'school');
+body.append('estimated_duration_minutes', '22');
+body.append('access_code', 'gzmiyvdljnikhway');
+body.append('checkpoint_arrival_radius_meters', '18');
+body.append('wrong_answer_behaviour', 'retry_penalty');
+body.append('wrong_answer_penalty_points', '54');
+body.append('wrong_answer_lockout_seconds', '38');
+body.append('scoring_points_per_correct', '50');
+body.append('scoring_speed_bonus_enabled', '1');
+body.append('scoring_wrong_attempt_penalty_enabled', '');
+body.append('scoring_quest_completion_time_bonus_enabled', '');
+body.append('checkpoints[][title]', 'b');
+body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
+body.append('checkpoints[][latitude]', '-89');
+body.append('checkpoints[][longitude]', '-179');
+body.append('checkpoints[][hint]', 'architecto');
+body.append('checkpoints[][questions][][question_text]', 'architecto');
+body.append('checkpoints[][questions][][question_type]', 'multiple_choice');
+body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
+body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-quests">
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;City Walk&quot;,
+        &quot;status&quot;: &quot;draft&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The title field is required.&quot;,
+    &quot;errors&quot;: {
+        &quot;title&quot;: [
+            &quot;The title field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-quests" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-quests"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-quests" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-quests">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-quests" data-method="POST"
+      data-path="api/v1/quests"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-quests"
+                    onclick="tryItOut('POSTapi-v1-quests');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-quests"
+                    onclick="cancelTryOut('POSTapi-v1-quests');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-quests"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/quests</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-quests"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-quests"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="POSTapi-v1-quests"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="POSTapi-v1-quests"
+               value="Eius et animi quos velit et."
+               data-component="body">
+    <br>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="category_id"                data-endpoint="POSTapi-v1-quests"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the categories table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="difficulty"                data-endpoint="POSTapi-v1-quests"
+               value="hard"
+               data-component="body">
+    <br>
+<p>Example: <code>hard</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>visibility</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="visibility"                data-endpoint="POSTapi-v1-quests"
+               value="school"
+               data-component="body">
+    <br>
+<p>Example: <code>school</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>estimated_duration_minutes</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="estimated_duration_minutes"                data-endpoint="POSTapi-v1-quests"
+               value="22"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Example: <code>22</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cover_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="cover_image"                data-endpoint="POSTapi-v1-quests"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phplebo4k7lthhtdfSB6sZ</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="access_code"                data-endpoint="POSTapi-v1-quests"
+               value="gzmiyvdljnikhway"
+               data-component="body">
+    <br>
+<p>Must not be greater than 20 characters. Example: <code>gzmiyvdljnikhway</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>checkpoint_arrival_radius_meters</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoint_arrival_radius_meters"                data-endpoint="POSTapi-v1-quests"
+               value="18"
+               data-component="body">
+    <br>
+<p>Must be at least 10. Must not be greater than 500. Example: <code>18</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>wrong_answer_behaviour</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="wrong_answer_behaviour"                data-endpoint="POSTapi-v1-quests"
+               value="retry_penalty"
+               data-component="body">
+    <br>
+<p>Example: <code>retry_penalty</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>wrong_answer_penalty_points</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="wrong_answer_penalty_points"                data-endpoint="POSTapi-v1-quests"
+               value="54"
+               data-component="body">
+    <br>
+<p>Must be at least 0. Example: <code>54</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>wrong_answer_lockout_seconds</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="wrong_answer_lockout_seconds"                data-endpoint="POSTapi-v1-quests"
+               value="38"
+               data-component="body">
+    <br>
+<p>Must be at least 0. Example: <code>38</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_points_per_correct</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="scoring_points_per_correct"                data-endpoint="POSTapi-v1-quests"
+               value="50"
+               data-component="body">
+    <br>
+<p>Must be at least 0. Example: <code>50</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_speed_bonus_enabled</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_speed_bonus_enabled"
+                   value="true"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_speed_bonus_enabled"
+                   value="false"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_wrong_attempt_penalty_enabled</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_wrong_attempt_penalty_enabled"
+                   value="true"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_wrong_attempt_penalty_enabled"
+                   value="false"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>false</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_quest_completion_time_bonus_enabled"
+                   value="true"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="scoring_quest_completion_time_bonus_enabled"
+                   value="false"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>false</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>checkpoints</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.title"                data-endpoint="POSTapi-v1-quests"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.description"                data-endpoint="POSTapi-v1-quests"
+               value="Eius et animi quos velit et."
+               data-component="body">
+    <br>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoints.0.latitude"                data-endpoint="POSTapi-v1-quests"
+               value="-89"
+               data-component="body">
+    <br>
+<p>Must be between -90 and 90. Example: <code>-89</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoints.0.longitude"                data-endpoint="POSTapi-v1-quests"
+               value="-179"
+               data-component="body">
+    <br>
+<p>Must be between -180 and 180. Example: <code>-179</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>hint</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.hint"                data-endpoint="POSTapi-v1-quests"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+                    </div>
+                                                                <div style=" margin-left: 14px; clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>questions</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>question_text</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.question_text"                data-endpoint="POSTapi-v1-quests"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+                    </div>
+                                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>question_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.question_type"                data-endpoint="POSTapi-v1-quests"
+               value="multiple_choice"
+               data-component="body">
+    <br>
+<p>Example: <code>multiple_choice</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
+                    </div>
+                                                                <div style=" margin-left: 28px; clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>answers</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 42px; clear: unset;">
+                        <b style="line-height: 2;"><code>answer_text</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.answers.0.answer_text"                data-endpoint="POSTapi-v1-quests"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+                    </div>
+                                                                <div style="margin-left: 42px; clear: unset;">
+                        <b style="line-height: 2;"><code>is_correct</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="checkpoints.0.questions.0.answers.0.is_correct"
+                   value="true"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-quests" style="display: none">
+            <input type="radio" name="checkpoints.0.questions.0.answers.0.is_correct"
+                   value="false"
+                   data-endpoint="POSTapi-v1-quests"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+                    </div>
+                                    </details>
+        </div>
+                                        </details>
+        </div>
+                                        </details>
+        </div>
+        </form>
+
                     <h2 id="quests-PUTapi-v1-quests--id-">Update quest</h2>
 
 <p>
@@ -5295,55 +3282,79 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://questify-app.test:8000/api/v1/quests/1" \
+    "http://questify-app.test:8000/api/v1/quests/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
+    --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --data "{
-    \"title\": \"b\",
-    \"description\": \"Et animi quos velit et fugiat.\",
-    \"cover_image_path\": \"d\",
-    \"difficulty\": \"hard\",
-    \"visibility\": \"public\",
-    \"play_mode\": \"cooperative\",
-    \"wrong_answer_behaviour\": \"retry_free\",
-    \"time_limit_per_question\": 5,
-    \"shuffle_questions\": false,
-    \"shuffle_answers\": true,
-    \"max_participants\": 19
-}"
-</code></pre></div>
+    --form "title=b"\
+    --form "description=Eius et animi quos velit et."\
+    --form "category_id=16"\
+    --form "difficulty=hard"\
+    --form "visibility=school"\
+    --form "estimated_duration_minutes=22"\
+    --form "access_code=gzmiyvdljnikhway"\
+    --form "checkpoint_arrival_radius_meters=18"\
+    --form "wrong_answer_behaviour=retry_penalty"\
+    --form "wrong_answer_penalty_points=54"\
+    --form "wrong_answer_lockout_seconds=38"\
+    --form "scoring_points_per_correct=50"\
+    --form "scoring_speed_bonus_enabled=1"\
+    --form "scoring_wrong_attempt_penalty_enabled=1"\
+    --form "scoring_quest_completion_time_bonus_enabled="\
+    --form "checkpoints[][title]=u"\
+    --form "checkpoints[][description]=Eius et animi quos velit et."\
+    --form "checkpoints[][latitude]=-89"\
+    --form "checkpoints[][longitude]=-179"\
+    --form "checkpoints[][hint]=architecto"\
+    --form "checkpoints[][questions][][question_text]=architecto"\
+    --form "checkpoints[][questions][][question_type]=open_text"\
+    --form "checkpoints[][questions][][answers][][answer_text]=b"\
+    --form "checkpoints[][questions][][answers][][is_correct]=1"\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phppvk4hoe41jee6OTZhwM" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1"
+    "http://questify-app.test:8000/api/v1/quests/16"
 );
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
-let body = {
-    "title": "b",
-    "description": "Et animi quos velit et fugiat.",
-    "cover_image_path": "d",
-    "difficulty": "hard",
-    "visibility": "public",
-    "play_mode": "cooperative",
-    "wrong_answer_behaviour": "retry_free",
-    "time_limit_per_question": 5,
-    "shuffle_questions": false,
-    "shuffle_answers": true,
-    "max_participants": 19
-};
+const body = new FormData();
+body.append('title', 'b');
+body.append('description', 'Eius et animi quos velit et.');
+body.append('category_id', '16');
+body.append('difficulty', 'hard');
+body.append('visibility', 'school');
+body.append('estimated_duration_minutes', '22');
+body.append('access_code', 'gzmiyvdljnikhway');
+body.append('checkpoint_arrival_radius_meters', '18');
+body.append('wrong_answer_behaviour', 'retry_penalty');
+body.append('wrong_answer_penalty_points', '54');
+body.append('wrong_answer_lockout_seconds', '38');
+body.append('scoring_points_per_correct', '50');
+body.append('scoring_speed_bonus_enabled', '1');
+body.append('scoring_wrong_attempt_penalty_enabled', '1');
+body.append('scoring_quest_completion_time_bonus_enabled', '');
+body.append('checkpoints[][title]', 'u');
+body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
+body.append('checkpoints[][latitude]', '-89');
+body.append('checkpoints[][longitude]', '-179');
+body.append('checkpoints[][hint]', 'architecto');
+body.append('checkpoints[][questions][][question_text]', 'architecto');
+body.append('checkpoints[][questions][][question_type]', 'open_text');
+body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
+body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
-    body: JSON.stringify(body),
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
@@ -5390,7 +3401,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-v1-quests--id-" data-method="PUT"
       data-path="api/v1/quests/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-quests--id-', this);">
@@ -5418,10 +3429,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <small class="badge badge-darkblue">PUT</small>
             <b><code>api/v1/quests/{id}</code></b>
         </p>
-            <p>
-            <small class="badge badge-purple">PATCH</small>
-            <b><code>api/v1/quests/{id}</code></b>
-        </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
@@ -5442,10 +3449,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-v1-quests--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -5467,10 +3474,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="PUTapi-v1-quests--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the quest. Example: <code>1</code></p>
+<p>The ID of the quest. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
@@ -5486,18 +3493,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="category_id"                data-endpoint="PUTapi-v1-quests--id-"
-               value=""
-               data-component="body">
-    <br>
-<p>The <code>id</code> of an existing record in the categories table.</p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
@@ -5516,22 +3511,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="description"                data-endpoint="PUTapi-v1-quests--id-"
-               value="Et animi quos velit et fugiat."
+               value="Eius et animi quos velit et."
                data-component="body">
     <br>
-<p>Must not be greater than 2000 characters. Example: <code>Et animi quos velit et fugiat.</code></p>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>cover_image_path</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+            <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="cover_image_path"                data-endpoint="PUTapi-v1-quests--id-"
-               value="d"
+                <input type="number" style="display: none"
+               step="any"               name="category_id"                data-endpoint="PUTapi-v1-quests--id-"
+               value="16"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>d</code></p>
+<p>The <code>id</code> of an existing record in the categories table. Example: <code>16</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
@@ -5554,26 +3549,60 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="PUTapi-v1-quests--id-"
-               value="public"
+               value="school"
                data-component="body">
     <br>
-<p>Example: <code>public</code></p>
+<p>Example: <code>school</code></p>
 Must be one of:
-<ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>unlisted</code></li></ul>
+<ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>play_mode</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>estimated_duration_minutes</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="estimated_duration_minutes"                data-endpoint="PUTapi-v1-quests--id-"
+               value="22"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Example: <code>22</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cover_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="cover_image"                data-endpoint="PUTapi-v1-quests--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phppvk4hoe41jee6OTZhwM</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="play_mode"                data-endpoint="PUTapi-v1-quests--id-"
-               value="cooperative"
+                              name="access_code"                data-endpoint="PUTapi-v1-quests--id-"
+               value="gzmiyvdljnikhway"
                data-component="body">
     <br>
-<p>Example: <code>cooperative</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive</code></li> <li><code>cooperative</code></li></ul>
+<p>Must not be greater than 20 characters. Example: <code>gzmiyvdljnikhway</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>checkpoint_arrival_radius_meters</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoint_arrival_radius_meters"                data-endpoint="PUTapi-v1-quests--id-"
+               value="18"
+               data-component="body">
+    <br>
+<p>Must be at least 10. Must not be greater than 500. Example: <code>18</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>wrong_answer_behaviour</code></b>&nbsp;&nbsp;
@@ -5582,61 +3611,63 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="wrong_answer_behaviour"                data-endpoint="PUTapi-v1-quests--id-"
-               value="retry_free"
+               value="retry_penalty"
                data-component="body">
     <br>
-<p>Example: <code>retry_free</code></p>
+<p>Example: <code>retry_penalty</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>time_limit_per_question</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>wrong_answer_penalty_points</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="time_limit_per_question"                data-endpoint="PUTapi-v1-quests--id-"
-               value="5"
+               step="any"               name="wrong_answer_penalty_points"                data-endpoint="PUTapi-v1-quests--id-"
+               value="54"
                data-component="body">
     <br>
-<p>Must be at least 5. Must not be greater than 300. Example: <code>5</code></p>
+<p>Must be at least 0. Example: <code>54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>shuffle_questions</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
+            <b style="line-height: 2;"><code>wrong_answer_lockout_seconds</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
-                <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
-            <input type="radio" name="shuffle_questions"
-                   value="true"
-                   data-endpoint="PUTapi-v1-quests--id-"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
-            <input type="radio" name="shuffle_questions"
-                   value="false"
-                   data-endpoint="PUTapi-v1-quests--id-"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
+                <input type="number" style="display: none"
+               step="any"               name="wrong_answer_lockout_seconds"                data-endpoint="PUTapi-v1-quests--id-"
+               value="38"
+               data-component="body">
     <br>
-<p>Example: <code>false</code></p>
+<p>Must be at least 0. Example: <code>38</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>shuffle_answers</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>scoring_points_per_correct</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="scoring_points_per_correct"                data-endpoint="PUTapi-v1-quests--id-"
+               value="50"
+               data-component="body">
+    <br>
+<p>Must be at least 0. Example: <code>50</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_speed_bonus_enabled</code></b>&nbsp;&nbsp;
 <small>boolean</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
-            <input type="radio" name="shuffle_answers"
+            <input type="radio" name="scoring_speed_bonus_enabled"
                    value="true"
                    data-endpoint="PUTapi-v1-quests--id-"
                    data-component="body"             >
             <code>true</code>
         </label>
         <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
-            <input type="radio" name="shuffle_answers"
+            <input type="radio" name="scoring_speed_bonus_enabled"
                    value="false"
                    data-endpoint="PUTapi-v1-quests--id-"
                    data-component="body"             >
@@ -5646,26 +3677,214 @@ Must be one of:
 <p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>max_participants</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+            <b style="line-height: 2;"><code>scoring_wrong_attempt_penalty_enabled</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="max_participants"                data-endpoint="PUTapi-v1-quests--id-"
-               value="19"
+                <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="scoring_wrong_attempt_penalty_enabled"
+                   value="true"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="scoring_wrong_attempt_penalty_enabled"
+                   value="false"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="scoring_quest_completion_time_bonus_enabled"
+                   value="true"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="scoring_quest_completion_time_bonus_enabled"
+                   value="false"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>false</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>checkpoints</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.title"                data-endpoint="PUTapi-v1-quests--id-"
+               value="u"
                data-component="body">
     <br>
-<p>Must be at least 1. Must not be greater than 100. Example: <code>19</code></p>
+<p>Must not be greater than 255 characters. Example: <code>u</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.description"                data-endpoint="PUTapi-v1-quests--id-"
+               value="Eius et animi quos velit et."
+               data-component="body">
+    <br>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoints.0.latitude"                data-endpoint="PUTapi-v1-quests--id-"
+               value="-89"
+               data-component="body">
+    <br>
+<p>Must be between -90 and 90. Example: <code>-89</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="checkpoints.0.longitude"                data-endpoint="PUTapi-v1-quests--id-"
+               value="-179"
+               data-component="body">
+    <br>
+<p>Must be between -180 and 180. Example: <code>-179</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>hint</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.hint"                data-endpoint="PUTapi-v1-quests--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+                    </div>
+                                                                <div style=" margin-left: 14px; clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>questions</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>question_text</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.question_text"                data-endpoint="PUTapi-v1-quests--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+                    </div>
+                                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>question_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.question_type"                data-endpoint="PUTapi-v1-quests--id-"
+               value="open_text"
+               data-component="body">
+    <br>
+<p>Example: <code>open_text</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
+                    </div>
+                                                                <div style=" margin-left: 28px; clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>answers</code></b>&nbsp;&nbsp;
+<small>object[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Must have at least 1 items.</p>
+            </summary>
+                                                <div style="margin-left: 42px; clear: unset;">
+                        <b style="line-height: 2;"><code>answer_text</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="checkpoints.0.questions.0.answers.0.answer_text"                data-endpoint="PUTapi-v1-quests--id-"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+                    </div>
+                                                                <div style="margin-left: 42px; clear: unset;">
+                        <b style="line-height: 2;"><code>is_correct</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="checkpoints.0.questions.0.answers.0.is_correct"
+                   value="true"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-v1-quests--id-" style="display: none">
+            <input type="radio" name="checkpoints.0.questions.0.answers.0.is_correct"
+                   value="false"
+                   data-endpoint="PUTapi-v1-quests--id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+                    </div>
+                                    </details>
+        </div>
+                                        </details>
+        </div>
+                                        </details>
         </div>
         </form>
 
-                    <h2 id="quests-DELETEapi-v1-quests--id-">Delete quest</h2>
+                    <h2 id="quests-DELETEapi-v1-quests--id-">Archive quest</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Delete a quest. Only the quest creator can delete.</p>
+<p>Archive a quest (soft delete). Only the quest creator can archive.</p>
 
 <span id="example-requests-DELETEapi-v1-quests--id-">
 <blockquote>Example request:</blockquote>
@@ -5673,7 +3892,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://questify-app.test:8000/api/v1/quests/1" \
+    "http://questify-app.test:8000/api/v1/quests/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5681,7 +3900,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1"
+    "http://questify-app.test:8000/api/v1/quests/16"
 );
 
 const headers = {
@@ -5705,7 +3924,12 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Quest deleted.&quot;
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;City Walk&quot;,
+        &quot;status&quot;: &quot;archived&quot;
+    },
+    &quot;message&quot;: &quot;Quest archived successfully.&quot;
 }</code>
  </pre>
             <blockquote>
@@ -5809,10 +4033,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="DELETEapi-v1-quests--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the quest. Example: <code>1</code></p>
+<p>The ID of the quest. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
@@ -5834,7 +4058,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Publish a draft quest to make it publicly available.</p>
+<p>Submit a quest for review (public) or publish directly (private/school).</p>
 
 <span id="example-requests-POSTapi-v1-quests--quest_id--publish">
 <blockquote>Example request:</blockquote>
@@ -5842,7 +4066,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/publish" \
+    "http://questify-app.test:8000/api/v1/quests/16/publish" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5850,7 +4074,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/publish"
+    "http://questify-app.test:8000/api/v1/quests/16/publish"
 );
 
 const headers = {
@@ -5877,9 +4101,9 @@ fetch(url, {
     &quot;data&quot;: {
         &quot;id&quot;: 1,
         &quot;title&quot;: &quot;City Walk&quot;,
-        &quot;status&quot;: &quot;published&quot;,
-        &quot;published_at&quot;: &quot;2026-03-12T00:00:00.000000Z&quot;
-    }
+        &quot;status&quot;: &quot;pending_review&quot;
+    },
+    &quot;message&quot;: &quot;Quest submitted for review.&quot;
 }</code>
  </pre>
             <blockquote>
@@ -5983,10 +4207,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--publish"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the quest. Example: <code>1</code></p>
+<p>The ID of the quest. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
@@ -6008,7 +4232,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Rate a quest (1-5 stars) with an optional review. Users cannot rate their own quests.</p>
+<p>Rate a quest (1-5 stars) with an optional comment. Users cannot rate their own quests.</p>
 
 <span id="example-requests-POSTapi-v1-quests--quest_id--rate">
 <blockquote>Example request:</blockquote>
@@ -6016,20 +4240,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/rate" \
+    "http://questify-app.test:8000/api/v1/quests/16/rate" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"rating\": 1,
-    \"review\": \"n\"
+    \"comment\": \"n\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/rate"
+    "http://questify-app.test:8000/api/v1/quests/16/rate"
 );
 
 const headers = {
@@ -6040,7 +4264,7 @@ const headers = {
 
 let body = {
     "rating": 1,
-    "review": "n"
+    "comment": "n"
 };
 
 fetch(url, {
@@ -6058,10 +4282,10 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;rating&quot;: {
+    &quot;data&quot;: {
         &quot;id&quot;: 1,
         &quot;rating&quot;: 5,
-        &quot;review&quot;: &quot;Great quest!&quot;,
+        &quot;comment&quot;: &quot;Great quest!&quot;,
         &quot;user&quot;: {
             &quot;id&quot;: 2,
             &quot;name&quot;: &quot;Jane&quot;
@@ -6170,10 +4394,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--rate"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the quest. Example: <code>1</code></p>
+<p>The ID of the quest. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
@@ -6201,220 +4425,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Must be at least 1. Must not be greater than 5. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>review</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>comment</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="review"                data-endpoint="POSTapi-v1-quests--quest_id--rate"
+                              name="comment"                data-endpoint="POSTapi-v1-quests--quest_id--rate"
                value="n"
                data-component="body">
     <br>
 <p>Must not be greater than 1000 characters. Example: <code>n</code></p>
-        </div>
-        </form>
-
-                    <h2 id="quests-POSTapi-v1-quests--quest_id--flag">Flag quest</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Report a quest for moderation. Users cannot flag their own quests.</p>
-
-<span id="example-requests-POSTapi-v1-quests--quest_id--flag">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/quests/1/flag" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"reason\": \"b\",
-    \"description\": \"Et animi quos velit et fugiat.\"
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/quests/1/flag"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "reason": "b",
-    "description": "Et animi quos velit et fugiat."
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-quests--quest_id--flag">
-            <blockquote>
-            <p>Example response (201):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Quest flagged for review.&quot;
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (403, Own quest):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;This action is unauthorized.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-quests--quest_id--flag" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-quests--quest_id--flag"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-quests--quest_id--flag"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-quests--quest_id--flag" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-quests--quest_id--flag">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-quests--quest_id--flag" data-method="POST"
-      data-path="api/v1/quests/{quest_id}/flag"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-quests--quest_id--flag', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-quests--quest_id--flag"
-                    onclick="tryItOut('POSTapi-v1-quests--quest_id--flag');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-quests--quest_id--flag"
-                    onclick="cancelTryOut('POSTapi-v1-quests--quest_id--flag');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-quests--quest_id--flag"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/quests/{quest_id}/flag</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest_id"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the quest. Example: <code>1</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>quest</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="quest"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="1"
-               data-component="url">
-    <br>
-<p>The quest ID. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="reason"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 255 characters. Example: <code>b</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="description"                data-endpoint="POSTapi-v1-quests--quest_id--flag"
-               value="Et animi quos velit et fugiat."
-               data-component="body">
-    <br>
-<p>Must not be greater than 2000 characters. Example: <code>Et animi quos velit et fugiat.</code></p>
         </div>
         </form>
 
@@ -6427,7 +4447,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Get session details by join code. Publicly accessible.</p>
+<p>Get session details by session code. Publicly accessible.</p>
 
 <span id="example-requests-GETapi-v1-sessions--code-">
 <blockquote>Example request:</blockquote>
@@ -6467,14 +4487,12 @@ fetch(url, {
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
         &quot;id&quot;: 1,
-        &quot;join_code&quot;: &quot;ABC123&quot;,
+        &quot;session_code&quot;: &quot;ABC123&quot;,
         &quot;status&quot;: &quot;waiting&quot;,
         &quot;quest&quot;: {
             &quot;id&quot;: 1,
             &quot;title&quot;: &quot;City Walk&quot;
-        },
-        &quot;participants&quot;: [],
-        &quot;participants_count&quot;: 0
+        }
     }
 }</code>
  </pre>
@@ -6561,9 +4579,187 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character join code. Example: <code>ABC123</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                     </form>
+
+                    <h2 id="sessions-POSTapi-v1-sessions--code--join">Join session</h2>
+
+<p>
+</p>
+
+<p>Join a waiting session as a participant. No auth required.</p>
+
+<span id="example-requests-POSTapi-v1-sessions--code--join">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/join" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"display_name\": \"Lars\",
+    \"user_id\": null
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/sessions/ABC123/join"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "display_name": "Lars",
+    "user_id": null
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-sessions--code--join">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;participant_id&quot;: 7,
+        &quot;display_name&quot;: &quot;Lars&quot;,
+        &quot;session_code&quot;: &quot;XK92PL&quot;,
+        &quot;quest&quot;: {
+            &quot;title&quot;: &quot;Copenhagen History Hunt&quot;,
+            &quot;cover_image_url&quot;: &quot;...&quot;
+        },
+        &quot;status&quot;: &quot;waiting&quot;
+    },
+    &quot;message&quot;: &quot;Joined session successfully.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-sessions--code--join" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-sessions--code--join"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--join"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-sessions--code--join" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--join">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-sessions--code--join" data-method="POST"
+      data-path="api/v1/sessions/{code}/join"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--join', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-sessions--code--join"
+                    onclick="tryItOut('POSTapi-v1-sessions--code--join');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-sessions--code--join"
+                    onclick="cancelTryOut('POSTapi-v1-sessions--code--join');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-sessions--code--join"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/sessions/{code}/join</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="code"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value="ABC123"
+               data-component="url">
+    <br>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>display_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="display_name"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value="Lars"
+               data-component="body">
+    <br>
+<p>The player display name. Example: <code>Lars</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="user_id"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value=""
+               data-component="body">
+    <br>
+<p>optional The user ID if authenticated.</p>
+        </div>
+        </form>
 
                     <h2 id="sessions-POSTapi-v1-sessions">Create session</h2>
 
@@ -6571,7 +4767,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Create a new quest session with a unique 6-character join code.</p>
+<p>Create a new quest session with a unique 6-character session code.</p>
 
 <span id="example-requests-POSTapi-v1-sessions">
 <blockquote>Example request:</blockquote>
@@ -6585,7 +4781,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"quest_id\": 16,
-    \"play_mode\": \"solo\"
+    \"play_mode\": \"competitive_teams\"
 }"
 </code></pre></div>
 
@@ -6603,7 +4799,7 @@ const headers = {
 
 let body = {
     "quest_id": 16,
-    "play_mode": "solo"
+    "play_mode": "competitive_teams"
 };
 
 fetch(url, {
@@ -6621,16 +4817,22 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;session&quot;: {
+    &quot;data&quot;: {
         &quot;id&quot;: 1,
-        &quot;join_code&quot;: &quot;ABC123&quot;,
+        &quot;session_code&quot;: &quot;ABC123&quot;,
         &quot;status&quot;: &quot;waiting&quot;,
         &quot;play_mode&quot;: &quot;solo&quot;,
         &quot;quest&quot;: {
             &quot;id&quot;: 1,
             &quot;title&quot;: &quot;City Walk&quot;
         },
-        &quot;participants_count&quot;: 0
+        &quot;host&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John&quot;
+        },
+        &quot;started_at&quot;: null,
+        &quot;completed_at&quot;: null,
+        &quot;created_at&quot;: &quot;2026-03-30T00:00:00.000000Z&quot;
     }
 }</code>
  </pre>
@@ -6738,204 +4940,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="play_mode"                data-endpoint="POSTapi-v1-sessions"
-               value="solo"
+               value="competitive_teams"
                data-component="body">
     <br>
-<p>Example: <code>solo</code></p>
+<p>Example: <code>competitive_teams</code></p>
 Must be one of:
-<ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive</code></li> <li><code>cooperative</code></li></ul>
-        </div>
-        </form>
-
-                    <h2 id="sessions-POSTapi-v1-sessions--code--join">Join session</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Join a waiting session as a participant. Each player can only be in one active session at a time.</p>
-
-<span id="example-requests-POSTapi-v1-sessions--code--join">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/join" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"display_name\": \"b\"
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/sessions/ABC123/join"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "display_name": "b"
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-sessions--code--join">
-            <blockquote>
-            <p>Example response (201):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Joined session.&quot;,
-    &quot;participant&quot;: {
-        &quot;id&quot;: 1,
-        &quot;display_name&quot;: &quot;Player1&quot;,
-        &quot;score&quot;: 0
-    }
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (409, Already in session):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;You are already in an active session.&quot;
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (422, Session full):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;This session is full.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-sessions--code--join" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-sessions--code--join"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-sessions--code--join"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-sessions--code--join" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-sessions--code--join">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-sessions--code--join" data-method="POST"
-      data-path="api/v1/sessions/{code}/join"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-sessions--code--join', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-sessions--code--join"
-                    onclick="tryItOut('POSTapi-v1-sessions--code--join');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-sessions--code--join"
-                    onclick="cancelTryOut('POSTapi-v1-sessions--code--join');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-sessions--code--join"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/sessions/{code}/join</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-sessions--code--join"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-sessions--code--join"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-sessions--code--join"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="code"                data-endpoint="POSTapi-v1-sessions--code--join"
-               value="ABC123"
-               data-component="url">
-    <br>
-<p>The 6-character join code. Example: <code>ABC123</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>display_name</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="display_name"                data-endpoint="POSTapi-v1-sessions--code--join"
-               value="b"
-               data-component="body">
-    <br>
-<p>Must not be greater than 50 characters. Example: <code>b</code></p>
+<ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive_individual</code></li> <li><code>competitive_teams</code></li></ul>
         </div>
         </form>
 
@@ -6945,7 +4955,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Start a waiting session. Only the host can start the session. Broadcasts SessionStarted event.</p>
+<p>Start a waiting session. Only the host can start the session.</p>
 
 <span id="example-requests-POSTapi-v1-sessions--code--start">
 <blockquote>Example request:</blockquote>
@@ -6985,10 +4995,11 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Session started.&quot;,
-    &quot;session&quot;: {
+    &quot;data&quot;: {
         &quot;id&quot;: 1,
-        &quot;status&quot;: &quot;in_progress&quot;
+        &quot;session_code&quot;: &quot;ABC123&quot;,
+        &quot;status&quot;: &quot;active&quot;,
+        &quot;started_at&quot;: &quot;2026-03-30T12:00:00.000000Z&quot;
     }
 }</code>
  </pre>
@@ -7096,7 +5107,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character join code. Example: <code>ABC123</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                     </form>
 
@@ -7106,7 +5117,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>End an in-progress session. Marks unfinished participants as DNF. Only the host can end the session.</p>
+<p>End an active session. Only the host can end the session.</p>
 
 <span id="example-requests-POSTapi-v1-sessions--code--end">
 <blockquote>Example request:</blockquote>
@@ -7146,10 +5157,11 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Session ended.&quot;,
-    &quot;session&quot;: {
+    &quot;data&quot;: {
         &quot;id&quot;: 1,
-        &quot;status&quot;: &quot;completed&quot;
+        &quot;session_code&quot;: &quot;ABC123&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;completed_at&quot;: &quot;2026-03-30T14:00:00.000000Z&quot;
     }
 }</code>
  </pre>
@@ -7257,7 +5269,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character join code. Example: <code>ABC123</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                     </form>
 
@@ -7307,12 +5319,22 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;session&quot;: {
-        &quot;id&quot;: 1,
-        &quot;join_code&quot;: &quot;ABC123&quot;,
-        &quot;status&quot;: &quot;in_progress&quot;,
-        &quot;participants&quot;: [],
-        &quot;participants_count&quot;: 5
+    &quot;data&quot;: {
+        &quot;session&quot;: {
+            &quot;id&quot;: 1,
+            &quot;session_code&quot;: &quot;ABC123&quot;,
+            &quot;status&quot;: &quot;active&quot;,
+            &quot;participants_count&quot;: 5
+        },
+        &quot;participants&quot;: [
+            {
+                &quot;id&quot;: 1,
+                &quot;display_name&quot;: &quot;Player1&quot;,
+                &quot;total_score&quot;: 250,
+                &quot;current_checkpoint_index&quot;: 2,
+                &quot;quest_completed_at&quot;: null
+            }
+        ]
     }
 }</code>
  </pre>
@@ -7420,29 +5442,29 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="ABC123"
                data-component="url">
     <br>
-<p>The 6-character join code. Example: <code>ABC123</code></p>
+<p>The 6-character session code. Example: <code>ABC123</code></p>
             </div>
                     </form>
 
-                <h1 id="user-profile">User Profile</h1>
+                <h1 id="social-authentication">Social Authentication</h1>
 
-    
+    <p>OAuth social login endpoints. These are web routes that handle the OAuth redirect flow.</p>
 
-                                <h2 id="user-profile-DELETEapi-v1-user-profile">Delete account</h2>
+                                <h2 id="social-authentication-DELETEapi-v1-auth-social--provider-">Unlink social account</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Permanently delete the authenticated user's account and all associated tokens (GDPR).</p>
+<p>Remove a linked social account from the authenticated user.</p>
 
-<span id="example-requests-DELETEapi-v1-user-profile">
+<span id="example-requests-DELETEapi-v1-auth-social--provider-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://questify-app.test:8000/api/v1/user/profile" \
+    "http://questify-app.test:8000/api/v1/auth/social/google" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7450,7 +5472,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/user/profile"
+    "http://questify-app.test:8000/api/v1/auth/social/google"
 );
 
 const headers = {
@@ -7467,54 +5489,72 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-DELETEapi-v1-user-profile">
+<span id="example-responses-DELETEapi-v1-auth-social--provider-">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Account deleted.&quot;
+    &quot;message&quot;: &quot;Social account unlinked successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Social account not linked.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The provider field is invalid.&quot;
 }</code>
  </pre>
     </span>
-<span id="execution-results-DELETEapi-v1-user-profile" hidden>
+<span id="execution-results-DELETEapi-v1-auth-social--provider-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-DELETEapi-v1-user-profile"></span>:
+                id="execution-response-status-DELETEapi-v1-auth-social--provider-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-user-profile"
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-auth-social--provider-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-DELETEapi-v1-user-profile" hidden>
+<span id="execution-error-DELETEapi-v1-auth-social--provider-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-user-profile">
+    <pre><code id="execution-error-message-DELETEapi-v1-auth-social--provider-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-DELETEapi-v1-user-profile" data-method="DELETE"
-      data-path="api/v1/user/profile"
+<form id="form-DELETEapi-v1-auth-social--provider-" data-method="DELETE"
+      data-path="api/v1/auth/social/{provider}"
       data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-user-profile', this);">
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-auth-social--provider-', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-DELETEapi-v1-user-profile"
-                    onclick="tryItOut('DELETEapi-v1-user-profile');">Try it out ⚡
+                    id="btn-tryout-DELETEapi-v1-auth-social--provider-"
+                    onclick="tryItOut('DELETEapi-v1-auth-social--provider-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-DELETEapi-v1-user-profile"
-                    onclick="cancelTryOut('DELETEapi-v1-user-profile');" hidden>Cancel 🛑
+                    id="btn-canceltryout-DELETEapi-v1-auth-social--provider-"
+                    onclick="cancelTryOut('DELETEapi-v1-auth-social--provider-');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-user-profile"
+                    id="btn-executetryout-DELETEapi-v1-auth-social--provider-"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -7522,7 +5562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-red">DELETE</small>
-            <b><code>api/v1/user/profile</code></b>
+            <b><code>api/v1/auth/social/{provider}</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -7531,7 +5571,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-user-profile"
+                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-auth-social--provider-"
                value="Bearer {YOUR_AUTH_KEY}"
                data-component="header">
     <br>
@@ -7543,7 +5583,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="DELETEapi-v1-user-profile"
+                              name="Content-Type"                data-endpoint="DELETEapi-v1-auth-social--provider-"
                value="application/json"
                data-component="header">
     <br>
@@ -7555,7 +5595,344 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="DELETEapi-v1-user-profile"
+                              name="Accept"                data-endpoint="DELETEapi-v1-auth-social--provider-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>provider</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="provider"                data-endpoint="DELETEapi-v1-auth-social--provider-"
+               value="google"
+               data-component="url">
+    <br>
+<p>The social provider. Example: <code>google</code></p>
+            </div>
+                    </form>
+
+                <h1 id="user-profile">User Profile</h1>
+
+    
+
+                                <h2 id="user-profile-PUTapi-v1-user-profile">Update profile</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Update the authenticated user's name, avatar, and locale. Email cannot be changed.</p>
+
+<span id="example-requests-PUTapi-v1-user-profile">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://questify-app.test:8000/api/v1/user/profile" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "name=John Doe"\
+    --form "locale=da"\
+    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpd6f6es66677f0sCv9oP" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/user/profile"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('name', 'John Doe');
+body.append('locale', 'da');
+body.append('avatar', document.querySelector('input[name="avatar"]').files[0]);
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-v1-user-profile">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;name&quot;: &quot;Updated Name&quot;,
+        &quot;avatar_url&quot;: &quot;...&quot;,
+        &quot;locale&quot;: &quot;da&quot;
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-PUTapi-v1-user-profile" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-v1-user-profile"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-v1-user-profile"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-v1-user-profile" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-v1-user-profile">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-v1-user-profile" data-method="PUT"
+      data-path="api/v1/user/profile"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-user-profile', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-v1-user-profile"
+                    onclick="tryItOut('PUTapi-v1-user-profile');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-v1-user-profile"
+                    onclick="cancelTryOut('PUTapi-v1-user-profile');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-v1-user-profile"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/v1/user/profile</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-v1-user-profile"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-v1-user-profile"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-v1-user-profile"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="PUTapi-v1-user-profile"
+               value="John Doe"
+               data-component="body">
+    <br>
+<p>optional The user's name. Example: <code>John Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>avatar</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="avatar"                data-endpoint="PUTapi-v1-user-profile"
+               value=""
+               data-component="body">
+    <br>
+<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpd6f6es66677f0sCv9oP</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>locale</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="locale"                data-endpoint="PUTapi-v1-user-profile"
+               value="da"
+               data-component="body">
+    <br>
+<p>optional The user's locale (en or da). Example: <code>da</code></p>
+        </div>
+        </form>
+
+                    <h2 id="user-profile-DELETEapi-v1-user">Delete account</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Permanently delete the authenticated user's account and all associated tokens (GDPR).</p>
+
+<span id="example-requests-DELETEapi-v1-user">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://questify-app.test:8000/api/v1/user" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/user"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-v1-user">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Account deleted.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-DELETEapi-v1-user" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-v1-user"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-user"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-v1-user" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-v1-user">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-v1-user" data-method="DELETE"
+      data-path="api/v1/user"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-user', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-v1-user"
+                    onclick="tryItOut('DELETEapi-v1-user');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-v1-user"
+                    onclick="cancelTryOut('DELETEapi-v1-user');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-v1-user"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/v1/user</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-user"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-v1-user"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-v1-user"
                value="application/json"
                data-component="header">
     <br>
@@ -7567,21 +5944,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                                <h2 id="user-quests-GETapi-v1-user-quests-created">Created quests</h2>
+                                <h2 id="user-quests-GETapi-v1-user-quests">List user&#039;s created quests</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get a paginated list of quests created by the authenticated user.</p>
+<p>Get a cursor-paginated list of quests created by the authenticated user.</p>
 
-<span id="example-requests-GETapi-v1-user-quests-created">
+<span id="example-requests-GETapi-v1-user-quests">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/user/quests/created?page=1" \
+    --get "http://questify-app.test:8000/api/v1/user/quests" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7589,14 +5966,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/user/quests/created"
+    "http://questify-app.test:8000/api/v1/user/quests"
 );
-
-const params = {
-    "page": "1",
-};
-Object.keys(params)
-    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -7612,7 +5983,7 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-GETapi-v1-user-quests-created">
+<span id="example-responses-GETapi-v1-user-quests">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
@@ -7627,49 +5998,50 @@ fetch(url, {
             &quot;category&quot;: {
                 &quot;id&quot;: 1,
                 &quot;name&quot;: &quot;History&quot;
-            }
+            },
+            &quot;sessions_count&quot;: 3
         }
     ]
 }</code>
  </pre>
     </span>
-<span id="execution-results-GETapi-v1-user-quests-created" hidden>
+<span id="execution-results-GETapi-v1-user-quests" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-user-quests-created"></span>:
+                id="execution-response-status-GETapi-v1-user-quests"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-user-quests-created"
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user-quests"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-user-quests-created" hidden>
+<span id="execution-error-GETapi-v1-user-quests" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-quests-created">
+    <pre><code id="execution-error-message-GETapi-v1-user-quests">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-v1-user-quests-created" data-method="GET"
-      data-path="api/v1/user/quests/created"
+<form id="form-GETapi-v1-user-quests" data-method="GET"
+      data-path="api/v1/user/quests"
       data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-user-quests-created', this);">
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-user-quests', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-user-quests-created"
-                    onclick="tryItOut('GETapi-v1-user-quests-created');">Try it out ⚡
+                    id="btn-tryout-GETapi-v1-user-quests"
+                    onclick="tryItOut('GETapi-v1-user-quests');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-user-quests-created"
-                    onclick="cancelTryOut('GETapi-v1-user-quests-created');" hidden>Cancel 🛑
+                    id="btn-canceltryout-GETapi-v1-user-quests"
+                    onclick="cancelTryOut('GETapi-v1-user-quests');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-user-quests-created"
+                    id="btn-executetryout-GETapi-v1-user-quests"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -7677,7 +6049,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
-            <b><code>api/v1/user/quests/created</code></b>
+            <b><code>api/v1/user/quests</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -7686,7 +6058,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-user-quests-created"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-user-quests"
                value="Bearer {YOUR_AUTH_KEY}"
                data-component="header">
     <br>
@@ -7698,7 +6070,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-user-quests-created"
+                              name="Content-Type"                data-endpoint="GETapi-v1-user-quests"
                value="application/json"
                data-component="header">
     <br>
@@ -7710,201 +6082,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-user-quests-created"
+                              name="Accept"                data-endpoint="GETapi-v1-user-quests"
                value="application/json"
                data-component="header">
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
-                                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="page"                data-endpoint="GETapi-v1-user-quests-created"
-               value="1"
-               data-component="query">
-    <br>
-<p>The page number. Example: <code>1</code></p>
-            </div>
-                </form>
-
-                    <h2 id="user-quests-GETapi-v1-user-quests-played">Played quests</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-<p>Get a paginated list of quests the authenticated user has participated in.</p>
-
-<span id="example-requests-GETapi-v1-user-quests-played">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://questify-app.test:8000/api/v1/user/quests/played?page=1" \
-    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://questify-app.test:8000/api/v1/user/quests/played"
-);
-
-const params = {
-    "page": "1",
-};
-Object.keys(params)
-    .forEach(key =&gt; url.searchParams.append(key, params[key]));
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-user-quests-played">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: [
-        {
-            &quot;id&quot;: 1,
-            &quot;title&quot;: &quot;City Walk&quot;,
-            &quot;category&quot;: {
-                &quot;id&quot;: 1,
-                &quot;name&quot;: &quot;History&quot;
-            }
-        }
-    ]
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-user-quests-played" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-user-quests-played"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-user-quests-played"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-user-quests-played" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-quests-played">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-user-quests-played" data-method="GET"
-      data-path="api/v1/user/quests/played"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-user-quests-played', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-user-quests-played"
-                    onclick="tryItOut('GETapi-v1-user-quests-played');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-user-quests-played"
-                    onclick="cancelTryOut('GETapi-v1-user-quests-played');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-user-quests-played"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/user/quests/played</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-user-quests-played"
-               value="Bearer {YOUR_AUTH_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-user-quests-played"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-user-quests-played"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
-                                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="page"                data-endpoint="GETapi-v1-user-quests-played"
-               value="1"
-               data-component="query">
-    <br>
-<p>The page number. Example: <code>1</code></p>
-            </div>
-                </form>
+                        </form>
 
                 <h1 id="user-sessions">User Sessions</h1>
 
     
 
-                                <h2 id="user-sessions-GETapi-v1-user-sessions">List sessions</h2>
+                                <h2 id="user-sessions-GETapi-v1-user-sessions">List user&#039;s session history</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get a paginated list of sessions where the user is host or participant.</p>
+<p>Get a paginated list of sessions the user participated in, with session and quest details.</p>
 
 <span id="example-requests-GETapi-v1-user-sessions">
 <blockquote>Example request:</blockquote>
@@ -7952,12 +6148,18 @@ fetch(url, {
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 1,
-            &quot;join_code&quot;: &quot;ABC123&quot;,
-            &quot;status&quot;: &quot;completed&quot;,
-            &quot;quest&quot;: {
+            &quot;participant_id&quot;: 1,
+            &quot;display_name&quot;: &quot;Lars&quot;,
+            &quot;total_score&quot;: 500,
+            &quot;quest_completed_at&quot;: null,
+            &quot;session&quot;: {
                 &quot;id&quot;: 1,
-                &quot;title&quot;: &quot;City Walk&quot;
+                &quot;session_code&quot;: &quot;ABC123&quot;,
+                &quot;status&quot;: &quot;completed&quot;,
+                &quot;quest&quot;: {
+                    &quot;id&quot;: 1,
+                    &quot;title&quot;: &quot;City Walk&quot;
+                }
             }
         }
     ]

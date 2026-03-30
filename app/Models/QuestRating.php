@@ -14,7 +14,7 @@ class QuestRating extends Model
         'quest_id',
         'user_id',
         'rating',
-        'review',
+        'comment',
     ];
 
     public function quest(): BelongsTo

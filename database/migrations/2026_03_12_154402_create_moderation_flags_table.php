@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('moderation_flags', function (Blueprint $table) {
             $table->id();
             $table->morphs('flaggable');
-            $table->foreignId('reporter_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('reporter_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('moderator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('reason');
             $table->text('description')->nullable();

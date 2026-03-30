@@ -11,10 +11,11 @@ class LeaderboardEntryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'participant_id' => $this->id,
+            'id' => $this->id,
             'display_name' => $this->display_name,
-            'score' => $this->score,
-            'finished_at' => $this->finished_at,
+            'total_score' => $this->score,
+            'current_checkpoint_index' => $this->current_checkpoint_index,
+            'quest_completed_at' => $this->finished_at,
         ];
     }
 }

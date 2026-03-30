@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Enums\Difficulty;
-use App\Enums\PlayMode;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
 use App\Enums\WrongAnswerBehaviour;
@@ -33,13 +32,15 @@ class QuestFactory extends Factory
             'difficulty' => fake()->randomElement(Difficulty::cases()),
             'status' => QuestStatus::Draft,
             'visibility' => QuestVisibility::Public,
-            'play_mode' => PlayMode::Solo,
             'wrong_answer_behaviour' => WrongAnswerBehaviour::RetryFree,
-            'time_limit_per_question' => fake()->optional()->numberBetween(10, 120),
-            'shuffle_questions' => false,
-            'shuffle_answers' => false,
-            'max_participants' => null,
-            'join_code' => null,
+            'wrong_answer_penalty_points' => 0,
+            'wrong_answer_lockout_seconds' => 0,
+            'estimated_duration_minutes' => fake()->numberBetween(10, 120),
+            'checkpoint_arrival_radius_meters' => 50,
+            'scoring_points_per_correct' => 100,
+            'scoring_speed_bonus_enabled' => true,
+            'scoring_wrong_attempt_penalty_enabled' => false,
+            'scoring_quest_completion_time_bonus_enabled' => false,
             'published_at' => null,
         ];
     }

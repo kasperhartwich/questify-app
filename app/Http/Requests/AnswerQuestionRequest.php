@@ -15,9 +15,10 @@ class AnswerQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answer_id' => ['required_without:open_ended_answer', 'nullable', 'integer', 'exists:answers,id'],
-            'open_ended_answer' => ['required_without:answer_id', 'nullable', 'string', 'max:1000'],
-            'time_taken_seconds' => ['required', 'integer', 'min:0'],
+            'participant_id' => ['required', 'integer', 'exists:session_participants,id'],
+            'question_id' => ['required', 'integer', 'exists:questions,id'],
+            'answer_id' => ['nullable', 'integer', 'exists:answers,id', 'required_without:answer_text'],
+            'answer_text' => ['nullable', 'string', 'required_without:answer_id'],
         ];
     }
 
@@ -26,8 +27,7 @@ class AnswerQuestionRequest extends FormRequest
     {
         return [
             'answer_id.required_without' => __('sessions.validation.answer_required'),
-            'open_ended_answer.required_without' => __('sessions.validation.answer_required'),
-            'time_taken_seconds.required' => __('sessions.validation.time_required'),
+            'answer_text.required_without' => __('sessions.validation.answer_required'),
         ];
     }
 }

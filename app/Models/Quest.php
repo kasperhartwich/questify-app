@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\Difficulty;
-use App\Enums\PlayMode;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
 use App\Enums\WrongAnswerBehaviour;
@@ -27,13 +26,16 @@ class Quest extends Model
         'difficulty',
         'status',
         'visibility',
-        'play_mode',
+        'access_code',
         'wrong_answer_behaviour',
-        'time_limit_per_question',
-        'shuffle_questions',
-        'shuffle_answers',
-        'max_participants',
-        'join_code',
+        'wrong_answer_penalty_points',
+        'wrong_answer_lockout_seconds',
+        'estimated_duration_minutes',
+        'checkpoint_arrival_radius_meters',
+        'scoring_points_per_correct',
+        'scoring_speed_bonus_enabled',
+        'scoring_wrong_attempt_penalty_enabled',
+        'scoring_quest_completion_time_bonus_enabled',
         'published_at',
     ];
 
@@ -43,10 +45,10 @@ class Quest extends Model
             'difficulty' => Difficulty::class,
             'status' => QuestStatus::class,
             'visibility' => QuestVisibility::class,
-            'play_mode' => PlayMode::class,
             'wrong_answer_behaviour' => WrongAnswerBehaviour::class,
-            'shuffle_questions' => 'boolean',
-            'shuffle_answers' => 'boolean',
+            'scoring_speed_bonus_enabled' => 'boolean',
+            'scoring_wrong_attempt_penalty_enabled' => 'boolean',
+            'scoring_quest_completion_time_bonus_enabled' => 'boolean',
             'published_at' => 'datetime',
         ];
     }

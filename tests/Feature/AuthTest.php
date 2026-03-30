@@ -17,7 +17,7 @@ it('registers a new user', function () {
     ]);
 
     $response->assertStatus(201)
-        ->assertJsonStructure(['user', 'token']);
+        ->assertJsonStructure(['data' => ['user', 'token'], 'message']);
 
     $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
 });
@@ -66,7 +66,7 @@ it('logs in with valid credentials', function () {
     ]);
 
     $response->assertOk()
-        ->assertJsonStructure(['user', 'token']);
+        ->assertJsonStructure(['data' => ['user', 'token'], 'message']);
 });
 
 it('fails login with wrong password', function () {
@@ -79,7 +79,7 @@ it('fails login with wrong password', function () {
         'password' => 'wrongpassword',
     ]);
 
-    $response->assertStatus(422);
+    $response->assertUnauthorized();
 });
 
 it('fails login with non-existent email', function () {
@@ -88,7 +88,7 @@ it('fails login with non-existent email', function () {
         'password' => 'password123',
     ]);
 
-    $response->assertStatus(422);
+    $response->assertUnauthorized();
 });
 
 it('logs out authenticated user', function () {
@@ -182,6 +182,36 @@ it('prevents unauthenticated access to me endpoint', function () {
     $response->assertStatus(401);
 });
 
+it('unlinks a social provider', function () {
+    $user = User::factory()->create();
+    SocialAccount::create([
+        'user_id' => $user->id,
+        'provider' => SocialProvider::Google,
+        'provider_id' => '12345',
+        'name' => 'Test User',
+        'email' => $user->email,
+        'token' => 'some-token',
+    ]);
+
+    $response = $this->actingAs($user)->deleteJson('/api/v1/auth/social/google');
+
+    $response->assertOk()
+        ->assertJsonPath('message', 'Social account unlinked successfully.');
+
+    $this->assertDatabaseMissing('social_accounts', [
+        'user_id' => $user->id,
+        'provider' => 'google',
+    ]);
+});
+
+it('returns 404 when unlinking provider not linked', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->deleteJson('/api/v1/auth/social/google');
+
+    $response->assertNotFound();
+});
+
 it('redirects to social provider', function () {
     Socialite::shouldReceive('driver')
         ->with('google')
@@ -197,7 +227,6 @@ it('redirects to social provider', function () {
 it('rejects invalid social provider', function () {
     $response = $this->get('/auth/invalid/redirect');
 
-    // Web route redirects back with validation errors
     $response->assertStatus(302);
 });
 

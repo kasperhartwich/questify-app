@@ -3,106 +3,113 @@
 namespace App\Services;
 
 use App\Enums\WrongAnswerBehaviour;
+use App\Models\Checkpoint;
 use App\Models\CheckpointProgress;
 use App\Models\Quest;
-use App\Models\Question;
+use App\Models\QuestSession;
 use App\Models\SessionParticipant;
+use Carbon\Carbon;
 
 class ScoringService
 {
-    private const MAX_SPEED_BONUS = 50;
-
-    private const SPEED_BONUS_WINDOW_SECONDS = 30;
-
-    private const MAX_COMPLETION_BONUS = 200;
-
-    private const RETRY_PENALTY_PER_ATTEMPT = 10;
-
-    private const THREE_STRIKES_LIMIT = 3;
-
     /**
-     * Calculate score for an answer: base points + speed bonus (linear 50pts at 0s to 0pts at 30s).
-     */
-    public function calculateAnswerScore(Question $question, int $timeTakenSeconds, bool $isCorrect, int $wrongAttempts = 0): int
-    {
-        if (! $isCorrect) {
-            return 0;
-        }
-
-        $basePoints = $question->points;
-
-        $clampedTime = max(0, min(self::SPEED_BONUS_WINDOW_SECONDS, $timeTakenSeconds));
-        $speedBonus = (int) round(
-            self::MAX_SPEED_BONUS * (1 - $clampedTime / self::SPEED_BONUS_WINDOW_SECONDS)
-        );
-
-        $penalty = $wrongAttempts * self::RETRY_PENALTY_PER_ATTEMPT;
-
-        return max(0, $basePoints + $speedBonus - $penalty);
-    }
-
-    /**
-     * Calculate completion bonus: up to 200pts with linear decay based on time taken.
-     */
-    public function calculateCompletionBonus(SessionParticipant $participant, Quest $quest): int
-    {
-        $session = $participant->questSession;
-
-        if (! $session->started_at || ! $participant->finished_at) {
-            return 0;
-        }
-
-        $totalSeconds = $session->started_at->diffInSeconds($participant->finished_at);
-
-        $timePerQuestion = $quest->time_limit_per_question ?? self::SPEED_BONUS_WINDOW_SECONDS;
-        $totalQuestions = $quest->checkpoints->sum(fn ($checkpoint) => $checkpoint->questions->count());
-        $maxTime = $timePerQuestion * $totalQuestions;
-
-        if ($maxTime <= 0) {
-            return self::MAX_COMPLETION_BONUS;
-        }
-
-        $ratio = min(1.0, $totalSeconds / $maxTime);
-
-        return (int) round(self::MAX_COMPLETION_BONUS * (1 - $ratio));
-    }
-
-    /**
-     * Handle a wrong answer based on quest configuration.
+     * Calculate the score awarded for a correct answer.
      *
-     * @return array{can_retry: bool, penalty: int, locked_out: bool, hint: ?string}
+     * @return array{base: int, speed_bonus: int, total: int}
      */
-    public function handleWrongAnswer(Quest $quest, SessionParticipant $participant, Question $question): array
+    public function calculateCorrectAnswerScore(Quest $quest, CheckpointProgress $progress): array
     {
-        $wrongAttempts = CheckpointProgress::where('session_participant_id', $participant->id)
-            ->where('question_id', $question->id)
-            ->value('wrong_attempts') ?? 0;
+        $base = $quest->scoring_points_per_correct ?? 100;
+        $speedBonus = 0;
+
+        if ($quest->scoring_speed_bonus_enabled && $progress->time_taken_seconds !== null) {
+            $secondsTaken = $progress->time_taken_seconds;
+            $speedBonus = (int) floor(50 * max(0, (30 - $secondsTaken) / 30));
+        }
+
+        return [
+            'base' => $base,
+            'speed_bonus' => $speedBonus,
+            'total' => $base + $speedBonus,
+        ];
+    }
+
+    /**
+     * Apply a wrong-answer penalty and return the amount deducted.
+     */
+    public function applyWrongAnswerPenalty(Quest $quest, CheckpointProgress $progress): int
+    {
+        if (! $quest->scoring_wrong_attempt_penalty_enabled) {
+            return 0;
+        }
+
+        $penalty = $quest->wrong_answer_penalty_points ?? 0;
+        $newScore = max(0, $progress->points_earned - $penalty);
+        $actualDeduction = $progress->points_earned - $newScore;
+
+        $progress->update(['points_earned' => $newScore]);
+
+        return $actualDeduction;
+    }
+
+    /**
+     * Calculate the bonus awarded for completing a quest within the estimated duration.
+     */
+    public function calculateCompletionBonus(Quest $quest, SessionParticipant $participant, QuestSession $session): int
+    {
+        if (! $quest->scoring_quest_completion_time_bonus_enabled) {
+            return 0;
+        }
+
+        if (! $participant->finished_at || ! $session->started_at) {
+            return 0;
+        }
+
+        $secondsEstimated = $quest->estimated_duration_minutes * 60;
+
+        if ($secondsEstimated <= 0) {
+            return 0;
+        }
+
+        $secondsTaken = $session->started_at->diffInSeconds($participant->finished_at);
+
+        return (int) floor(200 * max(0, ($secondsEstimated - $secondsTaken) / $secondsEstimated));
+    }
+
+    /**
+     * Handle a wrong answer according to the quest's configured behaviour.
+     *
+     * @return array<string, mixed>
+     */
+    public function handleWrongAnswer(Quest $quest, CheckpointProgress $progress, Checkpoint $checkpoint): array
+    {
+        $progress->increment('wrong_attempts');
+        $attempts = $progress->wrong_attempts;
 
         return match ($quest->wrong_answer_behaviour) {
             WrongAnswerBehaviour::RetryFree => [
-                'can_retry' => true,
-                'penalty' => 0,
-                'locked_out' => false,
-                'hint' => null,
+                'behaviour' => 'retry_free',
+                'attempts' => $attempts,
             ],
             WrongAnswerBehaviour::RetryPenalty => [
-                'can_retry' => true,
-                'penalty' => self::RETRY_PENALTY_PER_ATTEMPT * $wrongAttempts,
-                'locked_out' => false,
-                'hint' => null,
+                'behaviour' => 'retry_penalty',
+                'attempts' => $attempts,
+                'penalty' => $this->applyWrongAnswerPenalty($quest, $progress),
             ],
             WrongAnswerBehaviour::Lockout => [
-                'can_retry' => false,
-                'penalty' => 0,
-                'locked_out' => true,
-                'hint' => null,
+                'behaviour' => 'lockout',
+                'attempts' => $attempts,
+                'locked_until' => Carbon::now()
+                    ->addSeconds($quest->wrong_answer_lockout_seconds ?? 30)
+                    ->toIso8601String(),
             ],
-            WrongAnswerBehaviour::ThreeStrikesHint => [
-                'can_retry' => $wrongAttempts < self::THREE_STRIKES_LIMIT,
-                'penalty' => 0,
-                'locked_out' => $wrongAttempts >= self::THREE_STRIKES_LIMIT,
-                'hint' => $wrongAttempts >= (self::THREE_STRIKES_LIMIT - 1) ? $question->hint : null,
-            ],
+            WrongAnswerBehaviour::ThreeStrikesHint => array_merge(
+                [
+                    'behaviour' => 'three_strikes_hint',
+                    'attempts' => $attempts,
+                ],
+                $attempts >= 3 ? ['hint' => $checkpoint->hint] : [],
+            ),
         };
     }
 }

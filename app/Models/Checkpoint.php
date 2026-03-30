@@ -17,6 +17,7 @@ class Checkpoint extends Model
         'description',
         'latitude',
         'longitude',
+        'hint',
         'sort_order',
     ];
 

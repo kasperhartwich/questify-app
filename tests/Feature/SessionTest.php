@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
     $this->host = User::factory()->create();
-    $this->player = User::factory()->create();
     $this->quest = Quest::factory()->create([
         'status' => QuestStatus::Published,
     ]);
@@ -20,11 +19,11 @@ beforeEach(function () {
 it('creates a session', function () {
     $response = $this->actingAs($this->host)->postJson('/api/v1/sessions', [
         'quest_id' => $this->quest->id,
-        'play_mode' => PlayMode::Competitive->value,
+        'play_mode' => PlayMode::CompetitiveIndividual->value,
     ]);
 
     $response->assertStatus(201)
-        ->assertJsonStructure(['session']);
+        ->assertJsonStructure(['data' => ['id', 'session_code', 'status', 'play_mode', 'quest', 'host']]);
 
     $this->assertDatabaseHas('quest_sessions', [
         'quest_id' => $this->quest->id,
@@ -42,93 +41,52 @@ it('shows a session by code', function () {
     $response = $this->getJson("/api/v1/sessions/{$session->join_code}");
 
     $response->assertOk()
-        ->assertJsonPath('data.join_code', $session->join_code);
+        ->assertJsonPath('data.session_code', $session->join_code);
 });
 
-it('joins a waiting session', function () {
+it('joins a waiting session without auth', function () {
     Event::fake();
-    $session = QuestSession::factory()->create([
-        'status' => SessionStatus::Waiting,
-    ]);
+    $session = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
 
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session->join_code}/join", [
+    $response = $this->postJson("/api/v1/sessions/{$session->join_code}/join", [
         'display_name' => 'Player One',
     ]);
 
-    $response->assertStatus(201)
-        ->assertJsonPath('participant.display_name', 'Player One');
+    $response->assertOk()
+        ->assertJsonPath('data.display_name', 'Player One')
+        ->assertJsonPath('data.session_code', $session->join_code);
 
     $this->assertDatabaseHas('session_participants', [
         'quest_session_id' => $session->id,
-        'user_id' => $this->player->id,
         'display_name' => 'Player One',
     ]);
 });
 
-it('cannot join an in-progress session', function () {
-    $session = QuestSession::factory()->create([
-        'status' => SessionStatus::InProgress,
+it('joins with optional user_id', function () {
+    Event::fake();
+    $user = User::factory()->create();
+    $session = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
+
+    $response = $this->postJson("/api/v1/sessions/{$session->join_code}/join", [
+        'display_name' => 'Player One',
+        'user_id' => $user->id,
     ]);
 
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session->join_code}/join", [
+    $response->assertOk();
+    $this->assertDatabaseHas('session_participants', [
+        'quest_session_id' => $session->id,
+        'user_id' => $user->id,
+    ]);
+});
+
+it('cannot join an active session', function () {
+    $session = QuestSession::factory()->create(['status' => SessionStatus::Active]);
+
+    $response = $this->postJson("/api/v1/sessions/{$session->join_code}/join", [
         'display_name' => 'Late Player',
     ]);
 
     $response->assertStatus(404);
-});
-
-it('enforces one active session per player', function () {
-    Event::fake();
-    $session1 = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
-    $session2 = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
-
-    // Join first session
-    SessionParticipant::factory()->create([
-        'quest_session_id' => $session1->id,
-        'user_id' => $this->player->id,
-    ]);
-
-    // Try to join second session
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session2->join_code}/join", [
-        'display_name' => 'Player One',
-    ]);
-
-    $response->assertStatus(409);
-});
-
-it('allows joining after previous session completes', function () {
-    Event::fake();
-    $completedSession = QuestSession::factory()->create([
-        'status' => SessionStatus::Completed,
-    ]);
-    SessionParticipant::factory()->create([
-        'quest_session_id' => $completedSession->id,
-        'user_id' => $this->player->id,
-    ]);
-
-    $newSession = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
-
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$newSession->join_code}/join", [
-        'display_name' => 'Player One',
-    ]);
-
-    $response->assertStatus(201);
-});
-
-it('enforces max participants', function () {
-    Event::fake();
-    $quest = Quest::factory()->create(['max_participants' => 1]);
-    $session = QuestSession::factory()->create([
-        'quest_id' => $quest->id,
-        'status' => SessionStatus::Waiting,
-    ]);
-    SessionParticipant::factory()->create(['quest_session_id' => $session->id]);
-
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session->join_code}/join", [
-        'display_name' => 'Overflow',
-    ]);
-
-    $response->assertStatus(422);
 });
 
 it('host starts session', function () {
@@ -140,19 +98,22 @@ it('host starts session', function () {
 
     $response = $this->actingAs($this->host)->postJson("/api/v1/sessions/{$session->join_code}/start");
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertJsonPath('data.status', SessionStatus::Active->value);
+
     $session->refresh();
-    expect($session->status)->toBe(SessionStatus::InProgress);
+    expect($session->status)->toBe(SessionStatus::Active);
     expect($session->started_at)->not->toBeNull();
 });
 
 it('non-host cannot start session', function () {
+    $player = User::factory()->create();
     $session = QuestSession::factory()->create([
         'host_id' => $this->host->id,
         'status' => SessionStatus::Waiting,
     ]);
 
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session->join_code}/start");
+    $response = $this->actingAs($player)->postJson("/api/v1/sessions/{$session->join_code}/start");
 
     $response->assertStatus(403);
 });
@@ -161,7 +122,7 @@ it('host ends session', function () {
     Event::fake();
     $session = QuestSession::factory()->create([
         'host_id' => $this->host->id,
-        'status' => SessionStatus::InProgress,
+        'status' => SessionStatus::Active,
         'started_at' => now(),
     ]);
     $participant = SessionParticipant::factory()->create([
@@ -170,23 +131,25 @@ it('host ends session', function () {
 
     $response = $this->actingAs($this->host)->postJson("/api/v1/sessions/{$session->join_code}/end");
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertJsonPath('data.status', SessionStatus::Completed->value);
+
     $session->refresh();
     expect($session->status)->toBe(SessionStatus::Completed);
     expect($session->completed_at)->not->toBeNull();
 
-    // Unfinished participants get finished_at set
     $participant->refresh();
     expect($participant->finished_at)->not->toBeNull();
 });
 
 it('non-host cannot end session', function () {
+    $player = User::factory()->create();
     $session = QuestSession::factory()->create([
         'host_id' => $this->host->id,
-        'status' => SessionStatus::InProgress,
+        'status' => SessionStatus::Active,
     ]);
 
-    $response = $this->actingAs($this->player)->postJson("/api/v1/sessions/{$session->join_code}/end");
+    $response = $this->actingAs($player)->postJson("/api/v1/sessions/{$session->join_code}/end");
 
     $response->assertStatus(403);
 });
@@ -199,15 +162,16 @@ it('host accesses dashboard', function () {
     $response = $this->actingAs($this->host)->getJson("/api/v1/sessions/{$session->join_code}/dashboard");
 
     $response->assertOk()
-        ->assertJsonStructure(['session']);
+        ->assertJsonStructure(['data' => ['session', 'participants']]);
 });
 
 it('non-host cannot access dashboard', function () {
+    $player = User::factory()->create();
     $session = QuestSession::factory()->create([
         'host_id' => $this->host->id,
     ]);
 
-    $response = $this->actingAs($this->player)->getJson("/api/v1/sessions/{$session->join_code}/dashboard");
+    $response = $this->actingAs($player)->getJson("/api/v1/sessions/{$session->join_code}/dashboard");
 
     $response->assertStatus(403);
 });

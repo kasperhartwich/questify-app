@@ -6,5 +6,5 @@ enum QuestionType: string
 {
     case MultipleChoice = 'multiple_choice';
     case TrueFalse = 'true_false';
-    case OpenEnded = 'open_ended';
+    case OpenText = 'open_text';
 }

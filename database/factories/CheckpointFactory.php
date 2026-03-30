@@ -22,6 +22,9 @@ class CheckpointFactory extends Factory
             'quest_id' => Quest::factory(),
             'title' => fake()->sentence(3),
             'description' => fake()->optional()->sentence(),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
+            'hint' => null,
             'sort_order' => 0,
         ];
     }

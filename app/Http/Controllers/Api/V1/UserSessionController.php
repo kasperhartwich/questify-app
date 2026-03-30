@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\QuestSession;
+use App\Models\SessionParticipant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,27 +13,41 @@ use Illuminate\Http\Request;
 class UserSessionController extends Controller
 {
     /**
-     * List sessions
+     * List user's session history
      *
-     * Get a paginated list of sessions where the user is host or participant.
+     * Get a paginated list of sessions the user participated in, with session and quest details.
      *
      * @queryParam page integer The page number. Example: 1
      *
-     * @response 200 {"data": [{"id": 1, "join_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}]}
+     * @response 200 {"data": [{"participant_id": 1, "display_name": "Lars", "total_score": 500, "quest_completed_at": null, "session": {"id": 1, "session_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}}]}
      */
     public function index(Request $request): JsonResponse
     {
-        $sessions = QuestSession::query()
-            ->where(function ($query) use ($request) {
-                $query->where('host_id', $request->user()->id)
-                    ->orWhereHas('participants', function ($query) use ($request) {
-                        $query->where('user_id', $request->user()->id);
-                    });
-            })
-            ->with(['quest.category', 'quest.creator'])
+        $participations = SessionParticipant::query()
+            ->where('user_id', $request->user()->id)
+            ->with(['questSession.quest.category', 'questSession.quest.creator'])
             ->latest()
-            ->paginate(15);
+            ->cursorPaginate(15);
 
-        return response()->json($sessions);
+        $data = $participations->through(fn ($p) => [
+            'participant_id' => $p->id,
+            'display_name' => $p->display_name,
+            'total_score' => $p->score,
+            'quest_completed_at' => $p->finished_at,
+            'session' => [
+                'id' => $p->questSession->id,
+                'session_code' => $p->questSession->join_code,
+                'status' => $p->questSession->status,
+                'play_mode' => $p->questSession->play_mode,
+                'quest' => [
+                    'id' => $p->questSession->quest->id,
+                    'title' => $p->questSession->quest->title,
+                ],
+                'started_at' => $p->questSession->started_at,
+                'completed_at' => $p->questSession->completed_at,
+            ],
+        ]);
+
+        return response()->json($data);
     }
 }

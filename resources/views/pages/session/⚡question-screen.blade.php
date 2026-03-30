@@ -95,7 +95,7 @@ class extends Component
         $isCorrect = false;
         $answerId = null;
 
-        if ($this->currentQuestion->type === QuestionType::OpenEnded) {
+        if ($this->currentQuestion->type === QuestionType::OpenText) {
             $isCorrect = true;
             $this->openEndedAnswer = trim($this->openEndedAnswer);
         } else {
@@ -160,7 +160,7 @@ class extends Component
             [
                 'checkpoint_id' => $this->checkpoint->id,
                 'answer_id' => $answerId,
-                'open_ended_answer' => $this->currentQuestion->type === QuestionType::OpenEnded ? $this->openEndedAnswer : null,
+                'open_ended_answer' => $this->currentQuestion->type === QuestionType::OpenText ? $this->openEndedAnswer : null,
                 'is_correct' => true,
                 'points_earned' => $points,
                 'time_taken_seconds' => $timeTaken,
@@ -260,7 +260,7 @@ class extends Component
 
             {{-- Answer Options --}}
             @if (!$showFeedback)
-                @if ($currentQuestion->type === \App\Enums\QuestionType::OpenEnded)
+                @if ($currentQuestion->type === \App\Enums\QuestionType::OpenText)
                     <div>
                         <textarea
                             wire:model="openEndedAnswer"
@@ -289,7 +289,7 @@ class extends Component
                 <button
                     wire:click="submitAnswer"
                     class="w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-                    {{ ($currentQuestion->type !== \App\Enums\QuestionType::OpenEnded && !$selectedAnswerId) ? 'disabled' : '' }}
+                    {{ ($currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
                 >
                     {{ __('sessions.submit_answer') }}
                 </button>

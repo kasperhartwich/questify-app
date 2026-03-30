@@ -63,7 +63,7 @@ class extends Component
         }
 
         $this->session->update([
-            'status' => SessionStatus::InProgress,
+            'status' => SessionStatus::Active,
             'started_at' => now(),
         ]);
 

@@ -24,7 +24,7 @@ class StatsOverviewWidget extends BaseWidget
             Stat::make('Published Quests', Quest::query()->where('status', QuestStatus::Published)->count())
                 ->icon('heroicon-o-map'),
             Stat::make('Active Sessions Today', QuestSession::query()
-                ->whereIn('status', [SessionStatus::Waiting, SessionStatus::InProgress])
+                ->whereIn('status', [SessionStatus::Waiting, SessionStatus::Active])
                 ->whereDate('created_at', today())
                 ->count())
                 ->icon('heroicon-o-play-circle'),

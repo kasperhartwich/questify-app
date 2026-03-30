@@ -36,7 +36,7 @@ class QuestSession extends Model
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereIn('status', [SessionStatus::Waiting, SessionStatus::InProgress]);
+        return $query->whereIn('status', [SessionStatus::Waiting, SessionStatus::Active]);
     }
 
     public function quest(): BelongsTo

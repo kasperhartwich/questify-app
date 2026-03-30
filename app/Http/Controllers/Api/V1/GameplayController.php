@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\QuestionType;
 use App\Enums\SessionStatus;
+use App\Enums\WrongAnswerBehaviour;
 use App\Events\CheckpointArrived;
 use App\Events\CheckpointCompleted;
 use App\Events\LeaderboardUpdated;
 use App\Events\QuestCompleted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerQuestionRequest;
-use App\Http\Resources\CheckpointResource;
-use App\Http\Resources\LeaderboardEntryResource;
+use App\Http\Requests\ArrivedRequest;
 use App\Models\Checkpoint;
 use App\Models\CheckpointProgress;
 use App\Models\Question;
@@ -19,8 +19,8 @@ use App\Models\QuestSession;
 use App\Models\SessionParticipant;
 use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Gameplay
@@ -38,65 +38,90 @@ class GameplayController extends Controller
      *
      * Record arrival at a checkpoint and receive its questions. Broadcasts CheckpointArrived event.
      *
-     * @urlParam code string required The 6-character session join code. Example: ABC123
-     * @urlParam checkpoint integer required The checkpoint ID. Example: 1
+     * @urlParam code string required The 6-character session code. Example: ABC123
      *
-     * @response 200 {"checkpoint": {"id": 1, "title": "Start Point", "questions": [{"id": 1, "type": "multiple_choice", "body": "What year?", "answers": []}]}}
+     * @bodyParam participant_id integer required The participant ID. Example: 7
+     * @bodyParam checkpoint_id integer required The checkpoint ID. Example: 3
+     * @bodyParam latitude numeric required The arrival latitude. Example: 55.6763
+     * @bodyParam longitude numeric required The arrival longitude. Example: 12.5681
+     *
+     * @response 200 {"data": {"id": 3, "title": "Norreport Station", "description": "...", "order_index": 2, "questions": [{"id": 11, "question_text": "What year?", "question_type": "multiple_choice", "answers": [{"id": 41, "answer_text": "1917"}]}]}}
      */
-    public function arrived(Request $request, string $code, Checkpoint $checkpoint): JsonResponse
+    public function arrived(ArrivedRequest $request, string $code): JsonResponse
     {
         $session = $this->getActiveSession($code);
-        $participant = $this->getParticipant($session, $request->user());
+
+        $participant = SessionParticipant::where('id', $request->validated('participant_id'))
+            ->where('quest_session_id', $session->id)
+            ->firstOrFail();
+
+        $checkpoint = Checkpoint::where('id', $request->validated('checkpoint_id'))
+            ->where('quest_id', $session->quest_id)
+            ->firstOrFail();
 
         broadcast(new CheckpointArrived($session->join_code, $participant, $checkpoint))->toOthers();
 
-        // Return only this checkpoint's questions (not future checkpoints)
         $checkpoint->load('questions.answers');
 
         return response()->json([
-            'checkpoint' => new CheckpointResource($checkpoint),
+            'data' => [
+                'id' => $checkpoint->id,
+                'title' => $checkpoint->title,
+                'description' => $checkpoint->description,
+                'order_index' => $checkpoint->sort_order,
+                'questions' => $checkpoint->questions->map(fn ($question) => [
+                    'id' => $question->id,
+                    'question_text' => $question->body,
+                    'question_type' => $question->type->value,
+                    'image_url' => $question->image_path ? Storage::url($question->image_path) : null,
+                    'answers' => $question->answers->map(fn ($answer) => [
+                        'id' => $answer->id,
+                        'answer_text' => $answer->body,
+                    ]),
+                ]),
+            ],
         ]);
     }
 
     /**
      * Answer question
      *
-     * Submit an answer to a question. Returns correctness and points earned. Broadcasts leaderboard updates.
+     * Submit an answer to a question. Returns correctness and score.
      *
-     * @urlParam code string required The 6-character session join code. Example: ABC123
-     * @urlParam checkpoint integer required The checkpoint ID. Example: 1
-     * @urlParam question integer required The question ID. Example: 1
+     * @urlParam code string required The 6-character session code. Example: ABC123
      *
-     * @response 200 scenario="Correct answer" {"is_correct": true, "points_earned": 85, "checkpoint_complete": false, "quest_complete": false}
-     * @response 200 scenario="Wrong answer" {"is_correct": false, "points_earned": 0, "wrong_answer": {"action": "retry_free", "can_retry": true}}
-     * @response 200 scenario="Already answered" {"message": "Already answered correctly.", "points_earned": 85}
+     * @bodyParam participant_id integer required The participant ID. Example: 7
+     * @bodyParam question_id integer required The question ID. Example: 11
+     * @bodyParam answer_id integer optional The selected answer ID (for multiple_choice/true_false). Example: 42
+     * @bodyParam answer_text string optional The text answer (for open_text). Example: 1934
+     *
+     * @response 200 scenario="Correct" {"data": {"correct": true, "score_earned": 115, "speed_bonus": 15, "total_score": 315, "next": "question"}}
+     * @response 200 scenario="Incorrect" {"data": {"correct": false, "behaviour": "retry_free", "attempts": 2}}
      */
-    public function answer(AnswerQuestionRequest $request, string $code, Checkpoint $checkpoint, Question $question): JsonResponse
+    public function answer(AnswerQuestionRequest $request, string $code): JsonResponse
     {
         $session = $this->getActiveSession($code);
-        $participant = $this->getParticipant($session, $request->user());
         $quest = $session->quest;
 
-        // Check if already correctly answered
+        $participant = SessionParticipant::where('id', $request->validated('participant_id'))
+            ->where('quest_session_id', $session->id)
+            ->firstOrFail();
+
+        $question = Question::findOrFail($request->validated('question_id'));
+        $checkpoint = $question->checkpoint;
+
+        // Get existing progress for this question
         $existingProgress = CheckpointProgress::where('session_participant_id', $participant->id)
             ->where('question_id', $question->id)
             ->first();
-
-        if ($existingProgress && $existingProgress->is_correct) {
-            return response()->json([
-                'message' => __('sessions.already_answered'),
-                'points_earned' => $existingProgress->points_earned,
-            ]);
-        }
 
         // Determine correctness
         $isCorrect = $this->evaluateAnswer($question, $request);
 
         if (! $isCorrect) {
-            // Track wrong attempt
             $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts + 1 : 1;
 
-            CheckpointProgress::updateOrCreate(
+            $progress = CheckpointProgress::updateOrCreate(
                 [
                     'session_participant_id' => $participant->id,
                     'question_id' => $question->id,
@@ -104,31 +129,47 @@ class GameplayController extends Controller
                 [
                     'checkpoint_id' => $checkpoint->id,
                     'answer_id' => $request->validated('answer_id'),
-                    'open_ended_answer' => $request->validated('open_ended_answer'),
+                    'open_ended_answer' => $request->validated('answer_text'),
                     'is_correct' => false,
                     'points_earned' => 0,
-                    'time_taken_seconds' => $request->validated('time_taken_seconds'),
                     'wrong_attempts' => $wrongAttempts,
                 ]
             );
 
-            $wrongAnswerResult = $this->scoringService->handleWrongAnswer($quest, $participant, $question);
+            $responseData = [
+                'correct' => false,
+                'behaviour' => $quest->wrong_answer_behaviour->value,
+                'attempts' => $wrongAttempts,
+            ];
 
-            return response()->json([
-                'is_correct' => false,
-                'points_earned' => 0,
-                'wrong_answer' => $wrongAnswerResult,
-            ]);
+            match ($quest->wrong_answer_behaviour) {
+                WrongAnswerBehaviour::Lockout => $responseData['locked_until'] = now()
+                    ->addSeconds($quest->wrong_answer_lockout_seconds ?? 30)
+                    ->toIso8601String(),
+                WrongAnswerBehaviour::ThreeStrikesHint => $wrongAttempts >= 3
+                    ? $responseData['hint'] = ($question->hint ?? $checkpoint->hint ?? null)
+                    : null,
+                WrongAnswerBehaviour::RetryPenalty => $responseData['penalty'] = $quest->wrong_answer_penalty_points ?? 0,
+                default => null,
+            };
+
+            return response()->json(['data' => $responseData]);
         }
 
-        // Calculate score
+        // Calculate score using ScoringService
         $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts : 0;
-        $pointsEarned = $this->scoringService->calculateAnswerScore(
-            $question,
-            $request->validated('time_taken_seconds'),
-            true,
-            $wrongAttempts,
-        );
+        $scoreResult = $this->scoringService->calculateCorrectAnswerScore($quest, $existingProgress ?? new CheckpointProgress([
+            'time_taken_seconds' => $request->validated('time_taken_seconds'),
+        ]));
+
+        $pointsEarned = $scoreResult['total'];
+        $speedBonus = $scoreResult['speed_bonus'];
+
+        // Apply wrong attempt penalty if enabled
+        if ($quest->scoring_wrong_attempt_penalty_enabled && $wrongAttempts > 0) {
+            $penalty = ($quest->wrong_answer_penalty_points ?? 0) * $wrongAttempts;
+            $pointsEarned = max(0, $pointsEarned - $penalty);
+        }
 
         // Record progress
         CheckpointProgress::updateOrCreate(
@@ -139,10 +180,9 @@ class GameplayController extends Controller
             [
                 'checkpoint_id' => $checkpoint->id,
                 'answer_id' => $request->validated('answer_id'),
-                'open_ended_answer' => $request->validated('open_ended_answer'),
+                'open_ended_answer' => $request->validated('answer_text'),
                 'is_correct' => true,
                 'points_earned' => $pointsEarned,
-                'time_taken_seconds' => $request->validated('time_taken_seconds'),
                 'wrong_attempts' => $wrongAttempts,
             ]
         );
@@ -161,86 +201,90 @@ class GameplayController extends Controller
             ->count();
 
         $checkpointComplete = $answeredCorrectly >= $checkpointQuestionCount;
+        $next = $checkpointComplete ? 'checkpoint_complete' : 'question';
 
         if ($checkpointComplete) {
+            $participant->update(['current_checkpoint_index' => $participant->current_checkpoint_index + 1]);
             broadcast(new CheckpointCompleted($session->join_code, $participant, $checkpoint))->toOthers();
         }
 
-        // Broadcast leaderboard update
-        $leaderboard = $this->buildLeaderboard($session);
-        broadcast(new LeaderboardUpdated($session->join_code, $leaderboard))->toOthers();
-
-        // Check if quest is complete (all checkpoints done)
+        // Check if quest is complete
         $questComplete = $this->isQuestComplete($session, $participant);
-
         if ($questComplete) {
             $participant->update(['finished_at' => now()]);
 
-            // Calculate completion bonus
-            $quest->load('checkpoints.questions');
-            $completionBonus = $this->scoringService->calculateCompletionBonus($participant->fresh(), $quest);
-            $participant->increment('score', $completionBonus);
+            $completionBonus = $this->scoringService->calculateCompletionBonus($quest, $participant->fresh(), $session);
+            if ($completionBonus > 0) {
+                $participant->increment('score', $completionBonus);
+            }
 
             broadcast(new QuestCompleted(
                 $session->join_code,
                 $participant->fresh(),
                 $participant->fresh()->score,
             ))->toOthers();
-
-            // Refresh leaderboard after bonus
-            $leaderboard = $this->buildLeaderboard($session);
-            broadcast(new LeaderboardUpdated($session->join_code, $leaderboard))->toOthers();
         }
 
+        // Broadcast leaderboard update
+        $leaderboard = $this->buildLeaderboard($session);
+        broadcast(new LeaderboardUpdated($session->join_code, $leaderboard))->toOthers();
+
         return response()->json([
-            'is_correct' => true,
-            'points_earned' => $pointsEarned,
-            'checkpoint_complete' => $checkpointComplete,
-            'quest_complete' => $questComplete,
+            'data' => [
+                'correct' => true,
+                'score_earned' => $pointsEarned,
+                'speed_bonus' => $speedBonus,
+                'total_score' => $participant->fresh()->score,
+                'next' => $next,
+            ],
         ]);
     }
 
     /**
      * Get leaderboard
      *
-     * Get the current session leaderboard sorted by score descending.
+     * Get the current session leaderboard sorted by score descending. No auth required.
      *
-     * @urlParam code string required The 6-character session join code. Example: ABC123
+     * @urlParam code string required The 6-character session code. Example: ABC123
      *
-     * @response 200 {"leaderboard": [{"id": 1, "display_name": "Player1", "score": 250, "rank": 1}]}
+     * @response 200 {"data": [{"id": 1, "display_name": "Player1", "total_score": 250, "current_checkpoint_index": 2, "quest_completed_at": null}]}
      */
-    public function leaderboard(Request $request, string $code): JsonResponse
+    public function leaderboard(string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)->firstOrFail();
 
         $participants = $session->participants()
             ->orderByDesc('score')
-            ->get();
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'display_name' => $p->display_name,
+                'total_score' => $p->score,
+                'current_checkpoint_index' => $p->current_checkpoint_index,
+                'quest_completed_at' => $p->finished_at,
+            ]);
 
-        return response()->json([
-            'leaderboard' => LeaderboardEntryResource::collection($participants),
-        ]);
+        return response()->json(['data' => $participants]);
     }
 
     private function getActiveSession(string $code): QuestSession
     {
         return QuestSession::where('join_code', $code)
-            ->where('status', SessionStatus::InProgress)
-            ->firstOrFail();
-    }
-
-    private function getParticipant(QuestSession $session, $user): SessionParticipant
-    {
-        return $session->participants()
-            ->where('user_id', $user->id)
+            ->where('status', SessionStatus::Active)
             ->firstOrFail();
     }
 
     private function evaluateAnswer(Question $question, AnswerQuestionRequest $request): bool
     {
-        if ($question->type === QuestionType::OpenEnded) {
-            // Open-ended questions are always marked as correct (manual review later)
-            return true;
+        if ($question->type === QuestionType::OpenText) {
+            $answerText = $request->validated('answer_text');
+            $correctAnswer = $question->answers()->where('is_correct', true)->first();
+
+            if (! $correctAnswer) {
+                return false;
+            }
+
+            return mb_strtolower(trim($answerText)) === mb_strtolower(trim($correctAnswer->body));
         }
 
         $answerId = $request->validated('answer_id');

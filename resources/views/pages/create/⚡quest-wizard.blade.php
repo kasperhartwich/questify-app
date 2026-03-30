@@ -164,7 +164,7 @@ class extends Component
                 ['body' => 'True', 'is_correct' => true],
                 ['body' => 'False', 'is_correct' => false],
             ];
-        } elseif ($type === QuestionType::OpenEnded->value) {
+        } elseif ($type === QuestionType::OpenText->value) {
             $this->questions[$checkpointIndex][$questionIndex]['answers'] = [];
         }
     }
