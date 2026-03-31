@@ -20,10 +20,11 @@ it('shows validation error for empty email on login', function () {
 
 it('shows validation error for short password on register', function () {
     Livewire::test('pages::auth.register')
-        ->set('name', 'New User')
+        ->set('step', 2)
+        ->set('first_name', 'New')
+        ->set('display_name', 'NewUser')
         ->set('email', 'new@example.com')
         ->set('password', 'short')
-        ->set('password_confirmation', 'short')
         ->call('register')
         ->assertHasErrors('password');
 });
