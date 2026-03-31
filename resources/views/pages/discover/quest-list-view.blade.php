@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex flex-col bg-cream">
     {{-- Search & Filter --}}
     <div class="flex gap-2 px-3.5 pb-2.5 pt-1.5">
         <div class="flex flex-1 items-center gap-2 rounded-xl border-[1.5px] border-cream-border bg-white px-3 py-2.5 shadow-sm">
@@ -6,13 +6,13 @@
             <input
                 type="search"
                 wire:model.live.debounce.300ms="search"
-                placeholder="{{ __('general.search') }}..."
-                class="w-full border-none bg-transparent p-0 text-xs text-bark placeholder-muted focus:outline-none focus:ring-0"
+                placeholder="Search quests near you..."
+                class="w-full border-none bg-transparent p-0 text-xs text-bark placeholder-[#B0A898] focus:outline-none focus:ring-0"
             />
         </div>
         <button
             x-data="{ open: false }"
-            @click="open = !open"
+            @click="$dispatch('toggle-filters')"
             class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-forest-600"
         >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
@@ -20,7 +20,7 @@
     </div>
 
     {{-- Filter dropdowns --}}
-    <div x-data="{ showFilters: false }">
+    <div x-data="{ showFilters: false }" @toggle-filters.window="showFilters = !showFilters">
         <div x-show="showFilters" x-transition class="flex gap-2 px-3.5 pb-2">
             <select wire:model.live="category" class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white px-3 py-2 text-xs text-bark">
                 <option value="">{{ __('general.all_categories') }}</option>
@@ -58,12 +58,12 @@
         </div>
         <div class="absolute left-[30%] top-[55%] h-2.5 w-2.5 rounded-full bg-[#2563EB] shadow-[0_0_0_4px_rgba(37,99,235,0.2)]"></div>
         <div class="absolute bottom-2 right-2 rounded-lg bg-white px-2 py-1 text-[9px] font-semibold text-forest-600 shadow-md">
-            {{ count($quests) }} {{ __('general.quests_nearby') }}
+            📍 {{ count($quests) }} {{ __('general.quests_nearby') }}
         </div>
     </a>
 
     {{-- Section Header --}}
-    <div class="flex items-center justify-between px-4 pb-2 pt-1">
+    <div class="flex items-center justify-between px-4 pb-2 pt-3">
         <h2 class="font-heading text-[13px] font-bold text-bark">{{ __('general.nearby_quests') }}</h2>
         <a href="/discover/map" class="text-[11px] font-semibold text-forest-400" wire:navigate>{{ __('general.see_all') }}</a>
     </div>
