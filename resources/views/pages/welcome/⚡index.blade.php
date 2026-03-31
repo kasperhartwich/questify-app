@@ -16,6 +16,7 @@ class extends Component
     {{-- Decorative circles --}}
     <div class="pointer-events-none absolute right-[-50px] top-[-50px] h-[200px] w-[200px] rounded-full border-[36px] border-amber-400/[0.08]"></div>
     <div class="pointer-events-none absolute bottom-20 left-[-40px] h-[140px] w-[140px] rounded-full border-[24px] border-amber-400/[0.06]"></div>
+    <div class="pointer-events-none absolute right-[-20px] top-[30%] h-[80px] w-[80px] rounded-full border-[14px] border-amber-400/[0.05]"></div>
 
     {{-- Logo & Branding --}}
     <div class="flex flex-1 flex-col items-center justify-center px-6">

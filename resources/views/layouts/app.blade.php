@@ -31,21 +31,28 @@
         <native:bottom-nav>
             <native:bottom-nav-item
                 id="discover"
-                icon="magnifyingglass"
+                icon="map"
                 label="{{ __('general.discover') }}"
                 url="/discover/list"
                 :active="request()->is('discover*')"
             />
             <native:bottom-nav-item
                 id="my-quests"
-                icon="list.bullet"
+                icon="list.clipboard"
                 label="{{ __('general.my_quests') }}"
                 url="/my-quests"
                 :active="request()->is('my-quests*')"
             />
             <native:bottom-nav-item
+                id="join"
+                icon="qrcode"
+                label="{{ __('general.join') ?? 'Join' }}"
+                url="/join"
+                :active="request()->is('join*')"
+            />
+            <native:bottom-nav-item
                 id="create"
-                icon="plus.circle.fill"
+                icon="mappin.circle"
                 label="{{ __('general.create') }}"
                 url="/create"
                 :active="request()->is('create*')"

@@ -1,0 +1,108 @@
+<?php
+
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+
+new
+#[Layout('layouts.guest')]
+#[Title('Join a Quest')]
+class extends Component
+{
+    use HandlesApiErrors, WithApiClient;
+
+    public string $code = '';
+
+    public string $displayName = '';
+
+    public ?object $session = null;
+
+    public function mount(string $code): void
+    {
+        $this->code = strtoupper($code);
+
+        $response = $this->tryApiCall(fn () => $this->api->session()->show($this->code));
+
+        if ($response) {
+            $this->session = $this->toObject($response['data']);
+        }
+    }
+
+    public function join(): void
+    {
+        $this->validate([
+            'displayName' => ['required', 'string', 'min:2', 'max:30'],
+        ]);
+
+        $userId = auth()->id();
+
+        $response = $this->tryApiCall(fn () => $this->api->session()->join(
+            $this->code,
+            $this->displayName,
+            $userId,
+        ));
+
+        if ($response) {
+            session()->put('questify_participant_id', $response['data']['id'] ?? null);
+            $this->redirect('/session/' . $this->code);
+        }
+    }
+};
+?>
+
+<div class="flex min-h-screen flex-col bg-cream">
+    {{-- Header --}}
+    <div class="flex items-center gap-2.5 px-4 pb-3 pt-4">
+        <a href="/join" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark" wire:navigate>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+    </div>
+
+    <div class="flex flex-1 flex-col px-4">
+        {{-- Quest preview card --}}
+        @if ($session)
+            <div class="relative mb-5 overflow-hidden rounded-[14px] bg-forest-600 px-4 py-3.5">
+                <div class="pointer-events-none absolute right-[-10px] top-[-10px] h-[60px] w-[60px] rounded-full border-[10px] border-amber-400/15"></div>
+                <p class="text-[9px] font-bold uppercase tracking-widest text-amber-400">{{ __('sessions.joining') ?? 'Joining' }}</p>
+                <h2 class="mt-1 font-heading text-sm font-bold text-white">{{ $session->quest?->title ?? '' }}</h2>
+                <div class="mt-2 flex gap-1.5">
+                    @if ($session->quest?->checkpoints_count ?? null)
+                        <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ $session->quest->checkpoints_count }} {{ __('general.stops') ?? 'stops' }}</span>
+                    @endif
+                </div>
+            </div>
+        @endif
+
+        {{-- Heading --}}
+        <h1 class="mb-1.5 font-heading text-xl font-extrabold leading-tight text-bark">{{ __('sessions.what_should_we_call_you') ?? 'What should we call you?' }}</h1>
+        <p class="mb-5 text-xs text-muted">{{ __('sessions.display_name_visible') ?? 'This is what other players will see during the quest.' }}</p>
+
+        {{-- Display name input --}}
+        <form wire:submit="join" class="flex flex-1 flex-col">
+            <div class="relative mb-3">
+                <input
+                    type="text"
+                    wire:model="displayName"
+                    placeholder="{{ __('sessions.your_display_name') ?? 'Your display name' }}"
+                    class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 pr-11 text-[13px] font-semibold text-bark focus:border-forest-600 focus:outline-none"
+                    required
+                />
+                @if (strlen($displayName) >= 2)
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                @endif
+            </div>
+            @error('displayName') <p class="mb-2 text-[10px] text-coral">{{ $message }}</p> @enderror
+            <p class="mb-5 text-center text-[10px] text-muted">{{ __('sessions.no_account_just_session') ?? 'No account needed · Just for this session' }}</p>
+
+            <div class="mt-auto pb-2">
+                <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark">
+                    {{ __('sessions.enter_the_quest') ?? 'Enter the Quest' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

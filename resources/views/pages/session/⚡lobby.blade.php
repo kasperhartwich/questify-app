@@ -80,14 +80,24 @@ class extends Component
     {{-- Forest Header --}}
     <div class="relative overflow-hidden bg-forest-600 px-4 py-5 text-white">
         <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[100px] w-[100px] rounded-full border-[18px] border-amber-400/10"></div>
-        <p class="text-xs font-bold uppercase tracking-widest text-amber-400">{{ __('sessions.lobby') }}</p>
-        <h1 class="mt-1 font-heading text-lg font-bold leading-tight">{{ $session->quest?->title ?? __('sessions.session') }}</h1>
+        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-400">{{ __('sessions.lobby') ?? 'Lobby' }}</p>
+        <h1 class="mt-1 font-heading text-[15px] font-bold leading-tight">{{ $session['quest']['title'] ?? __('sessions.session') }}</h1>
+
+        {{-- Badges --}}
+        <div class="mt-2.5 flex flex-wrap gap-1.5">
+            @if (!empty($session['play_mode']))
+                <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ ucfirst(str_replace('_', ' ', $session['play_mode'])) }}</span>
+            @endif
+            @if (!empty($session['quest']['checkpoints_count']))
+                <span class="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-bold text-white/80">{{ $session['quest']['checkpoints_count'] }} {{ __('general.stops') ?? 'stops' }}</span>
+            @endif
+        </div>
 
         {{-- Session Code --}}
-        <div class="mt-3 rounded-xl bg-white/10 px-4 py-2.5">
-            <p class="text-[9px] font-semibold text-white/50">{{ __('sessions.join_code') }}</p>
+        <div class="mt-3 rounded-[10px] bg-white/10 px-3 py-2">
+            <p class="text-[9px] font-semibold text-white/50">{{ __('sessions.join_code') ?? 'Session code' }}</p>
             <div class="flex items-center justify-between">
-                <p class="font-heading text-xl font-extrabold tracking-[3px]">{{ $session->join_code }}</p>
+                <p class="font-heading text-lg font-extrabold tracking-[3px]">{{ $session['join_code'] ?? $code }}</p>
                 <button
                     wire:click="shareSession"
                     class="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/70"
@@ -105,36 +115,38 @@ class extends Component
         </div>
     </div>
 
-    <div class="flex-1 space-y-4 p-4">
+    <div class="flex-1 p-4">
         {{-- Participants List --}}
         <div>
-            <div class="mb-2 flex items-center justify-between px-1">
-                <h2 class="font-heading text-sm font-bold text-bark dark:text-white">{{ __('sessions.participants') }}</h2>
+            <div class="mb-2 flex items-center justify-between">
+                <h2 class="font-heading text-xs font-bold text-bark">{{ __('sessions.players') ?? 'Players' }}</h2>
                 <div class="flex items-center gap-1.5">
-                    <div class="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500"></div>
-                    <span class="text-xs font-semibold text-green-500">{{ count($participants) }} {{ __('sessions.joined') }}</span>
+                    <div class="h-[7px] w-[7px] animate-pulse rounded-full bg-green-500"></div>
+                    <span class="text-[10px] font-semibold text-green-500">{{ count($participants) }} {{ __('sessions.joined') ?? 'joined' }}</span>
                 </div>
             </div>
 
-            <div class="space-y-1">
+            <div class="px-0">
+                @php $avatarColors = ['#0B3D2E', '#7C4DFF', '#E85C3A', '#0EA5E9', '#F5A623', '#7C3AED']; @endphp
+
                 {{-- Host --}}
-                <div class="flex items-center gap-3 border-b border-cream-border py-2.5">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-forest-600 text-xs font-bold text-white">QM</div>
-                    <p class="flex-1 text-sm font-semibold text-bark dark:text-white">{{ $session->host?->name }}</p>
-                    <span class="rounded-full bg-forest-50 px-2 py-0.5 text-[9px] font-bold text-forest-500 dark:bg-forest-900/30 dark:text-forest-400">{{ __('sessions.host') }}</span>
+                <div class="flex items-center gap-2.5 border-b border-cream-border py-2">
+                    <div class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-forest-600 text-[11px] font-bold text-white">QM</div>
+                    <p class="flex-1 text-xs font-semibold text-bark">{{ $session['host']['name'] ?? '' }}</p>
+                    <span class="rounded-full bg-[#D4EDE4] px-[7px] py-0.5 text-[9px] font-bold text-forest-400">{{ __('sessions.quest_master') ?? 'Quest Master' }}</span>
                 </div>
 
-                @foreach ($participants as $participant)
-                    <div class="flex items-center gap-3 border-b border-cream-border py-2.5" wire:key="participant-{{ $participant['id'] }}">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-bark">
+                @foreach ($participants as $pIndex => $participant)
+                    <div class="flex items-center gap-2.5 border-b border-cream-border py-2 last:border-b-0" wire:key="participant-{{ $participant['id'] }}">
+                        <div class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white" style="background: {{ $avatarColors[$pIndex % count($avatarColors)] }}">
                             {{ strtoupper(substr($participant['display_name'], 0, 1)) }}
                         </div>
-                        <p class="text-sm font-semibold text-bark dark:text-white">{{ $participant['display_name'] }}</p>
+                        <p class="text-xs font-semibold text-bark">{{ $participant['display_name'] }}</p>
                     </div>
                 @endforeach
 
                 @if (empty($participants))
-                    <p class="py-4 text-center text-sm text-muted dark:text-gray-500">{{ __('sessions.waiting') }}</p>
+                    <p class="py-4 text-center text-xs text-muted">{{ __('sessions.waiting_for_players') ?? 'Waiting for players to join...' }}</p>
                 @endif
             </div>
         </div>

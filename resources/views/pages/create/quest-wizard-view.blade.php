@@ -1,97 +1,107 @@
 <div class="flex flex-col">
+    {{-- Header --}}
+    <div class="flex items-center justify-between px-4 pb-3.5 pt-1.5">
+        <h1 class="font-heading text-xl font-extrabold text-bark">{{ __('general.create_quest') ?? 'Create Quest' }}</h1>
+        <button wire:click="saveDraft" class="text-[11px] font-semibold text-forest-400">{{ __('general.save_draft') ?? 'Save Draft' }}</button>
+    </div>
+
     {{-- Step Indicator --}}
-    <div class="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
+    <div class="flex items-center gap-1.5 px-4 pb-3">
         @foreach (['Basics', 'Checkpoints', 'Questions', 'Rules', 'Review'] as $i => $label)
             <button
                 wire:click="goToStep({{ $i + 1 }})"
-                class="flex flex-col items-center gap-1 text-xs {{ $step === $i + 1 ? 'text-forest-600 dark:text-forest-400' : ($step > $i + 1 ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500') }}"
+                class="flex flex-1 flex-col items-center gap-1"
             >
-                <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold
-                    {{ $step === $i + 1 ? 'bg-forest-600 text-white' : ($step > $i + 1 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-700') }}">
-                    @if ($step > $i + 1) ✓ @else {{ $i + 1 }} @endif
-                </span>
-                <span>{{ $label }}</span>
+                <div class="h-[3px] w-full rounded-full {{ $step > $i ? 'bg-forest-600' : 'bg-cream-border' }}"></div>
+                <span class="text-[8px] font-semibold {{ $step === $i + 1 ? 'text-forest-600' : 'text-muted' }}">{{ $label }}</span>
             </button>
         @endforeach
     </div>
 
-    <div class="flex-1 overflow-y-auto p-4">
+    <div class="flex-1 overflow-y-auto px-3.5 pb-4">
         {{-- Step 1: Basics --}}
         @if ($step === 1)
-            <div class="space-y-4">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('quests.quest') }} {{ __('general.settings') }}</h2>
-
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('quests.title') }} *</label>
-                    <input type="text" wire:model="title" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="{{ __('quests.title') }}" />
-                    @error('title') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+            <div class="flex flex-col gap-2.5">
+                {{-- Quest Name --}}
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('quests.title') }}</label>
+                    <input type="text" wire:model="title" class="w-full border-none bg-transparent p-0 font-heading text-sm font-bold text-bark placeholder-muted/50 focus:outline-none focus:ring-0" placeholder="{{ __('quests.title') }}" />
+                    @error('title') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('quests.description') }}</label>
-                    <textarea wire:model="description" rows="3" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="{{ __('quests.description') }}"></textarea>
+                {{-- Description --}}
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('quests.description') }}</label>
+                    <textarea wire:model="description" rows="3" class="w-full border-none bg-transparent p-0 text-[13px] text-bark placeholder-muted/50 focus:outline-none focus:ring-0" placeholder="{{ __('quests.description') }}"></textarea>
                 </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.category') }} *</label>
-                    <select wire:model="categoryId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                        <option value="">{{ __('general.all_categories') }}</option>
-                        @foreach ($categories as $id => $name)
-                            <option value="{{ $id }}">{{ $name }}</option>
-                        @endforeach
-                    </select>
-                    @error('categoryId') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                {{-- Category & Difficulty --}}
+                <div class="flex gap-2">
+                    <div class="flex-1 rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                        <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.category') }}</label>
+                        <select wire:model="categoryId" class="w-full border-none bg-transparent p-0 font-heading text-xs font-bold text-bark focus:outline-none focus:ring-0">
+                            <option value="">{{ __('general.all_categories') }}</option>
+                            @foreach ($categories as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        @error('categoryId') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="flex-1 rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                        <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.difficulty') }}</label>
+                        <select wire:model="difficulty" class="w-full border-none bg-transparent p-0 font-heading text-xs font-bold text-bark focus:outline-none focus:ring-0">
+                            <option value="">{{ __('general.all_difficulties') }}</option>
+                            @foreach (\App\Enums\Difficulty::cases() as $diff)
+                                <option value="{{ $diff->value }}">{{ ucfirst($diff->value) }}</option>
+                            @endforeach
+                        </select>
+                        @error('difficulty') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                    </div>
                 </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.difficulty') }} *</label>
-                    <select wire:model="difficulty" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                        <option value="">{{ __('general.all_difficulties') }}</option>
-                        @foreach (\App\Enums\Difficulty::cases() as $diff)
-                            <option value="{{ $diff->value }}">{{ ucfirst($diff->value) }}</option>
-                        @endforeach
-                    </select>
-                    @error('difficulty') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                </div>
-
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.avatar') }}</label>
-                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-forest-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-forest-700 dark:text-gray-400" />
-                    @error('coverImage') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                {{-- Cover Image --}}
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.cover_image') ?? 'Cover Image' }}</label>
+                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-xs text-muted" />
+                    @error('coverImage') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
             </div>
         @endif
 
         {{-- Step 2: Checkpoints --}}
         @if ($step === 2)
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('quests.checkpoints') }}</h2>
-                    <button wire:click="addCheckpoint" class="rounded-lg bg-forest-600 px-3 py-1.5 text-xs font-medium text-white">+ {{ __('general.create') }}</button>
-                </div>
+            <div class="flex flex-col gap-2.5">
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <div class="mb-2.5 text-[9px] font-bold uppercase tracking-widest text-muted">
+                        {{ __('quests.checkpoints') }}
+                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') ?? 'added' }}</span>
+                    </div>
 
                 @foreach ($checkpoints as $cpIndex => $checkpoint)
-                    <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" wire:key="cp-{{ $cpIndex }}">
-                        <div class="mb-3 flex items-center justify-between">
-                            <h3 class="font-semibold text-gray-900 dark:text-white">{{ __('quests.checkpoint') }} {{ $cpIndex + 1 }}</h3>
-                            @if (count($checkpoints) > 1)
-                                <button wire:click="removeCheckpoint({{ $cpIndex }})" class="text-xs text-red-500">{{ __('general.delete') }}</button>
-                            @endif
+                    <div class="flex items-center gap-2 border-b border-cream-border py-1.5 last:border-b-0" wire:key="cp-{{ $cpIndex }}">
+                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[9px] font-bold text-white">{{ $cpIndex + 1 }}</div>
+                        <div class="min-w-0 flex-1">
+                            <input type="text" wire:model="checkpoints.{{ $cpIndex }}.title" class="w-full border-none bg-transparent p-0 text-[11px] font-semibold text-bark placeholder-muted/50 focus:outline-none focus:ring-0" placeholder="{{ __('quests.title') }}" />
+                            @error("checkpoints.{$cpIndex}.title") <p class="text-[10px] text-coral">{{ $message }}</p> @enderror
                         </div>
+                        @if (count($checkpoints) > 1)
+                            <button wire:click="removeCheckpoint({{ $cpIndex }})" class="shrink-0">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </button>
+                        @else
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+                        @endif
+                    </div>
 
-                        <div class="space-y-3">
+                        <div class="mt-2 space-y-3 border-t border-cream-border pt-2" x-data="{ expanded: false }" x-show="expanded" x-transition>
                             <div>
-                                <input type="text" wire:model="checkpoints.{{ $cpIndex }}.title" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="{{ __('quests.title') }} *" />
-                                @error("checkpoints.{$cpIndex}.title") <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                <textarea wire:model="checkpoints.{{ $cpIndex }}.description" rows="2" class="w-full rounded-xl border-[1.5px] border-cream-border bg-white px-3 py-2 text-xs text-bark focus:border-forest-600 focus:outline-none" placeholder="{{ __('quests.description') }}"></textarea>
                             </div>
-
-                            <textarea wire:model="checkpoints.{{ $cpIndex }}.description" rows="2" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="{{ __('quests.description') }}"></textarea>
 
                             {{-- Map Pin Drop --}}
                             <div>
-                                <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.quest_map') }} ({{ __('quests.checkpoint') }})</label>
                                 <div
-                                    class="h-48 w-full rounded-lg bg-gray-200 dark:bg-gray-700"
+                                    class="h-48 w-full overflow-hidden rounded-xl bg-cream-dark"
                                     x-data="{
                                         map: null,
                                         marker: null,
@@ -141,6 +151,15 @@
                         </div>
                     </div>
                 @endforeach
+
+                    {{-- Add checkpoint --}}
+                    <button wire:click="addCheckpoint" class="flex items-center gap-2 pt-2.5">
+                        <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-dashed border-cream-border">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                        <span class="text-[11px] font-semibold text-forest-400">{{ __('general.add_checkpoint_on_map') ?? 'Add checkpoint on map' }}</span>
+                    </button>
+                </div>
             </div>
         @endif
 
@@ -262,58 +281,71 @@
 
         {{-- Step 5: Review & Publish --}}
         @if ($step === 5)
-            <div class="space-y-4">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('sessions.review_publish') }}</h2>
-
-                {{-- Quest Summary --}}
-                <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                    <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">{{ $title }}</h3>
+            <div class="flex flex-col gap-2.5">
+                {{-- Quest Name Card --}}
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <div class="text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('quests.quest') }}</div>
+                    <h3 class="mt-1 font-heading text-sm font-bold text-bark">{{ $title }}</h3>
                     @if ($description)
-                        <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">{{ $description }}</p>
+                        <p class="mt-1 text-[11px] text-muted">{{ Str::limit($description, 100) }}</p>
                     @endif
-                    <div class="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span class="rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">{{ ucfirst($difficulty) }}</span>
-                        <span class="rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">{{ ucfirst($playMode) }}</span>
-                        <span class="rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">{{ count($checkpoints) }} {{ __('quests.checkpoints') }}</span>
-                        <span class="rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">{{ collect($questions)->flatten(1)->count() }} {{ __('quests.questions') }}</span>
+                </div>
+
+                {{-- Checkpoints Card --}}
+                <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
+                    <div class="mb-2 text-[9px] font-bold uppercase tracking-widest text-muted">
+                        {{ __('quests.checkpoints') }}
+                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') ?? 'added' }}</span>
+                    </div>
+                    @foreach ($checkpoints as $cpIndex => $checkpoint)
+                        <div class="flex items-center gap-2 border-b border-cream-border py-1.5 last:border-b-0" wire:key="review-cp-{{ $cpIndex }}">
+                            <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[9px] font-bold text-white">{{ $cpIndex + 1 }}</div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[11px] font-semibold text-bark">{{ $checkpoint['title'] }}</p>
+                                <p class="text-[9px] text-muted">{{ count($questions[$cpIndex] ?? []) }} {{ __('quests.question') ?? 'question' }}{{ count($questions[$cpIndex] ?? []) !== 1 ? 's' : '' }}</p>
+                            </div>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Settings Row --}}
+                <div class="flex gap-2">
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.visibility') ?? 'Visibility' }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ ucfirst($visibility ?? 'Public') }}</div>
+                    </div>
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.mode') ?? 'Mode' }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ ucfirst($playMode ?? 'Any') }}</div>
+                    </div>
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.scoring') ?? 'Scoring' }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ $scoringSpeedBonus ? 'Speed' : 'Standard' }}</div>
                     </div>
                 </div>
 
-                {{-- Checkpoints Summary --}}
-                @foreach ($checkpoints as $cpIndex => $checkpoint)
-                    <div class="rounded-xl bg-white p-3 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <p class="font-medium text-gray-900 dark:text-white">{{ $cpIndex + 1 }}. {{ $checkpoint['title'] }}</p>
-                        @if ($checkpoint['latitude'] && $checkpoint['longitude'])
-                            <p class="text-xs text-gray-500 dark:text-gray-400">📍 {{ number_format($checkpoint['latitude'], 5) }}, {{ number_format($checkpoint['longitude'], 5) }}</p>
-                        @endif
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ count($questions[$cpIndex] ?? []) }} {{ __('quests.questions') }}</p>
-                    </div>
-                @endforeach
+                {{-- Publish --}}
+                <button wire:click="publish" class="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark">
+                    {{ __('quests.publish') }} &rarr;
+                </button>
             </div>
         @endif
     </div>
 
-    {{-- Bottom Navigation --}}
-    <div class="border-t border-cream-border bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-        <div class="flex gap-3">
-            @if ($step > 1)
-                <button wire:click="previousStep" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300">
-                    {{ __('general.previous') }}
-                </button>
-            @endif
-
-            @if ($step < 5)
-                <button wire:click="nextStep" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
+    {{-- Bottom Navigation (steps 1-4) --}}
+    @if ($step < 5)
+        <div class="border-t border-cream-border bg-white px-3.5 py-3">
+            <div class="flex gap-3">
+                @if ($step > 1)
+                    <button wire:click="previousStep" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3 text-[13px] font-semibold text-bark">
+                        {{ __('general.previous') }}
+                    </button>
+                @endif
+                <button wire:click="nextStep" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark">
                     {{ __('general.next') }}
                 </button>
-            @else
-                <button wire:click="saveAsDraft" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300">
-                    {{ __('quests.draft') }}
-                </button>
-                <button wire:click="publish" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
-                    {{ __('quests.publish') }}
-                </button>
-            @endif
+            </div>
         </div>
-    </div>
+    @endif
 </div>

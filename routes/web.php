@@ -8,6 +8,7 @@ Route::livewire('/', 'pages::welcome.index')->name('welcome');
 
 // Join (guest-accessible)
 Route::livewire('/join', 'pages::join.index')->name('join');
+Route::livewire('/join/{code}/name', 'pages::join.display-name')->name('join.name');
 
 // Auth routes
 Route::livewire('/login', 'pages::auth.login')->name('login');

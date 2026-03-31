@@ -17,7 +17,7 @@ class extends Component
             'joinCode' => ['required', 'string', 'size:6'],
         ]);
 
-        $this->redirect('/sessions/' . strtoupper($this->joinCode));
+        $this->redirect('/join/' . strtoupper($this->joinCode) . '/name');
     }
 
     public function scanQr(): void
@@ -29,55 +29,46 @@ class extends Component
 
 <div class="flex min-h-screen flex-col bg-cream">
     {{-- Header --}}
-    <div class="flex items-center gap-3 px-4 pb-3 pt-4">
-        <a href="/" class="flex h-8 w-8 items-center justify-center rounded-lg bg-cream-dark" wire:navigate>
+    <div class="flex items-center gap-2.5 px-4 pb-3 pt-4">
+        <a href="/" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark" wire:navigate>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
-        <h1 class="font-heading text-lg font-bold text-bark">{{ __('general.join_quest') }}</h1>
+        <h1 class="font-heading text-base font-bold text-bark">{{ __('general.join_quest') }}</h1>
     </div>
 
     <div class="flex flex-1 flex-col px-4">
         {{-- Session code input --}}
         <div class="mb-4">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">{{ __('general.enter_session_code') ?? 'Enter session code' }}</p>
-            <form wire:submit="joinByCode" class="space-y-3">
-                <div class="flex justify-center gap-1.5">
-                    <input
-                        type="text"
-                        wire:model="joinCode"
-                        placeholder="{{ __('general.enter_code') }}"
-                        maxlength="6"
-                        class="w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3.5 text-center font-heading text-xl font-extrabold uppercase tracking-[0.3em] text-bark focus:border-forest-600 focus:outline-none"
-                    />
-                </div>
-                @error('joinCode') <p class="text-center text-sm text-coral">{{ $message }}</p> @enderror
-                <p class="text-center text-xs text-muted">{{ __('general.ask_quest_master_code') ?? 'Ask your Quest Master for the 6-character code' }}</p>
-            </form>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('general.enter_session_code') ?? 'Enter session code' }}</p>
+            <x-code-boxes wire-model="joinCode" />
+            @error('joinCode') <p class="mt-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
+            <p class="mt-2.5 text-center text-[10px] text-muted">{{ __('general.ask_quest_master_code') ?? 'Ask your Quest Master for the 6-character code' }}</p>
         </div>
 
         {{-- OR divider --}}
-        <div class="flex items-center gap-3 py-4">
+        <div class="flex items-center gap-2.5 py-4">
             <div class="h-px flex-1 bg-cream-border"></div>
-            <span class="text-xs font-semibold tracking-wider text-muted">{{ __('general.or') }}</span>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-muted">{{ __('general.or') }}</span>
             <div class="h-px flex-1 bg-cream-border"></div>
         </div>
 
         {{-- Scan QR --}}
-        <button wire:click="scanQr" class="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-cream-border bg-white px-4 py-3 text-sm font-semibold text-bark">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
-            {{ __('general.scan_qr') }}
+        <button wire:click="scanQr" class="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-cream-border bg-white px-4 py-3 text-[13px] font-semibold text-bark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
+            {{ __('general.scan_qr') ?? 'Scan QR Code' }}
         </button>
 
         <div class="flex-1"></div>
 
         {{-- Continue button --}}
-        <div class="pb-6">
+        <div class="pb-2">
             <button
                 wire:click="joinByCode"
-                class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
-                {{ strlen($joinCode) < 6 ? 'disabled' : '' }}
+                class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark"
+                @if (strlen($joinCode) < 6) style="opacity: 0.5" @endif
+                @if (strlen($joinCode) < 6) disabled @endif
             >
-                {{ __('general.continue') ?? 'Continue' }} →
+                {{ __('general.continue') ?? 'Continue' }} &rarr;
             </button>
         </div>
     </div>
