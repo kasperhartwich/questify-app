@@ -98,143 +98,154 @@ class extends Component
 ?>
 
 <div class="flex flex-col">
-    <div class="space-y-6 p-4">
+    {{-- Profile Header --}}
+    <div class="relative overflow-hidden bg-forest-600 px-4 py-5">
+        <div class="pointer-events-none absolute right-[-30px] top-[-30px] h-[120px] w-[120px] rounded-full border-[20px] border-amber-400/10"></div>
+        <div class="relative z-10 flex items-center gap-3">
+            <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-[3px] border-white/20 bg-amber-400">
+                @if (Auth::user()->avatar_path)
+                    <img src="{{ Storage::url(Auth::user()->avatar_path) }}" alt="{{ __('general.avatar') }}" class="h-full w-full object-cover" />
+                @else
+                    <span class="font-heading text-xl font-extrabold text-bark">{{ substr($name, 0, 1) }}</span>
+                @endif
+            </div>
+            <div>
+                <h1 class="font-heading text-lg font-bold text-white">{{ $name }}</h1>
+                <p class="text-xs text-white/50">{{ $email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4 p-4">
         {{-- Flash Messages --}}
         @if (session('message'))
-            <div class="rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
+            <div class="rounded-xl bg-forest-50 p-3 text-sm font-medium text-forest-600 dark:bg-green-900/30 dark:text-green-400">
                 {{ session('message') }}
             </div>
         @endif
 
         {{-- Avatar & Basic Info --}}
-        <form wire:submit="updateProfile" class="space-y-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h2 class="font-semibold text-gray-900 dark:text-white">{{ __('general.profile') }}</h2>
+        <form wire:submit="updateProfile" class="space-y-4 rounded-[14px] bg-white p-4 shadow-sm dark:bg-gray-800">
 
-            {{-- Avatar --}}
-            <div class="flex items-center gap-4">
-                <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-indigo-100 dark:bg-indigo-900/30">
-                    @if (Auth::user()->avatar_path)
-                        <img src="{{ Storage::url(Auth::user()->avatar_path) }}" alt="{{ __('general.avatar') }}" class="h-full w-full object-cover" />
-                    @else
-                        <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{{ substr($name, 0, 1) }}</span>
-                    @endif
-                </div>
-                <div>
-                    <input type="file" wire:model="avatar" accept="image/*" class="text-sm text-gray-500" />
-                    @error('avatar') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                </div>
+            {{-- Avatar Upload --}}
+            <div>
+                <input type="file" wire:model="avatar" accept="image/*" class="text-sm text-muted" />
+                @error('avatar') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             {{-- Name --}}
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.name') }}</label>
+                <label for="name" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.name') }}</label>
                 <input
                     id="name"
                     type="text"
                     wire:model="name"
-                    class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     required
                 />
-                @error('name') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                @error('name') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             {{-- Email --}}
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.email') }}</label>
+                <label for="email" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.email') }}</label>
                 <input
                     id="email"
                     type="email"
                     wire:model="email"
-                    class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     required
                 />
-                @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                @error('email') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             {{-- Language Selector --}}
             <div>
-                <label for="locale" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.language') }}</label>
+                <label for="locale" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.language') }}</label>
                 <select
                     id="locale"
                     wire:model="locale"
-                    class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
                     <option value="en">{{ __('general.english') }}</option>
                     <option value="da">{{ __('general.danish') }}</option>
                 </select>
             </div>
 
-            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 font-semibold text-white hover:bg-indigo-700">
+            <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                 {{ __('general.save') }}
             </button>
         </form>
 
         {{-- Change Password --}}
-        <form wire:submit="changePassword" class="space-y-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h2 class="font-semibold text-gray-900 dark:text-white">{{ __('general.change_password') }}</h2>
+        <form wire:submit="changePassword" class="space-y-4 rounded-[14px] bg-white p-4 shadow-sm dark:bg-gray-800">
+            <h2 class="font-heading text-sm font-bold text-bark dark:text-white">{{ __('general.change_password') }}</h2>
 
             @if (session('password_message'))
-                <div class="rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <div class="rounded-xl bg-forest-50 p-3 text-sm font-medium text-forest-600 dark:bg-green-900/30 dark:text-green-400">
                     {{ session('password_message') }}
                 </div>
             @endif
 
             <div>
-                <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.current_password') }}</label>
-                <input id="current_password" type="password" wire:model="current_password" class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
-                @error('current_password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                <label for="current_password" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.current_password') }}</label>
+                <input id="current_password" type="password" wire:model="current_password" class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
+                @error('current_password') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.new_password') }}</label>
-                <input id="new_password" type="password" wire:model="new_password" class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
-                @error('new_password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                <label for="new_password" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.new_password') }}</label>
+                <input id="new_password" type="password" wire:model="new_password" class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
+                @error('new_password') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label for="new_password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.password_confirmation') }}</label>
-                <input id="new_password_confirmation" type="password" wire:model="new_password_confirmation" class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
+                <label for="new_password_confirmation" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.password_confirmation') }}</label>
+                <input id="new_password_confirmation" type="password" wire:model="new_password_confirmation" class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-2.5 text-bark dark:border-gray-600 dark:bg-gray-700 dark:text-white" required />
             </div>
 
-            <button type="submit" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 font-semibold text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+            <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3 font-heading text-sm font-bold text-white hover:bg-forest-700">
                 {{ __('general.change_password') }}
             </button>
         </form>
 
-        {{-- Linked Social Accounts --}}
-        <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h2 class="mb-3 font-semibold text-gray-900 dark:text-white">{{ __('general.linked_accounts') }}</h2>
-            <div class="space-y-2">
-                @foreach ($this->linkedAccounts as $provider => $isLinked)
-                    <div class="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">{{ ucfirst($provider) }}</span>
-                        @if ($isLinked)
-                            <span class="text-sm text-green-600 dark:text-green-400">{{ __('general.linked') ?? 'Linked' }}</span>
-                        @else
-                            <a href="/auth/{{ $provider }}/redirect" class="text-sm font-medium text-indigo-600 dark:text-indigo-400">Connect</a>
-                        @endif
-                    </div>
-                @endforeach
+        {{-- Settings & Actions --}}
+        <div class="overflow-hidden rounded-[14px] bg-white shadow-sm dark:bg-gray-800">
+            {{-- Linked Social Accounts --}}
+            <div class="border-b border-cream-border p-4 dark:border-gray-700">
+                <h2 class="mb-3 font-heading text-sm font-bold text-bark dark:text-white">{{ __('general.linked_accounts') }}</h2>
+                <div class="space-y-2">
+                    @foreach ($this->linkedAccounts as $provider => $isLinked)
+                        <div class="flex items-center justify-between rounded-xl border-[1.5px] border-cream-border p-3 dark:border-gray-700">
+                            <span class="text-sm font-medium text-bark dark:text-gray-300">{{ ucfirst($provider) }}</span>
+                            @if ($isLinked)
+                                <span class="text-xs font-semibold text-forest-500 dark:text-green-400">{{ __('general.linked') ?? 'Linked' }}</span>
+                            @else
+                                <a href="/auth/{{ $provider }}/redirect" class="text-xs font-semibold text-forest-600 dark:text-forest-400">Connect</a>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
             </div>
+
+            {{-- Notification Preferences --}}
+            <div class="border-b border-cream-border p-4 dark:border-gray-700">
+                <label class="flex items-center gap-3">
+                    <input type="checkbox" wire:model.live="notifications_enabled" class="h-5 w-5 rounded border-cream-border text-forest-600" />
+                    <span class="text-sm font-medium text-bark dark:text-gray-300">{{ __('general.notification_preferences') }}</span>
+                </label>
+            </div>
+
+            {{-- Logout --}}
+            <button wire:click="logout" class="flex w-full items-center gap-3 border-b border-cream-border p-4 text-left text-sm font-medium text-coral dark:border-gray-700">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                {{ __('general.logout') }}
+            </button>
+
+            {{-- Delete Account --}}
+            <button wire:click="deleteAccount" wire:confirm="{{ __('general.delete_account_confirm') }}" class="flex w-full items-center gap-3 p-4 text-left text-sm font-medium text-red-600">
+                {{ __('general.delete_account') }}
+            </button>
         </div>
-
-        {{-- Notification Preferences --}}
-        <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h2 class="mb-3 font-semibold text-gray-900 dark:text-white">{{ __('general.notification_preferences') }}</h2>
-            <label class="flex items-center gap-3">
-                <input type="checkbox" wire:model.live="notifications_enabled" class="h-5 w-5 rounded border-gray-300 text-indigo-600" />
-                <span class="text-sm text-gray-700 dark:text-gray-300">{{ __('general.notification_preferences') }}</span>
-            </label>
-        </div>
-
-        {{-- Logout --}}
-        <button wire:click="logout" class="w-full rounded-lg border border-gray-300 px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
-            {{ __('general.logout') }}
-        </button>
-
-        {{-- Delete Account --}}
-        <button wire:click="deleteAccount" wire:confirm="{{ __('general.delete_account_confirm') }}" class="w-full rounded-lg bg-red-600 px-4 py-3 font-semibold text-white hover:bg-red-700">
-            {{ __('general.delete_account') }}
-        </button>
     </div>
 </div>

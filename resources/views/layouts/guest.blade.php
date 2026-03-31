@@ -7,15 +7,18 @@
 
         <title>{{ $title ?? config('app.name', 'Questify') }}</title>
 
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=exo-2:500,600,700,800|dm-sans:400,500,600" rel="stylesheet" />
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-gray-100 dark:bg-gray-900 nativephp-safe-area">
+    <body class="min-h-screen bg-cream dark:bg-gray-900 nativephp-safe-area">
         {{-- Native Top Bar --}}
         <native:top-bar
             id="top-bar"
             title="{{ $title ?? config('app.name', 'Questify') }}"
-            background-color="#4f46e5"
+            background-color="#0B3D2E"
             text-color="#ffffff"
         />
 

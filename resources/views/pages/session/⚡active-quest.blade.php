@@ -156,7 +156,7 @@ class extends Component
                                 icon: {
                                     path: google.maps.SymbolPath.CIRCLE,
                                     scale: 8,
-                                    fillColor: '#4f46e5',
+                                    fillColor: '#0B3D2E',
                                     fillOpacity: 1,
                                     strokeWeight: 2,
                                     strokeColor: '#ffffff',
@@ -178,7 +178,7 @@ class extends Component
         @if ($currentCheckpoint)
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <div class="mb-2 flex items-center justify-between">
-                    <span class="text-xs font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    <span class="text-xs font-medium uppercase tracking-wider text-forest-600 dark:text-forest-400">
                         {{ __('quests.checkpoint') }} {{ $currentCheckpointIndex + 1 }}/{{ count($checkpoints) }}
                     </span>
                 </div>
@@ -197,7 +197,7 @@ class extends Component
                     </div>
                 @endif
 
-                <button wire:click="goToQuestions" class="mt-3 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+                <button wire:click="goToQuestions" class="mt-3 w-full rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                     {{ __('sessions.answer_questions') }}
                 </button>
             </div>
@@ -208,12 +208,12 @@ class extends Component
             <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('sessions.leaderboard') }}</h3>
             <div class="space-y-1">
                 @foreach ($leaderboard as $entry)
-                    <div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm {{ $entry['is_me'] ? 'bg-indigo-50 font-semibold dark:bg-indigo-900/20' : '' }}">
+                    <div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm {{ $entry['is_me'] ? 'bg-forest-50 font-semibold dark:bg-forest-900/20' : '' }}">
                         <span class="flex items-center gap-2">
                             <span class="w-5 text-center text-xs font-bold {{ $entry['rank'] <= 3 ? 'text-amber-500' : 'text-gray-400' }}">{{ $entry['rank'] }}</span>
                             <span class="text-gray-900 dark:text-white">{{ $entry['display_name'] }}</span>
                             @if ($entry['is_me'])
-                                <span class="text-xs text-indigo-600 dark:text-indigo-400">({{ __('sessions.you') }})</span>
+                                <span class="text-xs text-forest-600 dark:text-forest-400">({{ __('sessions.you') }})</span>
                             @endif
                         </span>
                         <span class="font-mono text-xs text-gray-600 dark:text-gray-400">{{ number_format($entry['score']) }}</span>

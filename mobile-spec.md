@@ -492,3 +492,37 @@ Accessible during an active group session via a floating "Dashboard" button visi
 - If answer POST fails, keep the answer UI in a "submitting" state and retry — do not allow a second submission
 - If WebSocket disconnects during an active session, show a subtle reconnecting indicator and attempt reconnect every 5 seconds
 - No offline mode — if connectivity is fully lost, show a full-screen "No connection" overlay with a retry button
+
+---
+
+## 9. Color Palette
+
+### Primary
+| Name         | Hex       | Usage                       |
+|--------------|-----------|-----------------------------|
+| Forest       | `#0B3D2E` | Primary brand, nav, cards   |
+| Forest mid   | `#165C45` | Hover, variants             |
+| Forest light | `#1E7A58` | Links, accents              |
+
+### Accent
+| Name         | Hex       | Usage                       |
+|--------------|-----------|-----------------------------|
+| Amber        | `#F5A623` | CTAs, pins, rewards         |
+| Amber dark   | `#C8811A` | Text on amber background    |
+| Amber light  | `#FDE8BA` | Badges, highlights          |
+
+### Semantic
+| Name         | Hex       | Usage                       |
+|--------------|-----------|-----------------------------|
+| Coral        | `#E85C3A` | Live, urgent, hard          |
+| Coral light  | `#FCDDD7` | Error badges                |
+| Success      | `#D4EDE4` | Completed, done             |
+
+### Neutrals
+| Name         | Hex       | Usage                       |
+|--------------|-----------|-----------------------------|
+| Bark         | `#2C1810` | Headings, bold text         |
+| Cream        | `#FAF5EB` | App background              |
+| Cream dark   | `#F0E8D6` | Cards, surfaces             |
+| Border       | `#E5DDD0` | Dividers, outlines          |
+| Muted        | `#7A7470` | Secondary text              |

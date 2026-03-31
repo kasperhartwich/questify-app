@@ -75,8 +75,9 @@ class extends Component
 
 <div class="flex flex-col">
     {{-- Header --}}
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-4 text-white">
-        <h1 class="text-lg font-bold">{{ __('sessions.host_dashboard') }}</h1>
+    <div class="relative overflow-hidden bg-forest-600 px-4 py-4 text-white">
+        <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-amber-400/10"></div>
+        <h1 class="font-heading text-lg font-bold">{{ __('sessions.host_dashboard') }}</h1>
         <p class="text-sm opacity-80">{{ $session->quest?->title }} — {{ $session->join_code }}</p>
         <div class="mt-2 flex gap-4 text-xs">
             <span>{{ count($participants) }} {{ __('sessions.participants') }}</span>
@@ -94,7 +95,7 @@ class extends Component
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="flex h-8 w-8 items-center justify-center rounded-full
-                            {{ $p['status'] === 'finished' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' }} text-sm font-bold">
+                            {{ $p['status'] === 'finished' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-forest-100 text-forest-700 dark:bg-forest-900/30 dark:text-forest-400' }} text-sm font-bold">
                             {{ strtoupper(substr($p['display_name'], 0, 1)) }}
                         </div>
                         <div>
@@ -117,7 +118,7 @@ class extends Component
                 {{-- Progress Bar --}}
                 <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                     <div
-                        class="h-full rounded-full {{ $p['status'] === 'finished' ? 'bg-green-500' : 'bg-indigo-500' }} transition-all"
+                        class="h-full rounded-full {{ $p['status'] === 'finished' ? 'bg-green-500' : 'bg-forest-500' }} transition-all"
                         style="width: {{ $p['total_checkpoints'] > 0 ? ($p['checkpoints_completed'] / $p['total_checkpoints']) * 100 : 0 }}%"
                     ></div>
                 </div>

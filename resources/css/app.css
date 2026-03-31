@@ -6,6 +6,38 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Exo 2', ui-sans-serif, system-ui, sans-serif;
+
+    /* Questify brand palette */
+    --color-forest-50: #e6f0ec;
+    --color-forest-100: #b3d4c6;
+    --color-forest-200: #80b8a0;
+    --color-forest-300: #4d9c7a;
+    --color-forest-400: #267a5a;
+    --color-forest-500: #0f5e3f;
+    --color-forest-600: #0B3D2E;
+    --color-forest-700: #093226;
+    --color-forest-800: #07271d;
+    --color-forest-900: #041c14;
+
+    --color-amber-50: #fef8eb;
+    --color-amber-100: #fce8bd;
+    --color-amber-200: #fad88f;
+    --color-amber-300: #f7c861;
+    --color-amber-400: #F5A623;
+    --color-amber-500: #e09316;
+    --color-amber-600: #b8780f;
+    --color-amber-700: #8f5d0b;
+    --color-amber-800: #664207;
+    --color-amber-900: #3d2803;
+
+    --color-cream: #FAF5EB;
+    --color-cream-dark: #F0E8D6;
+    --color-cream-border: #E5DDD0;
+
+    --color-bark: #2C1810;
+    --color-muted: #7A7470;
+    --color-coral: #E85C3A;
 }

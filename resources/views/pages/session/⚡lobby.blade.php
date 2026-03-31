@@ -77,92 +77,88 @@ class extends Component
 ?>
 
 <div class="flex flex-col">
-    {{-- Quest Header --}}
-    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-6 text-center text-white">
-        <h1 class="text-xl font-bold">{{ $session->quest?->title ?? __('sessions.session') }}</h1>
-        <p class="mt-1 text-sm opacity-80">{{ __('sessions.waiting') }}</p>
-    </div>
+    {{-- Forest Header --}}
+    <div class="relative overflow-hidden bg-forest-600 px-4 py-5 text-white">
+        <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[100px] w-[100px] rounded-full border-[18px] border-amber-400/10"></div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-400">{{ __('sessions.lobby') }}</p>
+        <h1 class="mt-1 font-heading text-lg font-bold leading-tight">{{ $session->quest?->title ?? __('sessions.session') }}</h1>
 
-    <div class="flex-1 space-y-4 p-4">
-        {{-- Join Code & QR --}}
-        <div class="rounded-xl bg-white p-4 text-center shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <p class="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('sessions.join_code') }}</p>
-            <p class="font-mono text-4xl font-bold tracking-widest text-indigo-600 dark:text-indigo-400">{{ $session->join_code }}</p>
-
-            {{-- QR Code (using inline SVG placeholder, JS renders actual QR) --}}
-            <div
-                class="mx-auto mt-4 h-40 w-40"
-                x-data="{
-                    init() {
-                        if (typeof QRCode !== 'undefined') {
-                            new QRCode(this.$el, {
-                                text: '{{ $shareUrl }}',
-                                width: 160,
-                                height: 160,
-                            });
+        {{-- Session Code --}}
+        <div class="mt-3 rounded-xl bg-white/10 px-4 py-2.5">
+            <p class="text-[9px] font-semibold text-white/50">{{ __('sessions.join_code') }}</p>
+            <div class="flex items-center justify-between">
+                <p class="font-heading text-xl font-extrabold tracking-[3px]">{{ $session->join_code }}</p>
+                <button
+                    wire:click="shareSession"
+                    class="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/70"
+                    x-on:share-session.window="
+                        if (navigator.share) {
+                            navigator.share({ title: 'Join Quest', url: $event.detail.url });
                         } else {
-                            this.$el.innerHTML = '<div class=\'flex h-full items-center justify-center rounded-lg bg-gray-100 text-xs text-gray-500 dark:bg-gray-700 dark:text-gray-400\'>QR Code</div>';
+                            navigator.clipboard.writeText($event.detail.url);
                         }
-                    }
-                }"
-            ></div>
-
-            {{-- Share Link --}}
-            <button
-                wire:click="shareSession"
-                class="mt-3 inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                x-on:share-session.window="
-                    if (navigator.share) {
-                        navigator.share({ title: 'Join Quest', url: $event.detail.url });
-                    } else {
-                        navigator.clipboard.writeText($event.detail.url);
-                    }
-                "
-            >
-                {{ __('sessions.share_link') }}
-            </button>
-        </div>
-
-        {{-- Participants List --}}
-        <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h2 class="mb-3 flex items-center justify-between font-semibold text-gray-900 dark:text-white">
-                {{ __('sessions.participants') }}
-                <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">{{ count($participants) }}</span>
-            </h2>
-
-            <div class="space-y-2">
-                {{-- Host --}}
-                <div class="flex items-center gap-3 rounded-lg bg-indigo-50 px-3 py-2 dark:bg-indigo-900/20">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">H</div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $session->host?->name }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('sessions.host') }}</p>
-                    </div>
-                </div>
-
-                @foreach ($participants as $participant)
-                    <div class="flex items-center gap-3 rounded-lg px-3 py-2" wire:key="participant-{{ $participant['id'] }}">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                            {{ strtoupper(substr($participant['display_name'], 0, 1)) }}
-                        </div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $participant['display_name'] }}</p>
-                    </div>
-                @endforeach
-
-                @if (empty($participants))
-                    <p class="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{{ __('sessions.waiting') }}</p>
-                @endif
+                    "
+                >
+                    {{ __('sessions.share_link') }}
+                </button>
             </div>
         </div>
     </div>
 
+    <div class="flex-1 space-y-4 p-4">
+        {{-- Participants List --}}
+        <div>
+            <div class="mb-2 flex items-center justify-between px-1">
+                <h2 class="font-heading text-sm font-bold text-bark dark:text-white">{{ __('sessions.participants') }}</h2>
+                <div class="flex items-center gap-1.5">
+                    <div class="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500"></div>
+                    <span class="text-xs font-semibold text-green-500">{{ count($participants) }} {{ __('sessions.joined') }}</span>
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                {{-- Host --}}
+                <div class="flex items-center gap-3 border-b border-cream-border py-2.5">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-forest-600 text-xs font-bold text-white">QM</div>
+                    <p class="flex-1 text-sm font-semibold text-bark dark:text-white">{{ $session->host?->name }}</p>
+                    <span class="rounded-full bg-forest-50 px-2 py-0.5 text-[9px] font-bold text-forest-500 dark:bg-forest-900/30 dark:text-forest-400">{{ __('sessions.host') }}</span>
+                </div>
+
+                @foreach ($participants as $participant)
+                    <div class="flex items-center gap-3 border-b border-cream-border py-2.5" wire:key="participant-{{ $participant['id'] }}">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-bark">
+                            {{ strtoupper(substr($participant['display_name'], 0, 1)) }}
+                        </div>
+                        <p class="text-sm font-semibold text-bark dark:text-white">{{ $participant['display_name'] }}</p>
+                    </div>
+                @endforeach
+
+                @if (empty($participants))
+                    <p class="py-4 text-center text-sm text-muted dark:text-gray-500">{{ __('sessions.waiting') }}</p>
+                @endif
+            </div>
+        </div>
+
+        {{-- Waiting indicator --}}
+        @unless ($isHost)
+            <div class="py-4 text-center">
+                <div class="mb-1 flex items-center justify-center gap-1.5">
+                    <div class="h-1.5 w-1.5 rounded-full bg-amber-400 opacity-40"></div>
+                    <div class="h-1.5 w-1.5 rounded-full bg-amber-400 opacity-70"></div>
+                    <div class="h-1.5 w-1.5 rounded-full bg-amber-400"></div>
+                </div>
+                <p class="text-xs text-muted">{{ __('sessions.waiting') }}</p>
+            </div>
+        @endunless
+    </div>
+
     {{-- Host Start Button --}}
     @if ($isHost)
-        <div class="border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div class="border-t border-cream-border bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
             <button
                 wire:click="startSession"
                 wire:confirm="{{ __('sessions.start_confirm') }}"
-                class="w-full rounded-lg bg-green-600 px-4 py-3 text-center font-semibold text-white hover:bg-green-700"
+                class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500"
                 {{ count($participants) < 1 && !$isHost ? 'disabled' : '' }}
             >
                 {{ __('sessions.start') }}

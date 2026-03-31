@@ -27,47 +27,46 @@ class extends Component
 };
 ?>
 
-<div class="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+<div class="flex min-h-screen flex-col bg-forest-600">
+    {{-- Decorative circles --}}
+    <div class="pointer-events-none absolute right-[-50px] top-[-50px] h-[200px] w-[200px] rounded-full border-[36px] border-amber-400/[0.08]"></div>
+    <div class="pointer-events-none absolute bottom-20 left-[-40px] h-[140px] w-[140px] rounded-full border-[24px] border-amber-400/[0.06]"></div>
+
     {{-- Logo & Branding --}}
-    <div class="mb-8 text-center">
-        <h1 class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">Questify</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">{{ __('quests.discover_description') }}</p>
+    <div class="flex flex-1 flex-col items-center justify-center px-6">
+        <x-questify-logo :size="72" variant="forest" />
+        <h1 class="mt-3 font-heading text-3xl font-extrabold tracking-tight text-white">Questify</h1>
+        <p class="mt-2 text-center text-sm leading-relaxed text-white/50">{{ __('quests.discover_description') }}</p>
     </div>
 
-    {{-- Join Quest by Code --}}
-    <div class="w-full max-w-sm space-y-4">
+    {{-- CTAs --}}
+    <div class="flex flex-col gap-3 px-6 pb-10">
+        {{-- Join Quest --}}
         <form wire:submit="joinByCode" class="space-y-3">
             <input
                 type="text"
                 wire:model="joinCode"
                 placeholder="{{ __('general.enter_code') }}"
                 maxlength="6"
-                class="w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-lg uppercase tracking-widest dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                class="w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-center text-lg font-bold uppercase tracking-widest text-bark"
             />
-            @error('joinCode') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
-            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700">
+            @error('joinCode') <p class="text-sm text-red-400">{{ $message }}</p> @enderror
+            <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                 {{ __('general.join_quest') }}
             </button>
         </form>
 
         {{-- Scan QR Code --}}
-        <button wire:click="scanQr" class="w-full rounded-lg border border-indigo-600 px-4 py-3 font-semibold text-indigo-600 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-gray-800">
+        <button wire:click="scanQr" class="w-full rounded-xl border-[1.5px] border-white/[0.28] bg-white/[0.12] px-4 py-3 text-sm font-semibold text-white">
             {{ __('general.scan_qr') }}
         </button>
 
-        {{-- Divider --}}
-        <div class="flex items-center gap-3">
-            <div class="h-px flex-1 bg-gray-300 dark:bg-gray-600"></div>
-            <span class="text-sm text-gray-500">{{ __('general.or') }}</span>
-            <div class="h-px flex-1 bg-gray-300 dark:bg-gray-600"></div>
-        </div>
-
-        {{-- Auth Buttons --}}
-        <a href="/login" class="block w-full rounded-lg bg-white px-4 py-3 text-center font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700">
-            {{ __('general.login') }}
-        </a>
-        <a href="/register" class="block w-full rounded-lg bg-gray-900 px-4 py-3 text-center font-semibold text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+        {{-- Auth links --}}
+        <a href="/register" class="w-full rounded-xl border-[1.5px] border-white/[0.28] bg-white/[0.12] px-4 py-3 text-center text-sm font-semibold text-white">
             {{ __('general.register') }}
+        </a>
+        <a href="/login" class="block py-2 text-center text-sm font-semibold text-white/50">
+            {{ __('general.login') }}
         </a>
     </div>
 </div>

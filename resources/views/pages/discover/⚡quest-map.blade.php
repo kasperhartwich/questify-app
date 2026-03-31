@@ -80,7 +80,7 @@ class extends Component
 
     {{-- Toggle to List View --}}
     <div class="p-4">
-        <a href="/discover/list" class="block rounded-lg bg-white px-4 py-3 text-center font-medium text-indigo-600 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-indigo-400 dark:ring-gray-700" wire:navigate>
+        <a href="/discover/list" class="block rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-forest-600 shadow-sm ring-1 ring-cream-border dark:bg-gray-800 dark:text-forest-400 dark:ring-gray-700" wire:navigate>
             {{ __('general.quest_list') }}
         </a>
     </div>

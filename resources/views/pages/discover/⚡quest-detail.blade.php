@@ -34,15 +34,16 @@ class extends Component
     @if ($questData->cover_image_url)
         <img src="{{ $questData->cover_image_url }}" alt="{{ $questData->title }}" class="h-56 w-full object-cover" />
     @else
-        <div class="flex h-56 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
-            <span class="text-3xl font-bold text-white">{{ $questData->title }}</span>
+        <div class="relative flex h-56 items-center justify-center overflow-hidden bg-forest-600">
+            <div class="pointer-events-none absolute right-[-30px] top-[-30px] h-[150px] w-[150px] rounded-full border-[24px] border-amber-400/10"></div>
+            <span class="relative z-10 px-6 text-center font-heading text-2xl font-extrabold text-white">{{ $questData->title }}</span>
         </div>
     @endif
 
     <div class="space-y-6 p-4">
         {{-- Title & Category --}}
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $questData->title }}</h1>
+            <h1 class="font-heading text-2xl font-extrabold text-bark dark:text-white">{{ $questData->title }}</h1>
             @if ($questData->category)
                 <span class="mt-1 inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                     @if ($questData->category->icon)
@@ -137,10 +138,10 @@ class extends Component
 
         {{-- CTAs --}}
         <div class="flex gap-3 pb-4">
-            <button wire:click="startQuest" class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700">
+            <button wire:click="startQuest" class="flex-1 rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                 {{ __('general.start_quest') }}
             </button>
-            <a href="/" class="flex-1 rounded-lg border border-indigo-600 px-4 py-3 text-center font-semibold text-indigo-600 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-gray-800">
+            <a href="/" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3.5 text-center text-sm font-semibold text-bark hover:bg-cream-dark dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
                 {{ __('general.join') }}
             </a>
         </div>

@@ -4,10 +4,10 @@
         @foreach (['Basics', 'Checkpoints', 'Questions', 'Rules', 'Review'] as $i => $label)
             <button
                 wire:click="goToStep({{ $i + 1 }})"
-                class="flex flex-col items-center gap-1 text-xs {{ $step === $i + 1 ? 'text-indigo-600 dark:text-indigo-400' : ($step > $i + 1 ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500') }}"
+                class="flex flex-col items-center gap-1 text-xs {{ $step === $i + 1 ? 'text-forest-600 dark:text-forest-400' : ($step > $i + 1 ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500') }}"
             >
                 <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold
-                    {{ $step === $i + 1 ? 'bg-indigo-600 text-white' : ($step > $i + 1 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-700') }}">
+                    {{ $step === $i + 1 ? 'bg-forest-600 text-white' : ($step > $i + 1 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-700') }}">
                     @if ($step > $i + 1) ✓ @else {{ $i + 1 }} @endif
                 </span>
                 <span>{{ $label }}</span>
@@ -56,7 +56,7 @@
 
                 <div>
                     <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('general.avatar') }}</label>
-                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 dark:text-gray-400" />
+                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-forest-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-forest-700 dark:text-gray-400" />
                     @error('coverImage') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -67,7 +67,7 @@
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('quests.checkpoints') }}</h2>
-                    <button wire:click="addCheckpoint" class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white">+ {{ __('general.create') }}</button>
+                    <button wire:click="addCheckpoint" class="rounded-lg bg-forest-600 px-3 py-1.5 text-xs font-medium text-white">+ {{ __('general.create') }}</button>
                 </div>
 
                 @foreach ($checkpoints as $cpIndex => $checkpoint)
@@ -153,7 +153,7 @@
                     <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" wire:key="q-cp-{{ $cpIndex }}">
                         <div class="mb-3 flex items-center justify-between">
                             <h3 class="font-semibold text-gray-900 dark:text-white">{{ $checkpoint['title'] ?: __('quests.checkpoint') . ' ' . ($cpIndex + 1) }}</h3>
-                            <button wire:click="addQuestion({{ $cpIndex }})" class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white">+ {{ __('quests.question') }}</button>
+                            <button wire:click="addQuestion({{ $cpIndex }})" class="rounded-lg bg-forest-600 px-3 py-1.5 text-xs font-medium text-white">+ {{ __('quests.question') }}</button>
                         </div>
 
                         @foreach ($questions[$cpIndex] ?? [] as $qIndex => $question)
@@ -188,7 +188,7 @@
                                                         type="{{ $question['type'] === \App\Enums\QuestionType::TrueFalse->value ? 'radio' : 'checkbox' }}"
                                                         wire:model="questions.{{ $cpIndex }}.{{ $qIndex }}.answers.{{ $aIndex }}.is_correct"
                                                         {{ $question['type'] === \App\Enums\QuestionType::TrueFalse->value ? 'name=correct_' . $cpIndex . '_' . $qIndex : '' }}
-                                                        class="h-4 w-4 text-indigo-600"
+                                                        class="h-4 w-4 text-forest-600"
                                                     />
                                                     <input type="text" wire:model="questions.{{ $cpIndex }}.{{ $qIndex }}.answers.{{ $aIndex }}.body" class="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="{{ __('quests.answer') }} {{ $aIndex + 1 }}" {{ $question['type'] === \App\Enums\QuestionType::TrueFalse->value ? 'disabled' : '' }} />
                                                     @if ($question['type'] !== \App\Enums\QuestionType::TrueFalse->value && count($question['answers']) > 2)
@@ -197,7 +197,7 @@
                                                 </div>
                                             @endforeach
                                             @if ($question['type'] === \App\Enums\QuestionType::MultipleChoice->value)
-                                                <button wire:click="addAnswer({{ $cpIndex }}, {{ $qIndex }})" class="text-xs text-indigo-600 dark:text-indigo-400">+ {{ __('quests.answer') }}</button>
+                                                <button wire:click="addAnswer({{ $cpIndex }}, {{ $qIndex }})" class="text-xs text-forest-600 dark:text-forest-400">+ {{ __('quests.answer') }}</button>
                                             @endif
                                         </div>
                                     @else
@@ -244,12 +244,12 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" wire:model="shuffleQuestions" id="shuffleQ" class="h-4 w-4 rounded text-indigo-600" />
+                    <input type="checkbox" wire:model="shuffleQuestions" id="shuffleQ" class="h-4 w-4 rounded text-forest-600" />
                     <label for="shuffleQ" class="text-sm text-gray-700 dark:text-gray-300">{{ __('sessions.shuffle_questions') }}</label>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" wire:model="shuffleAnswers" id="shuffleA" class="h-4 w-4 rounded text-indigo-600" />
+                    <input type="checkbox" wire:model="shuffleAnswers" id="shuffleA" class="h-4 w-4 rounded text-forest-600" />
                     <label for="shuffleA" class="text-sm text-gray-700 dark:text-gray-300">{{ __('sessions.shuffle_answers') }}</label>
                 </div>
 
@@ -294,23 +294,23 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <div class="border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+    <div class="border-t border-cream-border bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
         <div class="flex gap-3">
             @if ($step > 1)
-                <button wire:click="previousStep" class="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-700 dark:border-gray-600 dark:text-gray-300">
+                <button wire:click="previousStep" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300">
                     {{ __('general.previous') }}
                 </button>
             @endif
 
             @if ($step < 5)
-                <button wire:click="nextStep" class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+                <button wire:click="nextStep" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                     {{ __('general.next') }}
                 </button>
             @else
-                <button wire:click="saveAsDraft" class="flex-1 rounded-lg border border-indigo-600 px-4 py-3 text-sm font-semibold text-indigo-600 dark:border-indigo-400 dark:text-indigo-400">
+                <button wire:click="saveAsDraft" class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300">
                     {{ __('quests.draft') }}
                 </button>
-                <button wire:click="publish" class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+                <button wire:click="publish" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                     {{ __('quests.publish') }}
                 </button>
             @endif

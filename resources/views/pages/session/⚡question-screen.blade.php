@@ -139,7 +139,7 @@ class extends Component
             <span>{{ $currentQuestionIndex + 1 }}/{{ $totalQuestions }}</span>
         </div>
         <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-            <div class="h-full rounded-full bg-indigo-600 transition-all" style="width: {{ $totalQuestions > 0 ? (($currentQuestionIndex + ($showFeedback && $lastAnswerCorrect ? 1 : 0)) / $totalQuestions) * 100 : 0 }}%"></div>
+            <div class="h-full rounded-full bg-forest-600 transition-all" style="width: {{ $totalQuestions > 0 ? (($currentQuestionIndex + ($showFeedback && $lastAnswerCorrect ? 1 : 0)) / $totalQuestions) * 100 : 0 }}%"></div>
         </div>
     </div>
 
@@ -147,7 +147,7 @@ class extends Component
         <div class="flex-1 space-y-4 p-4">
             {{-- Question Body --}}
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <span class="mb-2 inline-block rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
+                <span class="mb-2 inline-block rounded-full bg-forest-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-900/30 dark:text-forest-400">
                     {{ str_replace('_', ' ', ucfirst($currentQuestion->type->value)) }}
                 </span>
                 <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $currentQuestion->body }}</h2>
@@ -172,7 +172,7 @@ class extends Component
                                 wire:click="$set('selectedAnswerId', {{ $answer->id }})"
                                 class="w-full rounded-xl border-2 px-4 py-3 text-left text-sm font-medium transition-colors
                                     {{ $selectedAnswerId === $answer->id
-                                        ? 'border-indigo-600 bg-indigo-50 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                        ? 'border-forest-600 bg-forest-50 text-forest-900 dark:border-forest-400 dark:bg-forest-900/30 dark:text-forest-300'
                                         : 'border-gray-200 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-white' }}"
                                 wire:key="answer-{{ $answer->id }}"
                             >
@@ -184,7 +184,7 @@ class extends Component
 
                 <button
                     wire:click="submitAnswer"
-                    class="w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+                    class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
                     {{ ($currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
                 >
                     {{ __('sessions.submit_answer') }}
@@ -205,7 +205,7 @@ class extends Component
 
                 <button
                     wire:click="nextQuestion"
-                    class="w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700"
+                    class="w-full rounded-xl bg-forest-600 px-4 py-3.5 font-heading text-sm font-bold text-white hover:bg-forest-700"
                 >
                     {{ __('general.next') }}
                 </button>

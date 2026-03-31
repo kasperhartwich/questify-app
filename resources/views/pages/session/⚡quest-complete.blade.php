@@ -93,10 +93,11 @@ class extends Component
 
 <div class="flex flex-col">
     {{-- Celebration Header --}}
-    <div class="bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 px-4 py-8 text-center text-white">
+    <div class="relative overflow-hidden bg-forest-600 px-4 py-8 text-center text-white">
+        <div class="pointer-events-none absolute right-[-40px] top-[-40px] h-[160px] w-[160px] rounded-full border-[28px] border-amber-400/10"></div>
         <p class="text-5xl">🏆</p>
-        <h1 class="mt-2 text-2xl font-bold">{{ __('sessions.quest_complete') }}</h1>
-        <p class="mt-1 text-lg opacity-90">{{ $session->quest?->title }}</p>
+        <h1 class="mt-2 font-heading text-2xl font-extrabold">{{ __('sessions.quest_complete') }}</h1>
+        <p class="mt-1 text-lg text-white/80">{{ $session->quest?->title }}</p>
     </div>
 
     <div class="flex-1 space-y-4 p-4">
@@ -104,7 +105,7 @@ class extends Component
         @if ($participant)
             <div class="rounded-xl bg-white p-4 text-center shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('sessions.your_score') }}</p>
-                <p class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">{{ number_format($myScore) }}</p>
+                <p class="text-4xl font-bold text-forest-600 dark:text-forest-400">{{ number_format($myScore) }}</p>
                 @if ($myRank > 0)
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         {{ __('sessions.rank_of', ['rank' => $myRank, 'total' => count($leaderboard)]) }}
@@ -118,7 +119,7 @@ class extends Component
             <h2 class="mb-3 font-semibold text-gray-900 dark:text-white">{{ __('sessions.leaderboard') }}</h2>
             <div class="space-y-2">
                 @foreach ($leaderboard as $entry)
-                    <div class="flex items-center justify-between rounded-lg px-3 py-2 {{ $entry['is_me'] ? 'bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
+                    <div class="flex items-center justify-between rounded-lg px-3 py-2 {{ $entry['is_me'] ? 'bg-forest-50 dark:bg-forest-900/20' : '' }}">
                         <span class="flex items-center gap-3">
                             <span class="flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold
                                 {{ match($entry['rank']) { 1 => 'bg-amber-100 text-amber-700', 2 => 'bg-gray-200 text-gray-600', 3 => 'bg-orange-100 text-orange-700', default => 'bg-gray-100 text-gray-500' } }}">
@@ -127,7 +128,7 @@ class extends Component
                             <span class="text-sm font-medium text-gray-900 dark:text-white">
                                 {{ $entry['display_name'] }}
                                 @if ($entry['is_me'])
-                                    <span class="text-xs text-indigo-600 dark:text-indigo-400">({{ __('sessions.you') }})</span>
+                                    <span class="text-xs text-forest-600 dark:text-forest-400">({{ __('sessions.you') }})</span>
                                 @endif
                             </span>
                         </span>
@@ -159,7 +160,7 @@ class extends Component
                 ></textarea>
                 <button
                     wire:click="rateQuest"
-                    class="mt-2 w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+                    class="mt-2 w-full rounded-xl bg-amber-400 px-4 py-2.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
                     {{ $ratingValue < 1 ? 'disabled' : '' }}
                 >
                     {{ __('sessions.submit_rating') }}
@@ -175,7 +176,7 @@ class extends Component
         <div class="flex gap-3 pb-4">
             <button
                 wire:click="shareResult"
-                class="flex-1 rounded-lg border border-indigo-600 px-4 py-3 font-semibold text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3.5 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300"
                 x-on:share-result.window="
                     if (navigator.share) {
                         navigator.share({ title: $event.detail[0].title, text: $event.detail[0].text });
@@ -184,7 +185,7 @@ class extends Component
             >
                 {{ __('sessions.share_result') }}
             </button>
-            <a href="/discover/list" class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-center font-semibold text-white hover:bg-indigo-700" wire:navigate>
+            <a href="/discover/list" class="flex-1 rounded-xl bg-amber-400 px-4 py-3.5 text-center font-heading text-sm font-bold text-bark hover:bg-amber-500" wire:navigate>
                 {{ __('general.discover') }}
             </a>
         </div>
