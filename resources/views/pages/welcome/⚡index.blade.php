@@ -9,21 +9,6 @@ new
 #[Title('Welcome')]
 class extends Component
 {
-    public string $joinCode = '';
-
-    public function joinByCode(): void
-    {
-        $this->validate([
-            'joinCode' => ['required', 'string', 'size:6'],
-        ]);
-
-        $this->redirect('/sessions/' . strtoupper($this->joinCode));
-    }
-
-    public function scanQr(): void
-    {
-        $this->dispatch('scan-qr');
-    }
 };
 ?>
 
@@ -40,33 +25,23 @@ class extends Component
     </div>
 
     {{-- CTAs --}}
-    <div class="flex flex-col gap-3 px-6 pb-10">
-        {{-- Join Quest --}}
-        <form wire:submit="joinByCode" class="space-y-3">
-            <input
-                type="text"
-                wire:model="joinCode"
-                placeholder="{{ __('general.enter_code') }}"
-                maxlength="6"
-                class="w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-center text-lg font-bold uppercase tracking-widest text-bark"
-            />
-            @error('joinCode') <p class="text-sm text-red-400">{{ $message }}</p> @enderror
-            <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
-                {{ __('general.join_quest') }}
-            </button>
-        </form>
+    <div class="flex flex-col gap-3 px-10 pb-6">
+        {{-- Join a Quest --}}
+        <a href="/join" class="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18.5" y="14" width="2.5" height="2.5"/><rect x="14" y="18.5" width="2.5" height="2.5"/><rect x="18.5" y="18.5" width="2.5" height="2.5"/></svg>
+            {{ __('general.join_quest') }}
+        </a>
 
-        {{-- Scan QR Code --}}
-        <button wire:click="scanQr" class="w-full rounded-xl border-[1.5px] border-white/[0.28] bg-white/[0.12] px-4 py-3 text-sm font-semibold text-white">
-            {{ __('general.scan_qr') }}
-        </button>
-
-        {{-- Auth links --}}
-        <a href="/register" class="w-full rounded-xl border-[1.5px] border-white/[0.28] bg-white/[0.12] px-4 py-3 text-center text-sm font-semibold text-white">
+        {{-- Sign Up --}}
+        <a href="/register" class="w-full rounded-xl border-[1.5px] border-white/[0.28] bg-white/[0.12] px-4 py-3 text-center text-sm font-semibold text-white" wire:navigate>
             {{ __('general.register') }}
         </a>
-        <a href="/login" class="block py-2 text-center text-sm font-semibold text-white/50">
+
+        {{-- Log In --}}
+        <a href="/login" class="block py-1 text-center text-sm font-semibold text-white/50" wire:navigate>
             {{ __('general.login') }}
         </a>
     </div>
+
+    <p class="pb-8 text-center text-xs text-white/30">{{ __('general.no_account_needed') ?? 'No account needed to join a quest' }}</p>
 </div>

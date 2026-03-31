@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 // Welcome (guest landing page)
 Route::livewire('/', 'pages::welcome.index')->name('welcome');
 
+// Join (guest-accessible)
+Route::livewire('/join', 'pages::join.index')->name('join');
+
 // Auth routes
 Route::livewire('/login', 'pages::auth.login')->name('login');
 Route::livewire('/register', 'pages::auth.register')->name('register');

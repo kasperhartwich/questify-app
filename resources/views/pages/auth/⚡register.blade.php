@@ -60,48 +60,48 @@ class extends Component
 
         <form wire:submit="register" class="space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.name') }}</label>
+                <label for="name" class="block text-sm font-medium text-muted dark:text-white/60">{{ __('general.name') }}</label>
                 <input
                     id="name"
                     type="text"
                     wire:model="name"
-                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-white/20 dark:bg-white/10 dark:text-white"
                     required
                 />
                 @error('name') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label for="email" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.email') }}</label>
+                <label for="email" class="block text-sm font-medium text-muted dark:text-white/60">{{ __('general.email') }}</label>
                 <input
                     id="email"
                     type="email"
                     wire:model="email"
-                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-white/20 dark:bg-white/10 dark:text-white"
                     required
                 />
                 @error('email') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.password') }}</label>
+                <label for="password" class="block text-sm font-medium text-muted dark:text-white/60">{{ __('general.password') }}</label>
                 <input
                     id="password"
                     type="password"
                     wire:model="password"
-                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-white/20 dark:bg-white/10 dark:text-white"
                     required
                 />
                 @error('password') <p class="mt-1 text-sm text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-muted dark:text-gray-300">{{ __('general.password_confirmation') }}</label>
+                <label for="password_confirmation" class="block text-sm font-medium text-muted dark:text-white/60">{{ __('general.password_confirmation') }}</label>
                 <input
                     id="password_confirmation"
                     type="password"
                     wire:model="password_confirmation"
-                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    class="mt-1 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3 text-bark dark:border-white/20 dark:bg-white/10 dark:text-white"
                     required
                 />
             </div>
@@ -114,21 +114,21 @@ class extends Component
         {{-- Social Register --}}
         <div class="mt-6 space-y-3">
             <div class="flex items-center gap-3">
-                <div class="h-px flex-1 bg-cream-border dark:bg-gray-600"></div>
-                <span class="text-sm font-semibold text-muted">{{ __('general.or') }}</span>
-                <div class="h-px flex-1 bg-cream-border dark:bg-gray-600"></div>
+                <div class="h-px flex-1 bg-cream-border dark:bg-white/20"></div>
+                <span class="text-sm font-semibold text-muted dark:text-white/50">{{ __('general.or') }}</span>
+                <div class="h-px flex-1 bg-cream-border dark:bg-white/20"></div>
             </div>
 
             @foreach (['google', 'facebook', 'apple', 'microsoft'] as $provider)
-                <a href="/auth/{{ $provider }}/redirect" class="block w-full rounded-xl border-[1.5px] border-cream-border bg-white px-4 py-3 text-center text-sm font-semibold text-bark hover:bg-cream-dark dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                <a href="/auth/{{ $provider }}/redirect" class="block w-full rounded-xl border-[1.5px] border-cream-border bg-white px-4 py-3 text-center text-sm font-semibold text-bark hover:bg-cream-dark dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/15">
                     {{ __('general.continue_with', ['provider' => ucfirst($provider)]) }}
                 </a>
             @endforeach
         </div>
 
-        <p class="mt-6 text-center text-sm text-muted dark:text-gray-400">
+        <p class="mt-6 text-center text-sm text-muted dark:text-white/50">
             {{ __('general.already_have_account') }}
-            <a href="/login" class="font-semibold text-forest-600 hover:text-forest-500 dark:text-forest-400" wire:navigate>{{ __('general.login') }}</a>
+            <a href="/login" class="font-semibold text-forest-600 hover:text-forest-500 dark:text-amber-400" wire:navigate>{{ __('general.login') }}</a>
         </p>
     </div>
 </div>
