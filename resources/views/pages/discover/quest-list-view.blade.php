@@ -35,8 +35,8 @@
         @forelse ($quests as $quest)
             <a href="/quests/{{ $quest->id }}" class="block overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" wire:navigate wire:key="quest-{{ $quest->id }}">
                 {{-- Cover Image --}}
-                @if (!empty($quest->cover_image_url))
-                    <img src="{{ $quest->cover_image_url }}" alt="{{ $quest->title }}" class="h-40 w-full object-cover" />
+                @if (!empty($quest->cover_image_path))
+                    <img src="{{ $quest->cover_image_path }}" alt="{{ $quest->title }}" class="h-40 w-full object-cover" />
                 @else
                     <div class="flex h-40 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
                         <span class="text-2xl font-bold text-white">{{ Str::limit($quest->title, 20) }}</span>

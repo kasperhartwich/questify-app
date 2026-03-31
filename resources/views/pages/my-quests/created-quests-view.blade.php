@@ -20,12 +20,14 @@
                         </a>
                         <div class="mt-1 flex items-center gap-2">
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-                                {{ match($quest->status) {
-                                    \App\Enums\QuestStatus::Draft => 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
-                                    \App\Enums\QuestStatus::Published => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-                                    \App\Enums\QuestStatus::Archived => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                {{ match($quest->status ?? 'draft') {
+                                    'draft' => 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
+                                    'published' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                                    'pending_review' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                                    'archived' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                    default => 'bg-gray-100 text-gray-600',
                                 } }}">
-                                {{ ucfirst($quest->status->value) }}
+                                {{ ucfirst($quest->status ?? 'draft') }}
                             </span>
                         </div>
                     </div>
@@ -33,8 +35,8 @@
 
                 <div class="mt-3 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                     <span>{{ $quest->sessions_count }} {{ __('general.sessions') }}</span>
-                    @if ($quest->ratings_avg_rating)
-                        <span>★ {{ number_format($quest->ratings_avg_rating, 1) }} ({{ $quest->ratings_count }})</span>
+                    @if (!empty($quest->average_rating))
+                        <span>★ {{ number_format($quest->average_rating, 1) }} ({{ $quest->sessions_count ?? 0 }})</span>
                     @endif
                 </div>
 
