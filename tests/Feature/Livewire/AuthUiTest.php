@@ -86,3 +86,88 @@ it('register requires a valid email', function () {
         ->call('register')
         ->assertHasErrors('email');
 });
+
+it('signup step 1 shows phone number option', function () {
+    Livewire::test('pages::auth.register')
+        ->assertSet('step', 1)
+        ->assertSee(__('auth.phone_number'));
+});
+
+it('clicking phone signup advances to step 2 with phone field', function () {
+    Livewire::test('pages::auth.register')
+        ->call('goToPhoneSignup')
+        ->assertSet('step', 2)
+        ->assertSet('signup_method', 'phone')
+        ->assertSee(__('auth.phone_number'))
+        ->assertSee(__('auth.phone_e164_hint'));
+});
+
+it('email signup does not show phone field', function () {
+    Livewire::test('pages::auth.register')
+        ->call('goToEmailSignup')
+        ->assertSet('signup_method', 'email')
+        ->assertDontSee(__('auth.phone_e164_hint'));
+});
+
+it('phone signup requires phone number', function () {
+    Livewire::test('pages::auth.register')
+        ->set('step', 2)
+        ->set('signup_method', 'phone')
+        ->set('first_name', 'Anna')
+        ->set('display_name', 'AdventureAnna')
+        ->set('email', 'anna@example.com')
+        ->set('password', 'password123')
+        ->set('phone_number', '')
+        ->call('register')
+        ->assertHasErrors('phone_number');
+});
+
+it('phone signup validates E.164 format', function () {
+    Livewire::test('pages::auth.register')
+        ->set('step', 2)
+        ->set('signup_method', 'phone')
+        ->set('first_name', 'Anna')
+        ->set('display_name', 'AdventureAnna')
+        ->set('email', 'anna@example.com')
+        ->set('password', 'password123')
+        ->set('phone_number', '12345')
+        ->call('register')
+        ->assertHasErrors('phone_number');
+});
+
+it('phone verify step requires 6-digit code', function () {
+    Livewire::test('pages::auth.register')
+        ->set('step', 3)
+        ->set('phone_code', '123')
+        ->call('verifyPhone')
+        ->assertHasErrors('phone_code');
+});
+
+it('login OTP step renders when step is otp', function () {
+    Livewire::test('pages::auth.login')
+        ->set('step', 'otp')
+        ->set('login_token', 'test-token')
+        ->set('email', 'test@example.com')
+        ->assertSee(__('auth.verify_login'))
+        ->assertSee(__('auth.enter_6_digit_code'));
+});
+
+it('login OTP requires 6-digit code', function () {
+    Livewire::test('pages::auth.login')
+        ->set('step', 'otp')
+        ->set('login_token', 'test-token')
+        ->set('otp_code', '12')
+        ->call('verifyOtp')
+        ->assertHasErrors('otp_code');
+});
+
+it('login back to login resets OTP state', function () {
+    Livewire::test('pages::auth.login')
+        ->set('step', 'otp')
+        ->set('login_token', 'some-token')
+        ->set('otp_code', '123456')
+        ->call('backToLogin')
+        ->assertSet('step', 'login')
+        ->assertSet('otp_code', '')
+        ->assertSet('login_token', '');
+});

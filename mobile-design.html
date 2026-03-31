@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questify — Mobile App Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest:   #0B3D2E;
+  --forest-m: #165C45;
+  --forest-l: #1E7A58;
+  --amber:    #F5A623;
+  --amber-d:  #C8811A;
+  --amber-l:  #FDE8BA;
+  --coral:    #E85C3A;
+  --cream:    #FAF5EB;
+  --cream-d:  #F0E8D6;
+  --bark:     #2C1810;
+  --muted:    #7A7470;
+  --border:   #E5DDD0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #EAE4D8;
+  font-family: 'DM Sans', sans-serif;
+  padding: 52px 44px 100px;
+  min-width: 1280px;
+}
+
+/* ── Layout ── */
+.page-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: #8A8078;
+  margin-bottom: 28px; margin-top: 60px;
+  display: flex; align-items: center; gap: 14px;
+}
+.page-label:first-of-type { margin-top: 0; }
+.page-label::after { content: ''; flex: 1; height: 1px; background: #CCC9BF; }
+
+.phone-row { display: flex; gap: 24px; align-items: flex-start; }
+.phone-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.screen-name {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #8A8078; text-align: center;
+}
+
+/* ── Phone Frame ── */
+.phone {
+  width: 248px;
+  border-radius: 44px;
+  background: #141414;
+  padding: 11px;
+  box-shadow: 0 0 0 1px #2C2C2C, 0 28px 72px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.25);
+  position: relative;
+  flex-shrink: 0;
+}
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 18px; left: 50%; transform: translateX(-50%);
+  width: 72px; height: 22px;
+  background: #141414;
+  border-radius: 0 0 12px 12px;
+  z-index: 20;
+}
+.phone-screen {
+  border-radius: 35px;
+  overflow: hidden;
+  height: 496px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── Status Bar ── */
+.sb {
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 22px 8px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+  font-size: 11px;
+  font-weight: 700;
+}
+.sb-icons { display: flex; gap: 4px; align-items: center; }
+
+/* ── Home Bar ── */
+.home-bar {
+  height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-bar-pill { width: 100px; height: 4px; border-radius: 2px; }
+
+/* ── Screen Body ── */
+.body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ── Tab Bar ── */
+.tabbar {
+  height: 60px;
+  background: white;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px; padding: 8px 0;
+}
+.tab-lbl { font-size: 7px; font-weight: 600; letter-spacing: 0.02em; color: #C0B8B0; white-space: nowrap; }
+.tab.on .tab-lbl { color: var(--forest); }
+.tab-join {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+}
+.join-pill {
+  width: 46px; height: 34px; border-radius: 11px;
+  background: var(--forest);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 12px rgba(11,61,46,0.35);
+}
+
+/* ── Shared UI components ── */
+.btn-amber {
+  width: 100%; padding: 13px;
+  border-radius: 12px; border: none;
+  background: var(--amber); color: var(--bark);
+  font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-forest {
+  width: 100%; padding: 13px;
+  border-radius: 12px; border: none;
+  background: var(--forest); color: white;
+  font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 700;
+}
+.btn-outline-light {
+  width: 100%; padding: 12px;
+  border-radius: 12px; background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.28); color: white;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  text-align: center; display: flex; align-items: center; justify-content: center;
+}
+.btn-outline-dark {
+  width: 100%; padding: 12px;
+  border-radius: 12px; background: transparent;
+  border: 1.5px solid var(--border); color: var(--bark);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.input {
+  width: 100%; padding: 12px 14px;
+  border-radius: 12px; border: 2px solid var(--border);
+  background: white; color: var(--bark);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  outline: none;
+}
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px; border-radius: 100px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+}
+.b-amber { background: var(--amber-l); color: var(--amber-d); }
+.b-forest { background: #D4EDE4; color: var(--forest); }
+.b-coral { background: #FCDDD7; color: #C03A20; }
+.b-gray { background: #EFE9DF; color: #6B6660; }
+
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px 8px;
+}
+.section-title { font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700; color: var(--bark); }
+.see-all { font-size: 11px; font-weight: 600; color: var(--forest-l); }
+.divider { height: 1px; background: var(--border); margin: 0 16px; }
+.scroll { flex: 1; overflow-y: auto; padding: 0 14px 12px; }
+.scroll::-webkit-scrollbar { display: none; }
+
+/* ── Quest card ── */
+.qcard {
+  border-radius: 14px; overflow: hidden;
+  background: white; margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.qcard-top {
+  padding: 12px 14px 10px; position: relative; overflow: hidden;
+}
+.qcard-top::after {
+  content: ''; position: absolute;
+  right: -20px; top: -20px; width: 80px; height: 80px;
+  border-radius: 50%; border: 14px solid rgba(255,255,255,0.08);
+}
+.qcard-body { padding: 10px 14px 12px; }
+.qcard-title { font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700; color: white; line-height: 1.2; }
+.qcard-sub { font-size: 9px; color: rgba(255,255,255,0.55); margin-top: 3px; }
+.qcard-meta { display: flex; gap: 10px; margin-bottom: 8px; }
+.qcard-meta-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
+.progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; background: var(--amber); }
+
+/* ── Specific screen styles ── */
+
+/* Welcome */
+.welcome-bg {
+  background: var(--forest);
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 0 24px 28px;
+  position: relative; overflow: hidden;
+}
+.welcome-deco1 {
+  position: absolute; top: -50px; right: -50px;
+  width: 200px; height: 200px; border-radius: 50%;
+  border: 36px solid rgba(245,166,35,0.08);
+}
+.welcome-deco2 {
+  position: absolute; bottom: 80px; left: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  border: 24px solid rgba(245,166,35,0.06);
+}
+.welcome-deco3 {
+  position: absolute; top: 30%; right: -20px;
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 14px solid rgba(245,166,35,0.05);
+}
+
+/* Code boxes */
+.code-boxes { display: flex; gap: 6px; justify-content: center; }
+.code-box {
+  width: 32px; height: 40px; border-radius: 10px;
+  border: 2px solid var(--border); background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Exo 2', sans-serif; font-size: 20px; font-weight: 800;
+  color: var(--bark);
+}
+.code-box.filled { border-color: var(--forest); background: #F0FAF5; }
+.code-box.active { border-color: var(--amber); background: white; }
+
+/* Lobby participant */
+.participant {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.participant:last-child { border-bottom: none; }
+.participant-name { font-size: 12px; font-weight: 600; color: var(--bark); flex: 1; }
+.participant-badge { font-size: 9px; font-weight: 700; color: var(--forest-l); background: #D4EDE4; padding: 2px 7px; border-radius: 100px; }
+
+/* Map widget (simplified) */
+.map-widget {
+  height: 100px; background: #E8F0E8;
+  position: relative; overflow: hidden;
+  border-radius: 12px;
+  margin: 0 14px 10px;
+}
+.map-grid-h {
+  position: absolute; width: 100%; height: 1px;
+  background: rgba(11,61,46,0.08);
+}
+.map-road {
+  position: absolute; background: white;
+  border-radius: 2px;
+}
+.map-pin {
+  position: absolute; width: 20px; height: 20px;
+}
+.map-badge {
+  position: absolute; bottom: 8px; right: 8px;
+  background: white; border-radius: 8px;
+  padding: 4px 8px; font-size: 9px; font-weight: 600; color: var(--forest);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Profile header */
+.profile-header {
+  padding: 16px 16px 20px;
+  background: var(--forest);
+  position: relative; overflow: hidden;
+}
+.profile-header::after {
+  content: ''; position: absolute;
+  right: -30px; top: -30px; width: 120px; height: 120px;
+  border-radius: 50%; border: 20px solid rgba(245,166,35,0.1);
+}
+.stat-row {
+  display: flex; gap: 0;
+  background: white; border-radius: 14px;
+  margin: 0 14px; overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.stat {
+  flex: 1; padding: 12px 8px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-num { font-family: 'Exo 2', sans-serif; font-size: 18px; font-weight: 800; color: var(--forest); }
+.stat-lbl { font-size: 9px; color: var(--muted); font-weight: 500; margin-top: 1px; }
+
+/* My Quests tabs */
+.inner-tabs {
+  display: flex; border-bottom: 2px solid var(--border);
+  padding: 0 14px;
+}
+.inner-tab {
+  flex: 1; padding: 10px 0; text-align: center;
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.inner-tab.on { color: var(--forest); border-bottom-color: var(--forest); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ GUEST FLOW ═══ -->
+<div class="page-label">Guest Flow</div>
+<div class="phone-row">
+
+  <!-- ── 1. WELCOME ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen">
+        <!-- Status bar -->
+        <div class="sb" style="background:var(--forest); color:rgba(255,255,255,0.85);">
+          <span>9:41</span>
+          <div class="sb-icons">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/><rect x="12" y="0" width="2" height="11" rx=".4" opacity=".3"/></svg>
+            <svg width="13" height="10" viewBox="0 0 13 10" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="6.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><path d="M3.8 6.3a3.8 3.8 0 015.4 0" stroke-width="1.2"/><path d="M1.5 4a6.3 6.3 0 0110 0" stroke-width="1.2" opacity=".5"/></svg>
+            <svg width="20" height="11" viewBox="0 0 20 11" fill="none"><rect x=".5" y=".5" width="16" height="10" rx="2" stroke="currentColor" stroke-opacity=".5"/><rect x="1.5" y="1.5" width="12" height="8" rx="1.2" fill="currentColor"/><path d="M17.5 3.5v4c.9-.3 1.5-.9 1.5-2s-.6-1.7-1.5-2z" fill="currentColor" opacity=".5"/></svg>
+          </div>
+        </div>
+        <!-- Content -->
+        <div class="welcome-bg">
+          <div class="welcome-deco1"></div>
+          <div class="welcome-deco2"></div>
+          <div class="welcome-deco3"></div>
+          <!-- Logo area -->
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; z-index:2;">
+            <svg width="72" height="72" viewBox="0 0 84 84" fill="none">
+              <line x1="46" y1="46" x2="68" y2="68" stroke="white" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="40" cy="36" r="28" stroke="white" stroke-width="7" fill="none"/>
+              <circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/>
+              <circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/>
+            </svg>
+            <div style="font-family:'Exo 2',sans-serif;font-size:28px;font-weight:800;color:white;letter-spacing:-0.5px;margin-top:10px;">Questify</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:8px;line-height:1.6;">Real places · Real questions<br>Real adventure</div>
+          </div>
+          <!-- CTAs -->
+          <div style="width:100%;display:flex;flex-direction:column;gap:9px;position:relative;z-index:2;">
+            <div class="btn-amber">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="8" height="8" rx="1.5"/><rect x="14" y="3" width="8" height="8" rx="1.5"/><rect x="2" y="13" width="8" height="8" rx="1.5"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="3" height="3"/><rect x="14" y="19" width="3" height="3"/><rect x="19" y="19" width="3" height="3"/></svg>
+              Join a Quest
+            </div>
+            <div class="btn-outline-light">Sign Up</div>
+            <div style="text-align:center;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;padding:6px 0;cursor:pointer;">Log In</div>
+          </div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:10px;text-align:center;position:relative;z-index:2;">No account needed to join a quest</div>
+        </div>
+        <div class="home-bar" style="background:var(--forest);">
+          <div class="home-bar-pill" style="background:rgba(255,255,255,0.2);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-name">Welcome</div>
+  </div>
+
+  <!-- ── 2. JOIN CODE ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor" opacity=".4"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/><rect x="12" y="0" width="2" height="11" rx=".4" opacity=".3"/></svg>
+            <svg width="20" height="11" viewBox="0 0 20 11" fill="none" opacity=".4"><rect x=".5" y=".5" width="16" height="10" rx="2" stroke="#2C1810" stroke-opacity=".5"/><rect x="1.5" y="1.5" width="12" height="8" rx="1.2" fill="#2C1810"/></svg>
+          </div>
+        </div>
+        <div class="body">
+          <!-- Header -->
+          <div style="padding:4px 16px 12px;display:flex;align-items:center;gap:10px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;color:var(--bark);">Join a Quest</div>
+          </div>
+
+          <!-- Session code -->
+          <div style="padding:0 16px;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px;">Enter session code</div>
+            <div class="code-boxes">
+              <div class="code-box filled">X</div>
+              <div class="code-box filled">K</div>
+              <div class="code-box filled">9</div>
+              <div class="code-box active"></div>
+              <div class="code-box"></div>
+              <div class="code-box"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px;">Ask your Quest Master for the 6-character code</div>
+          </div>
+
+          <!-- OR divider -->
+          <div style="display:flex;align-items:center;gap:10px;padding:16px 16px;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.08em;">OR</div>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+
+          <!-- Scan QR -->
+          <div style="padding:0 16px;">
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
+              Scan QR Code
+            </div>
+          </div>
+
+          <div style="flex:1;"></div>
+
+          <!-- Continue btn -->
+          <div style="padding:0 16px 8px;">
+            <div class="btn-amber" style="opacity:0.5;">Continue →</div>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);">
+          <div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-name">Enter Code</div>
+  </div>
+
+  <!-- ── 3. DISPLAY NAME ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor" opacity=".4"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg>
+          </div>
+        </div>
+        <div class="body" style="padding:0 16px;">
+          <!-- Quest preview card -->
+          <div style="background:var(--forest);border-radius:14px;padding:14px 16px;margin:8px 0 20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-10px;top:-10px;width:60px;height:60px;border-radius:50%;border:10px solid rgba(245,166,35,0.15);"></div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Joining</div>
+            <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;color:white;">Nørrebro: Byens Skjulte Perler</div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <span class="badge b-amber">7 stops</span>
+              <span class="badge" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);">2.4 km</span>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">What should we<br>call you?</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">This is what other players will see during the quest.</div>
+
+          <!-- Input -->
+          <div style="position:relative;margin-bottom:12px;">
+            <input class="input" placeholder="Your display name" value="MagicMike88" style="padding-right:44px;font-weight:600;border-color:var(--forest);">
+            <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:20px;">No account needed · Just for this session</div>
+
+          <div class="btn-amber">Enter the Quest 🚀</div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);">
+          <div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-name">Display Name</div>
+  </div>
+
+  <!-- ── 4. LOBBY ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.85);">
+          <span>9:41</span>
+          <div class="sb-icons">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg>
+          </div>
+        </div>
+        <!-- Forest header -->
+        <div style="background:var(--forest);padding:12px 16px 20px;position:relative;overflow:hidden;">
+          <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;border:18px solid rgba(245,166,35,0.1);"></div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Lobby</div>
+          <div style="font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:white;line-height:1.2;margin-bottom:10px;">Nørrebro: Byens Skjulte Perler</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+            <span class="badge b-amber">Competitive · Individual</span>
+            <span class="badge" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);">7 stops</span>
+          </div>
+          <!-- Session code -->
+          <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.5);font-weight:600;margin-bottom:2px;">Session code</div>
+              <div style="font-family:'Exo 2',sans-serif;font-size:18px;font-weight:800;color:white;letter-spacing:3px;">XK9F2A</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 10px;font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);">Share</div>
+          </div>
+        </div>
+
+        <!-- Participants -->
+        <div class="body">
+          <div style="padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--bark);">Players</div>
+            <div style="display:flex;align-items:center;gap:5px;">
+              <div style="width:7px;height:7px;border-radius:50%;background:#22C55E;animation:pulse 1.5s infinite;"></div>
+              <div style="font-size:10px;font-weight:600;color:#22C55E;">4 joined</div>
+            </div>
+          </div>
+          <div style="padding:0 14px;">
+            <!-- Participants -->
+            <div class="participant">
+              <div class="avatar" style="background:var(--forest);">QM</div>
+              <div style="flex:1;">
+                <div class="participant-name">CityExplorer</div>
+              </div>
+              <span class="participant-badge">Quest Master</span>
+            </div>
+            <div class="participant">
+              <div class="avatar" style="background:#7C4DFF;">M</div>
+              <div class="participant-name">MagicMike88</div>
+            </div>
+            <div class="participant">
+              <div class="avatar" style="background:var(--coral);">A</div>
+              <div class="participant-name">AdventureAnna</div>
+            </div>
+            <div class="participant">
+              <div class="avatar" style="background:#0EA5E9;">T</div>
+              <div class="participant-name">TreasureHunter</div>
+            </div>
+          </div>
+          <div style="flex:1;"></div>
+          <!-- Waiting indicator -->
+          <div style="padding:14px 16px;text-align:center;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px;">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--amber);opacity:0.4;"></div>
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--amber);opacity:0.7;"></div>
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--amber);"></div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);">Waiting for Quest Master to start</div>
+          </div>
+        </div>
+        <div class="home-bar" style="background:white;">
+          <div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-name">Lobby</div>
+  </div>
+
+</div><!-- /phone-row -->
+
+
+<!-- ═══════════════════════════════════════════ APP SCREENS ═══ -->
+<div class="page-label">Logged-In App</div>
+<div class="phone-row">
+
+  <!-- ── 5. DISCOVER ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:0.5;">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg>
+          </div>
+        </div>
+        <div class="body">
+          <!-- Search bar -->
+          <div style="padding:6px 14px 10px;display:flex;gap:8px;align-items:center;">
+            <div style="flex:1;background:white;border-radius:12px;border:1.5px solid var(--border);padding:9px 12px;display:flex;gap:8px;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8078" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+              <span style="font-size:12px;color:#B0A898;">Search quests near you...</span>
+            </div>
+            <div style="width:36px;height:36px;border-radius:11px;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+            </div>
+          </div>
+
+          <!-- Map widget -->
+          <div class="map-widget">
+            <!-- Grid lines -->
+            <div class="map-grid-h" style="top:25%"></div>
+            <div class="map-grid-h" style="top:50%"></div>
+            <div class="map-grid-h" style="top:75%"></div>
+            <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.08);left:33%;"></div>
+            <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.08);left:66%;"></div>
+            <!-- Roads -->
+            <div class="map-road" style="width:100%;height:8px;top:45%;left:0;"></div>
+            <div class="map-road" style="width:8px;height:100%;top:0;left:35%;"></div>
+            <div class="map-road" style="width:100%;height:6px;top:70%;left:0;opacity:0.7;"></div>
+            <!-- Quest pins -->
+            <div style="position:absolute;top:20%;left:30%;">
+              <div style="width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--amber);box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div>
+            </div>
+            <div style="position:absolute;top:55%;left:60%;">
+              <div style="width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--forest);box-shadow:0 2px 6px rgba(0,0,0,0.15);"></div>
+            </div>
+            <div style="position:absolute;top:30%;left:70%;">
+              <div style="width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--coral);box-shadow:0 2px 6px rgba(0,0,0,0.15);"></div>
+            </div>
+            <!-- Location dot -->
+            <div style="position:absolute;top:55%;left:30%;width:10px;height:10px;border-radius:50%;background:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,0.2);"></div>
+            <div class="map-badge">📍 12 quests nearby</div>
+          </div>
+
+          <!-- Quest list -->
+          <div class="section-header" style="padding-top:6px;">
+            <div class="section-title">Nearby Quests</div>
+            <div class="see-all">See all</div>
+          </div>
+          <div class="scroll" style="padding-top:0;">
+            <!-- Card 1 -->
+            <div class="qcard">
+              <div class="qcard-top" style="background:var(--forest);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                  <div>
+                    <div class="qcard-title">Nørrebro: Byens Skjulte Perler</div>
+                    <div class="qcard-sub">by CityExplorer · 0.3 km away</div>
+                  </div>
+                  <span class="badge b-amber" style="flex-shrink:0;margin-left:8px;">⭐ 4.8</span>
+                </div>
+              </div>
+              <div class="qcard-body">
+                <div class="qcard-meta">
+                  <div class="qcard-meta-item">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    45 min
+                  </div>
+                  <div class="qcard-meta-item">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                    7 stops
+                  </div>
+                  <div class="qcard-meta-item">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    247 plays
+                  </div>
+                  <span class="badge b-coral" style="font-size:8px;">Hard</span>
+                </div>
+                <div class="btn-forest" style="padding:9px;font-size:12px;">Start Quest</div>
+              </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="qcard">
+              <div class="qcard-top" style="background:#7C3AED;">
+                <div>
+                  <div class="qcard-title">Frederiksberg: Parkens Hemmeligheder</div>
+                  <div class="qcard-sub">by NatureGuide · 1.2 km away</div>
+                </div>
+              </div>
+              <div class="qcard-body">
+                <div class="qcard-meta">
+                  <div class="qcard-meta-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>30 min</div>
+                  <div class="qcard-meta-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>5 stops</div>
+                  <span class="badge b-forest" style="font-size:8px;">Medium</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="tabbar">
+          <!-- Discover (active) -->
+          <div class="tab on">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/>
+              <line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/>
+              <circle cx="15" cy="10" r="2" fill="var(--forest)" stroke="none"/>
+            </svg>
+            <span class="tab-lbl">Discover</span>
+          </div>
+          <!-- My Quests -->
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
+              <rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/>
+              <line x1="9" y1="16" x2="13" y2="16"/>
+              <polyline points="7,9 8.5,10.5 11,8"/>
+            </svg>
+            <span class="tab-lbl">Quests</span>
+          </div>
+          <!-- Join (center) -->
+          <div class="tab-join">
+            <div class="join-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                <rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
+                <rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
+                <rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/>
+                <rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
+                <rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
+                <rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
+                <rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
+              </svg>
+            </div>
+          </div>
+          <!-- Create -->
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/>
+            </svg>
+            <span class="tab-lbl">Create</span>
+          </div>
+          <!-- Profile -->
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+            </svg>
+            <span class="tab-lbl">Profile</span>
+          </div>
+        </div>
+
+        <div class="home-bar" style="background:white;">
+          <div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-name">Discover</div>
+  </div>
+
+  <!-- ── 6. MY QUESTS ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:0.5;">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg>
+          </div>
+        </div>
+        <div class="body">
+          <div style="padding:6px 16px 0;font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);">My Quests</div>
+          <!-- Tabs -->
+          <div class="inner-tabs" style="margin-top:10px;">
+            <div class="inner-tab on">Playing</div>
+            <div class="inner-tab">Created</div>
+            <div class="inner-tab">History</div>
+          </div>
+
+          <div class="scroll" style="padding-top:12px;">
+            <!-- Active quest -->
+            <div class="qcard">
+              <div class="qcard-top" style="background:var(--forest);">
+                <div style="display:flex;justify-content:space-between;">
+                  <div>
+                    <div class="qcard-title">Nørrebro: Byens Skjulte Perler</div>
+                    <div class="qcard-sub">In progress · Stop 3 of 7</div>
+                  </div>
+                  <span class="badge b-amber" style="flex-shrink:0;margin-left:8px;">Active</span>
+                </div>
+                <div style="margin-top:10px;">
+                  <div class="progress-bar"><div class="progress-fill" style="width:43%;"></div></div>
+                  <div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px;">3 / 7 checkpoints reached</div>
+                </div>
+              </div>
+              <div class="qcard-body">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div style="font-size:11px;color:var(--muted);">Score: <span style="font-weight:700;color:var(--bark);">1,240 pts</span></div>
+                  <div class="btn-forest" style="width:auto;padding:7px 14px;font-size:11px;border-radius:9px;">Continue →</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed quest -->
+            <div class="qcard" style="opacity:0.7;">
+              <div class="qcard-top" style="background:#165C45;">
+                <div style="display:flex;justify-content:space-between;">
+                  <div>
+                    <div class="qcard-title">Frederiksberg: Parkens Hemmeligheder</div>
+                    <div class="qcard-sub">Completed · Yesterday</div>
+                  </div>
+                  <span class="badge b-forest" style="flex-shrink:0;margin-left:8px;background:rgba(255,255,255,0.2);color:rgba(255,255,255,0.9);">✓ Done</span>
+                </div>
+              </div>
+              <div class="qcard-body">
+                <div class="qcard-meta">
+                  <div class="qcard-meta-item">Final score: <strong style="color:var(--bark);margin-left:3px;">2,340 pts</strong></div>
+                  <div class="qcard-meta-item">🥇 1st place</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming -->
+            <div class="qcard" style="opacity:0.6;">
+              <div class="qcard-top" style="background:#7C3AED;">
+                <div>
+                  <div class="qcard-title">Vesterbro: Street Art Tour</div>
+                  <div class="qcard-sub">Scheduled · Saturday 14:00</div>
+                </div>
+              </div>
+              <div class="qcard-body">
+                <div style="font-size:11px;color:var(--muted);">3 friends joining · Competitive mode</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="tabbar">
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg>
+            <span class="tab-lbl">Discover</span>
+          </div>
+          <div class="tab on">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/>
+              <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+              <polyline points="7,9 8.5,10.5 11,8" stroke="var(--forest)"/>
+            </svg>
+            <span class="tab-lbl">Quests</span>
+          </div>
+          <div class="tab-join"><div class="join-pill">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/></svg>
+          </div></div>
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg>
+            <span class="tab-lbl">Create</span>
+          </div>
+          <div class="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+            <span class="tab-lbl">Profile</span>
+          </div>
+        </div>
+        <div class="home-bar" style="background:white;"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">My Quests</div>
+  </div>
+
+  <!-- ── 7. CREATE ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div>
+        </div>
+        <div class="body">
+          <div style="padding:6px 16px 14px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);">Create Quest</div>
+            <div style="font-size:11px;font-weight:600;color:var(--forest-l);">Save Draft</div>
+          </div>
+
+          <div class="scroll" style="gap:0;display:flex;flex-direction:column;gap:10px;">
+            <!-- Quest name -->
+            <div style="background:white;border-radius:14px;padding:14px;border:1.5px solid var(--border);">
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Quest Name</div>
+              <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;color:var(--bark);">My Amazing City Quest</div>
+            </div>
+
+            <!-- Checkpoints -->
+            <div style="background:white;border-radius:14px;padding:14px;border:1.5px solid var(--border);">
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Checkpoints <span style="color:var(--forest-l);font-style:normal;">3 added</span></div>
+              <!-- checkpoint items -->
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">1</div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Blågårds Plads</div>
+                  <div style="font-size:9px;color:var(--muted);">1 question</div>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">2</div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Nørrebrogade</div>
+                  <div style="font-size:9px;color:var(--muted);">2 questions</div>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 0;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">3</div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Assistens Kirkegård</div>
+                  <div style="font-size:9px;color:var(--muted);">1 question</div>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <!-- Add checkpoint button -->
+              <div style="display:flex;align-items:center;gap:8px;padding:10px 0 0;cursor:pointer;">
+                <div style="width:24px;height:24px;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                </div>
+                <div style="font-size:11px;font-weight:600;color:var(--forest-l);">Add checkpoint on map</div>
+              </div>
+            </div>
+
+            <!-- Settings row -->
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;background:white;border-radius:12px;padding:10px;border:1.5px solid var(--border);text-align:center;">
+                <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Visibility</div>
+                <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--bark);">Public</div>
+              </div>
+              <div style="flex:1;background:white;border-radius:12px;padding:10px;border:1.5px solid var(--border);text-align:center;">
+                <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Mode</div>
+                <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--bark);">Any</div>
+              </div>
+              <div style="flex:1;background:white;border-radius:12px;padding:10px;border:1.5px solid var(--border);text-align:center;">
+                <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Scoring</div>
+                <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--bark);">Speed</div>
+              </div>
+            </div>
+
+            <div class="btn-amber">Publish Quest →</div>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg><span class="tab-lbl">Discover</span></div>
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg><span class="tab-lbl">Quests</span></div>
+          <div class="tab-join"><div class="join-pill"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+          <div class="tab on">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg>
+            <span class="tab-lbl">Create</span>
+          </div>
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg><span class="tab-lbl">Profile</span></div>
+        </div>
+        <div class="home-bar" style="background:white;"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Create Quest</div>
+  </div>
+
+  <!-- ── 8. PROFILE ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.85);">
+          <span>9:41</span>
+          <div class="sb-icons"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div>
+        </div>
+        <div class="body">
+          <!-- Profile header -->
+          <div class="profile-header">
+            <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:2;">
+              <div style="width:52px;height:52px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);border:3px solid rgba(255,255,255,0.2);">C</div>
+              <div>
+                <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;color:white;">CityExplorer</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.55);">Quest Master · Member since 2024</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stat-row" style="margin-top:-16px;position:relative;z-index:3;">
+            <div class="stat"><div class="stat-num">24</div><div class="stat-lbl">Quests Played</div></div>
+            <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">Created</div></div>
+            <div class="stat"><div class="stat-num" style="font-size:14px;">41,820</div><div class="stat-lbl">Total Points</div></div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="section-header" style="margin-top:14px;">
+            <div class="section-title">Recent Activity</div>
+          </div>
+
+          <div class="scroll" style="padding-top:0;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="background:white;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;">
+                <div style="width:34px;height:34px;border-radius:10px;background:#D4EDE4;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Completed Frederiksberg quest</div>
+                  <div style="font-size:9px;color:var(--muted);">🥇 1st place · 2,340 pts · Yesterday</div>
+                </div>
+              </div>
+              <div style="background:white;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;">
+                <div style="width:34px;height:34px;border-radius:10px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Published new quest</div>
+                  <div style="font-size:9px;color:var(--muted);">Nørrebro: Byens Skjulte Perler · 3 days ago</div>
+                </div>
+              </div>
+              <div style="background:white;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;">
+                <div style="width:34px;height:34px;border-radius:10px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:11px;font-weight:600;color:var(--bark);">Hosted session · 6 players</div>
+                  <div style="font-size:9px;color:var(--muted);">Vesterbro Street Art Tour · 1 week ago</div>
+                </div>
+              </div>
+
+              <!-- Settings items -->
+              <div style="margin-top:4px;background:white;border-radius:14px;overflow:hidden;">
+                <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                  <div style="flex:1;font-size:12px;font-weight:500;color:var(--bark);">Settings</div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                  <div style="flex:1;font-size:12px;font-weight:500;color:var(--coral);">Log Out</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg><span class="tab-lbl">Discover</span></div>
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/></svg><span class="tab-lbl">Quests</span></div>
+          <div class="tab-join"><div class="join-pill"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+          <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg><span class="tab-lbl">Create</span></div>
+          <div class="tab on">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+            <span class="tab-lbl">Profile</span>
+          </div>
+        </div>
+        <div class="home-bar" style="background:white;"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Profile</div>
+  </div>
+
+</div><!-- /phone-row -->
+
+<!-- ═══ Tab bar icon reference ═══ -->
+<div class="page-label">Tab Bar — Custom Icons</div>
+<div style="background:white;border-radius:20px;padding:32px 40px;border:1px solid var(--border);display:flex;gap:48px;align-items:center;justify-content:center;">
+  <!-- Each icon shown large with label -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/>
+      <line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/>
+      <circle cx="15" cy="10" r="2.5" fill="var(--forest)" stroke="none"/>
+    </svg>
+    <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;">Discover</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
+      <rect x="9" y="1" width="6" height="4" rx="1"/>
+      <line x1="9" y1="12" x2="15" y2="12"/>
+      <line x1="9" y1="16" x2="13" y2="16"/>
+      <polyline points="7,9 8.5,10.5 11,8"/>
+    </svg>
+    <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;">My Quests</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:52px;height:40px;border-radius:14px;background:var(--forest);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,61,46,0.3);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round">
+        <rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
+        <rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
+        <rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/>
+        <rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
+        <rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
+        <rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
+        <rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
+      </svg>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;">Join</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+      <line x1="9" y1="9" x2="15" y2="9"/>
+      <line x1="12" y1="6" x2="12" y2="12"/>
+    </svg>
+    <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;">Create</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+    </svg>
+    <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;">Profile</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ AUTH SCREENS ═══ -->
+<div class="page-label" style="margin-top:60px;">Authentication</div>
+<div class="phone-row">
+
+  <!-- ── LOG IN ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px; overflow-y:auto;">
+          <!-- Back + logo -->
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 20px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <svg width="22" height="22" viewBox="0 0 84 84" fill="none">
+                <line x1="46" y1="46" x2="68" y2="68" stroke="#0B3D2E" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="40" cy="36" r="28" stroke="#0B3D2E" stroke-width="7" fill="none"/>
+                <circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/>
+                <circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/>
+              </svg>
+              <span style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--bark);letter-spacing:-0.3px;">Questify</span>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.15;margin-bottom:4px;">Welcome<br>back</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:22px;">Log in to continue your adventures</div>
+
+          <!-- Social buttons 2x2 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Google
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--bark)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              Apple
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/></svg>
+              Microsoft
+            </div>
+          </div>
+          <!-- Phone -->
+          <div class="btn-outline-dark" style="margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Phone number
+          </div>
+
+          <!-- OR divider -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.08em;">OR</div>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+
+          <!-- Email + password -->
+          <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px;">
+            <div style="position:relative;">
+              <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+              </div>
+              <input class="input" placeholder="Email address" style="padding-left:36px;">
+            </div>
+            <div style="position:relative;">
+              <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <input class="input" type="password" placeholder="Password" value="••••••••" style="padding-left:36px;">
+              <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--forest-l);">Show</div>
+            </div>
+          </div>
+
+          <div style="text-align:right;margin-bottom:16px;">
+            <span style="font-size:11px;font-weight:600;color:var(--forest-l);">Forgot password?</span>
+          </div>
+
+          <div class="btn-forest" style="text-align:center;border-radius:12px;padding:13px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;">Log In</div>
+
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
+            No account? <span style="color:var(--forest);font-weight:600;">Sign Up</span>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Log In</div>
+  </div>
+
+  <!-- ── SIGN UP — METHOD ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;overflow-y:auto;">
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 20px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <svg width="22" height="22" viewBox="0 0 84 84" fill="none"><line x1="46" y1="46" x2="68" y2="68" stroke="#0B3D2E" stroke-width="7" stroke-linecap="round"/><circle cx="40" cy="36" r="28" stroke="#0B3D2E" stroke-width="7" fill="none"/><circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/><circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/></svg>
+              <span style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--bark);letter-spacing:-0.3px;">Questify</span>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.15;margin-bottom:4px;">Create your<br>account</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:22px;">Start creating and hosting quests</div>
+
+          <!-- Social buttons 2x2 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Google
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--bark)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              Apple
+            </div>
+            <div class="btn-outline-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/></svg>
+              Microsoft
+            </div>
+          </div>
+          <!-- Phone -->
+          <div class="btn-outline-dark" style="margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Phone number
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.08em;">OR</div>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+
+          <div class="btn-amber" style="margin-bottom:14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            Sign up with Email
+          </div>
+
+          <div style="text-align:center;font-size:12px;color:var(--muted);">
+            Already have an account? <span style="color:var(--forest);font-weight:600;">Log In</span>
+          </div>
+
+          <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;">By signing up you agree to our<br><span style="color:var(--forest-l);">Terms of Service</span> and <span style="color:var(--forest-l);">Privacy Policy</span></div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Sign Up</div>
+  </div>
+
+  <!-- ── SIGN UP — EMAIL DETAILS ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;overflow-y:auto;">
+
+          <!-- Back + step indicator -->
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 18px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="flex:1;display:flex;gap:4px;">
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:4px;">Your details</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:20px;">Step 2 of 3 — tell us about yourself</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <!-- First + last name side by side -->
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;position:relative;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">First name</div>
+                <input class="input" placeholder="Anna" value="Anna" style="border-color:var(--forest);">
+              </div>
+              <div style="flex:1;position:relative;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Last name</div>
+                <input class="input" placeholder="Jensen">
+              </div>
+            </div>
+
+            <!-- Display name -->
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Display name</div>
+              <input class="input" placeholder="AdventureAnna" value="AdventureAnna" style="border-color:var(--forest);">
+              <div style="font-size:9px;color:var(--muted);margin-top:4px;">This is what other players see</div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Email</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                </div>
+                <input class="input" placeholder="anna@example.com" style="padding-left:36px;">
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Password</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                </div>
+                <input class="input" type="password" placeholder="Min. 8 characters" style="padding-left:36px;">
+              </div>
+              <!-- Strength meter -->
+              <div style="display:flex;gap:3px;margin-top:6px;">
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+              </div>
+              <div style="font-size:9px;color:var(--amber-d);margin-top:3px;">Medium strength</div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <div class="btn-amber">Continue →</div>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Sign Up — Details</div>
+  </div>
+
+  <!-- ── SIGN UP — VERIFY EMAIL ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;display:flex;flex-direction:column;">
+
+          <!-- Step indicator -->
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 18px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="flex:1;display:flex;gap:4px;">
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+            </div>
+          </div>
+
+          <!-- Illustration area -->
+          <div style="display:flex;flex-direction:column;align-items:center;padding:24px 0 20px;">
+            <div style="width:72px;height:72px;border-radius:20px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/><polyline points="16,14 20,18" stroke="none"/><circle cx="18" cy="18" r="4" fill="var(--forest)" stroke="none"/><path d="M16 18l1.5 1.5L20.5 16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);text-align:center;margin-bottom:6px;">Check your email</div>
+            <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">We sent a 6-digit code to<br><span style="color:var(--bark);font-weight:600;">anna@example.com</span></div>
+          </div>
+
+          <!-- Code input -->
+          <div style="margin-bottom:10px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;text-align:center;">Enter verification code</div>
+            <div class="code-boxes" style="justify-content:center;">
+              <div class="code-box filled">3</div>
+              <div class="code-box filled">8</div>
+              <div class="code-box filled">4</div>
+              <div class="code-box active"></div>
+              <div class="code-box"></div>
+              <div class="code-box"></div>
+            </div>
+          </div>
+
+          <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:20px;">
+            Didn't receive it? <span style="color:var(--forest);font-weight:600;">Resend</span>
+          </div>
+
+          <div style="flex:1;"></div>
+
+          <div class="btn-forest" style="text-align:center;border-radius:12px;padding:13px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;opacity:0.5;">Verify Email</div>
+
+          <!-- Already verified / skip -->
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;">By verifying you agree to our<br><span style="color:var(--forest-l);">Terms of Service</span> · <span style="color:var(--forest-l);">Privacy Policy</span></div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Verify Email</div>
+  </div>
+
+</div><!-- /phone-row auth -->
+
+
+<!-- ═══════════════════════════════════════════ EMAIL AUTH ═══ -->
+<div class="page-label" style="margin-top:60px;">Email</div>
+<div class="phone-row">
+
+  <!-- ── EMAIL LOG IN ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 24px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+          </div>
+
+          <div style="width:64px;height:64px;border-radius:18px;background:#E8EDF7;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2A4A8A" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Log in with<br>email</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:24px;">Enter your email and password to continue.</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px;">
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Email</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                </div>
+                <input class="input" placeholder="anna@example.com" style="padding-left:36px;border-color:var(--forest);">
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Password</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                </div>
+                <input class="input" type="password" value="••••••••" style="padding-left:36px;">
+                <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--forest-l);">Show</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:right;margin-bottom:24px;">
+            <span style="font-size:11px;font-weight:600;color:var(--forest-l);">Forgot password?</span>
+          </div>
+
+          <div style="flex:1;"></div>
+
+          <div class="btn-forest" style="text-align:center;border-radius:12px;padding:13px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;">Log In</div>
+          <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">No account? <span style="color:var(--forest);font-weight:600;">Sign Up</span></div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Email — Log In</div>
+  </div>
+
+  <!-- ── EMAIL SIGN UP ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;overflow-y:auto;">
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 16px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="flex:1;display:flex;gap:4px;">
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:4px;">Your details</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:18px;">Step 2 of 3 — tell us about yourself</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">First name</div>
+                <input class="input" placeholder="Anna" value="Anna" style="border-color:var(--forest);">
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Last name</div>
+                <input class="input" placeholder="Jensen">
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Display name</div>
+              <input class="input" placeholder="AdventureAnna" value="AdventureAnna" style="border-color:var(--forest);">
+              <div style="font-size:9px;color:var(--muted);margin-top:3px;">Shown to other players</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Email</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                </div>
+                <input class="input" placeholder="anna@example.com" style="padding-left:36px;">
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Password</div>
+              <div style="position:relative;">
+                <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                </div>
+                <input class="input" type="password" placeholder="Min. 8 characters" style="padding-left:36px;">
+              </div>
+              <div style="display:flex;gap:3px;margin-top:6px;">
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+                <div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div>
+              </div>
+              <div style="font-size:9px;color:var(--amber-d);margin-top:3px;">Medium strength</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;">
+            <div class="btn-amber">Continue →</div>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Email — Sign Up Details</div>
+  </div>
+
+  <!-- ── EMAIL VERIFY ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 16px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="flex:1;display:flex;gap:4px;">
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--forest);"></div>
+            </div>
+          </div>
+
+          <div style="width:64px;height:64px;border-radius:18px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            <div style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--forest);border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;">
+              <div style="width:5px;height:5px;border-radius:50%;background:white;"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Check your<br>inbox</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.6;">We sent a 6-digit code to</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+            <span style="font-size:13px;font-weight:700;color:var(--bark);">anna@example.com</span>
+            <span style="font-size:11px;font-weight:600;color:var(--forest-l);cursor:pointer;">Change</span>
+          </div>
+
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enter 6-digit code</div>
+          <div class="code-boxes" style="justify-content:center;margin-bottom:10px;">
+            <div class="code-box filled">3</div>
+            <div class="code-box filled">8</div>
+            <div class="code-box filled">4</div>
+            <div class="code-box active"></div>
+            <div class="code-box"></div>
+            <div class="code-box"></div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:28px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span style="font-size:11px;color:var(--muted);">Resend in <span style="font-weight:600;color:var(--bark);">04:58</span></span>
+          </div>
+
+          <div style="flex:1;"></div>
+
+          <div class="btn-forest" style="text-align:center;border-radius:12px;padding:13px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;opacity:0.5;">Verify Email</div>
+          <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);">Didn't get it? <span style="color:var(--forest);font-weight:600;">Resend</span></div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Email — Verify</div>
+  </div>
+
+</div><!-- /phone-row email auth -->
+
+
+<!-- ═══════════════════════════════════════════ PHONE AUTH ═══ -->
+<div class="page-label" style="margin-top:60px;">Phone / SMS</div>
+<div class="phone-row">
+
+  <!-- ── ENTER PHONE NUMBER ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px; display:flex; flex-direction:column;">
+
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 24px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- Icon -->
+          <div style="width:64px;height:64px;border-radius:18px;background:#D4EDE4;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Enter your<br>phone number</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:28px;line-height:1.6;">We'll send a one-time code to verify your number.</div>
+
+          <!-- Country + number input -->
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Phone number</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <!-- Country code picker -->
+            <div style="display:flex;align-items:center;gap:6px;padding:11px 12px;background:white;border-radius:12px;border:2px solid var(--border);flex-shrink:0;cursor:pointer;">
+              <span style="font-size:16px;line-height:1;">🇩🇰</span>
+              <span style="font-size:13px;font-weight:600;color:var(--bark);">+45</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <!-- Number field -->
+            <input class="input" placeholder="20 12 34 56" value="20 12 34 56" style="flex:1;font-size:15px;font-weight:600;letter-spacing:0.04em;border-color:var(--forest);">
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:32px;line-height:1.6;">Standard SMS rates may apply. We never share your number.</div>
+
+          <div style="flex:1;"></div>
+
+          <div class="btn-amber">Send code →</div>
+
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
+            Use <span style="color:var(--forest);font-weight:600;">email instead</span>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">Enter Phone</div>
+  </div>
+
+  <!-- ── SMS VERIFY ── -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen" style="background:var(--cream);">
+        <div class="sb" style="background:var(--cream);color:var(--bark);">
+          <span>9:41</span>
+          <div class="sb-icons" style="opacity:.5;"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div>
+        </div>
+        <div class="body" style="padding:0 20px;display:flex;flex-direction:column;">
+
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 0 24px;">
+            <div style="width:30px;height:30px;border-radius:9px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- Icon -->
+          <div style="width:64px;height:64px;border-radius:18px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <!-- animated dot -->
+            <div style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--forest);border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;">
+              <div style="width:5px;height:5px;border-radius:50%;background:white;"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Check your<br>messages</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.6;">We sent a 6-digit code to</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+            <span style="font-size:13px;font-weight:700;color:var(--bark);">🇩🇰 +45 20 12 34 56</span>
+            <span style="font-size:11px;font-weight:600;color:var(--forest-l);cursor:pointer;">Change</span>
+          </div>
+
+          <!-- Code boxes -->
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enter 6-digit code</div>
+          <div class="code-boxes" style="justify-content:center;margin-bottom:10px;">
+            <div class="code-box filled">7</div>
+            <div class="code-box filled">4</div>
+            <div class="code-box filled">2</div>
+            <div class="code-box active"></div>
+            <div class="code-box"></div>
+            <div class="code-box"></div>
+          </div>
+
+          <!-- Resend timer -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:28px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span style="font-size:11px;color:var(--muted);">Resend code in <span style="font-weight:600;color:var(--bark);">00:42</span></span>
+          </div>
+
+          <div style="flex:1;"></div>
+
+          <div class="btn-forest" style="text-align:center;border-radius:12px;padding:13px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;opacity:0.5;">Verify</div>
+
+          <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);">
+            Didn't get it? <span style="color:var(--forest);font-weight:600;">Resend</span> · <span style="color:var(--forest);font-weight:600;">Use email</span>
+          </div>
+        </div>
+        <div class="home-bar" style="background:var(--cream);"><div class="home-bar-pill" style="background:rgba(0,0,0,0.12);"></div></div>
+      </div>
+    </div>
+    <div class="screen-name">SMS Verify</div>
+  </div>
+
+</div><!-- /phone-row phone auth -->
+
+</body>
+</html>

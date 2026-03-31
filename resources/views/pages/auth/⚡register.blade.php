@@ -16,7 +16,10 @@ class extends Component
 {
     use HandlesApiErrors, WithApiClient;
 
+    /** 1 = method, 2 = details, 3 = phone verify */
     public int $step = 1;
+
+    public string $signup_method = 'email';
 
     public string $first_name = '';
 
@@ -28,15 +31,26 @@ class extends Component
 
     public string $password = '';
 
-    public string $password_confirmation = '';
+    public string $phone_number = '';
+
+    public string $phone_code = '';
 
     public function goToEmailSignup(): void
     {
+        $this->signup_method = 'email';
+        $this->step = 2;
+    }
+
+    public function goToPhoneSignup(): void
+    {
+        $this->signup_method = 'phone';
         $this->step = 2;
     }
 
     public function goBack(): void
     {
+        $this->resetErrorBag();
+
         if ($this->step > 1) {
             $this->step--;
         } else {
@@ -46,14 +60,21 @@ class extends Component
 
     public function register(): void
     {
-        $this->validate([
+        $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'display_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
-        ]);
+        ];
+
+        if ($this->signup_method === 'phone') {
+            $rules['phone_number'] = ['required', 'string', 'regex:/^\+[1-9]\d{6,14}$/'];
+        }
+
+        $this->validate($rules);
 
         $name = trim($this->first_name . ' ' . $this->last_name);
+        $phone = $this->signup_method === 'phone' ? $this->phone_number : null;
 
         try {
             $response = $this->api->auth()->register(
@@ -61,17 +82,47 @@ class extends Component
                 $this->email,
                 $this->password,
                 $this->password,
+                $phone,
             );
 
             /** @var QuestifyApiGuard $guard */
             $guard = Auth::guard();
             $guard->login($response['data']['user'], $response['data']['token']);
 
-            $this->redirect('/discover/list');
+            if ($phone) {
+                $this->api->auth()->submitPhone($phone);
+                $this->step = 3;
+            } else {
+                $this->redirect('/discover/list');
+            }
         } catch (ApiValidationException $e) {
             foreach ($e->errors as $field => $messages) {
                 $this->addError($field, $messages[0]);
             }
+        }
+    }
+
+    public function verifyPhone(): void
+    {
+        $this->validate([
+            'phone_code' => ['required', 'string', 'size:6'],
+        ]);
+
+        try {
+            $this->api->auth()->verifyPhone($this->phone_code);
+            $this->redirect('/discover/list');
+        } catch (ApiValidationException $e) {
+            $this->addError('phone_code', __('auth.invalid_code'));
+        }
+    }
+
+    public function resendCode(): void
+    {
+        try {
+            $this->api->auth()->resendVerification();
+            session()->flash('code_resent', true);
+        } catch (ApiValidationException) {
+            // Silently handle
         }
     }
 };
@@ -113,6 +164,12 @@ class extends Component
             @endforeach
         </div>
 
+        {{-- Phone number --}}
+        <button wire:click="goToPhoneSignup" class="mb-4 flex w-full items-center justify-center gap-1.5 rounded-xl border-[1.5px] border-cream-border bg-white px-3 py-3 text-[13px] font-semibold text-bark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            {{ __('auth.phone_number') }}
+        </button>
+
         {{-- OR divider --}}
         <div class="mb-3.5 flex items-center gap-2.5">
             <div class="h-px flex-1 bg-cream-border"></div>
@@ -140,8 +197,8 @@ class extends Component
             <a href="#" class="text-forest-400">{{ __('auth.privacy_policy') }}</a>
         </p>
 
-    {{-- Step 2: Email Details --}}
-    @else
+    {{-- Step 2: Details --}}
+    @elseif ($step === 2)
         {{-- Back + Step indicator --}}
         <div class="flex items-center gap-2.5 pb-4 pt-1">
             <button wire:click="goBack" class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px] bg-cream-dark">
@@ -192,6 +249,21 @@ class extends Component
                 @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Phone number (only for phone signup) --}}
+            @if ($signup_method === 'phone')
+                <div>
+                    <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.phone_number') }}</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    </div>
+                    <p class="mt-1 text-[9px] text-muted">{{ __('auth.phone_e164_hint') }}</p>
+                    @error('phone_number') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+            @endif
+
             {{-- Password --}}
             <div>
                 <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('general.password') }}</label>
@@ -207,6 +279,66 @@ class extends Component
             <div class="mt-auto pt-4">
                 <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
                     {{ __('auth.continue') }}
+                </button>
+            </div>
+        </form>
+
+    {{-- Step 3: Phone Verification --}}
+    @elseif ($step === 3)
+        {{-- Back + Step indicator --}}
+        <div class="flex items-center gap-2.5 pb-4 pt-1">
+            <button wire:click="goBack" class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px] bg-cream-dark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="flex flex-1 gap-1">
+                <div class="h-[3px] flex-1 rounded-full bg-forest-600"></div>
+                <div class="h-[3px] flex-1 rounded-full bg-forest-600"></div>
+                <div class="h-[3px] flex-1 rounded-full bg-forest-600"></div>
+            </div>
+        </div>
+
+        {{-- Icon --}}
+        <div class="relative mb-4 flex h-16 w-16 items-center justify-center rounded-[18px] bg-amber-100">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C8811A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <div class="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-cream bg-forest-600">
+                <div class="h-1.5 w-1.5 rounded-full bg-white"></div>
+            </div>
+        </div>
+
+        {{-- Heading --}}
+        <h1 class="mb-1.5 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ __('auth.check_messages') }}</h1>
+        <p class="mb-1.5 text-xs leading-relaxed text-muted">{{ __('auth.sent_code_to') }}</p>
+        <div class="mb-6 flex items-center gap-2">
+            <span class="text-[13px] font-bold text-bark">{{ $phone_number }}</span>
+        </div>
+
+        {{-- Code input --}}
+        <form wire:submit="verifyPhone" class="flex flex-1 flex-col">
+            <label class="mb-2.5 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.enter_6_digit_code') }}</label>
+            <input
+                type="text"
+                wire:model="phone_code"
+                maxlength="6"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                placeholder="000000"
+                class="mb-2.5 w-full rounded-xl border-2 border-cream-border bg-white px-4 py-3.5 text-center font-heading text-2xl font-extrabold tracking-[0.3em] text-bark focus:border-forest-600 focus:outline-none"
+                autofocus
+            />
+            @error('phone_code') <p class="mb-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
+
+            @if (session('code_resent'))
+                <p class="mb-2 text-center text-[11px] font-semibold text-forest-600">{{ __('auth.code_resent') }}</p>
+            @endif
+
+            <p class="text-center text-[11px] text-muted">
+                {{ __('auth.didnt_get_it') }}
+                <button type="button" wire:click="resendCode" class="font-semibold text-forest-600">{{ __('auth.resend') }}</button>
+            </p>
+
+            <div class="mt-auto pt-6">
+                <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($phone_code) < 6) style="opacity:0.5" @endif>
+                    {{ __('auth.verify') }}
                 </button>
             </div>
         </form>

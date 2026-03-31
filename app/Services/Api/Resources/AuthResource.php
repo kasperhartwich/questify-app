@@ -22,14 +22,54 @@ class AuthResource
     /**
      * @return array{data: array{user: array, token: string}, message: string}
      */
-    public function register(string $name, string $email, string $password, string $passwordConfirmation): array
+    public function register(string $name, string $email, string $password, string $passwordConfirmation, ?string $phoneNumber = null): array
     {
-        return $this->client->post('/auth/register', [
+        return $this->client->post('/auth/register', array_filter([
             'name' => $name,
             'email' => $email,
             'password' => $password,
             'password_confirmation' => $passwordConfirmation,
+            'phone_number' => $phoneNumber,
+        ]));
+    }
+
+    /**
+     * @return array{message: string, requires_otp?: bool, login_token?: string}
+     */
+    public function verifyOtp(string $code, string $loginToken): array
+    {
+        return $this->client->post('/auth/verify-otp', [
+            'code' => $code,
+            'login_token' => $loginToken,
         ]);
+    }
+
+    /**
+     * @return array{message: string, requires_phone_verification: bool}
+     */
+    public function submitPhone(string $phoneNumber): array
+    {
+        return $this->client->post('/auth/submit-phone', [
+            'phone_number' => $phoneNumber,
+        ]);
+    }
+
+    /**
+     * @return array{data: array{user: array, token: string}, message: string}
+     */
+    public function verifyPhone(string $code): array
+    {
+        return $this->client->post('/auth/verify-phone', [
+            'code' => $code,
+        ]);
+    }
+
+    /**
+     * @return array{message: string}
+     */
+    public function resendVerification(): array
+    {
+        return $this->client->post('/auth/resend-verification');
     }
 
     public function logout(): void
