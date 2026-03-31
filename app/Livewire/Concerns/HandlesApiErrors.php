@@ -27,7 +27,7 @@ trait HandlesApiErrors
         } catch (ApiNotFoundException) {
             abort(404);
         } catch (ApiException $e) {
-            $this->dispatch('notify', type: 'error', message: $e->getMessage());
+            $this->dispatch('api-error', message: $e->getMessage());
 
             return null;
         }

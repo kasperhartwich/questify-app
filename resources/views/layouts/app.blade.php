@@ -59,6 +59,8 @@
             />
         </native:bottom-nav>
 
+        <livewire:error-modal />
+
         @livewireScripts
     </body>
 </html>
