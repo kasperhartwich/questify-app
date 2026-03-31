@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Auth\QuestifyApiGuard;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\AppInfoService;
+use App\Services\MissingTranslationReporter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\Events\MissingTranslationKey;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(QuestifyApiClient::class);
         $this->app->singleton(AppInfoService::class);
+        $this->app->singleton(MissingTranslationReporter::class);
     }
 
     public function boot(): void
@@ -26,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(QuestifyApiClient::class),
                 $app->make('session.store'),
             );
+        });
+
+        $this->app['events']->listen(MissingTranslationKey::class, function (MissingTranslationKey $event) {
+            app(MissingTranslationReporter::class)->report($event->key, $event->locale);
+        });
+
+        $this->app->terminating(function () {
+            app(MissingTranslationReporter::class)->flush();
         });
     }
 }

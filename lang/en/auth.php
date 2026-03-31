@@ -45,4 +45,12 @@ return [
     'invalid_or_expired_token' => 'Invalid or expired login token.',
     'verify_login' => "Verify your\nlogin",
     'otp_sent_to_phone' => 'We sent a verification code to the phone number linked to',
+    'login_with_phone' => "Enter your\nphone number",
+    'phone_login_subtitle' => "We'll send a one-time code to verify your number.",
+    'send_code' => 'Send code →',
+    'use_email_instead' => 'Use **email** instead',
+    'phone_sms_disclaimer' => 'Standard SMS rates may apply. We never share your number.',
+    'weak_password' => 'Weak',
+    'medium_password' => 'Medium strength',
+    'strong_password' => 'Strong',
 ];

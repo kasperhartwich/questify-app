@@ -45,4 +45,12 @@ return [
     'invalid_or_expired_token' => 'Ugyldigt eller udløbet login-token.',
     'verify_login' => "Bekræft dit\nlogin",
     'otp_sent_to_phone' => 'Vi har sendt en bekræftelseskode til telefonnummeret tilknyttet',
+    'login_with_phone' => "Indtast dit\ntelefonnummer",
+    'phone_login_subtitle' => 'Vi sender en engangskode for at bekræfte dit nummer.',
+    'send_code' => 'Send kode →',
+    'use_email_instead' => 'Brug **e-mail** i stedet',
+    'phone_sms_disclaimer' => 'Standard SMS-takster kan gælde. Vi deler aldrig dit nummer.',
+    'weak_password' => 'Svag',
+    'medium_password' => 'Medium styrke',
+    'strong_password' => 'Stærk',
 ];
