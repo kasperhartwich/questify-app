@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Auth;
+
+use App\Exceptions\Api\ApiAuthenticationException;
+use App\Services\Api\QuestifyApiClient;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Session\Session;
+
+class QuestifyApiGuard implements Guard
+{
+    private ?ApiTokenUser $user = null;
+
+    private bool $resolved = false;
+
+    public function __construct(
+        private QuestifyApiClient $client,
+        private Session $session,
+    ) {}
+
+    public function check(): bool
+    {
+        return $this->session->has('questify_api_token');
+    }
+
+    public function guest(): bool
+    {
+        return ! $this->check();
+    }
+
+    public function user(): ?Authenticatable
+    {
+        if ($this->resolved) {
+            return $this->user;
+        }
+
+        $this->resolved = true;
+
+        $userData = $this->session->get('questify_user');
+        if ($userData) {
+            $this->user = new ApiTokenUser($userData);
+        }
+
+        return $this->user;
+    }
+
+    public function id(): int|string|null
+    {
+        return $this->session->get('questify_user.id');
+    }
+
+    public function validate(array $credentials = []): bool
+    {
+        try {
+            $response = $this->client->auth()->login(
+                $credentials['email'],
+                $credentials['password'],
+            );
+
+            $this->login($response['data']['user'], $response['data']['token']);
+
+            return true;
+        } catch (ApiAuthenticationException) {
+            return false;
+        }
+    }
+
+    public function hasUser(): bool
+    {
+        return $this->user !== null;
+    }
+
+    public function setUser(Authenticatable $user): static
+    {
+        $this->user = $user instanceof ApiTokenUser ? $user : null;
+        $this->resolved = true;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $userData
+     */
+    public function login(array $userData, string $token): void
+    {
+        $this->session->put('questify_api_token', $token);
+        $this->session->put('questify_user', $userData);
+        $this->session->regenerate();
+
+        $this->user = new ApiTokenUser($userData);
+        $this->resolved = true;
+    }
+
+    public function logout(): void
+    {
+        try {
+            $this->client->auth()->logout();
+        } catch (\Throwable) {
+            // Ignore API errors during logout
+        }
+
+        $this->session->forget(['questify_api_token', 'questify_user']);
+        $this->session->invalidate();
+        $this->session->regenerateToken();
+
+        $this->user = null;
+        $this->resolved = true;
+    }
+}

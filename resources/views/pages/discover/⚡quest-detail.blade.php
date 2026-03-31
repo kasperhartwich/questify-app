@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Quest;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -8,23 +9,19 @@ new
 #[Title('Quest Detail')]
 class extends Component
 {
-    public Quest $quest;
+    use HandlesApiErrors, WithApiClient;
 
-    public function mount(Quest $quest): void
+    public array $questData = [];
+
+    public function mount(int $quest): void
     {
-        $this->quest = $quest->loadCount(['checkpoints', 'ratings', 'sessions'])
-            ->loadAvg('ratings', 'rating');
-
-        $this->quest->load([
-            'creator:id,name',
-            'category:id,name,icon',
-            'checkpoints' => fn ($q) => $q->where('sort_order', 0)->whereNotNull('latitude'),
-        ]);
+        $response = $this->tryApiCall(fn () => $this->api->quests()->show($quest));
+        $this->questData = $response['data'] ?? [];
     }
 
     public function startQuest(): void
     {
-        $this->redirect('/quests/' . $this->quest->id . '/start');
+        $this->redirect('/quests/' . $this->questData['id'] . '/start');
     }
 };
 ?>

@@ -1,6 +1,10 @@
 <?php
 
-use App\Models\User;
+use App\Auth\QuestifyApiGuard;
+use App\Exceptions\Api\ApiAuthenticationException;
+use App\Exceptions\Api\ApiValidationException;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -11,6 +15,8 @@ new
 #[Title('Log In')]
 class extends Component
 {
+    use HandlesApiErrors, WithApiClient;
+
     public string $email = '';
 
     public string $password = '';
@@ -22,14 +28,21 @@ class extends Component
             'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
-            session()->regenerate();
+        try {
+            $response = $this->api->auth()->login($this->email, $this->password);
+
+            /** @var QuestifyApiGuard $guard */
+            $guard = Auth::guard();
+            $guard->login($response['data']['user'], $response['data']['token']);
+
             $this->redirect('/discover/list');
-
-            return;
+        } catch (ApiAuthenticationException) {
+            $this->addError('email', __('auth.failed'));
+        } catch (ApiValidationException $e) {
+            foreach ($e->errors as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
         }
-
-        $this->addError('email', __('auth.failed'));
     }
 };
 ?>

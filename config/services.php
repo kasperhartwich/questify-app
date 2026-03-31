@@ -59,4 +59,9 @@ return [
         'redirect' => env('MICROSOFT_REDIRECT_URI'),
     ],
 
+    'questify' => [
+        'url' => env('QUESTIFY_API_URL', 'https://questify-admin.test'),
+        'timeout' => (int) env('QUESTIFY_API_TIMEOUT', 15),
+    ],
+
 ];

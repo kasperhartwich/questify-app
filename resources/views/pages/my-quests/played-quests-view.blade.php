@@ -44,6 +44,6 @@
             </div>
         @endforelse
 
-        {{ $participations->links() }}
+        {{-- Pagination handled by API cursor --}}
     </div>
 </div>

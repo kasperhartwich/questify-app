@@ -1,16 +1,8 @@
 <?php
 
 use App\Enums\QuestionType;
-use App\Events\CheckpointCompleted;
-use App\Events\LeaderboardUpdated;
-use App\Events\QuestCompleted as QuestCompletedEvent;
-use App\Models\Checkpoint;
-use App\Models\CheckpointProgress;
-use App\Models\Question;
-use App\Models\QuestSession;
-use App\Models\SessionParticipant;
-use App\Services\ScoringService;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -18,13 +10,15 @@ new
 #[Title('Question')]
 class extends Component
 {
-    public QuestSession $session;
+    use HandlesApiErrors, WithApiClient;
 
-    public SessionParticipant $participant;
+    public string $code = '';
 
-    public Checkpoint $checkpoint;
+    public int $participantId = 0;
 
-    public ?Question $currentQuestion = null;
+    public array $checkpoint = [];
+
+    public array $questions = [];
 
     public int $currentQuestionIndex = 0;
 
@@ -40,197 +34,99 @@ class extends Component
 
     public bool $showFeedback = false;
 
-    public int $startedAt = 0;
+    public array $answeredQuestionIds = [];
 
     public function mount(string $code, int $checkpoint): void
     {
-        $this->session = QuestSession::where('join_code', $code)
-            ->with('quest')
-            ->firstOrFail();
+        $this->code = $code;
+        $this->participantId = session('questify_participant_id', 0);
 
-        $this->participant = $this->session->participants()
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        // Fetch checkpoint data via arrived endpoint (which returns questions)
+        $response = $this->tryApiCall(fn () => $this->api->gameplay()->arrived(
+            $this->code,
+            $this->participantId,
+            $checkpoint,
+            0, // latitude placeholder
+            0, // longitude placeholder
+        ));
 
-        $this->checkpoint = Checkpoint::with('questions.answers')->findOrFail($checkpoint);
-        $this->totalQuestions = $this->checkpoint->questions->count();
-        $this->startedAt = now()->timestamp;
-        $this->determineCurrentQuestion();
+        if ($response) {
+            $this->checkpoint = $response['data'] ?? [];
+            $this->questions = $this->checkpoint['questions'] ?? [];
+            $this->totalQuestions = count($this->questions);
+        }
     }
 
-    public function determineCurrentQuestion(): void
+    public function getCurrentQuestionProperty(): ?array
     {
-        $answeredQuestionIds = $this->participant->checkpointProgress()
-            ->where('checkpoint_id', $this->checkpoint->id)
-            ->where('is_correct', true)
-            ->pluck('question_id')
-            ->toArray();
-
-        $questions = $this->checkpoint->questions;
-
-        foreach ($questions as $index => $question) {
-            if (! in_array($question->id, $answeredQuestionIds)) {
-                $this->currentQuestion = $question;
+        foreach ($this->questions as $index => $question) {
+            if (! in_array($question['id'], $this->answeredQuestionIds)) {
                 $this->currentQuestionIndex = $index;
-                $this->selectedAnswerId = null;
-                $this->openEndedAnswer = '';
-                $this->showFeedback = false;
-                $this->startedAt = now()->timestamp;
 
-                return;
+                return $question;
             }
         }
 
-        $this->handleCheckpointComplete();
+        return null;
     }
 
     public function submitAnswer(): void
     {
-        if (! $this->currentQuestion) {
+        $currentQuestion = $this->currentQuestion;
+        if (! $currentQuestion) {
             return;
         }
 
-        $timeTaken = now()->timestamp - $this->startedAt;
-
-        $isCorrect = false;
         $answerId = null;
+        $answerText = null;
 
-        if ($this->currentQuestion->type === QuestionType::OpenText) {
-            $isCorrect = true;
-            $this->openEndedAnswer = trim($this->openEndedAnswer);
+        if (($currentQuestion['question_type'] ?? '') === QuestionType::OpenText->value) {
+            $answerText = trim($this->openEndedAnswer);
         } else {
             if (! $this->selectedAnswerId) {
                 return;
             }
-
-            $answer = $this->currentQuestion->answers->firstWhere('id', $this->selectedAnswerId);
-            $isCorrect = $answer?->is_correct ?? false;
             $answerId = $this->selectedAnswerId;
         }
 
-        $scoringService = app(ScoringService::class);
+        $response = $this->tryApiCall(fn () => $this->api->gameplay()->answer(
+            $this->code,
+            $this->participantId,
+            $currentQuestion['id'],
+            $answerId,
+            $answerText,
+        ));
 
-        $existingProgress = CheckpointProgress::where('session_participant_id', $this->participant->id)
-            ->where('question_id', $this->currentQuestion->id)
-            ->first();
-
-        $wrongAttempts = $existingProgress?->wrong_attempts ?? 0;
-
-        if (! $isCorrect) {
-            $wrongAttempts++;
-            CheckpointProgress::updateOrCreate(
-                [
-                    'session_participant_id' => $this->participant->id,
-                    'question_id' => $this->currentQuestion->id,
-                ],
-                [
-                    'checkpoint_id' => $this->checkpoint->id,
-                    'answer_id' => $answerId,
-                    'is_correct' => false,
-                    'points_earned' => 0,
-                    'time_taken_seconds' => $timeTaken,
-                    'wrong_attempts' => $wrongAttempts,
-                ]
-            );
-
-            $wrongResult = $scoringService->handleWrongAnswer($this->session->quest, $this->participant, $this->currentQuestion);
-            $this->lastAnswerCorrect = false;
-            $this->lastPointsEarned = 0;
-            $this->showFeedback = true;
-
-            if ($wrongResult['locked_out']) {
-                $this->dispatch('answer-feedback', correct: false, lockedOut: true);
-            }
-
+        if (! $response) {
             return;
         }
 
-        $points = $scoringService->calculateAnswerScore(
-            $this->currentQuestion,
-            $timeTaken,
-            true,
-            $wrongAttempts
-        );
+        $data = $response['data'] ?? [];
 
-        CheckpointProgress::updateOrCreate(
-            [
-                'session_participant_id' => $this->participant->id,
-                'question_id' => $this->currentQuestion->id,
-            ],
-            [
-                'checkpoint_id' => $this->checkpoint->id,
-                'answer_id' => $answerId,
-                'open_ended_answer' => $this->currentQuestion->type === QuestionType::OpenText ? $this->openEndedAnswer : null,
-                'is_correct' => true,
-                'points_earned' => $points,
-                'time_taken_seconds' => $timeTaken,
-                'wrong_attempts' => $wrongAttempts,
-            ]
-        );
-
-        $this->participant->increment('score', $points);
-        $this->lastAnswerCorrect = true;
-        $this->lastPointsEarned = $points;
+        $this->lastAnswerCorrect = $data['correct'] ?? false;
+        $this->lastPointsEarned = $data['score_earned'] ?? 0;
         $this->showFeedback = true;
+
+        if ($this->lastAnswerCorrect) {
+            $this->answeredQuestionIds[] = $currentQuestion['id'];
+        }
+
+        // Handle navigation based on "next" field
+        $next = $data['next'] ?? 'question';
+        if ($next === 'checkpoint_complete' || $next === 'quest_complete') {
+            // All questions in this checkpoint done
+        }
     }
 
     public function nextQuestion(): void
     {
-        $this->determineCurrentQuestion();
-    }
+        $this->selectedAnswerId = null;
+        $this->openEndedAnswer = '';
+        $this->showFeedback = false;
 
-    private function handleCheckpointComplete(): void
-    {
-        $sessionCode = $this->session->join_code;
-
-        broadcast(new CheckpointCompleted(
-            $sessionCode,
-            $this->participant->fresh(),
-            $this->checkpoint
-        ))->toOthers();
-
-        $leaderboard = $this->session->participants()
-            ->orderByDesc('score')
-            ->get()
-            ->map(fn ($p, $i) => [
-                'participant_id' => $p->id,
-                'display_name' => $p->display_name,
-                'score' => $p->score,
-                'rank' => $i + 1,
-            ]);
-
-        broadcast(new LeaderboardUpdated($sessionCode, $leaderboard));
-
-        $totalCheckpoints = $this->session->quest->checkpoints->count();
-        $completedCheckpoints = $this->participant->checkpointProgress()
-            ->where('is_correct', true)
-            ->distinct('checkpoint_id')
-            ->count('checkpoint_id');
-
-        $totalQuestions = $this->session->quest->checkpoints->sum(fn ($cp) => $cp->questions->count());
-        $answeredQuestions = $this->participant->checkpointProgress()
-            ->where('is_correct', true)
-            ->count();
-
-        if ($answeredQuestions >= $totalQuestions) {
-            $this->participant->update(['finished_at' => now()]);
-
-            $scoringService = app(ScoringService::class);
-            $completionBonus = $scoringService->calculateCompletionBonus($this->participant->fresh(), $this->session->quest);
-            $this->participant->increment('score', $completionBonus);
-
-            broadcast(new QuestCompletedEvent(
-                $sessionCode,
-                $this->participant->fresh(),
-                $this->participant->fresh()->score
-            ));
-
-            $this->redirect('/session/' . $sessionCode . '/complete');
-
-            return;
+        if ($this->currentQuestion === null) {
+            $this->redirect('/session/' . $this->code . '/play');
         }
-
-        $this->redirect('/session/' . $sessionCode . '/play');
     }
 };
 ?>

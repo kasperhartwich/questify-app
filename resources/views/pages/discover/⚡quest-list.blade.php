@@ -1,18 +1,17 @@
 <?php
 
 use App\Enums\Difficulty;
-use App\Models\Category;
-use App\Models\Quest;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 new
 #[Title('Discover')]
 class extends Component
 {
-    use WithPagination;
+    use HandlesApiErrors, WithApiClient;
 
     #[Url]
     public string $search = '';
@@ -26,54 +25,41 @@ class extends Component
     #[Url]
     public string $sortBy = 'latest';
 
+    #[Url]
+    public string $cursor = '';
+
     public function updatedSearch(): void
     {
-        $this->resetPage();
+        $this->cursor = '';
     }
 
     public function updatedCategory(): void
     {
-        $this->resetPage();
+        $this->cursor = '';
     }
 
     public function updatedDifficulty(): void
     {
-        $this->resetPage();
-    }
-
-    public function rendering(): void
-    {
-        //
+        $this->cursor = '';
     }
 
     public function render(): mixed
     {
-        $query = Quest::query()
-            ->published()
-            ->visible()
-            ->withAvg('ratings', 'rating')
-            ->withCount(['checkpoints', 'ratings']);
+        $filters = array_filter([
+            'search' => $this->search ?: null,
+            'category_id' => $this->category ?: null,
+            'difficulty' => $this->difficulty ?: null,
+            'cursor' => $this->cursor ?: null,
+        ]);
 
-        if ($this->search !== '') {
-            $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                    ->orWhere('description', 'like', '%' . $this->search . '%');
-            });
-        }
-
-        if ($this->category !== '') {
-            $query->where('category_id', $this->category);
-        }
-
-        if ($this->difficulty !== '') {
-            $query->where('difficulty', $this->difficulty);
-        }
-
-        $query->orderByDesc('published_at');
+        $questResponse = $this->tryApiCall(fn () => $this->api->quests()->list($filters)) ?? ['data' => [], 'meta' => []];
+        $categoryResponse = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
 
         return view('pages.discover.quest-list-view', [
-            'quests' => $query->paginate(12),
-            'categories' => Category::query()->orderBy('sort_order')->get(),
+            'quests' => $questResponse['data'] ?? [],
+            'nextCursor' => $questResponse['meta']['next_cursor'] ?? null,
+            'prevCursor' => $questResponse['meta']['prev_cursor'] ?? null,
+            'categories' => $categoryResponse['data'] ?? [],
             'difficulties' => Difficulty::cases(),
         ]);
     }

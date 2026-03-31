@@ -1,9 +1,7 @@
 <?php
 
-use App\Models\QuestRating;
-use App\Models\QuestSession;
-use App\Models\SessionParticipant;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -11,9 +9,11 @@ new
 #[Title('Quest Complete')]
 class extends Component
 {
-    public QuestSession $session;
+    use HandlesApiErrors, WithApiClient;
 
-    public ?SessionParticipant $participant = null;
+    public string $code = '';
+
+    public array $session = [];
 
     public array $leaderboard = [];
 
@@ -21,50 +21,45 @@ class extends Component
 
     public int $myRank = 0;
 
+    public int $questId = 0;
+
+    public string $questTitle = '';
+
     public int $ratingValue = 0;
 
-    public string $ratingReview = '';
+    public string $ratingComment = '';
 
     public bool $hasRated = false;
 
     public function mount(string $code): void
     {
-        $this->session = QuestSession::where('join_code', $code)
-            ->with('quest:id,title,creator_id')
-            ->firstOrFail();
+        $this->code = $code;
+        $participantId = session('questify_participant_id', 0);
 
-        $this->participant = $this->session->participants()
-            ->where('user_id', Auth::id())
-            ->first();
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
+        $this->session = $response['data'] ?? [];
+        $this->questId = $this->session['quest']['id'] ?? 0;
+        $this->questTitle = $this->session['quest']['title'] ?? '';
 
-        if ($this->participant) {
-            $this->myScore = $this->participant->score;
-        }
-
-        $this->loadLeaderboard();
-
-        $this->hasRated = QuestRating::where('quest_id', $this->session->quest_id)
-            ->where('user_id', Auth::id())
-            ->exists();
+        $this->loadLeaderboard($participantId);
     }
 
-    public function loadLeaderboard(): void
+    public function loadLeaderboard(int $participantId = 0): void
     {
-        $participants = $this->session->participants()
-            ->orderByDesc('score')
-            ->get();
+        $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
 
-        $this->leaderboard = $participants
+        $this->leaderboard = collect($response['data'] ?? [])
             ->map(fn ($p, $i) => [
                 'rank' => $i + 1,
-                'display_name' => $p->display_name,
-                'score' => $p->score,
-                'is_me' => $p->user_id === Auth::id(),
-                'finished_at' => $p->finished_at?->diffForHumans(),
+                'display_name' => $p['display_name'],
+                'score' => $p['total_score'],
+                'is_me' => $p['id'] === $participantId,
             ])
             ->toArray();
 
-        $this->myRank = collect($this->leaderboard)->firstWhere('is_me')['rank'] ?? 0;
+        $me = collect($this->leaderboard)->firstWhere('is_me');
+        $this->myScore = $me['score'] ?? 0;
+        $this->myRank = $me['rank'] ?? 0;
     }
 
     public function rateQuest(): void
@@ -73,12 +68,11 @@ class extends Component
             return;
         }
 
-        QuestRating::create([
-            'quest_id' => $this->session->quest_id,
-            'user_id' => Auth::id(),
-            'rating' => $this->ratingValue,
-            'review' => $this->ratingReview ?: null,
-        ]);
+        $this->tryApiCall(fn () => $this->api->quests()->rate(
+            $this->questId,
+            $this->ratingValue,
+            $this->ratingComment ?: null,
+        ));
 
         $this->hasRated = true;
     }
@@ -88,7 +82,7 @@ class extends Component
         $this->dispatch('share-result', [
             'title' => __('sessions.share_result_title'),
             'text' => __('sessions.share_result_text', [
-                'quest' => $this->session->quest->title,
+                'quest' => $this->questTitle,
                 'score' => $this->myScore,
                 'rank' => $this->myRank,
             ]),

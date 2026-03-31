@@ -1,8 +1,10 @@
 <?php
 
-use App\Models\User;
+use App\Auth\QuestifyApiGuard;
+use App\Exceptions\Api\ApiValidationException;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -12,6 +14,8 @@ new
 #[Title('Sign Up')]
 class extends Component
 {
+    use HandlesApiErrors, WithApiClient;
+
     public string $name = '';
 
     public string $email = '';
@@ -22,21 +26,30 @@ class extends Component
 
     public function register(): void
     {
-        $validated = $this->validate([
+        $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        try {
+            $response = $this->api->auth()->register(
+                $this->name,
+                $this->email,
+                $this->password,
+                $this->password_confirmation,
+            );
 
-        Auth::login($user);
+            /** @var QuestifyApiGuard $guard */
+            $guard = Auth::guard();
+            $guard->login($response['data']['user'], $response['data']['token']);
 
-        $this->redirect('/discover/list');
+            $this->redirect('/discover/list');
+        } catch (ApiValidationException $e) {
+            foreach ($e->errors as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+        }
     }
 };
 ?>

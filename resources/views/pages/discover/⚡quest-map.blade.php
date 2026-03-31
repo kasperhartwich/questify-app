@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\QuestStatus;
-use App\Models\Quest;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -9,6 +9,8 @@ new
 #[Title('Quest Map')]
 class extends Component
 {
+    use HandlesApiErrors, WithApiClient;
+
     /** @var array<int, array{id: int, title: string, latitude: float, longitude: float}> */
     public array $pins = [];
 
@@ -19,25 +21,15 @@ class extends Component
 
     public function loadPins(): void
     {
-        $this->pins = Quest::query()
-            ->published()
-            ->visible()
-            ->whereHas('checkpoints', function ($query) {
-                $query->whereNotNull('latitude')
-                    ->whereNotNull('longitude')
-                    ->where('sort_order', 0);
-            })
-            ->with(['checkpoints' => function ($query) {
-                $query->where('sort_order', 0)
-                    ->whereNotNull('latitude')
-                    ->whereNotNull('longitude');
-            }])
-            ->get()
-            ->map(function (Quest $quest) {
-                $startCheckpoint = $quest->checkpoints->first();
+        $response = $this->tryApiCall(fn () => $this->api->quests()->list()) ?? ['data' => []];
+
+        $this->pins = collect($response['data'] ?? [])
+            ->filter(fn ($quest) => ! empty($quest['checkpoints'][0]['latitude']))
+            ->map(function ($quest) {
+                $startCheckpoint = $quest['checkpoints'][0] ?? null;
 
                 return [
-                    'id' => $quest->id,
+                    'id' => $quest['id'],
                     'title' => $quest->title,
                     'latitude' => (float) $startCheckpoint->latitude,
                     'longitude' => (float) $startCheckpoint->longitude,

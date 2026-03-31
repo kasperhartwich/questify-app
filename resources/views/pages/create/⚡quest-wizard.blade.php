@@ -1,13 +1,9 @@
 <?php
 
 use App\Enums\Difficulty;
-use App\Enums\PlayMode;
 use App\Enums\QuestionType;
-use App\Enums\QuestStatus;
-use App\Enums\WrongAnswerBehaviour;
-use App\Models\Category;
-use App\Models\Quest;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -17,7 +13,7 @@ new
 #[Title('Create Quest')]
 class extends Component
 {
-    use WithFileUploads;
+    use HandlesApiErrors, WithApiClient, WithFileUploads;
 
     public int $step = 1;
 
@@ -63,7 +59,10 @@ class extends Component
 
     public function mount(): void
     {
-        $this->categories = Category::query()->orderBy('name')->pluck('name', 'id')->toArray();
+        $response = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
+        $this->categories = collect($response['data'] ?? [])
+            ->pluck('name', 'id')
+            ->toArray();
         $this->addCheckpoint();
     }
 
@@ -172,67 +171,68 @@ class extends Component
     public function publish(): void
     {
         $this->validateStep();
-        $this->saveQuest(QuestStatus::Published);
+        $this->saveQuest(publish: true);
     }
 
     public function saveAsDraft(): void
     {
-        $this->saveQuest(QuestStatus::Draft);
+        $this->saveQuest();
     }
 
-    private function saveQuest(QuestStatus $status): void
+    private function saveQuest(bool $publish = false): void
     {
-        $coverImagePath = null;
-        if ($this->coverImage) {
-            $coverImagePath = $this->coverImage->store('quest-covers', 'public');
+        $checkpointsData = [];
+        foreach ($this->checkpoints as $cpIndex => $checkpoint) {
+            $questionsData = [];
+            foreach ($this->questions[$cpIndex] ?? [] as $question) {
+                $answersData = [];
+                foreach ($question['answers'] ?? [] as $answer) {
+                    $answersData[] = [
+                        'answer_text' => $answer['body'],
+                        'is_correct' => $answer['is_correct'],
+                    ];
+                }
+                $questionsData[] = [
+                    'question_text' => $question['body'],
+                    'question_type' => $question['type'],
+                    'answers' => $answersData,
+                ];
+            }
+            $checkpointsData[] = [
+                'title' => $checkpoint['title'],
+                'description' => $checkpoint['description'] ?: null,
+                'latitude' => $checkpoint['latitude'],
+                'longitude' => $checkpoint['longitude'],
+                'questions' => $questionsData,
+            ];
         }
 
-        $quest = Quest::create([
-            'creator_id' => Auth::id(),
+        $data = [
             'category_id' => $this->categoryId,
             'title' => $this->title,
             'description' => $this->description,
-            'cover_image_path' => $coverImagePath,
             'difficulty' => $this->difficulty,
-            'status' => $status,
-            'play_mode' => $this->playMode,
+            'visibility' => 'public',
+            'estimated_duration_minutes' => 60,
             'wrong_answer_behaviour' => $this->wrongAnswerBehaviour,
-            'time_limit_per_question' => $this->timeLimitPerQuestion,
-            'shuffle_questions' => $this->shuffleQuestions,
-            'shuffle_answers' => $this->shuffleAnswers,
-            'max_participants' => $this->maxParticipants,
-            'published_at' => $status === QuestStatus::Published ? now() : null,
-        ]);
+            'checkpoints' => $checkpointsData,
+        ];
 
-        foreach ($this->checkpoints as $cpIndex => $checkpoint) {
-            $cp = $quest->checkpoints()->create([
-                'title' => $checkpoint['title'],
-                'description' => $checkpoint['description'],
-                'latitude' => $checkpoint['latitude'],
-                'longitude' => $checkpoint['longitude'],
-                'sort_order' => $cpIndex,
-            ]);
+        $coverImagePath = $this->coverImage ? $this->coverImage->getRealPath() : null;
 
-            foreach ($this->questions[$cpIndex] ?? [] as $qIndex => $question) {
-                $q = $cp->questions()->create([
-                    'type' => $question['type'],
-                    'body' => $question['body'],
-                    'hint' => $question['hint'] ?: null,
-                    'points' => $question['points'],
-                    'sort_order' => $qIndex,
-                ]);
+        $response = $this->tryApiCall(fn () => $this->api->quests()->store($data, $coverImagePath));
 
-                foreach ($question['answers'] ?? [] as $aIndex => $answer) {
-                    $q->answers()->create([
-                        'body' => $answer['body'],
-                        'is_correct' => $answer['is_correct'],
-                        'sort_order' => $aIndex,
-                    ]);
-                }
-            }
+        if (! $response) {
+            return;
         }
 
-        $this->redirect('/quests/' . $quest->id);
+        $questId = $response['data']['id'];
+
+        if ($publish) {
+            $this->tryApiCall(fn () => $this->api->quests()->publish($questId));
+        }
+
+        $this->redirect('/quests/' . $questId);
     }
 
     private function validateStep(): void

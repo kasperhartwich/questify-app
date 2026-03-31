@@ -1,8 +1,10 @@
 <?php
 
+use App\Auth\QuestifyApiGuard;
 use App\Enums\SocialProvider;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -11,7 +13,7 @@ new
 #[Title('Profile')]
 class extends Component
 {
-    use WithFileUploads;
+    use HandlesApiErrors, WithApiClient, WithFileUploads;
 
     public string $name = '';
 
@@ -20,12 +22,6 @@ class extends Component
     public string $locale = 'en';
 
     public $avatar = null;
-
-    public string $current_password = '';
-
-    public string $new_password = '';
-
-    public string $new_password_confirmation = '';
 
     public bool $notifications_enabled = true;
 
@@ -41,70 +37,47 @@ class extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . Auth::id()],
             'locale' => ['required', 'string', 'in:en,da'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        $user = Auth::user();
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->locale = $validated['locale'];
-
+        $avatarPath = null;
         if ($this->avatar) {
-            $user->avatar_path = $this->avatar->store('avatars', 'public');
+            $avatarPath = $this->avatar->getRealPath();
         }
 
-        $user->save();
+        $this->tryApiCall(fn () => $this->api->user()->updateProfile([
+            'name' => $validated['name'],
+            'locale' => $validated['locale'],
+        ], $avatarPath));
+
+        // Update session user data
+        $meResponse = $this->tryApiCall(fn () => $this->api->auth()->me());
+        if ($meResponse) {
+            session()->put('questify_user', $meResponse['data']);
+        }
 
         app()->setLocale($validated['locale']);
 
         session()->flash('message', __('general.profile_updated'));
     }
 
-    public function changePassword(): void
-    {
-        $this->validate([
-            'current_password' => ['required', 'string'],
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = Auth::user();
-
-        if (! Hash::check($this->current_password, $user->password)) {
-            $this->addError('current_password', __('auth.password'));
-
-            return;
-        }
-
-        $user->update([
-            'password' => Hash::make($this->new_password),
-        ]);
-
-        $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
-
-        session()->flash('password_message', __('general.password_changed'));
-    }
-
     public function logout(): void
     {
-        Auth::logout();
-        session()->invalidate();
-        session()->regenerateToken();
+        /** @var QuestifyApiGuard $guard */
+        $guard = Auth::guard();
+        $guard->logout();
 
         $this->redirect('/');
     }
 
     public function deleteAccount(): void
     {
-        $user = Auth::user();
-        $user->tokens()->delete();
+        $this->tryApiCall(fn () => $this->api->user()->deleteAccount());
 
-        Auth::logout();
-        session()->invalidate();
-        session()->regenerateToken();
-
-        $user->delete();
+        /** @var QuestifyApiGuard $guard */
+        $guard = Auth::guard();
+        $guard->logout();
 
         $this->redirect('/');
     }
@@ -114,11 +87,9 @@ class extends Component
      */
     public function getLinkedAccountsProperty(): array
     {
-        $linked = Auth::user()->socialAccounts()->pluck('provider')->toArray();
-
         $accounts = [];
         foreach (SocialProvider::cases() as $provider) {
-            $accounts[$provider->value] = in_array($provider->value, $linked);
+            $accounts[$provider->value] = false;
         }
 
         return $accounts;

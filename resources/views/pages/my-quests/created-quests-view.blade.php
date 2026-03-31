@@ -64,6 +64,10 @@
             </div>
         @endforelse
 
-        {{ $quests->links() }}
+        @if (!empty($nextCursor))
+            <button wire:click="$set('cursor', '{{ $nextCursor }}')" class="mt-4 w-full rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+                {{ __('general.load_more') }}
+            </button>
+        @endif
     </div>
 </div>

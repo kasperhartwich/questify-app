@@ -1,10 +1,7 @@
 <?php
 
-use App\Enums\SessionStatus;
-use App\Models\Checkpoint;
-use App\Models\QuestSession;
-use App\Models\SessionParticipant;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -13,11 +10,13 @@ new
 #[Title('Active Quest')]
 class extends Component
 {
-    public QuestSession $session;
+    use HandlesApiErrors, WithApiClient;
 
-    public SessionParticipant $participant;
+    public string $code = '';
 
-    public ?Checkpoint $currentCheckpoint = null;
+    public array $session = [];
+
+    public int $participantId = 0;
 
     public int $currentCheckpointIndex = 0;
 
@@ -31,58 +30,44 @@ class extends Component
 
     public function mount(string $code): void
     {
-        $this->session = QuestSession::where('join_code', $code)
-            ->with(['quest.checkpoints.questions.answers'])
-            ->firstOrFail();
+        $this->code = $code;
+        $this->participantId = session('questify_participant_id', 0);
 
-        $this->participant = $this->session->participants()
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
+        $this->session = $response['data'] ?? [];
 
-        $this->checkpoints = $this->session->quest->checkpoints
+        $questResponse = $this->tryApiCall(fn () => $this->api->quests()->show($this->session['quest']['id'] ?? 0));
+        $quest = $questResponse['data'] ?? [];
+
+        $this->checkpoints = collect($quest['checkpoints'] ?? [])
             ->map(fn ($cp) => [
-                'id' => $cp->id,
-                'title' => $cp->title,
-                'description' => $cp->description,
-                'latitude' => $cp->latitude,
-                'longitude' => $cp->longitude,
+                'id' => $cp['id'],
+                'title' => $cp['title'],
+                'description' => $cp['description'] ?? '',
+                'latitude' => $cp['latitude'] ?? null,
+                'longitude' => $cp['longitude'] ?? null,
             ])
             ->toArray();
 
-        $this->determineCurrentCheckpoint();
+        $this->currentCheckpointIndex = session('questify_checkpoint_index', 0);
         $this->loadLeaderboard();
-    }
-
-    public function determineCurrentCheckpoint(): void
-    {
-        $completedCheckpointIds = $this->participant->checkpointProgress()
-            ->where('is_correct', true)
-            ->pluck('checkpoint_id')
-            ->unique()
-            ->toArray();
-
-        $questCheckpoints = $this->session->quest->checkpoints;
-
-        foreach ($questCheckpoints as $index => $checkpoint) {
-            $checkpointQuestionCount = $checkpoint->questions->count();
-            $completedQuestionCount = $this->participant->checkpointProgress()
-                ->where('checkpoint_id', $checkpoint->id)
-                ->where('is_correct', true)
-                ->count();
-
-            if ($completedQuestionCount < $checkpointQuestionCount) {
-                $this->currentCheckpoint = $checkpoint;
-                $this->currentCheckpointIndex = $index;
-
-                return;
-            }
-        }
-
-        $this->redirect('/session/' . $this->session->join_code . '/complete');
     }
 
     public function arriveAtCheckpoint(): void
     {
+        $checkpoint = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
+        if (! $checkpoint) {
+            return;
+        }
+
+        $this->tryApiCall(fn () => $this->api->gameplay()->arrived(
+            $this->code,
+            $this->participantId,
+            $checkpoint['id'],
+            $checkpoint['latitude'] ?? 0,
+            $checkpoint['longitude'] ?? 0,
+        ));
+
         $this->showQuestions = true;
     }
 
@@ -93,46 +78,39 @@ class extends Component
 
     public function goToQuestions(): void
     {
-        if (! $this->currentCheckpoint) {
+        $checkpoint = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
+        if (! $checkpoint) {
             return;
         }
 
-        $this->redirect('/session/' . $this->session->join_code . '/question/' . $this->currentCheckpoint->id);
+        $this->redirect('/session/' . $this->code . '/question/' . $checkpoint['id']);
     }
 
     public function loadLeaderboard(): void
     {
-        $this->leaderboard = $this->session->participants()
-            ->orderByDesc('score')
-            ->limit(5)
-            ->get()
+        $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
+        $this->leaderboard = collect($response['data'] ?? [])
+            ->take(5)
             ->map(fn ($p, $i) => [
                 'rank' => $i + 1,
-                'display_name' => $p->display_name,
-                'score' => $p->score,
-                'is_me' => $p->id === $this->participant->id,
+                'display_name' => $p['display_name'],
+                'score' => $p['total_score'],
+                'is_me' => $p['id'] === $this->participantId,
             ])
             ->toArray();
     }
 
-    #[On('echo-presence:session.{session.join_code},LeaderboardUpdated')]
+    #[On('echo-presence:session.{code},LeaderboardUpdated')]
     public function onLeaderboardUpdated(): void
     {
         $this->loadLeaderboard();
     }
 
-    #[On('echo-presence:session.{session.join_code},SessionEnded')]
+    #[On('echo-presence:session.{code},SessionEnded')]
     public function onSessionEnded(): void
     {
-        $this->redirect('/session/' . $this->session->join_code . '/complete');
+        $this->redirect('/session/' . $this->code . '/complete');
     }
-
-    public function getListeners(): array
-    {
-        return [
-            "echo-presence:session.{$this->session->join_code},LeaderboardUpdated" => 'onLeaderboardUpdated',
-            "echo-presence:session.{$this->session->join_code},SessionEnded" => 'onSessionEnded',
-        ];
     }
 };
 ?>

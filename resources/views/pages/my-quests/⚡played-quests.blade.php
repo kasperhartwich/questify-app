@@ -1,29 +1,24 @@
 <?php
 
-use App\Models\SessionParticipant;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 new
 #[Title('My Quests')]
 class extends Component
 {
-    use WithPagination;
+    use HandlesApiErrors, WithApiClient;
 
     public string $tab = 'played';
 
     public function render(): mixed
     {
-        $participations = SessionParticipant::query()
-            ->where('user_id', Auth::id())
-            ->with(['questSession.quest.category'])
-            ->latest()
-            ->paginate(15);
+        $response = $this->tryApiCall(fn () => $this->api->user()->sessions()) ?? ['data' => []];
 
         return view('pages.my-quests.played-quests-view', [
-            'participations' => $participations,
+            'participations' => $response['data'] ?? [],
         ]);
     }
 };

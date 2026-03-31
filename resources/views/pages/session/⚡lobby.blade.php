@@ -1,8 +1,7 @@
 <?php
 
-use App\Enums\SessionStatus;
-use App\Events\SessionStarted;
-use App\Models\QuestSession;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -12,7 +11,11 @@ new
 #[Title('Session Lobby')]
 class extends Component
 {
-    public QuestSession $session;
+    use HandlesApiErrors, WithApiClient;
+
+    public array $session = [];
+
+    public string $code = '';
 
     public array $participants = [];
 
@@ -22,38 +25,29 @@ class extends Component
 
     public function mount(string $code): void
     {
-        $this->session = QuestSession::where('join_code', $code)
-            ->with(['quest:id,title,cover_image_path', 'host:id,name'])
-            ->firstOrFail();
-
-        $this->isHost = Auth::id() === $this->session->host_id;
-        $this->shareUrl = url('/session/' . $this->session->join_code);
-        $this->loadParticipants();
+        $this->code = $code;
+        $this->loadSession();
     }
 
-    public function loadParticipants(): void
+    public function loadSession(): void
     {
-        $this->participants = $this->session->participants()
-            ->with('user:id,name')
-            ->get()
-            ->map(fn ($p) => [
-                'id' => $p->id,
-                'display_name' => $p->display_name,
-                'user_name' => $p->user?->name,
-            ])
-            ->toArray();
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($this->code));
+        $this->session = $response['data'] ?? [];
+        $this->isHost = Auth::id() === ($this->session['host']['id'] ?? null);
+        $this->shareUrl = url('/session/' . $this->code);
+        $this->participants = $this->session['participants'] ?? [];
     }
 
-    #[On('echo-presence:session.{session.join_code},ParticipantJoined')]
+    #[On('echo-presence:session.{code},ParticipantJoined')]
     public function onParticipantJoined(): void
     {
-        $this->loadParticipants();
+        $this->loadSession();
     }
 
-    #[On('echo-presence:session.{session.join_code},SessionStarted')]
+    #[On('echo-presence:session.{code},SessionStarted')]
     public function onSessionStarted(): void
     {
-        $this->redirect('/session/' . $this->session->join_code . '/play');
+        $this->redirect('/session/' . $this->code . '/play');
     }
 
     public function startSession(): void
@@ -62,19 +56,14 @@ class extends Component
             return;
         }
 
-        $this->session->update([
-            'status' => SessionStatus::Active,
-            'started_at' => now(),
-        ]);
+        $this->tryApiCall(fn () => $this->api->sessions()->start($this->code));
 
-        broadcast(new SessionStarted($this->session->fresh()));
-
-        $this->redirect('/session/' . $this->session->join_code . '/host');
+        $this->redirect('/session/' . $this->code . '/host');
     }
 
     public function shareSession(): void
     {
-        $this->dispatch('share-session', url: $this->shareUrl, code: $this->session->join_code);
+        $this->dispatch('share-session', url: $this->shareUrl, code: $this->code);
     }
 
     public function getListeners(): array

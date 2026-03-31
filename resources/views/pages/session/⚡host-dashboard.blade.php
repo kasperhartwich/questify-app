@@ -1,9 +1,7 @@
 <?php
 
-use App\Enums\SessionStatus;
-use App\Events\SessionEnded;
-use App\Models\QuestSession;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -12,99 +10,65 @@ new
 #[Title('Host Dashboard')]
 class extends Component
 {
-    public QuestSession $session;
+    use HandlesApiErrors, WithApiClient;
+
+    public string $code = '';
+
+    public array $sessionData = [];
 
     public array $participants = [];
 
-    public int $totalCheckpoints = 0;
-
     public function mount(string $code): void
     {
-        $this->session = QuestSession::where('join_code', $code)
-            ->with('quest.checkpoints')
-            ->firstOrFail();
-
-        abort_if(Auth::id() !== $this->session->host_id, 403);
-
-        $this->totalCheckpoints = $this->session->quest->checkpoints->count();
-        $this->loadParticipants();
+        $this->code = $code;
+        $this->loadDashboard();
     }
 
-    public function loadParticipants(): void
+    public function loadDashboard(): void
     {
-        $this->participants = $this->session->participants()
-            ->with(['user:id,name', 'checkpointProgress'])
-            ->orderByDesc('score')
-            ->get()
-            ->map(function ($p) {
-                $completedCheckpoints = $p->checkpointProgress
-                    ->where('is_correct', true)
-                    ->pluck('checkpoint_id')
-                    ->unique()
-                    ->count();
-
-                return [
-                    'id' => $p->id,
-                    'display_name' => $p->display_name,
-                    'user_name' => $p->user?->name,
-                    'score' => $p->score,
-                    'checkpoints_completed' => $completedCheckpoints,
-                    'total_checkpoints' => $this->totalCheckpoints,
-                    'status' => $p->finished_at ? 'finished' : 'playing',
-                    'finished_at' => $p->finished_at?->diffForHumans(),
-                ];
-            })
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->dashboard($this->code));
+        $data = $response['data'] ?? [];
+        $this->sessionData = $data['session'] ?? [];
+        $this->participants = collect($data['participants'] ?? [])
+            ->map(fn ($p) => [
+                'id' => $p['id'],
+                'display_name' => $p['display_name'],
+                'score' => $p['total_score'] ?? 0,
+                'current_checkpoint_index' => $p['current_checkpoint_index'] ?? 0,
+                'status' => $p['quest_completed_at'] ? 'finished' : 'playing',
+            ])
             ->toArray();
     }
 
-    #[On('echo-presence:session.{session.join_code},CheckpointCompleted')]
+    #[On('echo-presence:session.{code},CheckpointCompleted')]
     public function onCheckpointCompleted(): void
     {
-        $this->loadParticipants();
+        $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{session.join_code},LeaderboardUpdated')]
+    #[On('echo-presence:session.{code},LeaderboardUpdated')]
     public function onLeaderboardUpdated(): void
     {
-        $this->loadParticipants();
+        $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{session.join_code},QuestCompleted')]
+    #[On('echo-presence:session.{code},QuestCompleted')]
     public function onQuestCompleted(): void
     {
-        $this->loadParticipants();
+        $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{session.join_code},ParticipantJoined')]
+    #[On('echo-presence:session.{code},ParticipantJoined')]
     public function onParticipantJoined(): void
     {
-        $this->loadParticipants();
+        $this->loadDashboard();
     }
 
     public function endSession(): void
     {
-        $this->session->update([
-            'status' => SessionStatus::Completed,
-            'completed_at' => now(),
-        ]);
+        $this->tryApiCall(fn () => $this->api->sessions()->end($this->code));
 
-        $this->session->participants()
-            ->whereNull('finished_at')
-            ->update(['finished_at' => now()]);
-
-        broadcast(new SessionEnded($this->session->fresh()));
-
-        $this->redirect('/session/' . $this->session->join_code . '/complete');
-    }
-
-    public function getListeners(): array
-    {
-        return [
-            "echo-presence:session.{$this->session->join_code},CheckpointCompleted" => 'onCheckpointCompleted',
-            "echo-presence:session.{$this->session->join_code},LeaderboardUpdated" => 'onLeaderboardUpdated',
-            "echo-presence:session.{$this->session->join_code},QuestCompleted" => 'onQuestCompleted',
-            "echo-presence:session.{$this->session->join_code},ParticipantJoined" => 'onParticipantJoined',
-        ];
+        $this->redirect('/session/' . $this->code . '/complete');
     }
 };
 ?>
