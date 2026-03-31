@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Auth\QuestifyApiGuard;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\AppInfoService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -13,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(QuestifyApiClient::class);
+        $this->app->singleton(AppInfoService::class);
     }
 
     public function boot(): void
