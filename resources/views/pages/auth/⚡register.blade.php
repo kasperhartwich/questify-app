@@ -1,6 +1,7 @@
 <?php
 
 use App\Auth\QuestifyApiGuard;
+use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiValidationException;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
@@ -115,6 +116,8 @@ class extends Component
             foreach ($e->errors as $field => $messages) {
                 $this->addError($field, $messages[0]);
             }
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
         }
     }
 
@@ -129,6 +132,8 @@ class extends Component
             $this->redirect('/discover/list');
         } catch (ApiValidationException $e) {
             $this->addError('phone_code', __('auth.invalid_code'));
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
         }
     }
 
@@ -138,6 +143,8 @@ class extends Component
             $this->api->auth()->resendVerification();
             session()->flash('code_resent', true);
         } catch (ApiValidationException) {
+            // Silently handle
+        } catch (ApiException) {
             // Silently handle
         }
     }

@@ -2,6 +2,7 @@
 
 use App\Auth\QuestifyApiGuard;
 use App\Exceptions\Api\ApiAuthenticationException;
+use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiValidationException;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
@@ -68,6 +69,8 @@ class extends Component
             foreach ($e->errors as $field => $messages) {
                 $this->addError($field, $messages[0]);
             }
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
         }
     }
 
@@ -89,6 +92,8 @@ class extends Component
             $this->addError('otp_code', __('auth.invalid_or_expired_token'));
         } catch (ApiValidationException) {
             $this->addError('otp_code', __('auth.invalid_code'));
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
         }
     }
 
