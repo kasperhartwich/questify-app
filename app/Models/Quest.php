@@ -6,6 +6,7 @@ use App\Enums\Difficulty;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
 use App\Enums\WrongAnswerBehaviour;
+use App\Models\Concerns\HasImageUrls;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Quest extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImageUrls;
 
     protected $fillable = [
         'creator_id',

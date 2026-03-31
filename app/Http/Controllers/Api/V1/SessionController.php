@@ -123,7 +123,7 @@ class SessionController extends Controller
                 'session_code' => $session->join_code,
                 'quest' => [
                     'title' => $session->quest->title,
-                    'cover_image_path' => $session->quest->cover_image_path,
+                    'cover_image_url' => $session->quest->resolveImageUrl($session->quest->cover_image_path),
                 ],
                 'status' => $session->status,
             ],

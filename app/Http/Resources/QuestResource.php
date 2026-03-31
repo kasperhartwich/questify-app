@@ -16,7 +16,7 @@ class QuestResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'cover_image_path' => $this->cover_image_path,
+            'cover_image_url' => $this->resolveImageUrl($this->cover_image_path),
             'category' => $this->whenLoaded('category', fn () => [
                 'id' => $this->category->id,
                 'name' => $this->category->name,

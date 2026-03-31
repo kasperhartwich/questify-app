@@ -15,7 +15,7 @@ function mockFullApiClient(): void
         'id' => 1,
         'title' => 'Copenhagen History Hunt',
         'description' => 'Explore the historical heart of Copenhagen!',
-        'cover_image_path' => null,
+        'cover_image_url' => null,
         'category' => ['id' => 3, 'name' => 'History', 'icon' => 'castle', 'color' => '#F59E0B'],
         'difficulty' => 'medium',
         'visibility' => 'public',

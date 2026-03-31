@@ -20,7 +20,6 @@ use App\Models\SessionParticipant;
 use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Gameplay
@@ -73,7 +72,7 @@ class GameplayController extends Controller
                     'id' => $question->id,
                     'question_text' => $question->body,
                     'question_type' => $question->type->value,
-                    'image_url' => $question->image_path ? Storage::url($question->image_path) : null,
+                    'image_url' => $question->resolveImageUrl($question->image_path),
                     'answers' => $question->answers->map(fn ($answer) => [
                         'id' => $answer->id,
                         'answer_text' => $answer->body,

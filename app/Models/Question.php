@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\QuestionType;
+use App\Models\Concerns\HasImageUrls;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImageUrls;
 
     protected $fillable = [
         'checkpoint_id',

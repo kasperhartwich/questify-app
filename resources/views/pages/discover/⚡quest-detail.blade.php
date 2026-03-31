@@ -31,8 +31,8 @@ class extends Component
 
 <div class="flex flex-col">
     {{-- Hero Image --}}
-    @if ($questData->cover_image_path)
-        <img src="{{ $questData->cover_image_path }}" alt="{{ $questData->title }}" class="h-56 w-full object-cover" />
+    @if ($questData->cover_image_url)
+        <img src="{{ $questData->cover_image_url }}" alt="{{ $questData->title }}" class="h-56 w-full object-cover" />
     @else
         <div class="flex h-56 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
             <span class="text-3xl font-bold text-white">{{ $questData->title }}</span>
