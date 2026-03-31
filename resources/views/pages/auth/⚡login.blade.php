@@ -306,7 +306,7 @@ class extends Component
                 <input
                     type="tel"
                     wire:model="phone_local"
-                    placeholder="20 12 34"
+                    placeholder=""
                     class="flex-1 rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 text-base font-semibold text-bark focus:border-forest-600 focus:outline-none"
                     inputmode="tel"
                     autofocus

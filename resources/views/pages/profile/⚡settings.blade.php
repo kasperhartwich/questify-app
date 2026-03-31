@@ -138,9 +138,9 @@ class extends Component
     {{-- Stats Row (overlapping header) --}}
     <div class="-mt-4 relative z-10">
         <x-stat-row :stats="[
-            ['value' => $stats['quests_played'] ?? 0, 'label' => __('general.quests_played') ?? 'Quests Played'],
-            ['value' => $stats['quests_created'] ?? 0, 'label' => __('general.created') ?? 'Created'],
-            ['value' => number_format($stats['total_points'] ?? 0), 'label' => __('general.total_points') ?? 'Total Points'],
+            ['value' => $stats['quests_played'] ?? 0, 'label' => __('general.quests_played')],
+            ['value' => $stats['quests_created'] ?? 0, 'label' => __('general.created')],
+            ['value' => number_format($stats['total_points'] ?? 0), 'label' => __('general.total_points')],
         ]" />
     </div>
 
@@ -153,7 +153,7 @@ class extends Component
 
     {{-- Recent Activity --}}
     <div class="px-4 pb-2 pt-3.5">
-        <h2 class="font-heading text-[13px] font-bold text-bark">{{ __('general.recent_activity') ?? 'Recent Activity' }}</h2>
+        <h2 class="font-heading text-[13px] font-bold text-bark">{{ __('general.recent_activity') }}</h2>
     </div>
 
     <div class="flex flex-col gap-2 px-3.5 pb-3">
@@ -180,8 +180,8 @@ class extends Component
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[11px] font-semibold text-muted">{{ __('general.no_recent_activity') ?? 'No recent activity yet' }}</p>
-                    <p class="text-[9px] text-muted">{{ __('general.start_playing') ?? 'Start playing quests to see your activity here' }}</p>
+                    <p class="text-[11px] font-semibold text-muted">{{ __('general.no_recent_activity') }}</p>
+                    <p class="text-[9px] text-muted">{{ __('general.start_playing') }}</p>
                 </div>
             </div>
         @endforelse
@@ -191,7 +191,7 @@ class extends Component
     <div class="mx-3.5 mb-4 overflow-hidden rounded-[14px] bg-white">
         <button wire:click="$toggle('showSettings')" class="flex w-full items-center gap-2.5 border-b border-cream-border p-3 text-left">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-            <span class="flex-1 text-xs font-medium text-bark">{{ __('general.settings') ?? 'Settings' }}</span>
+            <span class="flex-1 text-xs font-medium text-bark">{{ __('general.settings') }}</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
         <button wire:click="logout" class="flex w-full items-center gap-2.5 p-3 text-left">
@@ -239,7 +239,7 @@ class extends Component
                         <div class="flex items-center justify-between rounded-xl border-[1.5px] border-cream-border p-2.5">
                             <span class="text-xs font-medium text-bark">{{ ucfirst($provider) }}</span>
                             @if ($isLinked)
-                                <span class="text-[10px] font-semibold text-forest-500">{{ __('general.linked') ?? 'Linked' }}</span>
+                                <span class="text-[10px] font-semibold text-forest-500">{{ __('general.linked') }}</span>
                             @else
                                 <a href="/auth/{{ $provider }}/redirect" class="text-[10px] font-semibold text-forest-600">Connect</a>
                             @endif

@@ -276,7 +276,7 @@ class extends Component
                             <div class="h-[3px] flex-1 rounded-full" :class="i <= strength ? (strength <= 1 ? 'bg-coral' : strength <= 2 ? 'bg-amber-400' : 'bg-forest-600') : 'bg-cream-border'"></div>
                         </template>
                     </div>
-                    <p class="mt-1 text-[9px]" :class="strength <= 1 ? 'text-coral' : strength <= 2 ? 'text-amber-600' : 'text-forest-600'" x-show="strength > 0" x-text="strength <= 1 ? '{{ __('auth.weak_password') ?? 'Weak' }}' : strength <= 2 ? '{{ __('auth.medium_password') ?? 'Medium strength' }}' : '{{ __('auth.strong_password') ?? 'Strong' }}'"></p>
+                    <p class="mt-1 text-[9px]" :class="strength <= 1 ? 'text-coral' : strength <= 2 ? 'text-amber-600' : 'text-forest-600'" x-show="strength > 0" x-text="strength <= 1 ? '{{ __('auth.weak_password') }}' : strength <= 2 ? '{{ __('auth.medium_password') }}' : '{{ __('auth.strong_password') }}'"></p>
                 </div>
                 @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
             </div>

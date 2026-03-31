@@ -80,7 +80,7 @@ class extends Component
     {{-- Forest Header --}}
     <div class="relative overflow-hidden bg-forest-600 px-4 py-5 text-white">
         <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[100px] w-[100px] rounded-full border-[18px] border-amber-400/10"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-400">{{ __('sessions.lobby') ?? 'Lobby' }}</p>
+        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-400">{{ __('sessions.lobby') }}</p>
         <h1 class="mt-1 font-heading text-[15px] font-bold leading-tight">{{ $session['quest']['title'] ?? __('sessions.session') }}</h1>
 
         {{-- Badges --}}
@@ -89,13 +89,13 @@ class extends Component
                 <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ ucfirst(str_replace('_', ' ', $session['play_mode'])) }}</span>
             @endif
             @if (!empty($session['quest']['checkpoints_count']))
-                <span class="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-bold text-white/80">{{ $session['quest']['checkpoints_count'] }} {{ __('general.stops') ?? 'stops' }}</span>
+                <span class="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-bold text-white/80">{{ $session['quest']['checkpoints_count'] }} {{ __('general.stops') }}</span>
             @endif
         </div>
 
         {{-- Session Code --}}
         <div class="mt-3 rounded-[10px] bg-white/10 px-3 py-2">
-            <p class="text-[9px] font-semibold text-white/50">{{ __('sessions.join_code') ?? 'Session code' }}</p>
+            <p class="text-[9px] font-semibold text-white/50">{{ __('sessions.join_code') }}</p>
             <div class="flex items-center justify-between">
                 <p class="font-heading text-lg font-extrabold tracking-[3px]">{{ $session['join_code'] ?? $code }}</p>
                 <button
@@ -119,10 +119,10 @@ class extends Component
         {{-- Participants List --}}
         <div>
             <div class="mb-2 flex items-center justify-between">
-                <h2 class="font-heading text-xs font-bold text-bark">{{ __('sessions.players') ?? 'Players' }}</h2>
+                <h2 class="font-heading text-xs font-bold text-bark">{{ __('sessions.players') }}</h2>
                 <div class="flex items-center gap-1.5">
                     <div class="h-[7px] w-[7px] animate-pulse rounded-full bg-green-500"></div>
-                    <span class="text-[10px] font-semibold text-green-500">{{ count($participants) }} {{ __('sessions.joined') ?? 'joined' }}</span>
+                    <span class="text-[10px] font-semibold text-green-500">{{ count($participants) }} {{ __('sessions.joined') }}</span>
                 </div>
             </div>
 
@@ -133,7 +133,7 @@ class extends Component
                 <div class="flex items-center gap-2.5 border-b border-cream-border py-2">
                     <div class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-forest-600 text-[11px] font-bold text-white">QM</div>
                     <p class="flex-1 text-xs font-semibold text-bark">{{ $session['host']['name'] ?? '' }}</p>
-                    <span class="rounded-full bg-[#D4EDE4] px-[7px] py-0.5 text-[9px] font-bold text-forest-400">{{ __('sessions.quest_master') ?? 'Quest Master' }}</span>
+                    <span class="rounded-full bg-[#D4EDE4] px-[7px] py-0.5 text-[9px] font-bold text-forest-400">{{ __('sessions.quest_master') }}</span>
                 </div>
 
                 @foreach ($participants as $pIndex => $participant)
@@ -146,7 +146,7 @@ class extends Component
                 @endforeach
 
                 @if (empty($participants))
-                    <p class="py-4 text-center text-xs text-muted">{{ __('sessions.waiting_for_players') ?? 'Waiting for players to join...' }}</p>
+                    <p class="py-4 text-center text-xs text-muted">{{ __('sessions.waiting_for_players') }}</p>
                 @endif
             </div>
         </div>

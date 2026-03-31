@@ -39,10 +39,10 @@ class extends Component
     <div class="flex flex-1 flex-col px-4">
         {{-- Session code input --}}
         <div class="mb-4">
-            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('general.enter_session_code') ?? 'Enter session code' }}</p>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('general.enter_session_code') }}</p>
             <x-code-boxes wire-model="joinCode" />
             @error('joinCode') <p class="mt-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
-            <p class="mt-2.5 text-center text-[10px] text-muted">{{ __('general.ask_quest_master_code') ?? 'Ask your Quest Master for the 6-character code' }}</p>
+            <p class="mt-2.5 text-center text-[10px] text-muted">{{ __('general.ask_quest_master_code') }}</p>
         </div>
 
         {{-- OR divider --}}
@@ -55,7 +55,7 @@ class extends Component
         {{-- Scan QR --}}
         <button wire:click="scanQr" class="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-cream-border bg-white px-4 py-3 text-[13px] font-semibold text-bark">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
-            {{ __('general.scan_qr') ?? 'Scan QR Code' }}
+            {{ __('general.scan_qr') }}
         </button>
 
         <div class="flex-1"></div>
@@ -68,7 +68,7 @@ class extends Component
                 @if (strlen($joinCode) < 6) style="opacity: 0.5" @endif
                 @if (strlen($joinCode) < 6) disabled @endif
             >
-                {{ __('general.continue') ?? 'Continue' }} &rarr;
+                {{ __('general.continue') }} &rarr;
             </button>
         </div>
     </div>

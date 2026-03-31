@@ -1,8 +1,8 @@
 <div class="flex flex-col">
     {{-- Header --}}
     <div class="flex items-center justify-between px-4 pb-3.5 pt-1.5">
-        <h1 class="font-heading text-xl font-extrabold text-bark">{{ __('general.create_quest') ?? 'Create Quest' }}</h1>
-        <button wire:click="saveDraft" class="text-[11px] font-semibold text-forest-400">{{ __('general.save_draft') ?? 'Save Draft' }}</button>
+        <h1 class="font-heading text-xl font-extrabold text-bark">{{ __('general.create_quest') }}</h1>
+        <button wire:click="saveDraft" class="text-[11px] font-semibold text-forest-400">{{ __('general.save_draft') }}</button>
     </div>
 
     {{-- Step Indicator --}}
@@ -24,7 +24,7 @@
             <div class="flex flex-col gap-2.5">
                 {{-- Quest Name --}}
                 <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
-                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('quests.title') }}</label>
+                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.quest_name') }}</label>
                     <input type="text" wire:model="title" class="w-full border-none bg-transparent p-0 font-heading text-sm font-bold text-bark placeholder-muted/50 focus:outline-none focus:ring-0" placeholder="{{ __('quests.title') }}" />
                     @error('title') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -61,7 +61,7 @@
 
                 {{-- Cover Image --}}
                 <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
-                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.cover_image') ?? 'Cover Image' }}</label>
+                    <label class="mb-1.5 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.cover_image') }}</label>
                     <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-xs text-muted" />
                     @error('coverImage') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -74,7 +74,7 @@
                 <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
                     <div class="mb-2.5 text-[9px] font-bold uppercase tracking-widest text-muted">
                         {{ __('quests.checkpoints') }}
-                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') ?? 'added' }}</span>
+                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') }}</span>
                     </div>
 
                 @foreach ($checkpoints as $cpIndex => $checkpoint)
@@ -157,7 +157,7 @@
                         <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-dashed border-cream-border">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                         </div>
-                        <span class="text-[11px] font-semibold text-forest-400">{{ __('general.add_checkpoint_on_map') ?? 'Add checkpoint on map' }}</span>
+                        <span class="text-[11px] font-semibold text-forest-400">{{ __('general.add_checkpoint_on_map') }}</span>
                     </button>
                 </div>
             </div>
@@ -295,14 +295,14 @@
                 <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
                     <div class="mb-2 text-[9px] font-bold uppercase tracking-widest text-muted">
                         {{ __('quests.checkpoints') }}
-                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') ?? 'added' }}</span>
+                        <span class="font-normal normal-case text-forest-400">{{ count($checkpoints) }} {{ __('general.added') }}</span>
                     </div>
                     @foreach ($checkpoints as $cpIndex => $checkpoint)
                         <div class="flex items-center gap-2 border-b border-cream-border py-1.5 last:border-b-0" wire:key="review-cp-{{ $cpIndex }}">
                             <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[9px] font-bold text-white">{{ $cpIndex + 1 }}</div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-[11px] font-semibold text-bark">{{ $checkpoint['title'] }}</p>
-                                <p class="text-[9px] text-muted">{{ count($questions[$cpIndex] ?? []) }} {{ __('quests.question') ?? 'question' }}{{ count($questions[$cpIndex] ?? []) !== 1 ? 's' : '' }}</p>
+                                <p class="text-[9px] text-muted">{{ count($questions[$cpIndex] ?? []) }} {{ __('quests.question') }}{{ count($questions[$cpIndex] ?? []) !== 1 ? 's' : '' }}</p>
                             </div>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
                         </div>
@@ -312,15 +312,15 @@
                 {{-- Settings Row --}}
                 <div class="flex gap-2">
                     <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
-                        <div class="text-[9px] text-muted">{{ __('general.visibility') ?? 'Visibility' }}</div>
+                        <div class="text-[9px] text-muted">{{ __('general.visibility') }}</div>
                         <div class="font-heading text-xs font-bold text-bark">{{ ucfirst($visibility ?? 'Public') }}</div>
                     </div>
                     <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
-                        <div class="text-[9px] text-muted">{{ __('general.mode') ?? 'Mode' }}</div>
+                        <div class="text-[9px] text-muted">{{ __('general.mode') }}</div>
                         <div class="font-heading text-xs font-bold text-bark">{{ ucfirst($playMode ?? 'Any') }}</div>
                     </div>
                     <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
-                        <div class="text-[9px] text-muted">{{ __('general.scoring') ?? 'Scoring' }}</div>
+                        <div class="text-[9px] text-muted">{{ __('general.scoring') }}</div>
                         <div class="font-heading text-xs font-bold text-bark">{{ $scoringSpeedBonus ? 'Speed' : 'Standard' }}</div>
                     </div>
                 </div>

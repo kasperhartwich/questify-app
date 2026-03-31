@@ -99,4 +99,13 @@ return [
     'no_created_quests' => 'Ingen oprettede quests endnu',
     'checkpoints_reached' => 'checkpoints nået',
     'added' => 'tilføjet',
+    'create_quest' => 'Opret Quest',
+    'save_draft' => 'Gem kladde',
+    'cover_image' => 'Coverbillede',
+    'visibility' => 'Synlighed',
+    'mode' => 'Tilstand',
+    'scoring' => 'Scoring',
+    'publish_quest' => 'Publicer Quest',
+    'add_checkpoint_on_map' => 'Tilføj checkpoint på kort',
+    'quest_name' => 'Quest-navn',
 ];

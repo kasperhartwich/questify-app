@@ -103,7 +103,7 @@
             <native:bottom-nav-item
                 id="join"
                 icon="qrcode"
-                label="{{ __('general.join') ?? 'Join' }}"
+                label="{{ __('general.join') }}"
                 url="/join"
                 :active="request()->is('join*')"
             />

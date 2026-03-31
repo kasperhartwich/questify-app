@@ -44,5 +44,5 @@ class extends Component
         </a>
     </div>
 
-    <p class="pb-8 text-center text-xs text-white/30">{{ __('general.no_account_needed') ?? 'No account needed to join a quest' }}</p>
+    <p class="pb-8 text-center text-xs text-white/30">{{ __('general.no_account_needed') }}</p>
 </div>

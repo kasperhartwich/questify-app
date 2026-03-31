@@ -26,7 +26,7 @@ return [
     'no_sessions' => 'No sessions found.',
 
     // Session actions
-    'joined' => 'Successfully joined the session.',
+    'joined' => 'joined',
     'started' => 'Session has been started.',
     'ended' => 'Session has been ended.',
     'already_in_session' => 'You are already in an active session.',
@@ -67,6 +67,16 @@ return [
     'unlimited' => 'Unlimited',
     'seconds' => 'seconds',
     'review_publish' => 'Review & Publish',
+    'lobby' => 'Lobby',
+    'players' => 'Players',
+    'quest_master' => 'Quest Master',
+    'waiting_for_players' => 'Waiting for players to join...',
+    'joining' => 'Joining',
+    'what_should_we_call_you' => 'What should we call you?',
+    'display_name_visible' => 'This is what other players will see during the quest.',
+    'your_display_name' => 'Your display name',
+    'no_account_just_session' => 'No account needed · Just for this session',
+    'enter_the_quest' => 'Enter the Quest',
 
     // Validation
     'validation' => [

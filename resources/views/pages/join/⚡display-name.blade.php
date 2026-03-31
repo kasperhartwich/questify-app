@@ -65,19 +65,19 @@ class extends Component
         @if ($session)
             <div class="relative mb-5 overflow-hidden rounded-[14px] bg-forest-600 px-4 py-3.5">
                 <div class="pointer-events-none absolute right-[-10px] top-[-10px] h-[60px] w-[60px] rounded-full border-[10px] border-amber-400/15"></div>
-                <p class="text-[9px] font-bold uppercase tracking-widest text-amber-400">{{ __('sessions.joining') ?? 'Joining' }}</p>
+                <p class="text-[9px] font-bold uppercase tracking-widest text-amber-400">{{ __('sessions.joining') }}</p>
                 <h2 class="mt-1 font-heading text-sm font-bold text-white">{{ $session->quest?->title ?? '' }}</h2>
                 <div class="mt-2 flex gap-1.5">
                     @if ($session->quest?->checkpoints_count ?? null)
-                        <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ $session->quest->checkpoints_count }} {{ __('general.stops') ?? 'stops' }}</span>
+                        <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ $session->quest->checkpoints_count }} {{ __('general.stops') }}</span>
                     @endif
                 </div>
             </div>
         @endif
 
         {{-- Heading --}}
-        <h1 class="mb-1.5 font-heading text-xl font-extrabold leading-tight text-bark">{{ __('sessions.what_should_we_call_you') ?? 'What should we call you?' }}</h1>
-        <p class="mb-5 text-xs text-muted">{{ __('sessions.display_name_visible') ?? 'This is what other players will see during the quest.' }}</p>
+        <h1 class="mb-1.5 font-heading text-xl font-extrabold leading-tight text-bark">{{ __('sessions.what_should_we_call_you') }}</h1>
+        <p class="mb-5 text-xs text-muted">{{ __('sessions.display_name_visible') }}</p>
 
         {{-- Display name input --}}
         <form wire:submit="join" class="flex flex-1 flex-col">
@@ -85,7 +85,7 @@ class extends Component
                 <input
                     type="text"
                     wire:model="displayName"
-                    placeholder="{{ __('sessions.your_display_name') ?? 'Your display name' }}"
+                    placeholder="{{ __('sessions.your_display_name') }}"
                     class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 pr-11 text-[13px] font-semibold text-bark focus:border-forest-600 focus:outline-none"
                     required
                 />
@@ -96,11 +96,11 @@ class extends Component
                 @endif
             </div>
             @error('displayName') <p class="mb-2 text-[10px] text-coral">{{ $message }}</p> @enderror
-            <p class="mb-5 text-center text-[10px] text-muted">{{ __('sessions.no_account_just_session') ?? 'No account needed · Just for this session' }}</p>
+            <p class="mb-5 text-center text-[10px] text-muted">{{ __('sessions.no_account_just_session') }}</p>
 
             <div class="mt-auto pb-2">
                 <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark">
-                    {{ __('sessions.enter_the_quest') ?? 'Enter the Quest' }}
+                    {{ __('sessions.enter_the_quest') }}
                 </button>
             </div>
         </form>
