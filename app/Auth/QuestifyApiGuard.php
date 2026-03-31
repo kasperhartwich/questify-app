@@ -21,7 +21,7 @@ class QuestifyApiGuard implements Guard
 
     public function check(): bool
     {
-        return $this->session->has('questify_api_token');
+        return $this->user !== null || $this->session->has('questify_api_token');
     }
 
     public function guest(): bool

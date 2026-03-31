@@ -24,42 +24,40 @@
             @foreach ($participations as $participation)
                 @php
                     $session = $participation->quest_session ?? $participation->questSession ?? null;
-                    $quest = $session->quest ?? null;
-                    if (!$quest) continue;
-                    $sessionStatus = $session->status ?? '';
+                    $quest = $session?->quest ?? null;
                     $isFinished = ($participation->finished_at ?? null) !== null;
-                    if ($isFinished) continue;
-                    $hasActive = true;
-                    $checkpointsCount = $quest->checkpoints_count ?? $session->checkpoints_count ?? 7;
-                    $currentIndex = $participation->current_checkpoint_index ?? 0;
-                    $progressPercent = $checkpointsCount > 0 ? round($currentIndex / $checkpointsCount * 100) : 0;
-                    $joinCode = $session->join_code ?? '';
                 @endphp
-
-                <div class="overflow-hidden rounded-[14px] bg-white shadow-sm">
-                    {{-- Header --}}
-                    <div class="relative overflow-hidden bg-forest-600 px-3.5 py-3">
-                        <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
-                        <div class="flex items-start justify-between">
-                            <div class="min-w-0 flex-1">
-                                <h3 class="font-heading text-xs font-bold leading-tight text-white">{{ $quest->title ?? '' }}</h3>
-                                <p class="mt-0.5 text-[9px] text-white/55">In progress · Stop {{ $currentIndex }} of {{ $checkpointsCount }}</p>
+                @if ($quest && !$isFinished)
+                    @php
+                        $hasActive = true;
+                        $checkpointsCount = $quest->checkpoints_count ?? $session->checkpoints_count ?? 7;
+                        $currentIndex = $participation->current_checkpoint_index ?? 0;
+                        $progressPercent = $checkpointsCount > 0 ? round($currentIndex / $checkpointsCount * 100) : 0;
+                        $joinCode = $session->join_code ?? '';
+                    @endphp
+                    <div class="overflow-hidden rounded-[14px] bg-white shadow-sm">
+                        <div class="relative overflow-hidden bg-forest-600 px-3.5 py-3">
+                            <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
+                            <div class="flex items-start justify-between">
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-heading text-xs font-bold leading-tight text-white">{{ $quest->title ?? '' }}</h3>
+                                    <p class="mt-0.5 text-[9px] text-white/55">In progress · Stop {{ $currentIndex }} of {{ $checkpointsCount }}</p>
+                                </div>
+                                <span class="ml-2 shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ __('general.active') }}</span>
                             </div>
-                            <span class="ml-2 shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">{{ __('general.active') }}</span>
+                            <div class="mt-2.5">
+                                <div class="h-[3px] overflow-hidden rounded-full bg-white/20">
+                                    <div class="h-full rounded-full bg-amber-400" style="width: {{ $progressPercent }}%"></div>
+                                </div>
+                                <p class="mt-1 text-[9px] text-white/50">{{ $currentIndex }} / {{ $checkpointsCount }} {{ __('general.checkpoints_reached') }}</p>
+                            </div>
                         </div>
-                        <div class="mt-2.5">
-                            <div class="h-[3px] overflow-hidden rounded-full bg-white/20">
-                                <div class="h-full rounded-full bg-amber-400" style="width: {{ $progressPercent }}%"></div>
-                            </div>
-                            <p class="mt-1 text-[9px] text-white/50">{{ $currentIndex }} / {{ $checkpointsCount }} {{ __('general.checkpoints_reached') }}</p>
+                        <div class="flex items-center justify-between px-3.5 py-2.5">
+                            <span class="text-[11px] text-muted">{{ __('general.score') }}: <strong class="text-bark">{{ number_format($participation->score ?? 0) }} pts</strong></span>
+                            <a href="/session/{{ $joinCode }}/play" class="rounded-[9px] bg-forest-600 px-3.5 py-1.5 text-[11px] font-bold text-white" wire:navigate>{{ __('general.continue') }} &rarr;</a>
                         </div>
                     </div>
-                    {{-- Body --}}
-                    <div class="flex items-center justify-between px-3.5 py-2.5">
-                        <span class="text-[11px] text-muted">{{ __('general.score') }}: <strong class="text-bark">{{ number_format($participation->score ?? 0) }} pts</strong></span>
-                        <a href="/session/{{ $joinCode }}/play" class="rounded-[9px] bg-forest-600 px-3.5 py-1.5 text-[11px] font-bold text-white" wire:navigate>{{ __('general.continue') }} &rarr;</a>
-                    </div>
-                </div>
+                @endif
             @endforeach
             @unless ($hasActive)
                 <div class="py-12 text-center text-muted">
@@ -121,30 +119,29 @@
             @foreach ($participations as $participation)
                 @php
                     $session = $participation->quest_session ?? $participation->questSession ?? null;
-                    $quest = $session->quest ?? null;
-                    if (!$quest) continue;
+                    $quest = $session?->quest ?? null;
                     $isFinished = ($participation->finished_at ?? null) !== null;
-                    if (!$isFinished) continue;
-                    $hasHistory = true;
                 @endphp
-
-                <div class="overflow-hidden rounded-[14px] bg-white opacity-70 shadow-sm">
-                    <div class="relative overflow-hidden bg-[#165C45] px-3.5 py-3">
-                        <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h3 class="font-heading text-xs font-bold leading-tight text-white">{{ $quest->title ?? '' }}</h3>
-                                <p class="mt-0.5 text-[9px] text-white/55">Completed</p>
+                @if ($quest && $isFinished)
+                    @php $hasHistory = true; @endphp
+                    <div class="overflow-hidden rounded-[14px] bg-white opacity-70 shadow-sm">
+                        <div class="relative overflow-hidden bg-[#165C45] px-3.5 py-3">
+                            <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-heading text-xs font-bold leading-tight text-white">{{ $quest->title ?? '' }}</h3>
+                                    <p class="mt-0.5 text-[9px] text-white/55">Completed</p>
+                                </div>
+                                <span class="ml-2 shrink-0 rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-bold text-white/90">Done</span>
                             </div>
-                            <span class="ml-2 shrink-0 rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-bold text-white/90">Done</span>
+                        </div>
+                        <div class="px-3.5 py-2.5">
+                            <div class="flex items-center gap-3 text-[10px] text-muted">
+                                <span>Final score: <strong class="text-bark">{{ number_format($participation->score ?? 0) }} pts</strong></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="px-3.5 py-2.5">
-                        <div class="flex items-center gap-3 text-[10px] text-muted">
-                            <span>Final score: <strong class="text-bark">{{ number_format($participation->score ?? 0) }} pts</strong></span>
-                        </div>
-                    </div>
-                </div>
+                @endif
             @endforeach
             @unless ($hasHistory)
                 <div class="py-12 text-center text-muted">

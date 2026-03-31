@@ -18,7 +18,9 @@ trait WithApiClient
      */
     protected function toObject(array $data): object
     {
-        return json_decode(json_encode($data));
+        $result = json_decode(json_encode($data));
+
+        return is_object($result) ? $result : (object) $data;
     }
 
     /**
@@ -28,6 +30,9 @@ trait WithApiClient
      */
     protected function toObjectCollection(array $items): Collection
     {
-        return collect($items)->map(fn (array $item) => $this->toObject($item));
+        return collect($items)
+            ->filter(fn (mixed $item): bool => is_array($item))
+            ->map(fn (array $item) => $this->toObject($item))
+            ->values();
     }
 }

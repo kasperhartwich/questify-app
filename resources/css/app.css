@@ -41,3 +41,8 @@
     --color-muted: #7A7470;
     --color-coral: #E85C3A;
 }
+
+/* Global cursor rules */
+button, [type="button"], [type="submit"], [type="reset"], a[href], select, [role="button"] {
+    cursor: pointer;
+}
