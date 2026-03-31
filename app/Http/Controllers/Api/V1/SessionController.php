@@ -14,7 +14,6 @@ use App\Models\Quest;
 use App\Models\QuestSession;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -124,9 +123,7 @@ class SessionController extends Controller
                 'session_code' => $session->join_code,
                 'quest' => [
                     'title' => $session->quest->title,
-                    'cover_image_url' => $session->quest->cover_image_path
-                        ? Storage::url($session->quest->cover_image_path)
-                        : null,
+                    'cover_image_path' => $session->quest->cover_image_path,
                 ],
                 'status' => $session->status,
             ],

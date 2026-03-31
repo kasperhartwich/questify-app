@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class SessionResource extends JsonResource
 {
@@ -16,7 +15,7 @@ class SessionResource extends JsonResource
             'quest' => $this->whenLoaded('quest', fn () => [
                 'id' => $this->quest->id,
                 'title' => $this->quest->title,
-                'cover_image_url' => $this->quest->cover_image_path ? Storage::url($this->quest->cover_image_path) : null,
+                'cover_image_path' => $this->quest->cover_image_path,
             ]),
             'host' => $this->whenLoaded('host', fn () => [
                 'id' => $this->host->id,
