@@ -35,8 +35,8 @@
         @forelse ($quests as $quest)
             <a href="/quests/{{ $quest->id }}" class="block overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" wire:navigate wire:key="quest-{{ $quest->id }}">
                 {{-- Cover Image --}}
-                @if ($quest->cover_image_path)
-                    <img src="{{ Storage::url($quest->cover_image_path) }}" alt="{{ $quest->title }}" class="h-40 w-full object-cover" />
+                @if (!empty($quest->cover_image_url))
+                    <img src="{{ $quest->cover_image_url }}" alt="{{ $quest->title }}" class="h-40 w-full object-cover" />
                 @else
                     <div class="flex h-40 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
                         <span class="text-2xl font-bold text-white">{{ Str::limit($quest->title, 20) }}</span>
@@ -47,25 +47,28 @@
                     <h3 class="font-semibold text-gray-900 dark:text-white">{{ $quest->title }}</h3>
 
                     <div class="mt-2 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                        @if ($quest->difficulty)
+                        @if (!empty($quest->difficulty))
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
                                 {{ match($quest->difficulty) {
-                                    \App\Enums\Difficulty::Easy => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-                                    \App\Enums\Difficulty::Medium => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                                    \App\Enums\Difficulty::Hard => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                    'easy' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                                    'medium' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                                    'hard' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                    default => 'bg-gray-100 text-gray-700',
                                 } }}">
-                                {{ ucfirst($quest->difficulty->value) }}
+                                {{ ucfirst($quest->difficulty) }}
                             </span>
                         @endif
 
-                        <span>{{ $quest->checkpoints_count }} {{ __('general.checkpoints') }}</span>
+                        @if (!empty($quest->estimated_duration_minutes))
+                            <span>{{ $quest->estimated_duration_minutes }} min</span>
+                        @endif
 
-                        @if ($quest->ratings_avg_rating)
-                            <span>★ {{ number_format($quest->ratings_avg_rating, 1) }}</span>
+                        @if (!empty($quest->average_rating))
+                            <span>★ {{ number_format($quest->average_rating, 1) }}</span>
                         @endif
                     </div>
 
-                    @if ($quest->description)
+                    @if (!empty($quest->description))
                         <p class="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ $quest->description }}</p>
                     @endif
                 </div>

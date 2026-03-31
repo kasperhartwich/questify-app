@@ -56,10 +56,10 @@ class extends Component
         $categoryResponse = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
 
         return view('pages.discover.quest-list-view', [
-            'quests' => $questResponse['data'] ?? [],
+            'quests' => $this->toObjectCollection($questResponse['data'] ?? []),
             'nextCursor' => $questResponse['meta']['next_cursor'] ?? null,
             'prevCursor' => $questResponse['meta']['prev_cursor'] ?? null,
-            'categories' => $categoryResponse['data'] ?? [],
+            'categories' => $this->toObjectCollection($categoryResponse['data'] ?? []),
             'difficulties' => Difficulty::cases(),
         ]);
     }

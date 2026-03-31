@@ -18,7 +18,7 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->user()->sessions()) ?? ['data' => []];
 
         return view('pages.my-quests.played-quests-view', [
-            'participations' => $response['data'] ?? [],
+            'participations' => $this->toObjectCollection($response['data'] ?? []),
         ]);
     }
 };

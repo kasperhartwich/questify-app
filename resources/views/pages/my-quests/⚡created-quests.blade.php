@@ -23,7 +23,7 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->user()->quests($this->cursor ?: null)) ?? ['data' => [], 'meta' => []];
 
         return view('pages.my-quests.created-quests-view', [
-            'quests' => $response['data'] ?? [],
+            'quests' => $this->toObjectCollection($response['data'] ?? []),
             'nextCursor' => $response['meta']['next_cursor'] ?? null,
         ]);
     }

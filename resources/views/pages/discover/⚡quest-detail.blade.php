@@ -11,83 +11,86 @@ class extends Component
 {
     use HandlesApiErrors, WithApiClient;
 
-    public array $questData = [];
+    public int $questId = 0;
+
+    public object $questData;
 
     public function mount(int $quest): void
     {
+        $this->questId = $quest;
         $response = $this->tryApiCall(fn () => $this->api->quests()->show($quest));
-        $this->questData = $response['data'] ?? [];
+        $this->questData = $this->toObject($response['data'] ?? []);
     }
 
     public function startQuest(): void
     {
-        $this->redirect('/quests/' . $this->questData['id'] . '/start');
+        $this->redirect('/quests/' . $this->questId . '/start');
     }
 };
 ?>
 
 <div class="flex flex-col">
     {{-- Hero Image --}}
-    @if ($quest->cover_image_path)
-        <img src="{{ Storage::url($quest->cover_image_path) }}" alt="{{ $quest->title }}" class="h-56 w-full object-cover" />
+    @if ($questData->cover_image_url)
+        <img src="{{ $questData->cover_image_url }}" alt="{{ $questData->title }}" class="h-56 w-full object-cover" />
     @else
         <div class="flex h-56 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
-            <span class="text-3xl font-bold text-white">{{ $quest->title }}</span>
+            <span class="text-3xl font-bold text-white">{{ $questData->title }}</span>
         </div>
     @endif
 
     <div class="space-y-6 p-4">
         {{-- Title & Category --}}
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $quest->title }}</h1>
-            @if ($quest->category)
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $questData->title }}</h1>
+            @if ($questData->category)
                 <span class="mt-1 inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                    @if ($quest->category->icon)
-                        <span>{{ $quest->category->icon }}</span>
+                    @if ($questData->category->icon)
+                        <span>{{ $questData->category->icon }}</span>
                     @endif
-                    {{ $quest->category->name }}
+                    {{ $questData->category->name }}
                 </span>
             @endif
-            @if ($quest->creator)
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('quests.by_creator', ['name' => $quest->creator->name]) }}</p>
+            @if ($questData->user)
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('quests.by_creator', ['name' => $questData->user->name]) }}</p>
             @endif
         </div>
 
         {{-- Stats Row --}}
         <div class="grid grid-cols-4 gap-2 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
             <div class="text-center">
-                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $quest->checkpoints_count }}</p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ count($questData->checkpoints ?? []) }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('general.checkpoints') }}</p>
             </div>
             <div class="text-center">
                 <p class="text-lg font-bold text-gray-900 dark:text-white">
-                    {{ $quest->difficulty ? ucfirst($quest->difficulty->value) : '-' }}
+                    {{ !empty($questData->difficulty) ? ucfirst($questData->difficulty) : '-' }}
                 </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('general.difficulty') }}</p>
             </div>
             <div class="text-center">
                 <p class="text-lg font-bold text-gray-900 dark:text-white">
-                    {{ $quest->ratings_avg_rating ? number_format($quest->ratings_avg_rating, 1) : '-' }}
+                    {{ !empty($questData->average_rating) ? number_format($questData->average_rating, 1) : '-' }}
                 </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('general.rating') }}</p>
             </div>
             <div class="text-center">
-                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $quest->ratings_count }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('general.ratings') }}</p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $questData->sessions_count ?? 0 }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('general.sessions') }}</p>
             </div>
         </div>
 
         {{-- Description --}}
-        @if ($quest->description)
+        @if ($questData->description)
             <div>
                 <h2 class="mb-2 font-semibold text-gray-900 dark:text-white">{{ __('quests.description') }}</h2>
-                <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{{ $quest->description }}</p>
+                <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{{ $questData->description }}</p>
             </div>
         @endif
 
         {{-- Map Preview --}}
         @php
-            $startCheckpoint = $quest->checkpoints->first();
+            $startCheckpoint = collect($questData->checkpoints ?? [])->first();
         @endphp
         @if ($startCheckpoint?->latitude && $startCheckpoint?->longitude)
             <div>
@@ -108,7 +111,7 @@ class extends Component
                                 new google.maps.Marker({
                                     position: { lat: {{ $startCheckpoint->latitude }}, lng: {{ $startCheckpoint->longitude }} },
                                     map: map,
-                                    title: '{{ addslashes($quest->title) }}',
+                                    title: '{{ addslashes($questData->title) }}',
                                 });
                             }
                         }
@@ -122,11 +125,11 @@ class extends Component
         @endif
 
         {{-- Ratings --}}
-        @if ($quest->ratings_count > 0)
+        @if (($questData->ratings_count ?? 0) > 0)
             <div>
-                <h2 class="mb-2 font-semibold text-gray-900 dark:text-white">{{ __('general.ratings') }} ({{ $quest->ratings_count }})</h2>
+                <h2 class="mb-2 font-semibold text-gray-900 dark:text-white">{{ __('general.ratings') }} ({{ ($questData->ratings_count ?? 0) }})</h2>
                 <div class="flex items-center gap-2">
-                    <span class="text-3xl font-bold text-yellow-500">★ {{ number_format($quest->ratings_avg_rating, 1) }}</span>
+                    <span class="text-3xl font-bold text-yellow-500">★ {{ number_format(($questData->average_rating ?? 0), 1) }}</span>
                     <span class="text-sm text-gray-500 dark:text-gray-400">/ 5</span>
                 </div>
             </div>
