@@ -87,10 +87,10 @@ it('register requires a valid email', function () {
         ->assertHasErrors('email');
 });
 
-it('signup step 1 shows phone number option', function () {
+it('signup step 1 shows phone option', function () {
     Livewire::test('pages::auth.register')
         ->assertSet('step', 1)
-        ->assertSee(__('auth.phone_number'));
+        ->assertSee(__('general.phone'));
 });
 
 it('clicking phone signup advances to step 2 with phone field', function () {

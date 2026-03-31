@@ -29,16 +29,21 @@ class extends Component
 
     public string $otp_code = '';
 
+    public string $phone_number = '';
+
     /** @var array<int, string> */
     public array $socialProviders = [];
 
     public bool $emailEnabled = true;
+
+    public bool $phoneEnabled = false;
 
     public function mount(): void
     {
         $appInfo = app(AppInfoService::class);
         $this->socialProviders = $appInfo->enabledSocialProviders();
         $this->emailEnabled = $appInfo->isAuthMethodEnabled('email');
+        $this->phoneEnabled = $appInfo->isAuthMethodEnabled('phone');
     }
 
     public function login(): void
@@ -102,7 +107,38 @@ class extends Component
         $this->step = 'login';
         $this->otp_code = '';
         $this->login_token = '';
+        $this->phone_number = '';
         $this->resetErrorBag();
+    }
+
+    public function goToPhoneLogin(): void
+    {
+        $this->step = 'phone';
+        $this->resetErrorBag();
+    }
+
+    public function sendPhoneOtp(): void
+    {
+        $this->validate([
+            'phone_number' => ['required', 'string', 'regex:/^\+[1-9]\d{6,14}$/'],
+        ]);
+
+        try {
+            $response = $this->api->auth()->login($this->phone_number, '');
+
+            if (! empty($response['requires_otp'])) {
+                $this->login_token = $response['login_token'];
+                $this->step = 'otp';
+            }
+        } catch (ApiAuthenticationException) {
+            $this->addError('phone_number', __('auth.failed'));
+        } catch (ApiValidationException $e) {
+            foreach ($e->errors as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
+        }
     }
 };
 ?>
@@ -125,7 +161,7 @@ class extends Component
         <p class="mb-5 text-xs text-muted">{{ __('auth.login_subtitle') }}</p>
 
         {{-- Social buttons + Phone --}}
-        <x-social-auth-grid :providers="$socialProviders" />
+        <x-social-auth-grid :providers="$socialProviders" :phone-enabled="$phoneEnabled" phone-action="goToPhoneLogin" />
 
         {{-- OR divider --}}
         @if (count($socialProviders) > 0 && $emailEnabled)
@@ -204,6 +240,38 @@ class extends Component
             <div class="mt-auto pt-6">
                 <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($otp_code) < 6) style="opacity:0.5" @endif>
                     {{ __('auth.verify') }}
+                </button>
+            </div>
+        </form>
+
+    {{-- Phone Login Step --}}
+    @elseif ($step === 'phone')
+        {{-- Back --}}
+        <div class="flex items-center gap-2.5 pb-6 pt-1">
+            <button wire:click="backToLogin" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+        </div>
+
+        <div class="relative mb-4 flex h-16 w-16 items-center justify-center rounded-[18px] bg-amber-100">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C8811A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+
+        <h1 class="mb-1.5 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ __('auth.login_with_phone') ?? 'Log in with phone' }}</h1>
+        <p class="mb-6 text-xs leading-relaxed text-muted">{{ __('auth.phone_login_subtitle') ?? 'Enter your phone number and we\'ll send you a code.' }}</p>
+
+        <form wire:submit="sendPhoneOtp" class="flex flex-1 flex-col">
+            <div class="relative mb-3">
+                <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                </div>
+                <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required autofocus />
+            </div>
+            @error('phone_number') <p class="mb-2 text-[10px] text-coral">{{ $message }}</p> @enderror
+
+            <div class="mt-auto pt-6">
+                <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white">
+                    {{ __('auth.send_code') ?? 'Send Code' }}
                 </button>
             </div>
         </form>

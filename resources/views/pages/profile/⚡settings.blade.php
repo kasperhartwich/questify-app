@@ -122,15 +122,15 @@ class extends Component
         <div class="pointer-events-none absolute right-[-30px] top-[-30px] h-[120px] w-[120px] rounded-full border-[20px] border-amber-400/10"></div>
         <div class="relative z-10 flex items-center gap-3">
             <div class="flex h-[52px] w-[52px] items-center justify-center overflow-hidden rounded-full border-[3px] border-white/20 bg-amber-400">
-                @if (Auth::user()->avatar_path)
-                    <img src="{{ Storage::url(Auth::user()->avatar_path) }}" alt="" class="h-full w-full object-cover" />
+                @if (Auth::user()->avatarUrl)
+                    <img src="{{ Auth::user()->avatarUrl }}" alt="" class="h-full w-full object-cover" />
                 @else
                     <span class="font-heading text-xl font-extrabold text-bark">{{ substr($name, 0, 1) }}</span>
                 @endif
             </div>
             <div>
                 <h1 class="font-heading text-base font-bold text-white">{{ $name }}</h1>
-                <p class="text-[10px] text-white/55">{{ $email }}</p>
+                <p class="text-[10px] text-white/55">Quest Master · Member since {{ Auth::user()->createdAt ? \Carbon\Carbon::parse(Auth::user()->createdAt)->year : now()->year }}</p>
             </div>
         </div>
     </div>

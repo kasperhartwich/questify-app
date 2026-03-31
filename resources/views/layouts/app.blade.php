@@ -7,8 +7,9 @@
 
         <title>{{ $title ?? config('app.name', 'Questify') }}</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=exo-2:500,600,700,800|dm-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
@@ -28,26 +29,26 @@
         </main>
 
         {{-- HTML Tab Bar (visible in browser, hidden on native) --}}
-        <nav class="fixed bottom-0 left-0 right-0 z-50 flex h-[60px] items-center border-t border-black/[0.07] bg-white">
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex h-[60px] items-center border-t border-black/[0.07] bg-white px-0.5">
             {{-- Discover --}}
             <a href="/discover/list" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/>
                     <line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/>
-                    @if (request()->is('discover*'))<circle cx="15" cy="10" r="2" fill="#0B3D2E" stroke="none"/>@endif
+                    <circle cx="15" cy="10" r="2" fill="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke="none"/>
                 </svg>
-                <span class="text-[7px] font-semibold tracking-wide {{ request()->is('discover*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.discover') }}</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('discover*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Discover</span>
             </a>
 
-            {{-- My Quests --}}
+            {{-- Quests --}}
             <a href="/my-quests" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('my-quests*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('my-quests*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
                     <rect x="9" y="1" width="6" height="4" rx="1"/>
                     <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
                     <polyline points="7,9 8.5,10.5 11,8"/>
                 </svg>
-                <span class="text-[7px] font-semibold tracking-wide {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.my_quests') }}</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Quests</span>
             </a>
 
             {{-- Join (center pill) --}}
@@ -67,19 +68,19 @@
 
             {{-- Create --}}
             <a href="/create" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('create*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('create*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                     <line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/>
                 </svg>
-                <span class="text-[7px] font-semibold tracking-wide {{ request()->is('create*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.create') }}</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('create*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Create</span>
             </a>
 
             {{-- Profile --}}
             <a href="/profile" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('profile*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('profile*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round">
                     <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
                 </svg>
-                <span class="text-[7px] font-semibold tracking-wide {{ request()->is('profile*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.profile') }}</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('profile*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Profile</span>
             </a>
         </nav>
 

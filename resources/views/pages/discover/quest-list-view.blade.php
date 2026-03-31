@@ -19,7 +19,7 @@
         </button>
     </div>
 
-    {{-- Filter dropdowns (collapsible) --}}
+    {{-- Filter dropdowns --}}
     <div x-data="{ showFilters: false }">
         <div x-show="showFilters" x-transition class="flex gap-2 px-3.5 pb-2">
             <select wire:model.live="category" class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white px-3 py-2 text-xs text-bark">
@@ -39,17 +39,14 @@
 
     {{-- Map Widget --}}
     <a href="/discover/map" class="relative mx-3.5 mb-2.5 block h-[100px] overflow-hidden rounded-xl bg-[#E8F0E8]" wire:navigate>
-        {{-- Grid lines --}}
         <div class="absolute left-0 top-1/4 h-px w-full bg-forest-600/[0.08]"></div>
         <div class="absolute left-0 top-1/2 h-px w-full bg-forest-600/[0.08]"></div>
         <div class="absolute left-0 top-3/4 h-px w-full bg-forest-600/[0.08]"></div>
         <div class="absolute left-1/3 top-0 h-full w-px bg-forest-600/[0.08]"></div>
         <div class="absolute left-2/3 top-0 h-full w-px bg-forest-600/[0.08]"></div>
-        {{-- Roads --}}
         <div class="absolute left-0 top-[45%] h-2 w-full rounded-sm bg-white"></div>
         <div class="absolute left-[35%] top-0 h-full w-2 rounded-sm bg-white"></div>
         <div class="absolute left-0 top-[70%] h-1.5 w-full rounded-sm bg-white opacity-70"></div>
-        {{-- Quest pins --}}
         <div class="absolute left-[30%] top-[20%]">
             <div class="h-[18px] w-[18px] origin-center rotate-[-45deg] rounded-full rounded-bl-none bg-amber-400 shadow-md"></div>
         </div>
@@ -59,24 +56,22 @@
         <div class="absolute left-[70%] top-[30%]">
             <div class="h-[14px] w-[14px] origin-center rotate-[-45deg] rounded-full rounded-bl-none bg-coral shadow-sm"></div>
         </div>
-        {{-- Location dot --}}
         <div class="absolute left-[30%] top-[55%] h-2.5 w-2.5 rounded-full bg-[#2563EB] shadow-[0_0_0_4px_rgba(37,99,235,0.2)]"></div>
-        {{-- Badge --}}
         <div class="absolute bottom-2 right-2 rounded-lg bg-white px-2 py-1 text-[9px] font-semibold text-forest-600 shadow-md">
-            {{ count($quests) }} {{ __('general.quests_nearby') ?? 'quests nearby' }}
+            {{ count($quests) }} {{ __('general.quests_nearby') }}
         </div>
     </a>
 
     {{-- Section Header --}}
     <div class="flex items-center justify-between px-4 pb-2 pt-1">
-        <h2 class="font-heading text-[13px] font-bold text-bark">{{ __('general.nearby_quests') ?? 'Nearby Quests' }}</h2>
-        <a href="/discover/map" class="text-[11px] font-semibold text-forest-400" wire:navigate>{{ __('general.see_all') ?? 'See all' }}</a>
+        <h2 class="font-heading text-[13px] font-bold text-bark">{{ __('general.nearby_quests') }}</h2>
+        <a href="/discover/map" class="text-[11px] font-semibold text-forest-400" wire:navigate>{{ __('general.see_all') }}</a>
     </div>
 
     {{-- Quest Cards --}}
     <div class="space-y-2.5 px-3.5 pb-4">
         @forelse ($quests as $quest)
-            <x-quest-card :quest="$quest" variant="discover" :cta-label="__('general.start_quest') ?? 'Start Quest'" />
+            <x-quest-card :quest="$quest" variant="discover" :cta-label="__('general.start_quest')" />
         @empty
             <div class="py-12 text-center text-muted">
                 <p>{{ __('general.no_quests_found') }}</p>
