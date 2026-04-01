@@ -33,13 +33,20 @@
     --color-amber-800: #664207;
     --color-amber-900: #3d2803;
 
+    --color-amber-dark: #C8811A;
+    --color-amber-light: #FDE8BA;
+
     --color-cream: #FAF5EB;
     --color-cream-dark: #F0E8D6;
     --color-cream-border: #E5DDD0;
 
     --color-bark: #2C1810;
     --color-muted: #7A7470;
+
     --color-coral: #E85C3A;
+    --color-coral-light: #FCDDD7;
+
+    --color-success: #D4EDE4;
 }
 
 /* Global cursor rules */

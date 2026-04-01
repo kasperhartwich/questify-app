@@ -54,4 +54,10 @@ return [
     'medium_password' => 'Medium strength',
     'strong_password' => 'Strong',
     'social_login_note' => 'Social logins go directly in. Phone & email require verification.',
+    'forgot_password_title' => "Forgot your\npassword?",
+    'forgot_password_subtitle' => "Enter your email and we'll send you a link to reset your password.",
+    'send_reset_link' => 'Send Reset Link',
+    'reset_link_sent' => "We've sent a password reset link to your email address.",
+    'back_to_login' => 'Back to Login',
+    'send_sms' => 'Send SMS →',
 ];

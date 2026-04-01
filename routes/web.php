@@ -13,6 +13,7 @@ Route::livewire('/join/{code}/name', 'pages::join.display-name')->name('join.nam
 // Auth routes
 Route::livewire('/login', 'pages::auth.login')->name('login');
 Route::livewire('/register', 'pages::auth.register')->name('register');
+Route::livewire('/forgot-password', 'pages::auth.forgot-password')->name('password.request');
 
 // OAuth routes
 Route::get('auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);

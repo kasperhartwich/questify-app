@@ -54,4 +54,10 @@ return [
     'medium_password' => 'Medium styrke',
     'strong_password' => 'Stærk',
     'social_login_note' => 'Sociale logins logger direkte ind. Telefon og e-mail kræver bekræftelse.',
+    'forgot_password_title' => "Glemt din\nadgangskode?",
+    'forgot_password_subtitle' => 'Indtast din e-mail, og vi sender dig et link til at nulstille din adgangskode.',
+    'send_reset_link' => 'Send nulstillingslink',
+    'reset_link_sent' => 'Vi har sendt et link til nulstilling af adgangskode til din e-mailadresse.',
+    'back_to_login' => 'Tilbage til login',
+    'send_sms' => 'Send SMS →',
 ];

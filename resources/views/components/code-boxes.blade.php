@@ -61,7 +61,7 @@
                 'border-amber-400 bg-white': !boxes[{{ $i }}] && focusIndex === {{ $i }},
                 'border-cream-border bg-white': !boxes[{{ $i }}] && focusIndex !== {{ $i }},
             }"
-            class="flex h-[58px] flex-1 items-center justify-center rounded-[13px] border-2 text-center font-heading text-2xl font-extrabold text-bark focus:outline-none"
+            class="flex h-[58px] w-0 min-w-0 flex-1 items-center justify-center rounded-[13px] border-2 text-center font-heading text-2xl font-extrabold text-bark focus:outline-none"
         />
     @endfor
 </div>

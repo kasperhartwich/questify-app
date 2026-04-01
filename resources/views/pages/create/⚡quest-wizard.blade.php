@@ -226,7 +226,7 @@ class extends Component
             'title' => $this->title,
             'description' => $this->description,
             'difficulty' => $this->difficulty,
-            'visibility' => 'public',
+            'visibility' => $this->visibility,
             'estimated_duration_minutes' => 60,
             'wrong_answer_behaviour' => $this->wrongAnswerBehaviour,
             'checkpoints' => $checkpointsData,

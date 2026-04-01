@@ -37,15 +37,11 @@ it('register page contains login link', function () {
     $this->get('/register')->assertOk()->assertSee('/login');
 });
 
-it('signup step 1 shows social buttons and email signup option', function () {
+it('signup step 1 shows email and continue button', function () {
     Livewire::test('pages::auth.register')
         ->assertSet('step', 1)
-        ->assertSee('Google')
-        ->assertSee('Facebook')
-        ->assertSee('Apple')
-        ->assertSee('Microsoft')
-        ->assertSeeHtml('/auth/google/redirect')
-        ->assertSee(__('auth.signup_with_email'));
+        ->assertSee(__('general.email'))
+        ->assertSee(__('auth.continue'));
 });
 
 it('clicking email signup advances to step 2', function () {
@@ -99,7 +95,7 @@ it('clicking phone signup advances to step 2 with phone field', function () {
         ->assertSet('step', 2)
         ->assertSet('signup_method', 'phone')
         ->assertSee(__('auth.phone_number'))
-        ->assertSee(__('auth.phone_e164_hint'));
+        ->assertSee(__('auth.phone_sms_disclaimer'));
 });
 
 it('email signup does not show phone field', function () {

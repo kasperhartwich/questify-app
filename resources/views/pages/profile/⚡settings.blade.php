@@ -221,7 +221,6 @@ class extends Component
                     <line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
                 <span class="flex-1 text-left text-[14px] font-semibold text-coral">{{ __('general.logout') }}</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E85C3A" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
         </div>
 
@@ -386,9 +385,8 @@ class extends Component
                     </div>
                 </div>
 
-                {{-- Danger Zone Section --}}
+                {{-- Delete Account --}}
                 <div>
-                    <p class="mb-[8px] px-[16px] text-[10px] font-bold uppercase tracking-wide text-coral">{{ __('general.danger_zone') }}</p>
                     <button wire:click="deleteAccount" wire:confirm="{{ __('general.delete_account_confirm') }}" class="flex w-full items-center gap-3 rounded-[14px] bg-coral-light p-[14px_16px]" style="border: 1.5px solid rgba(232,92,58,0.2);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E85C3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"/>
@@ -397,7 +395,6 @@ class extends Component
                             <line x1="14" y1="11" x2="14" y2="17"/>
                         </svg>
                         <span class="flex-1 text-left text-[14px] font-semibold text-coral">{{ __('general.delete_account') }}</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E85C3A" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
                     </button>
                 </div>
 
