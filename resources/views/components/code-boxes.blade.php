@@ -43,7 +43,7 @@
             this.$refs['box' + nextIndex].focus()
         },
     }"
-    class="flex justify-center gap-1.5"
+    class="flex justify-center gap-[8px]"
 >
     @for ($i = 0; $i < $length; $i++)
         <input
@@ -57,11 +57,11 @@
             @paste="handlePaste($event)"
             @focus="focusIndex = {{ $i }}"
             :class="{
-                'border-forest-600 bg-forest-50': boxes[{{ $i }}],
+                'border-forest-600 bg-[#F0FAF5]': boxes[{{ $i }}],
                 'border-amber-400 bg-white': !boxes[{{ $i }}] && focusIndex === {{ $i }},
                 'border-cream-border bg-white': !boxes[{{ $i }}] && focusIndex !== {{ $i }},
             }"
-            class="flex h-10 w-8 items-center justify-center rounded-[10px] border-2 text-center font-heading text-xl font-extrabold text-bark focus:outline-none"
+            class="flex h-[58px] flex-1 items-center justify-center rounded-[13px] border-2 text-center font-heading text-2xl font-extrabold text-bark focus:outline-none"
         />
     @endfor
 </div>

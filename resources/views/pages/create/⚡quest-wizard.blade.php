@@ -54,6 +54,20 @@ class extends Component
 
     public ?int $maxParticipants = null;
 
+    // Step 4 extras
+    public string $visibility = 'public';
+
+    public bool $scoringSpeedBonus = false;
+
+    public bool $scoringWrongPenalty = false;
+
+    public bool $scoringCompletionBonus = true;
+
+    // Step 3 navigation
+    public int $activeCheckpointIndex = 0;
+
+    public int $activeQuestionIndex = 0;
+
     // Computed
     public array $categories = [];
 

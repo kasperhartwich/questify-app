@@ -1,73 +1,81 @@
 <div class="flex flex-col">
+    {{-- Title --}}
+    <div class="px-[20px] py-[6px]">
+        <h1 class="font-heading text-[24px] font-[800] text-bark">{{ __('general.my_quests') }}</h1>
+    </div>
+
     {{-- Tabs --}}
-    <div class="flex border-b-2 border-cream-border px-4 dark:border-gray-700">
-        <a href="/my-quests" class="flex-1 border-b-2 border-transparent py-3 text-center text-sm font-semibold text-muted hover:text-bark -mb-[2px] dark:text-gray-400 dark:hover:text-gray-300" wire:navigate>
-            {{ __('general.played_quests') }}
+    <div class="mt-[12px] flex border-b-2 border-cream-border px-[20px]">
+        <a href="/my-quests" class="-mb-[2px] flex-1 border-b-2 border-b-transparent py-[12px] text-center text-[13px] font-semibold text-muted" wire:navigate>
+            {{ __('general.playing') }}
         </a>
-        <a href="/my-quests/created" class="flex-1 border-b-2 border-forest-600 py-3 text-center text-sm font-semibold text-forest-600 -mb-[2px] dark:border-forest-400 dark:text-forest-400">
-            {{ __('general.created_quests') }}
+        <a href="/my-quests/created" class="-mb-[2px] flex-1 border-b-2 border-b-forest-600 py-[12px] text-center text-[13px] font-semibold text-forest-600">
+            {{ __('general.created') }}
+        </a>
+        <a href="/my-quests" class="-mb-[2px] flex-1 border-b-2 border-b-transparent py-[12px] text-center text-[13px] font-semibold text-muted" wire:navigate>
+            {{ __('general.history') }}
         </a>
     </div>
 
     {{-- Created Quests --}}
-    <div class="space-y-3 p-4">
+    <div class="space-y-3 p-[20px]">
         @forelse ($quests as $quest)
-            <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" wire:key="created-{{ $quest->id }}">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <a href="/quests/{{ $quest->id }}" class="font-semibold text-gray-900 hover:text-forest-600 dark:text-white dark:hover:text-forest-400" wire:navigate>
-                            {{ $quest->title }}
-                        </a>
-                        <div class="mt-1 flex items-center gap-2">
-                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-                                {{ match($quest->status ?? 'draft') {
-                                    'draft' => 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
-                                    'published' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-                                    'pending_review' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                                    'archived' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-                                    default => 'bg-gray-100 text-gray-600',
-                                } }}">
-                                {{ ucfirst($quest->status ?? 'draft') }}
-                            </span>
+            <a href="/quests/{{ $quest->id }}" class="block overflow-hidden rounded-[14px] bg-white shadow-sm" wire:navigate wire:key="created-{{ $quest->id }}">
+                <div class="relative overflow-hidden bg-forest-600 px-4 py-3.5">
+                    <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="font-heading text-[14px] font-bold leading-tight text-white">{{ $quest->title }}</h3>
+                            <p class="mt-1 text-[11px] text-white/55">{{ ucfirst(str_replace('_', ' ', $quest->status ?? 'draft')) }}</p>
                         </div>
+                        @php
+                            $statusClass = match($quest->status ?? '') {
+                                'published' => 'bg-[#D4EDE4] text-forest-600',
+                                'pending_review' => 'bg-amber-100 text-amber-700',
+                                default => 'bg-cream-dark text-muted',
+                            };
+                        @endphp
+                        <span class="ml-2 shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold {{ $statusClass }}">{{ ucfirst(str_replace('_', ' ', $quest->status ?? 'draft')) }}</span>
                     </div>
                 </div>
-
-                <div class="mt-3 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                    <span>{{ $quest->sessions_count }} {{ __('general.sessions') }}</span>
-                    @if (!empty($quest->average_rating))
-                        <span>★ {{ number_format($quest->average_rating, 1) }} ({{ $quest->sessions_count ?? 0 }})</span>
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-3 text-[11px] text-muted">
+                        @if ($quest->sessions_count ?? null)
+                            <span>{{ $quest->sessions_count }} {{ __('general.plays') }}</span>
+                        @endif
+                        @if (!empty($quest->average_rating))
+                            <span>{{ number_format($quest->average_rating, 1) }} ({{ $quest->sessions_count ?? 0 }})</span>
+                        @endif
+                    </div>
+                    @if (($quest->status ?? '') === 'draft')
+                        <span class="text-[12px] font-semibold text-forest-400">{{ __('general.edit') }}</span>
                     @endif
                 </div>
-
-                {{-- Actions --}}
-                <div class="mt-3 flex gap-2">
-                    <a href="/quests/{{ $quest->id }}" class="rounded-lg bg-forest-50 px-3 py-1.5 text-xs font-medium text-forest-600 dark:bg-forest-900/30 dark:text-forest-400" wire:navigate>
-                        {{ __('general.view_details') }}
-                    </a>
-                    <a href="/quests/{{ $quest->id }}/edit" class="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                        {{ __('general.edit') }}
-                    </a>
-                    @if ($quest->status !== \App\Enums\QuestStatus::Archived)
-                        <button wire:click="archiveQuest({{ $quest->id }})" wire:confirm="{{ __('general.confirm') }}?" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                            {{ __('general.archive') }}
-                        </button>
-                    @endif
-                    @if ($quest->status === \App\Enums\QuestStatus::Published)
-                        <a href="/quests/{{ $quest->id }}/start" class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-medium text-green-600 dark:bg-green-900/30 dark:text-green-400">
-                            {{ __('general.start_quest') }}
-                        </a>
-                    @endif
-                </div>
-            </div>
+            </a>
         @empty
-            <div class="py-12 text-center text-gray-500 dark:text-gray-400">
-                <p>{{ __('general.no_quests_found') }}</p>
+            {{-- Empty state --}}
+            <div class="flex flex-col items-center px-6 py-16">
+                <div class="mb-5">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="120" height="120" rx="60" fill="#F0E8D6"/>
+                        <path d="M20 75 Q35 55 50 65 Q65 75 80 55 Q95 35 105 50" stroke="#E5DDD0" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M15 85 Q40 65 60 75 Q80 85 100 65" stroke="#E5DDD0" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <circle cx="60" cy="52" r="22" fill="#0B3D2E"/>
+                        <text x="60" y="60" text-anchor="middle" font-family="Exo 2, sans-serif" font-size="22" font-weight="800" fill="white">Q</text>
+                        <circle cx="35" cy="42" r="4" fill="#F5A623" opacity="0.8"/>
+                        <circle cx="85" cy="38" r="3" fill="#F5A623" opacity="0.6"/>
+                        <circle cx="78" cy="72" r="3.5" fill="#F5A623" opacity="0.7"/>
+                    </svg>
+                </div>
+                <h2 class="font-heading text-[20px] font-[800] text-bark">{{ __('general.no_created_quests_yet') }}</h2>
+                <p class="mt-2 whitespace-pre-line text-center text-[14px] leading-[1.6] text-muted">{{ __('general.no_created_quests_desc') }}</p>
+                <a href="/quests/create" class="mt-6 w-full rounded-[12px] bg-amber-400 py-3.5 text-center text-[14px] font-bold text-bark" wire:navigate>{{ __('general.create_quest') }} &rarr;</a>
+                <p class="mt-3 text-[13px] text-muted">{{ __('general.or_create_a_quest') }} <a href="/discover" class="font-semibold text-forest-600" wire:navigate>{{ __('general.explore_quests') }}</a></p>
             </div>
         @endforelse
 
         @if (!empty($nextCursor))
-            <button wire:click="$set('cursor', '{{ $nextCursor }}')" class="mt-4 w-full rounded-lg bg-forest-600 px-4 py-2 text-white hover:bg-forest-700">
+            <button wire:click="$set('cursor', '{{ $nextCursor }}')" class="mt-2 w-full rounded-[12px] bg-forest-600 px-4 py-3 text-[13px] font-bold text-white">
                 {{ __('general.load_more') }}
             </button>
         @endif

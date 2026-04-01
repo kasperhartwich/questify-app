@@ -156,7 +156,7 @@ class extends Component
     @if ($step === 1)
         {{-- Back + Logo --}}
         <div class="flex items-center gap-2.5 pb-5 pt-1">
-            <a href="/" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark" wire:navigate>
+            <a href="/" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
             </a>
             <div class="flex items-center gap-1.5">
@@ -166,38 +166,27 @@ class extends Component
         </div>
 
         {{-- Heading --}}
-        <h1 class="mb-1 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ __('auth.create_your_account') }}</h1>
-        <p class="mb-5 text-xs text-muted">{{ __('auth.create_account_subtitle') }}</p>
+        <h1 class="mb-1 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.create_your_account'))) !!}</h1>
+        <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.create_account_subtitle') }}</p>
 
-        {{-- Social buttons + Phone --}}
-        <x-social-auth-grid :providers="$socialProviders" :phone-enabled="$phoneEnabled" phone-action="goToPhoneSignup" />
-
-        {{-- OR divider --}}
-        @if ((count($socialProviders) > 0 || $phoneEnabled) && $emailEnabled)
-            <div class="mb-3.5 flex items-center gap-2.5">
-                <div class="h-px flex-1 bg-cream-border"></div>
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-muted">{{ __('general.or') }}</span>
-                <div class="h-px flex-1 bg-cream-border"></div>
-            </div>
-        @endif
-
-        {{-- Sign up with Email --}}
-        @if ($emailEnabled)
-            <button wire:click="goToEmailSignup" class="mb-3.5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
-                {{ __('auth.signup_with_email') }}
-            </button>
-        @endif
+        {{-- 2x3 Social auth grid --}}
+        <x-social-auth-grid
+            :providers="$socialProviders"
+            :phone-enabled="$phoneEnabled"
+            phone-action="goToPhoneSignup"
+            :email-enabled="$emailEnabled"
+            email-action="goToEmailSignup"
+        />
 
         {{-- Login link --}}
-        <p class="text-center text-xs text-muted">
+        <p class="mt-auto text-center text-[13px] text-muted">
             {{ __('general.already_have_account') }}
-            <a href="/login" class="font-semibold text-forest-600 hover:text-forest-500" wire:navigate>{{ __('general.login') }}</a>
+            <a href="/login" class="font-semibold text-forest-400" wire:navigate>{{ __('general.login') }}</a>
         </p>
 
         {{-- Terms --}}
-        <p class="mt-3.5 text-center text-[9px] leading-relaxed text-muted">
-            {{ __('auth.terms_agreement_prefix') }}<br>
+        <p class="mt-2 text-center text-[10px] leading-relaxed text-muted">
+            {{ __('auth.terms_agreement_prefix') }}
             <a href="#" class="text-forest-400">{{ __('auth.terms_of_service') }}</a>
             {{ __('auth.and') }}
             <a href="#" class="text-forest-400">{{ __('auth.privacy_policy') }}</a>
@@ -208,39 +197,39 @@ class extends Component
         <x-step-indicator :current="2" :total="3" back-action="goBack" />
 
         {{-- Heading --}}
-        <h1 class="mb-1 font-heading text-xl font-extrabold leading-tight text-bark">{{ __('auth.your_details') }}</h1>
-        <p class="mb-5 text-[11px] text-muted">{{ __('auth.step_2_of_3') }}</p>
+        <h1 class="mb-1 font-heading text-[20px] font-[800] leading-tight text-bark">{{ __('auth.your_details') }}</h1>
+        <p class="mb-5 text-[12px] text-muted">{{ __('auth.step_2_of_3') }}</p>
 
         <form wire:submit="register" class="flex flex-1 flex-col gap-2.5">
             {{-- First + Last name --}}
             <div class="flex gap-2">
                 <div class="flex-1">
-                    <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.first_name') }}</label>
-                    <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.first_name') }}</label>
+                    <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                     @error('first_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
                 <div class="flex-1">
-                    <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.last_name') }}</label>
-                    <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 text-[13px] text-bark focus:border-forest-600 focus:outline-none" />
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.last_name') }}</label>
+                    <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" />
                 </div>
             </div>
 
             {{-- Display name --}}
             <div>
-                <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.display_name') }}</label>
-                <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.display_name') }}</label>
+                <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                 <p class="mt-1 text-[9px] text-muted">{{ __('auth.display_name_hint') }}</p>
                 @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
             </div>
 
             {{-- Email --}}
             <div>
-                <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('general.email') }}</label>
+                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
                 <div class="relative">
                     <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                     </div>
-                    <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                 </div>
                 @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
             </div>
@@ -248,12 +237,12 @@ class extends Component
             {{-- Phone number (only for phone signup) --}}
             @if ($signup_method === 'phone')
                 <div>
-                    <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.phone_number') }}</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.phone_number') }}</label>
                     <div class="relative">
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                         </div>
-                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                     </div>
                     <p class="mt-1 text-[9px] text-muted">{{ __('auth.phone_e164_hint') }}</p>
                     @error('phone_number') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
@@ -262,12 +251,12 @@ class extends Component
 
             {{-- Password --}}
             <div>
-                <label class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('general.password') }}</label>
+                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.password') }}</label>
                 <div class="relative">
                     <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                     </div>
-                    <input type="password" wire:model="password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    <input type="password" wire:model="password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                 </div>
                 {{-- Strength meter --}}
                 <div x-data="{ get strength() { const len = $wire.password?.length || 0; if (len === 0) return 0; if (len < 6) return 1; if (len < 10) return 2; if (len < 14) return 3; return 4; } }">
@@ -282,7 +271,7 @@ class extends Component
             </div>
 
             <div class="mt-auto pt-4">
-                <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500">
+                <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] font-heading text-sm font-bold text-bark">
                     {{ __('auth.continue') }}
                 </button>
             </div>
@@ -323,7 +312,7 @@ class extends Component
             </p>
 
             <div class="mt-auto pt-6">
-                <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($phone_code) < 6) style="opacity:0.5" @endif>
+                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($phone_code) < 6) style="opacity:0.5" @endif>
                     {{ __('auth.verify') }}
                 </button>
             </div>

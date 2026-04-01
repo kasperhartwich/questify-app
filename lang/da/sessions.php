@@ -26,7 +26,7 @@ return [
     'no_sessions' => 'Ingen sessioner fundet.',
 
     // Session actions
-    'joined' => 'Du er nu med i sessionen.',
+    'joined' => 'deltaget',
     'started' => 'Sessionen er startet.',
     'ended' => 'Sessionen er afsluttet.',
     'already_in_session' => 'Du er allerede i en aktiv session.',
@@ -67,6 +67,20 @@ return [
     'unlimited' => 'Ubegrænset',
     'seconds' => 'sekunder',
     'review_publish' => 'Gennemgå & Udgiv',
+    'lobby' => 'Lobby',
+    'players' => 'Spillere',
+    'quest_master' => 'Quest Master',
+    'waiting_for_players' => 'Venter på at spillere deltager...',
+    'waiting_for_host' => 'Venter på at Quest Master starter',
+    'start_quest' => 'Start Quest',
+    'session_code' => 'Sessionskode',
+    'share' => 'Del',
+    'joining' => 'Deltager',
+    'what_should_we_call_you' => 'Hvad skal vi kalde dig?',
+    'display_name_visible' => 'Dette er hvad andre spillere ser under questen.',
+    'your_display_name' => 'Dit visningsnavn',
+    'no_account_just_session' => 'Ingen konto nødvendig · Kun for denne session',
+    'enter_the_quest' => 'Gå ind i questen',
 
     // Validation
     'validation' => [

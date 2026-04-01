@@ -53,4 +53,5 @@ return [
     'weak_password' => 'Svag',
     'medium_password' => 'Medium styrke',
     'strong_password' => 'Stærk',
+    'social_login_note' => 'Sociale logins logger direkte ind. Telefon og e-mail kræver bekræftelse.',
 ];

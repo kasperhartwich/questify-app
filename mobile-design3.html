@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questify — All Screens 390×844</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --f:#0B3D2E; --fm:#165C45; --fl:#1E7A58;
+  --a:#F5A623; --ad:#C8811A; --al:#FDE8BA;
+  --c:#E85C3A; --cl:#FCDDD7;
+  --cr:#FAF5EB; --cd:#F0E8D6;
+  --b:#2C1810; --mu:#7A7470; --br:#E5DDD0;
+  --forest:#0B3D2E; --forest-m:#165C45; --forest-l:#1E7A58;
+  --amber:#F5A623; --amber-d:#C8811A; --amber-l:#FDE8BA;
+  --coral:#E85C3A; --coral-l:#FCDDD7;
+  --cream:#FAF5EB; --cream-d:#F0E8D6;
+  --bark:#2C1810; --muted:#7A7470; --border:#E5DDD0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#CEC8BC;font-family:'DM Sans',sans-serif;padding:52px 44px 100px;}
+svg{display:inline-block;vertical-align:middle;}
+
+/* Layout */
+.section-lbl{font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#7A7470;margin:52px 0 24px;display:flex;align-items:center;gap:14px;}
+.section-lbl:first-of-type{margin-top:0;}
+.section-lbl::after{content:'';flex:1;height:1px;background:#BAB4A8;}
+.row{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:24px;align-items:flex-start;}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.slbl{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7A7470;}
+
+/* Phone frame */
+.phone{width:412px;border-radius:52px;background:#1C1C1E;padding:11px;box-shadow:0 0 0 1px #3A3A3C,0 0 0 2.5px #252527,0 32px 80px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.3);position:relative;flex-shrink:0;}
+.phone::before{content:'';position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#1C1C1E;border-radius:17px;z-index:20;}
+
+/* Screen */
+.screen{width:390px;height:844px;border-radius:42px;overflow:hidden;display:flex;flex-direction:column;position:relative;background:var(--cream);}
+
+/* Status bar */
+.sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 10px;flex-shrink:0;font-size:15px;font-weight:700;letter-spacing:-0.2px;}
+.sbi{display:flex;gap:5px;align-items:center;}
+
+/* Home bar */
+.hb{height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hp{width:134px;height:5px;border-radius:3px;}
+
+/* Tab bar */
+.tabbar{height:83px;background:white;border-top:1px solid rgba(0,0,0,0.07);display:flex;align-items:center;padding:0 4px 6px;flex-shrink:0;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;}
+.tlbl{font-size:10px;font-weight:600;letter-spacing:0.02em;color:#C0B8B0;white-space:nowrap;}
+.tab.on .tlbl{color:var(--forest);}
+.tjoin{flex:1;display:flex;align-items:center;justify-content:center;}
+.jpill{width:54px;height:42px;border-radius:14px;background:var(--forest);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,61,46,0.35);}
+
+/* Body */
+.body{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.scroll{flex:1;overflow-y:auto;padding:0 16px 12px;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* Buttons */
+.bta{width:100%;padding:15px;border-radius:14px;border:none;background:var(--amber);color:var(--bark);font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;}
+.btf{width:100%;padding:15px;border-radius:14px;border:none;background:var(--forest);color:white;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;}
+.bto{width:100%;padding:13px;border-radius:14px;background:transparent;border:1.5px solid var(--border);color:var(--bark);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;}
+.inp{width:100%;padding:13px 16px;border-radius:13px;border:2px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--bark);outline:none;}
+.inp.on{border-color:var(--forest);}
+
+/* Quest card */
+.qcard{border-radius:16px;overflow:hidden;background:white;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.qtop{padding:14px 16px 12px;position:relative;overflow:hidden;}
+.qtop::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;border:14px solid rgba(255,255,255,0.08);}
+.qbody{padding:12px 16px 14px;}
+.qt{font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:white;line-height:1.2;}
+.qs{font-size:12px;color:rgba(255,255,255,0.55);margin-top:3px;}
+.qmeta{display:flex;gap:12px;margin-bottom:10px;}
+.qmi{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.pb{height:3px;background:rgba(255,255,255,0.18);border-radius:2px;overflow:hidden;margin-top:8px;}
+.pf{height:100%;border-radius:2px;background:var(--amber);}
+
+/* Badge */
+.bdg{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.ba{background:var(--amber-l);color:var(--amber-d);}
+.bf{background:#D4EDE4;color:#0A5A3A;}
+.bc{background:var(--coral-l);color:#C03A20;}
+
+/* Section header */
+.sh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 8px;}
+.st{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;color:var(--bark);}
+.sa{font-size:13px;font-weight:600;color:var(--forest-l);}
+
+/* Avatar */
+.av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+
+/* Stats */
+.srow{display:flex;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.07);}
+.stt{flex:1;padding:14px 8px;text-align:center;border-right:1px solid var(--border);}
+.stt:last-child{border-right:none;}
+.stn{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--forest);}
+.stl{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px;}
+
+/* Map */
+.mapw{background:#E4EDE4;border-radius:14px;position:relative;overflow:hidden;}
+.mh{position:absolute;width:100%;height:1px;background:rgba(11,61,46,0.07);}
+.mroad{position:absolute;background:white;border-radius:2px;}
+.mpin{position:absolute;}
+
+/* Inner tabs */
+.itabs{display:flex;border-bottom:2px solid var(--border);padding:0 16px;}
+.itab{flex:1;padding:12px 0;text-align:center;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;}
+.itab.on{color:var(--forest);border-bottom-color:var(--forest);}
+
+/* Participant */
+.prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.prow:last-child{border-bottom:none;}
+.pnm{flex:1;font-size:14px;font-weight:600;color:var(--bark);}
+.pbdg{font-size:10px;font-weight:700;color:var(--forest-l);background:#D4EDE4;padding:2px 8px;border-radius:100px;}
+
+/* Code boxes */
+.cboxes{display:flex;gap:8px;}
+.cbox{flex:1;height:58px;border-radius:13px;border:2px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);}
+.cbox.f{border-color:var(--forest);background:#F0FAF5;}
+.cbox.ac{border-color:var(--amber);}
+
+/* Back button */
+.back{width:36px;height:36px;border-radius:11px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* Step bar */
+.stepbar{display:flex;gap:4px;flex:1;}
+.step{flex:1;height:3px;border-radius:2px;}
+.step.done{background:var(--forest);}
+.step.todo{background:var(--border);}
+
+/* Toggle */
+.toggle{width:44px;height:26px;border-radius:13px;background:#E5DDD0;position:relative;flex-shrink:0;}
+.toggle.on{background:var(--forest);}
+.toggle::after{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:white;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.toggle.on::after{left:20px;}
+
+/* Segment */
+.seg{display:flex;background:var(--cream-d);border-radius:11px;padding:3px;gap:2px;}
+.segi{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);border-radius:9px;}
+.segi.on{background:white;color:var(--bark);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+
+/* Chip */
+.chip{padding:7px 14px;border-radius:100px;border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--muted);background:white;display:inline-flex;align-items:center;gap:5px;}
+.chip.on{background:var(--forest);border-color:var(--forest);color:white;}
+
+/* Setting row */
+.setrow{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--border);}
+.setrow:last-child{border-bottom:none;}
+.setico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.setlbl{flex:1;}
+.setname{font-size:14px;font-weight:600;color:var(--bark);}
+.setsub{font-size:12px;color:var(--muted);margin-top:1px;}
+
+/* Connected account pill */
+.conn{font-size:11px;font-weight:700;background:#D4EDE4;color:#0A5A3A;padding:3px 10px;border-radius:100px;}
+.disc{font-size:11px;font-weight:600;border:1.5px solid var(--border);color:var(--muted);padding:3px 10px;border-radius:100px;}
+
+/* Visibility option */
+.visoption{border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
+.visoption.on{border-color:var(--forest);background:#F4FBF7;}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;}
+.radio.on{border-color:var(--forest);}
+.radio.on::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--forest);}
+
+/* Checkpoint list item */
+.cpitem{display:flex;align-items:center;gap:12px;padding:11px 16px;background:white;border-radius:12px;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,0.05);}
+.cpnum{width:28px;height:28px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
+.cpname{flex:1;font-size:13px;font-weight:600;color:var(--bark);}
+.cpsub{font-size:11px;color:var(--muted);}
+.cpchev{color:var(--muted);}
+
+/* Question option */
+.qopt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;background:white;}
+.qopt.correct{border-color:#22C55E;background:#F0FDF4;}
+.optltr{width:26px;height:26px;border-radius:8px;background:var(--cream-d);display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0;}
+.qopt.correct .optltr{background:#22C55E;color:white;}
+.optinp{flex:1;font-size:14px;color:var(--bark);background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;}
+
+/* Map pin numbered */
+.npin{position:absolute;display:flex;flex-direction:column;align-items:center;}
+.npinball{width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.25);}
+.npinball span{transform:rotate(45deg);font-size:10px;font-weight:800;color:white;}
+
+/* Auth social grid */
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+</style>
+
+<!-- ═══ SHARED SNIPPETS (templates used inline below) ═══ -->
+<!-- Tab bar icons defined once as SVG symbols would save space but inline is cleaner for a mockup -->
+
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 1 · GUEST FLOW
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">Guest flow</div>
+<div class="row">
+
+<!-- ─── WELCOME ─── -->
+<div class="col">
+<div class="phone"><div class="screen" style="background:var(--forest);">
+  <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.8);">
+    <span>9:41</span>
+    <div class="sbi"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg><svg width="22" height="12" viewBox="0 0 20 11" fill="none"><rect x=".5" y=".5" width="16" height="10" rx="2" stroke="currentColor" stroke-opacity=".5"/><rect x="1.5" y="1.5" width="12" height="8" rx="1.2" fill="currentColor"/></svg></div>
+  </div>
+  <div style="position:absolute;right:-50px;top:-50px;width:260px;height:260px;border-radius:50%;border:44px solid rgba(245,166,35,0.07);"></div>
+  <div style="position:absolute;left:-36px;bottom:160px;width:180px;height:180px;border-radius:50%;border:30px solid rgba(245,166,35,0.05);"></div>
+  <div class="body" style="align-items:center;padding:0 32px 32px;display:flex;flex-direction:column;position:relative;z-index:2;">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <svg width="80" height="80" viewBox="0 0 84 84" fill="none" style="margin-bottom:16px;"><line x1="46" y1="46" x2="68" y2="68" stroke="white" stroke-width="7" stroke-linecap="round"/><circle cx="40" cy="36" r="28" stroke="white" stroke-width="7" fill="none"/><circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/><circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/></svg>
+      <div style="font-family:'Exo 2',sans-serif;font-size:38px;font-weight:800;color:white;letter-spacing:-1px;line-height:1;">Questify</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:12px;text-align:center;line-height:1.7;">Real places · Real questions<br>Real adventure</div>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:11px;">
+      <div class="bta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="18.5" y="14" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="14" y="18.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="18.5" y="18.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/></svg>Join a Quest</div>
+      <div class="bto" style="border-color:rgba(255,255,255,0.25);color:white;font-size:15px;">Sign Up</div>
+      <div style="text-align:center;color:rgba(255,255,255,0.5);font-size:15px;font-weight:600;padding:6px 0;">Log In</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;">No account needed to join a quest</div>
+    </div>
+  </div>
+  <div class="hb" style="background:var(--forest);"><div class="hp" style="background:rgba(255,255,255,0.2);"></div></div>
+</div></div>
+<div class="slbl">Welcome</div>
+</div>
+
+<!-- ─── JOIN CODE ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 24px;">
+    <div style="display:flex;align-items:center;gap:12px;padding:6px 0 24px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div><div style="font-family:'Exo 2',sans-serif;font-size:18px;font-weight:700;color:var(--bark);">Join a Quest</div></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Enter session code</div>
+    <div class="cboxes" style="margin-bottom:10px;"><div class="cbox f">X</div><div class="cbox f">K</div><div class="cbox f">9</div><div class="cbox ac"></div><div class="cbox"></div><div class="cbox"></div></div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;">Ask your Quest Master for the code</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;"><div style="flex:1;height:1px;background:var(--border);"></div><div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.08em;">OR</div><div style="flex:1;height:1px;background:var(--border);"></div></div>
+    <div class="bto" style="margin-bottom:28px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="18" y="14" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="14" y="18" width="2.5" height="2.5" fill="currentColor" stroke="none"/><rect x="18" y="18" width="2.5" height="2.5" fill="currentColor" stroke="none"/></svg>Scan QR Code</div>
+    <div style="flex:1;"></div>
+    <div class="bta" style="opacity:.45;">Continue →</div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Join — Enter Code</div>
+</div>
+
+<!-- ─── DISPLAY NAME ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 24px;">
+    <!-- Quest preview -->
+    <div style="background:var(--forest);border-radius:14px;padding:14px 16px;margin:8px 0 24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-10px;top:-10px;width:60px;height:60px;border-radius:50%;border:10px solid rgba(245,166,35,0.15);"></div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Joining</div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:white;">Nørrebro: Byens Skjulte Perler</div>
+      <div style="display:flex;gap:6px;margin-top:8px;"><span class="bdg ba">7 stops</span><span class="bdg" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);">2.4 km</span></div>
+    </div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">What should we<br>call you?</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:24px;">This is what other players will see.</div>
+    <div style="position:relative;margin-bottom:10px;">
+      <input class="inp on" placeholder="Your display name" value="MagicMike88" style="padding-right:44px;font-weight:600;">
+      <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:28px;">No account needed · Just for this session</div>
+    <div style="flex:1;"></div>
+    <div class="bta">Enter the Quest 🚀</div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Display Name</div>
+</div>
+
+<!-- ─── LOBBY ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.85);"><span>9:41</span><div class="sbi"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div></div>
+  <div style="background:var(--forest);padding:14px 20px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;right:-24px;top:-24px;width:120px;height:120px;border-radius:50%;border:22px solid rgba(245,166,35,0.1);"></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Lobby</div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:19px;font-weight:700;color:white;line-height:1.2;margin-bottom:12px;">Nørrebro: Byens Skjulte Perler</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;"><span class="bdg ba">Competitive · Individual</span><span class="bdg" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);">7 stops</span></div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:600;margin-bottom:3px;">Session code</div><div style="font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:white;letter-spacing:4px;">XK9F2A</div></div>
+      <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);">Share</div>
+    </div>
+  </div>
+  <div class="body">
+    <div style="padding:14px 20px 8px;display:flex;justify-content:space-between;align-items:center;"><div style="font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:var(--bark);">Players</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22C55E;"></div><div style="font-size:13px;font-weight:600;color:#22C55E;">4 joined</div></div></div>
+    <div style="padding:0 18px;">
+      <div class="prow"><div class="av" style="background:var(--forest);">QM</div><div style="flex:1;"><div class="pnm">CityExplorer</div></div><span class="pbdg">Quest Master</span></div>
+      <div class="prow"><div class="av" style="background:#7C4DFF;">M</div><div class="pnm">MagicMike88</div></div>
+      <div class="prow"><div class="av" style="background:var(--coral);">A</div><div class="pnm">AdventureAnna</div></div>
+      <div class="prow"><div class="av" style="background:#0EA5E9;">T</div><div class="pnm">TreasureHunter</div></div>
+    </div>
+    <div style="flex:1;"></div>
+    <div style="padding:20px;text-align:center;"><div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:5px;"><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);opacity:.4;"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);opacity:.7;"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);"></div></div><div style="font-size:13px;color:var(--muted);">Waiting for Quest Master to start</div></div>
+  </div>
+  <div class="hb"><div class="hp" style="background:rgba(0,0,0,0.15);"></div></div>
+</div></div>
+<div class="slbl">Lobby</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 2 · AUTHENTICATION
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">Authentication</div>
+<div class="row">
+
+<!-- ─── LOG IN ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 20px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div style="display:flex;align-items:center;gap:7px;"><svg width="22" height="22" viewBox="0 0 84 84" fill="none"><line x1="46" y1="46" x2="68" y2="68" stroke="#0B3D2E" stroke-width="7" stroke-linecap="round"/><circle cx="40" cy="36" r="28" stroke="#0B3D2E" stroke-width="7" fill="none"/><circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/><circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/></svg><span style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--bark);">Questify</span></div></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);line-height:1.15;margin-bottom:4px;">Welcome<br>back</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:22px;">Log in to continue your adventures</div>
+    <div class="agrid">
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--bark)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Apple</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/></svg>Microsoft</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>Phone</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>Email</div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:var(--muted);">No account? <span style="color:var(--forest);font-weight:600;">Sign Up</span></div>
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.6;">Social logins go directly in.<br>Phone &amp; email require verification.</div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Log In</div>
+</div>
+
+<!-- ─── SIGN UP ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 20px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div style="display:flex;align-items:center;gap:7px;"><svg width="22" height="22" viewBox="0 0 84 84" fill="none"><line x1="46" y1="46" x2="68" y2="68" stroke="#0B3D2E" stroke-width="7" stroke-linecap="round"/><circle cx="40" cy="36" r="28" stroke="#0B3D2E" stroke-width="7" fill="none"/><circle cx="46" cy="46" r="6.5" fill="#F5A623"/><circle cx="46" cy="46" r="2.5" fill="#0B3D2E"/><circle cx="68" cy="68" r="6.5" fill="#F5A623"/><circle cx="68" cy="68" r="2.5" fill="#0B3D2E"/></svg><span style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--bark);">Questify</span></div></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);line-height:1.15;margin-bottom:4px;">Create your<br>account</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:22px;">Start creating and hosting quests</div>
+    <div class="agrid">
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--bark)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Apple</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/></svg>Microsoft</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>Phone</div>
+      <div class="bto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>Email</div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:var(--muted);">Already have an account? <span style="color:var(--forest);font-weight:600;">Log In</span></div>
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6;">By signing up you agree to our <span style="color:var(--forest-l);">Terms</span> &amp; <span style="color:var(--forest-l);">Privacy Policy</span></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Sign Up</div>
+</div>
+
+<!-- ─── SIGN UP DETAILS ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0 18px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div class="stepbar"><div class="step done"></div><div class="step done"></div><div class="step todo"></div></div></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:4px;">Your details</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">Step 2 of 3 — tell us about you</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">First name</div><input class="inp on" placeholder="Anna" value="Anna"></div>
+        <div style="flex:1;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Last name</div><input class="inp" placeholder="Jensen"></div>
+      </div>
+      <div><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Display name</div><input class="inp on" placeholder="AdventureAnna" value="AdventureAnna"><div style="font-size:10px;color:var(--muted);margin-top:3px;">Shown to other players</div></div>
+      <div><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Email</div><div style="position:relative;"><div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></div><input class="inp" placeholder="anna@example.com" style="padding-left:36px;"></div></div>
+      <div><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Password</div><div style="position:relative;"><div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><input class="inp" type="password" placeholder="Min. 8 characters" style="padding-left:36px;"></div><div style="display:flex;gap:3px;margin-top:6px;"><div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div><div style="flex:1;height:3px;border-radius:2px;background:var(--amber);"></div><div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div><div style="flex:1;height:3px;border-radius:2px;background:var(--border);"></div></div><div style="font-size:10px;color:var(--amber-d);margin-top:3px;">Medium strength</div></div>
+    </div>
+    <div style="margin-top:18px;"><div class="bta">Continue →</div></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Sign Up — Details</div>
+</div>
+
+<!-- ─── VERIFY EMAIL ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0 18px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div class="stepbar"><div class="step done"></div><div class="step done"></div><div class="step done"></div></div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;padding:20px 0 18px;">
+      <div style="width:68px;height:68px;border-radius:18px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin-bottom:14px;position:relative;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg><div style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--forest);border:2px solid var(--cream);"></div></div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);text-align:center;margin-bottom:6px;">Check your inbox</div>
+      <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.6;">Code sent to<br><span style="color:var(--bark);font-weight:600;">anna@example.com</span></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;text-align:center;">6-digit code</div>
+    <div class="cboxes" style="margin-bottom:10px;"><div class="cbox f">3</div><div class="cbox f">8</div><div class="cbox f">4</div><div class="cbox ac"></div><div class="cbox"></div><div class="cbox"></div></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:24px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span style="font-size:12px;color:var(--muted);">Resend in <span style="font-weight:600;color:var(--bark);">04:58</span></span></div>
+    <div style="flex:1;"></div>
+    <div class="btf" style="opacity:.5;margin-bottom:10px;">Verify Email</div>
+    <div style="text-align:center;font-size:12px;color:var(--muted);">Didn't get it? <span style="color:var(--forest);font-weight:600;">Resend</span></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Verify Email</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- Phone auth row -->
+<div class="row">
+
+<!-- ─── ENTER PHONE ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;display:flex;flex-direction:column;">
+    <div style="padding:4px 0 22px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div></div>
+    <div style="width:60px;height:60px;border-radius:17px;background:#D4EDE4;display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Enter your<br>phone number</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;">We'll send a one-time code to verify.</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Phone number</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button style="display:flex;align-items:center;gap:4px;padding:11px 10px;background:white;border-radius:12px;border:2px solid var(--border);flex-shrink:0;cursor:pointer;font-family:inherit;white-space:nowrap;">
+        <span style="font-size:13px;line-height:1;">🇩🇰</span>
+        <span style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--bark);">+45</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <input class="inp on" placeholder="20 12 34 56" value="20 12 34 56" style="flex:1;font-family:'Exo 2',sans-serif;font-size:17px;font-weight:700;letter-spacing:0.06em;">
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:32px;line-height:1.6;">Standard SMS rates may apply.</div>
+    <div style="flex:1;"></div>
+    <div class="bta" style="margin-bottom:12px;">Send code →</div>
+    <div style="text-align:center;font-size:13px;color:var(--muted);">Use <span style="color:var(--forest);font-weight:600;">email instead</span></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Enter Phone</div>
+</div>
+
+<!-- ─── SMS VERIFY ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 22px;display:flex;flex-direction:column;">
+    <div style="padding:4px 0 22px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div></div>
+    <div style="width:60px;height:60px;border-radius:17px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin-bottom:16px;position:relative;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><div style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--forest);border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;"><div style="width:5px;height:5px;border-radius:50%;background:white;"></div></div></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);line-height:1.2;margin-bottom:6px;">Check your<br>messages</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">Code sent to</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:22px;"><span style="font-size:14px;font-weight:700;color:var(--bark);">🇩🇰 +45 20 12 34 56</span><span style="font-size:12px;font-weight:600;color:var(--forest-l);">Change</span></div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enter 6-digit code</div>
+    <div class="cboxes" style="margin-bottom:10px;"><div class="cbox f">7</div><div class="cbox f">4</div><div class="cbox f">2</div><div class="cbox ac"></div><div class="cbox"></div><div class="cbox"></div></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:28px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span style="font-size:12px;color:var(--muted);">Resend in <span style="font-weight:600;color:var(--bark);">00:42</span></span></div>
+    <div style="flex:1;"></div>
+    <div class="btf" style="opacity:.5;margin-bottom:10px;">Verify</div>
+    <div style="text-align:center;font-size:12px;color:var(--muted);">Didn't get it? <span style="color:var(--forest);font-weight:600;">Resend</span> · <span style="color:var(--forest);font-weight:600;">Use email</span></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">SMS Verify</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 3 · DISCOVER & MAP
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">Discover</div>
+<div class="row">
+
+<!-- ─── DISCOVER TAB ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div></div>
+  <div class="body">
+    <div style="padding:6px 16px 10px;display:flex;gap:8px;">
+      <div style="flex:1;background:white;border-radius:13px;border:1.5px solid var(--border);padding:11px 14px;display:flex;gap:8px;align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8078" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><span style="font-size:14px;color:#B0A898;">Search quests near you...</span></div>
+      <div style="width:44px;height:44px;border-radius:13px;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg></div>
+    </div>
+    <div class="mapw" style="height:120px;margin:0 16px 12px;">
+      <div class="mh" style="top:33%"></div><div class="mh" style="top:66%"></div>
+      <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.07);left:35%;"></div><div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.07);left:65%;"></div>
+      <div class="mroad" style="width:100%;height:9px;top:44%;"></div><div class="mroad" style="width:9px;height:100%;left:36%;"></div><div class="mroad" style="width:100%;height:7px;top:69%;opacity:.7;"></div>
+      <div style="position:absolute;top:16%;left:28%;"><div style="width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--amber);box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div></div>
+      <div style="position:absolute;top:50%;left:61%;"><div style="width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--forest);"></div></div>
+      <div style="position:absolute;top:26%;left:71%;"><div style="width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--coral);"></div></div>
+      <div style="position:absolute;top:52%;left:28%;width:12px;height:12px;border-radius:50%;background:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,0.2);"></div>
+      <div style="position:absolute;bottom:8px;right:10px;background:white;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--forest);">12 nearby</div>
+    </div>
+    <div class="sh"><div class="st">Nearby Quests</div><div class="sa">See all →</div></div>
+    <div class="scroll" style="padding-top:0;">
+      <div class="qcard"><div class="qtop" style="background:var(--forest);"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="qt">Nørrebro: Byens Skjulte Perler</div><div class="qs">CityExplorer · 0.3 km</div></div><span class="bdg ba" style="flex-shrink:0;margin-left:10px;">⭐ 4.8</span></div><div class="pb"><div class="pf" style="width:0%;"></div></div></div><div class="qbody"><div class="qmeta"><div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>45 min</div><div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>7 stops</div><span class="bdg bc" style="font-size:10px;">Hard</span></div><div class="btf" style="padding:11px;font-size:14px;border-radius:12px;">Start Quest</div></div></div>
+      <div class="qcard"><div class="qtop" style="background:#7C3AED;"><div class="qt">Frederiksberg: Parkens Hemmeligheder</div><div class="qs">NatureGuide · 1.2 km</div></div><div class="qbody"><div class="qmeta"><div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>30 min</div><div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>5 stops</div><span class="bdg bf" style="font-size:10px;">Medium</span></div></div></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/><circle cx="15" cy="10" r="2" fill="var(--forest)" stroke="none"/></svg><span class="tlbl">Discover</span></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/><polyline points="7,9 8.5,10.5 11,8"/></svg><span class="tlbl">Quests</span></div>
+    <div class="tjoin"><div class="jpill"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg><span class="tlbl">Create</span></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg><span class="tlbl">Profile</span></div>
+  </div>
+  <div class="hb"><div class="hp" style="background:rgba(0,0,0,0.15);"></div></div>
+</div></div>
+<div class="slbl">Discover</div>
+</div>
+
+<!-- ─── FULL MAP VIEW ─── -->
+<div class="col">
+<div class="phone"><div class="screen" style="background:#E4EDE4;">
+  <div class="sb" style="background:transparent;color:var(--bark);position:relative;z-index:10;"><span>9:41</span><div class="sbi" style="opacity:.6;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/><rect x="9" y=".5" width="2" height="10.5" rx=".4"/></svg></div></div>
+  <!-- Search bar over map -->
+  <div style="position:absolute;top:56px;left:0;right:0;z-index:10;padding:0 16px;">
+    <div style="display:flex;gap:8px;">
+      <div style="width:36px;height:44px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.15);flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div style="flex:1;background:white;border-radius:12px;padding:12px 14px;display:flex;gap:8px;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.15);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A8078" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><span style="font-size:14px;color:#B0A898;">Search area...</span></div>
+    </div>
+    <!-- Filter chips -->
+    <div style="display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px;">
+      <div class="chip on" style="font-size:12px;padding:5px 12px;white-space:nowrap;">All</div>
+      <div class="chip" style="font-size:12px;padding:5px 12px;white-space:nowrap;">Easy</div>
+      <div class="chip" style="font-size:12px;padding:5px 12px;white-space:nowrap;">Medium</div>
+      <div class="chip" style="font-size:12px;padding:5px 12px;white-space:nowrap;">Hard</div>
+      <div class="chip" style="font-size:12px;padding:5px 12px;white-space:nowrap;">&lt; 30 min</div>
+    </div>
+  </div>
+  <!-- Full map background -->
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;">
+    <!-- Grid lines -->
+    <div style="position:absolute;width:100%;height:1px;background:rgba(11,61,46,0.08);top:25%;"></div>
+    <div style="position:absolute;width:100%;height:1px;background:rgba(11,61,46,0.08);top:50%;"></div>
+    <div style="position:absolute;width:100%;height:1px;background:rgba(11,61,46,0.08);top:75%;"></div>
+    <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.08);left:33%;"></div>
+    <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.08);left:66%;"></div>
+    <!-- Roads -->
+    <div style="position:absolute;background:white;width:100%;height:11px;top:40%;border-radius:2px;"></div>
+    <div style="position:absolute;background:white;width:11px;height:100%;left:35%;border-radius:2px;"></div>
+    <div style="position:absolute;background:rgba(255,255,255,0.8);width:100%;height:8px;top:62%;"></div>
+    <div style="position:absolute;background:rgba(255,255,255,0.8);width:8px;height:100%;left:60%;"></div>
+    <div style="position:absolute;background:rgba(255,255,255,0.7);width:100%;height:7px;top:78%;"></div>
+    <!-- Location dot -->
+    <div style="position:absolute;top:45%;left:32%;width:14px;height:14px;border-radius:50%;background:#2563EB;box-shadow:0 0 0 5px rgba(37,99,235,0.25);transform:translate(-50%,-50%);"></div>
+    <!-- Quest pins -->
+    <div style="position:absolute;top:28%;left:22%;transform:translate(-50%,-50%);">
+      <div style="width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--amber);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,0.25);"><span style="transform:rotate(45deg);font-size:11px;font-weight:800;color:white;line-height:1;">1</span></div>
+    </div>
+    <div style="position:absolute;top:20%;left:55%;transform:translate(-50%,-50%);">
+      <div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--forest);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><span style="transform:rotate(45deg);font-size:10px;font-weight:800;color:white;line-height:1;">2</span></div>
+    </div>
+    <div style="position:absolute;top:55%;left:70%;transform:translate(-50%,-50%);">
+      <div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--coral);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><span style="transform:rotate(45deg);font-size:10px;font-weight:800;color:white;line-height:1;">3</span></div>
+    </div>
+    <div style="position:absolute;top:68%;left:42%;transform:translate(-50%,-50%);">
+      <div style="width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#7C3AED;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><span style="transform:rotate(45deg);font-size:9px;font-weight:800;color:white;line-height:1;">4</span></div>
+    </div>
+    <!-- My location button -->
+    <div style="position:absolute;right:16px;bottom:230px;width:44px;height:44px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+  </div>
+  <!-- Bottom sheet -->
+  <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:22px 22px 0 0;padding:12px 16px 20px;z-index:10;box-shadow:0 -4px 20px rgba(0,0,0,0.1);">
+    <div style="width:36px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 14px;"></div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:var(--bark);margin-bottom:12px;">4 quests in this area</div>
+    <div class="qcard" style="margin-bottom:0;">
+      <div class="qtop" style="background:var(--forest);"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="qt">Nørrebro: Byens Skjulte Perler</div><div class="qs">0.3 km · 45 min · 7 stops</div></div><span class="bdg ba" style="flex-shrink:0;margin-left:10px;">⭐ 4.8</span></div></div>
+      <div class="qbody" style="padding:10px 16px 12px;"><div class="btf" style="padding:10px;font-size:13px;border-radius:10px;">View Quest →</div></div>
+    </div>
+  </div>
+</div></div>
+<div class="slbl">Map — Full View</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 4 · MY QUESTS
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">My Quests</div>
+<div class="row">
+
+<!-- ─── MY QUESTS WITH CONTENT ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div></div>
+  <div class="body">
+    <div style="padding:6px 20px 0;font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);">My Quests</div>
+    <div class="itabs" style="margin-top:12px;"><div class="itab on">Playing</div><div class="itab">Created</div><div class="itab">History</div></div>
+    <div class="scroll" style="padding-top:14px;">
+      <div class="qcard"><div class="qtop" style="background:var(--forest);"><div style="display:flex;justify-content:space-between;"><div><div class="qt">Nørrebro: Byens Skjulte Perler</div><div class="qs">In progress · Stop 3 of 7</div></div><span class="bdg ba" style="flex-shrink:0;margin-left:10px;">Active</span></div><div class="pb"><div class="pf" style="width:43%;"></div></div><div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:5px;">3 / 7 checkpoints</div></div><div class="qbody"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:13px;color:var(--muted);">Score: <span style="font-weight:700;color:var(--bark);">1,240 pts</span></div><div class="btf" style="width:auto;padding:9px 16px;font-size:13px;border-radius:10px;">Continue →</div></div></div></div>
+      <div class="qcard" style="opacity:.7;"><div class="qtop" style="background:#165C45;"><div style="display:flex;justify-content:space-between;"><div><div class="qt">Frederiksberg: Parkens Hemmeligheder</div><div class="qs">Completed · Yesterday</div></div><span class="bdg" style="flex-shrink:0;margin-left:10px;background:rgba(255,255,255,0.2);color:rgba(255,255,255,0.9);">✓</span></div></div><div class="qbody"><div class="qmeta"><div class="qmi">Final: <strong style="color:var(--bark);margin-left:4px;">2,340 pts</strong></div><div class="qmi">🥇 1st</div></div></div></div>
+      <div class="qcard" style="opacity:.6;"><div class="qtop" style="background:#7C3AED;"><div class="qt">Vesterbro: Street Art Tour</div><div class="qs">Saturday 14:00 · 3 friends</div></div></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg><span class="tlbl">Discover</span></div>
+    <div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/><polyline points="7,9 8.5,10.5 11,8" stroke="var(--forest)"/></svg><span class="tlbl">Quests</span></div>
+    <div class="tjoin"><div class="jpill"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg><span class="tlbl">Create</span></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg><span class="tlbl">Profile</span></div>
+  </div>
+  <div class="hb"><div class="hp" style="background:rgba(0,0,0,0.15);"></div></div>
+</div></div>
+<div class="slbl">My Quests</div>
+</div>
+
+<!-- ─── MY QUESTS EMPTY ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div></div>
+  <div class="body">
+    <div style="padding:6px 20px 0;font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);">My Quests</div>
+    <div class="itabs" style="margin-top:12px;"><div class="itab on">Playing</div><div class="itab">Created</div><div class="itab">History</div></div>
+    <!-- Empty state -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center;">
+      <!-- Illustration -->
+      <div style="width:120px;height:120px;margin-bottom:24px;position:relative;">
+        <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+          <!-- Map base -->
+          <rect x="20" y="30" width="80" height="60" rx="10" fill="var(--cream-d)" stroke="var(--border)" stroke-width="2"/>
+          <!-- Road lines on map -->
+          <line x1="20" y1="55" x2="100" y2="55" stroke="white" stroke-width="4"/>
+          <line x1="55" y1="30" x2="55" y2="90" stroke="white" stroke-width="4"/>
+          <!-- Q logo overlay -->
+          <circle cx="60" cy="58" r="16" stroke="var(--forest)" stroke-width="3.5" fill="white"/>
+          <line x1="70" y1="68" x2="80" y2="78" stroke="var(--amber)" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="70" cy="68" r="3.5" fill="var(--amber)"/><circle cx="70" cy="68" r="1.4" fill="white"/>
+          <circle cx="80" cy="78" r="3.5" fill="var(--amber)"/><circle cx="80" cy="78" r="1.4" fill="white"/>
+          <!-- Stars around -->
+          <circle cx="28" cy="28" r="3" fill="var(--amber)" opacity=".6"/>
+          <circle cx="96" cy="24" r="2" fill="var(--amber)" opacity=".4"/>
+          <circle cx="14" cy="72" r="2.5" fill="var(--amber)" opacity=".5"/>
+          <circle cx="104" cy="76" r="2" fill="var(--amber)" opacity=".4"/>
+        </svg>
+      </div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);margin-bottom:8px;">No quests yet</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px;">You haven't joined any quests.<br>Explore what's near you and<br>start your first adventure!</div>
+      <div class="bta" style="width:100%;">Explore Quests →</div>
+      <div style="margin-top:12px;font-size:13px;color:var(--muted);">or <span style="color:var(--forest);font-weight:600;">Create a Quest</span></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg><span class="tlbl">Discover</span></div>
+    <div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/><polyline points="7,9 8.5,10.5 11,8" stroke="var(--forest)"/></svg><span class="tlbl">Quests</span></div>
+    <div class="tjoin"><div class="jpill"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg><span class="tlbl">Create</span></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg><span class="tlbl">Profile</span></div>
+  </div>
+  <div class="hb"><div class="hp" style="background:rgba(0,0,0,0.15);"></div></div>
+</div></div>
+<div class="slbl">My Quests — Empty</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 5 · CREATE QUEST FLOW
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">Create Quest</div>
+<div class="row">
+
+<!-- ─── CREATE: STEP 1 INFO ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 18px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0 16px;">
+      <div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="stepbar"><div class="step done"></div><div class="step todo"></div><div class="step todo"></div><div class="step todo"></div></div>
+      <div style="font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;">1 of 4</div>
+    </div>
+    <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:var(--bark);margin-bottom:4px;">Quest info</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Give your quest a name and description</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Quest name</div>
+        <input class="inp on" value="Nørrebro: Byens Skjulte Perler" style="font-weight:600;">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Description</div>
+        <div style="width:100%;padding:13px 16px;border-radius:13px;border:2px solid var(--border);background:white;font-size:14px;color:var(--muted);min-height:72px;line-height:1.5;">Discover hidden gems in Nørrebro — street art, history and local secrets await...</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Category</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <div class="chip on">City</div>
+          <div class="chip">Nature</div>
+          <div class="chip">History</div>
+          <div class="chip">School</div>
+          <div class="chip">Art</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Difficulty</div>
+        <div class="seg"><div class="segi">Easy</div><div class="segi">Medium</div><div class="segi on">Hard</div></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Language</div>
+        <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:18px;">🇩🇰</span><span style="font-size:14px;font-weight:600;color:var(--bark);">Danish</span><span style="font-size:12px;color:var(--forest-l);margin-left:4px;">Change</span></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;"><div class="bta">Next: Add Checkpoints →</div></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Create — Step 1: Info</div>
+</div>
+
+<!-- ─── CREATE: STEP 2 CHECKPOINTS ─── -->
+<div class="col">
+<div class="phone"><div class="screen" style="background:var(--cream);">
+  <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.85);"><span>9:41</span><div class="sbi"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/></svg></div></div>
+  <!-- Map takes top portion -->
+  <div style="background:var(--forest);padding:10px 18px 14px;display:flex;align-items:center;gap:10px;">
+    <div class="back" style="background:rgba(255,255,255,0.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <div style="flex:1;">
+      <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:700;color:white;">Add Checkpoints</div>
+    </div>
+    <div style="display:flex;gap:4px;"><div class="step done" style="width:16px;"></div><div class="step done" style="width:16px;"></div><div class="step todo" style="width:16px;"></div><div class="step todo" style="width:16px;"></div></div>
+  </div>
+  <div style="height:280px;background:#E4EDE4;position:relative;overflow:hidden;flex-shrink:0;">
+    <!-- Map roads -->
+    <div style="position:absolute;background:white;width:100%;height:10px;top:45%;"></div>
+    <div style="position:absolute;background:white;width:10px;height:100%;left:40%;"></div>
+    <div style="position:absolute;background:rgba(255,255,255,0.7);width:100%;height:7px;top:68%;"></div>
+    <div style="position:absolute;height:100%;width:1px;background:rgba(11,61,46,0.07);left:65%;"></div>
+    <!-- Placed checkpoint pins -->
+    <div style="position:absolute;top:28%;left:25%;transform:translate(-50%,-50%);">
+      <div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--forest);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.25);"><span style="transform:rotate(45deg);font-size:12px;font-weight:800;color:white;">1</span></div>
+    </div>
+    <div style="position:absolute;top:55%;left:60%;transform:translate(-50%,-50%);">
+      <div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--forest);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.25);"><span style="transform:rotate(45deg);font-size:12px;font-weight:800;color:white;">2</span></div>
+    </div>
+    <!-- Route line connecting pins -->
+    <svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 390 280" fill="none">
+      <path d="M97 78 Q200 140 234 154" stroke="var(--forest)" stroke-width="2.5" stroke-dasharray="6 4" opacity=".5" fill="none"/>
+    </svg>
+    <!-- Add hint overlay -->
+    <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(11,61,46,0.85);border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:white;white-space:nowrap;">Tap map to add checkpoint</div>
+    <!-- Zoom controls -->
+    <div style="position:absolute;right:12px;top:12px;display:flex;flex-direction:column;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+      <div style="padding:8px 12px;font-size:18px;font-weight:700;color:var(--bark);border-bottom:1px solid var(--border);text-align:center;line-height:1;">+</div>
+      <div style="padding:8px 12px;font-size:18px;font-weight:700;color:var(--bark);text-align:center;line-height:1;">−</div>
+    </div>
+  </div>
+  <!-- Checkpoint list -->
+  <div style="flex:1;overflow-y:auto;padding:14px 16px 0;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">2 checkpoints added</div>
+    <div class="cpitem"><div class="cpnum">1</div><div style="flex:1;"><div class="cpname">Blågårds Plads</div><div class="cpsub">1 question · 55.689°N 12.549°E</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+    <div class="cpitem"><div class="cpnum">2</div><div style="flex:1;"><div class="cpname">Nørrebrogade 87</div><div class="cpsub">0 questions · 55.692°N 12.551°E</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border:1.5px dashed var(--border);border-radius:12px;cursor:pointer;margin-bottom:14px;">
+      <div style="width:28px;height:28px;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:var(--forest-l);">Tap map to add another</div>
+    </div>
+    <div class="bta">Next: Add Questions →</div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Create — Step 2: Checkpoints</div>
+</div>
+
+<!-- ─── CREATE: STEP 3 QUESTION ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 18px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 14px;">
+      <div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div style="flex:1;">
+        <div style="font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;color:var(--bark);">Stop 1: Blågårds Plads</div>
+        <div style="font-size:11px;color:var(--muted);">Question 1</div>
+      </div>
+      <div style="display:flex;gap:4px;"><div class="step done" style="width:12px;"></div><div class="step done" style="width:12px;"></div><div class="step done" style="width:12px;"></div><div class="step todo" style="width:12px;"></div></div>
+    </div>
+    <!-- Location confirmed -->
+    <div style="background:#D4EDE4;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A5A3A" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <div style="font-size:13px;font-weight:600;color:#0A5A3A;">Blågårds Plads · 55.689°N, 12.549°E</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Question</div>
+        <div style="width:100%;padding:13px 16px;border-radius:13px;border:2px solid var(--forest);background:white;font-size:14px;color:var(--bark);min-height:68px;line-height:1.5;">What is the name of the mural on the corner building on Blågårds Plads?</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Answer type</div>
+        <div class="seg"><div class="segi on">Multiple choice</div><div class="segi">Text answer</div></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Answer options</div>
+        <div class="qopt correct"><div class="optltr">A</div><div style="flex:1;font-size:14px;color:#0A5A3A;font-weight:600;">The Dream</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="qopt"><div class="optltr">B</div><input class="optinp" value="The Connection"></div>
+        <div class="qopt"><div class="optltr">C</div><input class="optinp" value="Rise Up"></div>
+        <div class="qopt"><div class="optltr">D</div><input class="optinp" placeholder="Option D..."></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Hint (optional)</div>
+        <input class="inp" placeholder="Give players a nudge..." value="Look at the south wall">
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px;">
+      <div class="bto" style="flex:1;">+ Add question</div>
+      <div class="bta" style="flex:1;">Next stop →</div>
+    </div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Create — Step 3: Questions</div>
+</div>
+
+</div><!-- /row -->
+<div class="row">
+
+<!-- ─── CREATE: STEP 4 SETTINGS ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 18px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 16px;">
+      <div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div style="flex:1;"><div style="font-family:'Exo 2',sans-serif;font-size:18px;font-weight:700;color:var(--bark);">Quest Settings</div></div>
+      <div style="display:flex;gap:4px;"><div class="step done" style="width:12px;"></div><div class="step done" style="width:12px;"></div><div class="step done" style="width:12px;"></div><div class="step done" style="width:12px;"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <!-- Visibility -->
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Visibility</div>
+        <div class="visoption on"><div class="radio on"></div><div><div style="font-size:14px;font-weight:600;color:var(--bark);margin-bottom:2px;">Public</div><div style="font-size:12px;color:var(--muted);">Anyone can discover and play</div></div></div>
+        <div class="visoption"><div class="radio"></div><div><div style="font-size:14px;font-weight:600;color:var(--bark);margin-bottom:2px;">Private</div><div style="font-size:12px;color:var(--muted);">Access code required</div></div></div>
+        <div class="visoption"><div class="radio"></div><div><div style="font-size:14px;font-weight:600;color:var(--bark);margin-bottom:2px;">School</div><div style="font-size:12px;color:var(--muted);">For classroom use, code only</div></div></div>
+      </div>
+      <!-- Play modes -->
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Play modes</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border-radius:12px;border:1.5px solid var(--forest);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="font-size:13px;font-weight:600;color:var(--bark);flex:1;">Solo</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border-radius:12px;border:1.5px solid var(--forest);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="font-size:13px;font-weight:600;color:var(--bark);flex:1;">Competitive — Individual</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border-radius:12px;border:1.5px solid var(--border);">
+            <div style="width:16px;height:16px;border-radius:4px;border:2px solid var(--border);"></div>
+            <div style="font-size:13px;font-weight:600;color:var(--muted);flex:1;">Competitive — Teams</div>
+          </div>
+        </div>
+      </div>
+      <!-- Scoring -->
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Scoring</div>
+        <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);"><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--bark);">Speed bonus</div><div style="font-size:11px;color:var(--muted);">Faster answers score more</div></div><div class="toggle on"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);"><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--bark);">Wrong answer penalty</div><div style="font-size:11px;color:var(--muted);">Deduct points per wrong try</div></div><div class="toggle"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;"><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--bark);">Completion bonus</div><div style="font-size:11px;color:var(--muted);">Extra points for finishing</div></div><div class="toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:18px;"><div class="bta">Review &amp; Publish →</div></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Create — Step 4: Settings</div>
+</div>
+
+<!-- ─── CREATE: STEP 5 REVIEW ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/></svg></div></div>
+  <div class="body" style="padding:0 18px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 16px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div style="flex:1;font-family:'Exo 2',sans-serif;font-size:18px;font-weight:700;color:var(--bark);">Review &amp; Publish</div></div>
+    <!-- Quest card preview -->
+    <div class="qcard" style="margin-bottom:14px;">
+      <div class="qtop" style="background:var(--forest);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="qt">Nørrebro: Byens Skjulte Perler</div><div class="qs">by CityExplorer</div></div><span class="bdg bc">Hard</span></div>
+        <div class="pb"><div class="pf" style="width:0%;"></div></div>
+      </div>
+      <div class="qbody">
+        <div class="qmeta">
+          <div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>2 stops</div>
+          <div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>3 questions</div>
+          <div class="qmi"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>~25 min</div>
+        </div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5;">Discover hidden gems in Nørrebro — street art, history and local secrets await...</div>
+      </div>
+    </div>
+    <!-- Summary details -->
+    <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);"><div style="font-size:13px;color:var(--muted);width:90px;">Visibility</div><span class="bdg bf">Public</span></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);"><div style="font-size:13px;color:var(--muted);width:90px;">Play modes</div><div style="display:flex;gap:5px;"><span class="bdg ba" style="font-size:10px;">Solo</span><span class="bdg ba" style="font-size:10px;">Individual</span></div></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);"><div style="font-size:13px;color:var(--muted);width:90px;">Scoring</div><div style="font-size:13px;color:var(--bark);">Speed + Completion bonus</div></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;"><div style="font-size:13px;color:var(--muted);width:90px;">Language</div><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">🇩🇰</span><span style="font-size:13px;color:var(--bark);">Danish</span></div></div>
+    </div>
+    <div class="bta" style="margin-bottom:10px;">Publish Quest 🚀</div>
+    <div style="text-align:center;font-size:13px;color:var(--muted);">or <span style="color:var(--forest);font-weight:600;">Save as draft</span></div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Create — Step 5: Review</div>
+</div>
+
+</div><!-- /row -->
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 6 · PROFILE & SETTINGS
+══════════════════════════════════════════════════════ -->
+<div class="section-lbl">Profile &amp; Settings</div>
+<div class="row">
+
+<!-- ─── PROFILE ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--forest);color:rgba(255,255,255,0.85);"><span>9:41</span><div class="sbi"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/><rect x="6" y="3" width="2" height="8" rx=".4"/></svg></div></div>
+  <div class="body">
+    <div style="background:var(--forest);padding:14px 20px 28px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-24px;top:-24px;width:120px;height:120px;border-radius:50%;border:22px solid rgba(245,166,35,0.1);"></div>
+      <div style="display:flex;align-items:center;gap:14px;position:relative;z-index:2;">
+        <div style="width:60px;height:60px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:24px;font-weight:800;color:var(--bark);border:2.5px solid rgba(255,255,255,0.2);">C</div>
+        <div style="flex:1;"><div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:700;color:white;">CityExplorer</div><div style="font-size:12px;color:rgba(255,255,255,0.55);">Quest Master · Since 2024</div></div>
+        <!-- Gear icon for settings -->
+        <div style="width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:3;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+      </div>
+    </div>
+    <div style="margin:-18px 16px 0;position:relative;z-index:3;">
+      <div class="srow">
+        <div class="stt"><div class="stn">24</div><div class="stl">Played</div></div>
+        <div class="stt"><div class="stn">8</div><div class="stl">Created</div></div>
+        <div class="stt"><div class="stn" style="font-size:17px;">41,820</div><div class="stl">Points</div></div>
+      </div>
+    </div>
+    <div class="sh" style="margin-top:14px;"><div class="st">Recent Activity</div></div>
+    <div class="scroll" style="padding-top:0;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:white;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;border-radius:11px;background:#D4EDE4;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--bark);">Completed Frederiksberg quest</div><div style="font-size:11px;color:var(--muted);">🥇 1st · 2,340 pts · Yesterday</div></div></div>
+        <div style="background:white;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;border-radius:11px;background:var(--amber-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--bark);">Published new quest</div><div style="font-size:11px;color:var(--muted);">Byens Skjulte Perler · 3 days ago</div></div></div>
+        <!-- Log Out button -->
+        <div style="background:var(--coral-l);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid rgba(232,92,58,0.2);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          <div style="flex:1;font-size:14px;font-weight:600;color:var(--coral);">Log Out</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg><span class="tlbl">Discover</span></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><rect x="9" y="1" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/></svg><span class="tlbl">Quests</span></div>
+    <div class="tjoin"><div class="jpill"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="14" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="14" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/><rect x="18.5" y="18.5" width="2.5" height="2.5" fill="white" stroke="none"/></svg></div></div>
+    <div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg><span class="tlbl">Create</span></div>
+    <div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg><span class="tlbl">Profile</span></div>
+  </div>
+  <div class="hb"><div class="hp" style="background:rgba(0,0,0,0.15);"></div></div>
+</div></div>
+<div class="slbl">Profile</div>
+</div>
+
+<!-- ─── SETTINGS ─── -->
+<div class="col">
+<div class="phone"><div class="screen">
+  <div class="sb" style="background:var(--cream);color:var(--bark);"><span>9:41</span><div class="sbi" style="opacity:.45;"><svg width="17" height="12" viewBox="0 0 14 11" fill="currentColor"><rect x="0" y="8" width="2" height="3" rx=".4"/><rect x="3" y="5.5" width="2" height="5.5" rx=".4"/></svg></div></div>
+  <div class="body" style="overflow-y:auto;">
+    <div style="display:flex;align-items:center;gap:12px;padding:6px 18px 16px;"><div class="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></div><div style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:800;color:var(--bark);">Settings</div></div>
+    <div class="scroll" style="padding-top:0;">
+
+      <!-- Language -->
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 16px;margin-bottom:8px;">Language</div>
+      <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);">
+          <span style="font-size:20px;">🇩🇰</span>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--bark);">Dansk</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;">
+          <span style="font-size:20px;">🇬🇧</span>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--muted);">English</div></div>
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);"></div>
+        </div>
+      </div>
+
+      <!-- Connected accounts -->
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 16px;margin-bottom:8px;">Connected accounts</div>
+      <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px;">
+        <div class="setrow">
+          <div class="setico" style="background:#FEE2E2;"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+          <div class="setlbl"><div class="setname">Google</div></div>
+          <span class="conn">Connected</span>
+        </div>
+        <div class="setrow">
+          <div class="setico" style="background:#EFF6FF;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
+          <div class="setlbl"><div class="setname">Facebook</div></div>
+          <span class="disc">Connect</span>
+        </div>
+        <div class="setrow">
+          <div class="setico" style="background:#F5F5F5;"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--bark)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div>
+          <div class="setlbl"><div class="setname">Apple</div></div>
+          <span class="conn">Connected</span>
+        </div>
+        <div class="setrow" style="border-bottom:none;">
+          <div class="setico" style="background:#F5F5F5;"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/></svg></div>
+          <div class="setlbl"><div class="setname">Microsoft</div></div>
+          <span class="disc">Connect</span>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 16px;margin-bottom:8px;">Notifications</div>
+      <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px;">
+        <div class="setrow"><div class="setico" style="background:var(--amber-l);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-d)" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="setlbl"><div class="setname">Push notifications</div><div class="setsub">Quest invites &amp; reminders</div></div><div class="toggle on"></div></div>
+        <div class="setrow" style="border-bottom:none;"><div class="setico" style="background:#E8EDF7;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A4A8A" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></div><div class="setlbl"><div class="setname">Email notifications</div><div class="setsub">Session recaps &amp; invites</div></div><div class="toggle on"></div></div>
+      </div>
+
+      <!-- Privacy -->
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 16px;margin-bottom:8px;">Privacy</div>
+      <div style="background:white;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px;">
+        <div class="setrow" style="border-bottom:none;"><div class="setico" style="background:#D4EDE4;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="setlbl"><div class="setname">Show on leaderboard</div><div class="setsub">Others can see your scores</div></div><div class="toggle on"></div></div>
+      </div>
+
+      <!-- Danger zone -->
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral);padding:0 16px;margin-bottom:8px;">Danger zone</div>
+      <div style="background:var(--coral-l);border-radius:14px;overflow:hidden;border:1.5px solid rgba(232,92,58,0.2);margin-bottom:16px;">
+        <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg><div style="flex:1;font-size:14px;font-weight:600;color:var(--coral);">Delete Account</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+
+    </div>
+  </div>
+  <div class="hb" style="background:var(--cream);"><div class="hp" style="background:rgba(0,0,0,0.12);"></div></div>
+</div></div>
+<div class="slbl">Settings</div>
+</div>
+
+</div><!-- /row -->
+
+</body>
+</html>

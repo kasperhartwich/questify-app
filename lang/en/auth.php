@@ -53,4 +53,5 @@ return [
     'weak_password' => 'Weak',
     'medium_password' => 'Medium strength',
     'strong_password' => 'Strong',
+    'social_login_note' => 'Social logins go directly in. Phone & email require verification.',
 ];

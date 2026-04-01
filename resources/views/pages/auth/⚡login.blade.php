@@ -50,6 +50,12 @@ class extends Component
         $this->phoneEnabled = $appInfo->isAuthMethodEnabled('phone');
     }
 
+    public function goToEmailLogin(): void
+    {
+        $this->step = 'email';
+        $this->resetErrorBag();
+    }
+
     public function login(): void
     {
         $this->validate([
@@ -90,11 +96,17 @@ class extends Component
         ]);
 
         try {
-            $response = $this->api->auth()->verifyOtp($this->otp_code, $this->login_token);
+            if ($this->phone_number) {
+                $response = $this->api->auth()->verifyPhone($this->otp_code);
+            } else {
+                $response = $this->api->auth()->verifyOtp($this->otp_code, $this->login_token);
+            }
 
-            /** @var QuestifyApiGuard $guard */
-            $guard = Auth::guard();
-            $guard->login($response['data']['user'], $response['data']['token']);
+            if (! empty($response['data']['user']) && ! empty($response['data']['token'])) {
+                /** @var QuestifyApiGuard $guard */
+                $guard = Auth::guard();
+                $guard->login($response['data']['user'], $response['data']['token']);
+            }
 
             $this->redirect('/discover/list');
         } catch (ApiAuthenticationException) {
@@ -131,17 +143,18 @@ class extends Component
         $this->phone_number = $this->country_code . preg_replace('/\s+/', '', $this->phone_local);
 
         try {
-            $response = $this->api->auth()->login($this->phone_number, '');
+            $response = $this->api->auth()->submitPhone($this->phone_number);
 
-            if (! empty($response['requires_otp'])) {
-                $this->login_token = $response['login_token'];
+            if (! empty($response['requires_phone_verification'])) {
+                $this->login_token = $response['login_token'] ?? '';
                 $this->step = 'otp';
             }
         } catch (ApiAuthenticationException) {
             $this->addError('phone_local', __('auth.failed'));
         } catch (ApiValidationException $e) {
             foreach ($e->errors as $field => $messages) {
-                $this->addError($field, $messages[0]);
+                $fieldKey = $field === 'phone_number' ? 'phone_local' : $field;
+                $this->addError($fieldKey, $messages[0]);
             }
         } catch (ApiException $e) {
             $this->dispatch('api-error', message: $e->getMessage());
@@ -154,7 +167,7 @@ class extends Component
     @if ($step === 'login')
         {{-- Back + Logo --}}
         <div class="flex items-center gap-2.5 pb-5 pt-1">
-            <a href="/" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark" wire:navigate>
+            <a href="/" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
             </a>
             <div class="flex items-center gap-1.5">
@@ -164,63 +177,86 @@ class extends Component
         </div>
 
         {{-- Heading --}}
-        <h1 class="mb-1 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ __('auth.welcome_back') }}</h1>
-        <p class="mb-5 text-xs text-muted">{{ __('auth.login_subtitle') }}</p>
+        <h1 class="mb-1 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.welcome_back'))) !!}</h1>
+        <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.login_subtitle') }}</p>
 
-        {{-- Social buttons + Phone --}}
-        <x-social-auth-grid :providers="$socialProviders" :phone-enabled="$phoneEnabled" phone-action="goToPhoneLogin" />
+        {{-- 2x3 Social auth grid --}}
+        <x-social-auth-grid
+            :providers="$socialProviders"
+            :phone-enabled="$phoneEnabled"
+            phone-action="goToPhoneLogin"
+            :email-enabled="$emailEnabled"
+            email-action="goToEmailLogin"
+        />
 
-        {{-- OR divider --}}
-        @if (count($socialProviders) > 0 && $emailEnabled)
-            <div class="mb-3.5 flex items-center gap-2.5">
-                <div class="h-px flex-1 bg-cream-border"></div>
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-muted">{{ __('general.or') }}</span>
-                <div class="h-px flex-1 bg-cream-border"></div>
-            </div>
-        @endif
+        {{-- Sign up link --}}
+        <p class="mt-auto text-center text-[13px] text-muted">
+            {{ __('general.dont_have_account') }}
+            <a href="/register" class="font-semibold text-forest-400" wire:navigate>{{ __('general.register') }}</a>
+        </p>
+
+        {{-- Social login note --}}
+        <p class="mt-2 text-center text-[10px] text-muted">{{ __('auth.social_login_note') }}</p>
+
+    {{-- Email Login Step --}}
+    @elseif ($step === 'email')
+        {{-- Back --}}
+        <div class="flex items-center gap-2.5 pb-6 pt-1">
+            <button wire:click="backToLogin" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+        </div>
+
+        {{-- Heading --}}
+        <h1 class="mb-1 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.welcome_back'))) !!}</h1>
+        <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.login_subtitle') }}</p>
 
         {{-- Email + Password form --}}
-        @if ($emailEnabled)
         <form wire:submit="login" class="flex flex-1 flex-col">
             <div class="mb-3.5 flex flex-col gap-2.5">
-                <div class="relative">
-                    <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                        </div>
+                        <input type="email" wire:model="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                     </div>
-                    <input type="email" wire:model="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
-                @error('email') <p class="-mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
 
-                <div class="relative">
-                    <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.password') }}</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <input type="password" wire:model="password" placeholder="{{ __('general.password') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                     </div>
-                    <input type="password" wire:model="password" placeholder="{{ __('general.password') }}" class="w-full rounded-xl border-2 border-cream-border bg-white py-3 pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
-                @error('password') <p class="-mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
             </div>
 
             <div class="mb-4 text-right">
                 <span class="text-[11px] font-semibold text-forest-400">{{ __('auth.forgot_password') }}</span>
             </div>
 
-            <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white">
+            <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] text-center font-heading text-sm font-bold text-bark">
                 {{ __('general.login') }}
             </button>
         </form>
-        @endif
 
         {{-- Sign up link --}}
-        <p class="mt-3.5 text-center text-xs text-muted">
+        <p class="mt-3.5 text-center text-[13px] text-muted">
             {{ __('general.dont_have_account') }}
-            <a href="/register" class="font-semibold text-forest-600 hover:text-forest-500" wire:navigate>{{ __('general.register') }}</a>
+            <a href="/register" class="font-semibold text-forest-400" wire:navigate>{{ __('general.register') }}</a>
         </p>
 
     {{-- OTP Verification --}}
     @elseif ($step === 'otp')
         {{-- Back --}}
         <div class="flex items-center gap-2.5 pb-6 pt-1">
-            <button wire:click="backToLogin" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark">
+            <button wire:click="backToLogin" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
         </div>
@@ -245,7 +281,7 @@ class extends Component
             @error('otp_code') <p class="mt-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
 
             <div class="mt-auto pt-6">
-                <button type="submit" class="w-full rounded-xl bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($otp_code) < 6) style="opacity:0.5" @endif>
+                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($otp_code) < 6) style="opacity:0.5" @endif>
                     {{ __('auth.verify') }}
                 </button>
             </div>
@@ -255,7 +291,7 @@ class extends Component
     @elseif ($step === 'phone')
         {{-- Back --}}
         <div class="flex items-center gap-2.5 pb-6 pt-1">
-            <button wire:click="backToLogin" class="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-cream-dark">
+            <button wire:click="backToLogin" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
         </div>
@@ -271,7 +307,7 @@ class extends Component
 
         <form wire:submit="sendPhoneOtp" class="flex flex-1 flex-col">
             {{-- Phone Number Label --}}
-            <label class="mb-2 block text-[9px] font-bold uppercase tracking-wider text-muted">{{ __('auth.phone_number') }}</label>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.phone_number') }}</label>
 
             {{-- Country code + local number --}}
             <div class="mb-1.5 flex gap-2">
@@ -279,23 +315,23 @@ class extends Component
                 <div class="relative">
                     <select
                         wire:model="country_code"
-                        class="h-full appearance-none rounded-xl border-2 border-cream-border bg-white py-3 pl-3 pr-8 text-[13px] font-semibold text-bark focus:border-forest-600 focus:outline-none"
+                        class="h-full appearance-none rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-3 pr-8 text-[13px] font-semibold text-bark focus:border-forest-600 focus:outline-none"
                     >
-                        <option value="+45">🇩🇰 +45</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+44">🇬🇧 +44</option>
-                        <option value="+46">🇸🇪 +46</option>
-                        <option value="+47">🇳🇴 +47</option>
-                        <option value="+49">🇩🇪 +49</option>
-                        <option value="+33">🇫🇷 +33</option>
-                        <option value="+34">🇪🇸 +34</option>
-                        <option value="+39">🇮🇹 +39</option>
-                        <option value="+31">🇳🇱 +31</option>
-                        <option value="+48">🇵🇱 +48</option>
-                        <option value="+351">🇵🇹 +351</option>
-                        <option value="+91">🇮🇳 +91</option>
-                        <option value="+61">🇦🇺 +61</option>
-                        <option value="+81">🇯🇵 +81</option>
+                        <option value="+45">+45</option>
+                        <option value="+1">+1</option>
+                        <option value="+44">+44</option>
+                        <option value="+46">+46</option>
+                        <option value="+47">+47</option>
+                        <option value="+49">+49</option>
+                        <option value="+33">+33</option>
+                        <option value="+34">+34</option>
+                        <option value="+39">+39</option>
+                        <option value="+31">+31</option>
+                        <option value="+48">+48</option>
+                        <option value="+351">+351</option>
+                        <option value="+91">+91</option>
+                        <option value="+61">+61</option>
+                        <option value="+81">+81</option>
                     </select>
                     <div class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -307,7 +343,7 @@ class extends Component
                     type="tel"
                     wire:model="phone_local"
                     placeholder=""
-                    class="flex-1 rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 text-base font-semibold text-bark focus:border-forest-600 focus:outline-none"
+                    class="flex-1 rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-base font-semibold text-bark focus:border-forest-600 focus:outline-none"
                     inputmode="tel"
                     autofocus
                 />
@@ -318,7 +354,7 @@ class extends Component
 
             <p class="mb-4 text-[10px] leading-relaxed text-muted">{{ __('auth.phone_sms_disclaimer') }}</p>
 
-            <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 text-center font-heading text-sm font-bold text-bark">
+            <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] text-center font-heading text-sm font-bold text-bark">
                 {{ __('auth.send_code') }}
             </button>
 
