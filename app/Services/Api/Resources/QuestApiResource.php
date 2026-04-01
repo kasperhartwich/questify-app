@@ -16,6 +16,18 @@ class QuestApiResource
         return $this->client->get('/quests', array_filter($filters));
     }
 
+    /**
+     * @param  array{radius?: float, category_id?: int, difficulty?: string}  $filters
+     */
+    public function nearby(float $latitude, float $longitude, array $filters = []): array
+    {
+        return $this->client->get('/quests/nearby', array_filter([
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            ...$filters,
+        ]));
+    }
+
     public function show(int $id): array
     {
         return $this->client->get("/quests/{$id}");

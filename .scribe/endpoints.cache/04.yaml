@@ -84,6 +84,173 @@ endpoints:
     custom: []
     httpMethods:
       - GET
+    uri: api/v1/quests/nearby
+    metadata:
+      custom: []
+      groupName: Quests
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Nearby quests'
+      description: |-
+        Get published quests sorted by distance from the given coordinates.
+        Returns the starting checkpoint, distance to it, distance to the farthest checkpoint,
+        and total route distance for each quest.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      latitude:
+        custom: []
+        name: latitude
+        description: "User's latitude."
+        required: true
+        example: 55.6761
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      longitude:
+        custom: []
+        name: longitude
+        description: "User's longitude."
+        required: true
+        example: 12.5683
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      radius:
+        custom: []
+        name: radius
+        description: 'Radius in km (default 50, max 100).'
+        required: false
+        example: 25.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      category_id:
+        custom: []
+        name: category_id
+        description: 'Filter by category.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      difficulty:
+        custom: []
+        name: difficulty
+        description: 'Filter by difficulty (easy, medium, hard).'
+        required: false
+        example: easy
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      latitude: 55.6761
+      longitude: 12.5683
+      radius: 25.0
+      category_id: 1
+      difficulty: easy
+    bodyParameters:
+      latitude:
+        custom: []
+        name: latitude
+        description: 'Must be between -90 and 90.'
+        required: true
+        example: -89
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      longitude:
+        custom: []
+        name: longitude
+        description: 'Must be between -180 and 180.'
+        required: true
+        example: -179
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      radius:
+        custom: []
+        name: radius
+        description: 'Must be at least 0.1. Must not be greater than 100.'
+        required: false
+        example: 7
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      category_id:
+        custom: []
+        name: category_id
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      difficulty:
+        custom: []
+        name: difficulty
+        description: ''
+        required: false
+        example: hard
+        type: string
+        enumValues:
+          - easy
+          - medium
+          - hard
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      latitude: -89
+      longitude: -179
+      radius: 7
+      category_id: 16
+      difficulty: hard
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data": [{"id": 1, "title": "City Walk", "distance_to_start_km": 1.23, "distance_to_farthest_km": 3.45, "total_route_distance_km": 5.67, "starting_checkpoint": {"id": 1, "title": "Start", "latitude": 55.6761, "longitude": 12.5683}}]}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
     uri: 'api/v1/quests/{id}'
     metadata:
       custom: []
@@ -284,7 +451,7 @@ endpoints:
         name: difficulty
         description: ''
         required: true
-        example: hard
+        example: easy
         type: string
         enumValues:
           - easy
@@ -356,7 +523,7 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: retry_penalty
+        example: lockout
         type: string
         enumValues:
           - retry_free
@@ -415,7 +582,7 @@ endpoints:
         name: scoring_wrong_attempt_penalty_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -527,7 +694,7 @@ endpoints:
         name: 'checkpoints[].questions[].question_type'
         description: ''
         required: true
-        example: multiple_choice
+        example: true_false
         type: string
         enumValues:
           - multiple_choice
@@ -564,7 +731,7 @@ endpoints:
         name: 'checkpoints[].questions[].answers[].is_correct'
         description: ''
         required: true
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -574,17 +741,17 @@ endpoints:
       title: b
       description: 'Eius et animi quos velit et.'
       category_id: 16
-      difficulty: hard
+      difficulty: easy
       visibility: school
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: retry_penalty
+      wrong_answer_behaviour: lockout
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
       scoring_speed_bonus_enabled: true
-      scoring_wrong_attempt_penalty_enabled: false
+      scoring_wrong_attempt_penalty_enabled: true
       scoring_quest_completion_time_bonus_enabled: false
       checkpoints:
         -
@@ -596,11 +763,11 @@ endpoints:
           questions:
             -
               question_text: architecto
-              question_type: multiple_choice
+              question_type: true_false
               answers:
                 -
                   answer_text: b
-                  is_correct: true
+                  is_correct: false
     fileParameters:
       cover_image: null
     responses:
@@ -724,7 +891,7 @@ endpoints:
         name: visibility
         description: ''
         required: false
-        example: school
+        example: private
         type: string
         enumValues:
           - public
@@ -841,7 +1008,7 @@ endpoints:
         name: scoring_wrong_attempt_penalty_enabled
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -952,7 +1119,7 @@ endpoints:
         name: 'checkpoints[].questions[].question_type'
         description: ''
         required: true
-        example: open_text
+        example: multiple_choice
         type: string
         enumValues:
           - multiple_choice
@@ -989,7 +1156,7 @@ endpoints:
         name: 'checkpoints[].questions[].answers[].is_correct'
         description: ''
         required: true
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1000,7 +1167,7 @@ endpoints:
       description: 'Eius et animi quos velit et.'
       category_id: 16
       difficulty: hard
-      visibility: school
+      visibility: private
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
@@ -1009,7 +1176,7 @@ endpoints:
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
       scoring_speed_bonus_enabled: true
-      scoring_wrong_attempt_penalty_enabled: true
+      scoring_wrong_attempt_penalty_enabled: false
       scoring_quest_completion_time_bonus_enabled: false
       checkpoints:
         -
@@ -1021,11 +1188,11 @@ endpoints:
           questions:
             -
               question_text: architecto
-              question_type: open_text
+              question_type: multiple_choice
               answers:
                 -
                   answer_text: b
-                  is_correct: true
+                  is_correct: false
     fileParameters:
       cover_image: null
     responses:

@@ -135,6 +135,9 @@
                                                     <li class="tocify-item level-2" data-unique="quests-GETapi-v1-quests">
                                 <a href="#quests-GETapi-v1-quests">List quests</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="quests-GETapi-v1-quests-nearby">
+                                <a href="#quests-GETapi-v1-quests-nearby">Nearby quests</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="quests-GETapi-v1-quests--id-">
                                 <a href="#quests-GETapi-v1-quests--id-">Show quest</a>
                             </li>
@@ -235,7 +238,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: March 30, 2026</li>
+        <li>Last updated: April 1, 2026</li>
     </ul>
 </div>
 
@@ -2325,6 +2328,307 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                 </form>
 
+                    <h2 id="quests-GETapi-v1-quests-nearby">Nearby quests</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Get published quests sorted by distance from the given coordinates.
+Returns the starting checkpoint, distance to it, distance to the farthest checkpoint,
+and total route distance for each quest.</p>
+
+<span id="example-requests-GETapi-v1-quests-nearby">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://questify-app.test:8000/api/v1/quests/nearby?latitude=55.6761&amp;longitude=12.5683&amp;radius=25&amp;category_id=1&amp;difficulty=easy" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"latitude\": -89,
+    \"longitude\": -179,
+    \"radius\": 7,
+    \"category_id\": 16,
+    \"difficulty\": \"hard\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://questify-app.test:8000/api/v1/quests/nearby"
+);
+
+const params = {
+    "latitude": "55.6761",
+    "longitude": "12.5683",
+    "radius": "25",
+    "category_id": "1",
+    "difficulty": "easy",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "latitude": -89,
+    "longitude": -179,
+    "radius": 7,
+    "category_id": 16,
+    "difficulty": "hard"
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-quests-nearby">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;title&quot;: &quot;City Walk&quot;,
+            &quot;distance_to_start_km&quot;: 1.23,
+            &quot;distance_to_farthest_km&quot;: 3.45,
+            &quot;total_route_distance_km&quot;: 5.67,
+            &quot;starting_checkpoint&quot;: {
+                &quot;id&quot;: 1,
+                &quot;title&quot;: &quot;Start&quot;,
+                &quot;latitude&quot;: 55.6761,
+                &quot;longitude&quot;: 12.5683
+            }
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-quests-nearby" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-quests-nearby"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-quests-nearby"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-quests-nearby" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-quests-nearby">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-quests-nearby" data-method="GET"
+      data-path="api/v1/quests/nearby"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-quests-nearby', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-quests-nearby"
+                    onclick="tryItOut('GETapi-v1-quests-nearby');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-quests-nearby"
+                    onclick="cancelTryOut('GETapi-v1-quests-nearby');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-quests-nearby"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/quests/nearby</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-quests-nearby"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-quests-nearby"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-quests-nearby"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="latitude"                data-endpoint="GETapi-v1-quests-nearby"
+               value="55.6761"
+               data-component="query">
+    <br>
+<p>User's latitude. Example: <code>55.6761</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="longitude"                data-endpoint="GETapi-v1-quests-nearby"
+               value="12.5683"
+               data-component="query">
+    <br>
+<p>User's longitude. Example: <code>12.5683</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>radius</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="radius"                data-endpoint="GETapi-v1-quests-nearby"
+               value="25"
+               data-component="query">
+    <br>
+<p>Radius in km (default 50, max 100). Example: <code>25</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="category_id"                data-endpoint="GETapi-v1-quests-nearby"
+               value="1"
+               data-component="query">
+    <br>
+<p>Filter by category. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="difficulty"                data-endpoint="GETapi-v1-quests-nearby"
+               value="easy"
+               data-component="query">
+    <br>
+<p>Filter by difficulty (easy, medium, hard). Example: <code>easy</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="latitude"                data-endpoint="GETapi-v1-quests-nearby"
+               value="-89"
+               data-component="body">
+    <br>
+<p>Must be between -90 and 90. Example: <code>-89</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="longitude"                data-endpoint="GETapi-v1-quests-nearby"
+               value="-179"
+               data-component="body">
+    <br>
+<p>Must be between -180 and 180. Example: <code>-179</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>radius</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="radius"                data-endpoint="GETapi-v1-quests-nearby"
+               value="7"
+               data-component="body">
+    <br>
+<p>Must be at least 0.1. Must not be greater than 100. Example: <code>7</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="category_id"                data-endpoint="GETapi-v1-quests-nearby"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the categories table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>difficulty</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="difficulty"                data-endpoint="GETapi-v1-quests-nearby"
+               value="hard"
+               data-component="body">
+    <br>
+<p>Example: <code>hard</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
+        </div>
+        </form>
+
                     <h2 id="quests-GETapi-v1-quests--id-">Show quest</h2>
 
 <p>
@@ -2699,17 +3003,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "title=b"\
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
-    --form "difficulty=hard"\
+    --form "difficulty=easy"\
     --form "visibility=school"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
-    --form "wrong_answer_behaviour=retry_penalty"\
+    --form "wrong_answer_behaviour=lockout"\
     --form "wrong_answer_penalty_points=54"\
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
     --form "scoring_speed_bonus_enabled=1"\
-    --form "scoring_wrong_attempt_penalty_enabled="\
+    --form "scoring_wrong_attempt_penalty_enabled=1"\
     --form "scoring_quest_completion_time_bonus_enabled="\
     --form "checkpoints[][title]=b"\
     --form "checkpoints[][description]=Eius et animi quos velit et."\
@@ -2717,10 +3021,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "checkpoints[][longitude]=-179"\
     --form "checkpoints[][hint]=architecto"\
     --form "checkpoints[][questions][][question_text]=architecto"\
-    --form "checkpoints[][questions][][question_type]=multiple_choice"\
+    --form "checkpoints[][questions][][question_type]=true_false"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
-    --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phplebo4k7lthhtdfSB6sZ" </code></pre></div>
+    --form "checkpoints[][questions][][answers][][is_correct]="\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php26qdm2ctqt3259oIhie" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2738,17 +3042,17 @@ const body = new FormData();
 body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
-body.append('difficulty', 'hard');
+body.append('difficulty', 'easy');
 body.append('visibility', 'school');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
-body.append('wrong_answer_behaviour', 'retry_penalty');
+body.append('wrong_answer_behaviour', 'lockout');
 body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
 body.append('scoring_speed_bonus_enabled', '1');
-body.append('scoring_wrong_attempt_penalty_enabled', '');
+body.append('scoring_wrong_attempt_penalty_enabled', '1');
 body.append('scoring_quest_completion_time_bonus_enabled', '');
 body.append('checkpoints[][title]', 'b');
 body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
@@ -2756,9 +3060,9 @@ body.append('checkpoints[][latitude]', '-89');
 body.append('checkpoints[][longitude]', '-179');
 body.append('checkpoints[][hint]', 'architecto');
 body.append('checkpoints[][questions][][question_text]', 'architecto');
-body.append('checkpoints[][questions][][question_type]', 'multiple_choice');
+body.append('checkpoints[][questions][][question_type]', 'true_false');
 body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
-body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('checkpoints[][questions][][answers][][is_correct]', '');
 body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
 
 fetch(url, {
@@ -2925,10 +3229,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="difficulty"                data-endpoint="POSTapi-v1-quests"
-               value="hard"
+               value="easy"
                data-component="body">
     <br>
-<p>Example: <code>hard</code></p>
+<p>Example: <code>easy</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
         </div>
@@ -2968,7 +3272,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phplebo4k7lthhtdfSB6sZ</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php26qdm2ctqt3259oIhie</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -3001,10 +3305,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="wrong_answer_behaviour"                data-endpoint="POSTapi-v1-quests"
-               value="retry_penalty"
+               value="lockout"
                data-component="body">
     <br>
-<p>Example: <code>retry_penalty</code></p>
+<p>Example: <code>lockout</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
         </div>
@@ -3086,7 +3390,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
@@ -3209,10 +3513,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="checkpoints.0.questions.0.question_type"                data-endpoint="POSTapi-v1-quests"
-               value="multiple_choice"
+               value="true_false"
                data-component="body">
     <br>
-<p>Example: <code>multiple_choice</code></p>
+<p>Example: <code>true_false</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
                     </div>
@@ -3258,7 +3562,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
                     </div>
                                     </details>
         </div>
@@ -3290,7 +3594,7 @@ Must be one of:
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
     --form "difficulty=hard"\
-    --form "visibility=school"\
+    --form "visibility=private"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
@@ -3299,7 +3603,7 @@ Must be one of:
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
     --form "scoring_speed_bonus_enabled=1"\
-    --form "scoring_wrong_attempt_penalty_enabled=1"\
+    --form "scoring_wrong_attempt_penalty_enabled="\
     --form "scoring_quest_completion_time_bonus_enabled="\
     --form "checkpoints[][title]=u"\
     --form "checkpoints[][description]=Eius et animi quos velit et."\
@@ -3307,10 +3611,10 @@ Must be one of:
     --form "checkpoints[][longitude]=-179"\
     --form "checkpoints[][hint]=architecto"\
     --form "checkpoints[][questions][][question_text]=architecto"\
-    --form "checkpoints[][questions][][question_type]=open_text"\
+    --form "checkpoints[][questions][][question_type]=multiple_choice"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
-    --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phppvk4hoe41jee6OTZhwM" </code></pre></div>
+    --form "checkpoints[][questions][][answers][][is_correct]="\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php8n8e2vus6o5jaXTWZDX" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3329,7 +3633,7 @@ body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
 body.append('difficulty', 'hard');
-body.append('visibility', 'school');
+body.append('visibility', 'private');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
@@ -3338,7 +3642,7 @@ body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
 body.append('scoring_speed_bonus_enabled', '1');
-body.append('scoring_wrong_attempt_penalty_enabled', '1');
+body.append('scoring_wrong_attempt_penalty_enabled', '');
 body.append('scoring_quest_completion_time_bonus_enabled', '');
 body.append('checkpoints[][title]', 'u');
 body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
@@ -3346,9 +3650,9 @@ body.append('checkpoints[][latitude]', '-89');
 body.append('checkpoints[][longitude]', '-179');
 body.append('checkpoints[][hint]', 'architecto');
 body.append('checkpoints[][questions][][question_text]', 'architecto');
-body.append('checkpoints[][questions][][question_type]', 'open_text');
+body.append('checkpoints[][questions][][question_type]', 'multiple_choice');
 body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
-body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('checkpoints[][questions][][answers][][is_correct]', '');
 body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
 
 fetch(url, {
@@ -3549,10 +3853,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="PUTapi-v1-quests--id-"
-               value="school"
+               value="private"
                data-component="body">
     <br>
-<p>Example: <code>school</code></p>
+<p>Example: <code>private</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
@@ -3578,7 +3882,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phppvk4hoe41jee6OTZhwM</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php8n8e2vus6o5jaXTWZDX</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -3696,7 +4000,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
@@ -3819,10 +4123,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="checkpoints.0.questions.0.question_type"                data-endpoint="PUTapi-v1-quests--id-"
-               value="open_text"
+               value="multiple_choice"
                data-component="body">
     <br>
-<p>Example: <code>open_text</code></p>
+<p>Example: <code>multiple_choice</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
                     </div>
@@ -3868,7 +4172,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
                     </div>
                                     </details>
         </div>
@@ -4781,7 +5085,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"quest_id\": 16,
-    \"play_mode\": \"competitive_teams\"
+    \"play_mode\": \"solo\"
 }"
 </code></pre></div>
 
@@ -4799,7 +5103,7 @@ const headers = {
 
 let body = {
     "quest_id": 16,
-    "play_mode": "competitive_teams"
+    "play_mode": "solo"
 };
 
 fetch(url, {
@@ -4940,10 +5244,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="play_mode"                data-endpoint="POSTapi-v1-sessions"
-               value="competitive_teams"
+               value="solo"
                data-component="body">
     <br>
-<p>Example: <code>competitive_teams</code></p>
+<p>Example: <code>solo</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive_individual</code></li> <li><code>competitive_teams</code></li></ul>
         </div>
@@ -5640,7 +5944,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "name=John Doe"\
     --form "locale=da"\
-    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpd6f6es66677f0sCv9oP" </code></pre></div>
+    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php561120j0575k8PIgd0B" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5789,7 +6093,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpd6f6es66677f0sCv9oP</code></p>
+<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php561120j0575k8PIgd0B</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>locale</code></b>&nbsp;&nbsp;

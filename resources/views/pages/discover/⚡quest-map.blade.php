@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Api\ApiException;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
@@ -11,30 +12,70 @@ class extends Component
 {
     use HandlesApiErrors, WithApiClient;
 
-    /** @var array<int, array{id: int, title: string, latitude: float, longitude: float}> */
+    /** @var array<int, array{id: int, title: string, latitude: float, longitude: float, distance_to_farthest_km: float}> */
     public array $pins = [];
+
+    public float $latitude = 55.6761;
+
+    public float $longitude = 12.5683;
 
     public function mount(): void
     {
         $this->loadPins();
     }
 
+    public function loadNearby(float $latitude, float $longitude): void
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->loadPins();
+    }
+
     public function loadPins(): void
     {
+        try {
+            $response = $this->api->quests()->nearby(
+                $this->latitude,
+                $this->longitude,
+                ['radius' => 50],
+            );
+        } catch (ApiException) {
+            $response = null;
+        }
+
+        if (! empty($response['data'])) {
+            $this->pins = collect($response['data'])
+                ->filter(fn ($quest) => ! empty($quest['starting_checkpoint']['latitude']))
+                ->map(fn ($quest) => [
+                    'id' => $quest['id'],
+                    'title' => $quest['title'] ?? '',
+                    'difficulty' => $quest['difficulty'] ?? '',
+                    'latitude' => (float) $quest['starting_checkpoint']['latitude'],
+                    'longitude' => (float) $quest['starting_checkpoint']['longitude'],
+                    'distance_to_start_km' => (float) ($quest['distance_to_start_km'] ?? 0),
+                    'distance_to_farthest_km' => (float) ($quest['distance_to_farthest_km'] ?? 0),
+                    'checkpoint_count' => (int) ($quest['checkpoint_count'] ?? 0),
+                ])
+                ->all();
+
+            return;
+        }
+
+        // Fallback to generic list if nearby endpoint is unavailable
         $response = $this->tryApiCall(fn () => $this->api->quests()->list()) ?? ['data' => []];
 
         $this->pins = collect($response['data'] ?? [])
             ->filter(fn ($quest) => ! empty($quest['checkpoints'][0]['latitude']))
-            ->map(function ($quest) {
-                $startCheckpoint = $quest['checkpoints'][0] ?? null;
-
-                return [
-                    'id' => $quest['id'],
-                    'title' => $quest['title'] ?? '',
-                    'latitude' => (float) ($startCheckpoint['latitude'] ?? 0),
-                    'longitude' => (float) ($startCheckpoint['longitude'] ?? 0),
-                ];
-            })
+            ->map(fn ($quest) => [
+                'id' => $quest['id'],
+                'title' => $quest['title'] ?? '',
+                'difficulty' => $quest['difficulty'] ?? '',
+                'latitude' => (float) $quest['checkpoints'][0]['latitude'],
+                'longitude' => (float) $quest['checkpoints'][0]['longitude'],
+                'distance_to_start_km' => 0,
+                'distance_to_farthest_km' => 0,
+                'checkpoint_count' => count($quest['checkpoints'] ?? []),
+            ])
             ->all();
     }
 };
@@ -44,13 +85,16 @@ class extends Component
     x-data="{
         map: null,
         markers: [],
+        circles: [],
         pins: @js($pins),
         selectedPin: null,
         filterDifficulty: 'all',
         isSatellite: false,
+        userLocated: false,
         addMarkers() {
             this.markers.forEach(m => m.remove());
             this.markers = [];
+            this.removeCircles();
             this.pins.forEach(pin => {
                 const el = document.createElement('div');
                 el.className = 'mapbox-quest-marker';
@@ -61,15 +105,90 @@ class extends Component
                     e.stopPropagation();
                     this.selectedPin = pin;
                     this.map.flyTo({ center: [pin.longitude, pin.latitude], zoom: 14 });
+                    this.drawCircle(pin);
                 });
                 this.markers.push(marker);
             });
+        },
+        removeCircles() {
+            this.circles.forEach(id => {
+                if (this.map.getLayer(id)) this.map.removeLayer(id);
+                if (this.map.getLayer(id + '-line')) this.map.removeLayer(id + '-line');
+                if (this.map.getSource(id)) this.map.removeSource(id);
+            });
+            this.circles = [];
+        },
+        drawCircle(pin) {
+            this.removeCircles();
+            if (!pin.distance_to_farthest_km || pin.distance_to_farthest_km <= 0) return;
+
+            const id = 'quest-radius-' + pin.id;
+            const center = [pin.longitude, pin.latitude];
+            const radiusKm = pin.distance_to_farthest_km;
+            const points = 64;
+            const coords = [];
+
+            for (let i = 0; i <= points; i++) {
+                const angle = (i / points) * 2 * Math.PI;
+                const dx = radiusKm * Math.cos(angle);
+                const dy = radiusKm * Math.sin(angle);
+                const lat = center[1] + (dy / 111.32);
+                const lng = center[0] + (dx / (111.32 * Math.cos(center[1] * Math.PI / 180)));
+                coords.push([lng, lat]);
+            }
+
+            this.map.addSource(id, {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: { type: 'Polygon', coordinates: [coords] },
+                },
+            });
+            this.map.addLayer({
+                id: id,
+                type: 'fill',
+                source: id,
+                paint: {
+                    'fill-color': '#0B3D2E',
+                    'fill-opacity': 0.08,
+                },
+            });
+            this.map.addLayer({
+                id: id + '-line',
+                type: 'line',
+                source: id,
+                paint: {
+                    'line-color': '#0B3D2E',
+                    'line-width': 2,
+                    'line-opacity': 0.4,
+                    'line-dasharray': [3, 2],
+                },
+            });
+            this.circles.push(id);
         },
         toggleStyle() {
             this.isSatellite = !this.isSatellite;
             const style = this.isSatellite ? 'satellite-streets-v12' : 'streets-v12';
             this.map.setStyle('mapbox://styles/mapbox/' + style);
-            this.map.once('style.load', () => this.addMarkers());
+            this.map.once('style.load', () => {
+                this.addMarkers();
+                if (this.selectedPin) this.drawCircle(this.selectedPin);
+            });
+        },
+        locateUser() {
+            if (!navigator.geolocation || !this.map) return;
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                this.map.flyTo({ center: [lng, lat], zoom: 13 });
+                if (!this.userLocated) {
+                    this.userLocated = true;
+                    $wire.loadNearby(lat, lng).then(() => {
+                        this.pins = $wire.pins;
+                        this.addMarkers();
+                    });
+                }
+            });
         },
     }"
     x-init="
@@ -82,7 +201,10 @@ class extends Component
             attributionControl: false,
         });
         map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-        map.on('load', () => addMarkers());
+        map.on('load', () => {
+            addMarkers();
+            locateUser();
+        });
     "
 >
     <style>
@@ -148,7 +270,6 @@ class extends Component
         @click="toggleStyle()"
         class="absolute bottom-[280px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
-        {{-- Satellite icon (globe) when on streets, map icon when on satellite --}}
         <template x-if="!isSatellite">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
         </template>
@@ -159,13 +280,7 @@ class extends Component
 
     {{-- My location button --}}
     <button
-        @click="
-            if (navigator.geolocation && map) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 14 });
-                });
-            }
-        "
+        @click="locateUser()"
         class="absolute bottom-[230px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
@@ -175,7 +290,7 @@ class extends Component
     <div class="absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
         <div class="mx-auto mb-[14px] h-1 w-9 rounded-full bg-cream-border"></div>
         <p class="mb-3 font-heading text-[15px] font-bold text-bark">
-            {{ count($pins) }} {{ __('general.quests_in_area') }}
+            <span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}
         </p>
 
         {{-- Selected quest card --}}
@@ -183,10 +298,12 @@ class extends Component
             <a :href="'/quests/' + selectedPin.id" class="block overflow-hidden rounded-[16px] bg-white shadow-sm" wire:navigate>
                 <div class="relative overflow-hidden bg-forest-600 px-4 pb-3 pt-[14px]">
                     <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <h3 class="font-heading text-[15px] font-bold text-white" x-text="selectedPin.title"></h3>
-                        </div>
+                    <div>
+                        <h3 class="font-heading text-[15px] font-bold text-white" x-text="selectedPin.title"></h3>
+                        <p class="mt-1 text-[11px] text-white/70">
+                            <span x-text="selectedPin.checkpoint_count"></span> checkpoints
+                            <span x-show="selectedPin.distance_to_start_km"> &middot; <span x-text="selectedPin.distance_to_start_km.toFixed(1)"></span> km away</span>
+                        </p>
                     </div>
                 </div>
                 <div class="px-4 py-[10px]">

@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function () {
     // Guest-accessible
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/quests', [QuestController::class, 'index'])->name('quests.index');
+    Route::get('/quests/nearby', [QuestController::class, 'nearby'])->name('quests.nearby');
     Route::get('/quests/{quest}', [QuestController::class, 'show'])->name('quests.show');
     Route::post('/quests/{quest}/flag', [QuestController::class, 'flag'])->name('quests.flag');
 

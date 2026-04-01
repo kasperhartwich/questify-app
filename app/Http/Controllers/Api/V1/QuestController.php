@@ -7,9 +7,11 @@ use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FlagQuestRequest;
+use App\Http\Requests\NearbyQuestRequest;
 use App\Http\Requests\RateQuestRequest;
 use App\Http\Requests\StoreQuestRequest;
 use App\Http\Requests\UpdateQuestRequest;
+use App\Http\Resources\NearbyQuestResource;
 use App\Http\Resources\QuestDetailResource;
 use App\Http\Resources\QuestRatingResource;
 use App\Http\Resources\QuestResource;
@@ -53,6 +55,90 @@ class QuestController extends Controller
             ->cursorPaginate(15);
 
         return QuestResource::collection($quests);
+    }
+
+    /**
+     * Nearby quests
+     *
+     * Get published quests sorted by distance from the given coordinates.
+     * Returns the starting checkpoint, distance to it, distance to the farthest checkpoint,
+     * and total route distance for each quest.
+     *
+     * @queryParam latitude number required User's latitude. Example: 55.6761
+     * @queryParam longitude number required User's longitude. Example: 12.5683
+     * @queryParam radius number Radius in km (default 50, max 100). Example: 25
+     * @queryParam category_id integer Filter by category. Example: 1
+     * @queryParam difficulty string Filter by difficulty (easy, medium, hard). Example: easy
+     *
+     * @response 200 {"data": [{"id": 1, "title": "City Walk", "distance_to_start_km": 1.23, "distance_to_farthest_km": 3.45, "total_route_distance_km": 5.67, "starting_checkpoint": {"id": 1, "title": "Start", "latitude": 55.6761, "longitude": 12.5683}}]}
+     */
+    public function nearby(NearbyQuestRequest $request): AnonymousResourceCollection
+    {
+        $latitude = (float) $request->validated('latitude');
+        $longitude = (float) $request->validated('longitude');
+        $radiusKm = (float) ($request->validated('radius') ?? 50);
+
+        $quests = Quest::query()
+            ->published()
+            ->visible()
+            ->with(['category', 'creator', 'checkpoints'])
+            ->withAvg('ratings', 'rating')
+            ->withCount(['ratings', 'sessions'])
+            ->whereHas('checkpoints')
+            ->when($request->filled('category_id'), fn ($q) => $q->where('category_id', $request->input('category_id')))
+            ->when($request->filled('difficulty'), fn ($q) => $q->where('difficulty', $request->input('difficulty')))
+            ->get();
+
+        $quests = $quests
+            ->map(function (Quest $quest) use ($latitude, $longitude) {
+                $checkpoints = $quest->checkpoints->sortBy('sort_order')->values();
+                $startCheckpoint = $checkpoints->first();
+
+                if (! $startCheckpoint) {
+                    return null;
+                }
+
+                $quest->distance_to_start_km = $this->haversineDistance(
+                    $latitude, $longitude,
+                    (float) $startCheckpoint->latitude, (float) $startCheckpoint->longitude,
+                );
+
+                $quest->distance_to_farthest_km = $checkpoints->max(
+                    fn ($cp) => $this->haversineDistance($latitude, $longitude, (float) $cp->latitude, (float) $cp->longitude)
+                );
+
+                $totalRouteDistance = 0;
+                for ($i = 1; $i < $checkpoints->count(); $i++) {
+                    $totalRouteDistance += $this->haversineDistance(
+                        (float) $checkpoints[$i - 1]->latitude,
+                        (float) $checkpoints[$i - 1]->longitude,
+                        (float) $checkpoints[$i]->latitude,
+                        (float) $checkpoints[$i]->longitude,
+                    );
+                }
+                $quest->total_route_distance_km = $totalRouteDistance;
+
+                return $quest;
+            })
+            ->filter()
+            ->filter(fn (Quest $quest) => $quest->distance_to_start_km <= $radiusKm)
+            ->sortBy('distance_to_start_km')
+            ->values();
+
+        return NearbyQuestResource::collection($quests);
+    }
+
+    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earthRadiusKm = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2)
+            + cos(deg2rad($lat1)) * cos(deg2rad($lat2))
+            * sin($dLon / 2) * sin($dLon / 2);
+
+        return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
     /**
