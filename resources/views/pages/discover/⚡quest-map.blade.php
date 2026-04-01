@@ -47,6 +47,30 @@ class extends Component
         pins: @js($pins),
         selectedPin: null,
         filterDifficulty: 'all',
+        isSatellite: false,
+        addMarkers() {
+            this.markers.forEach(m => m.remove());
+            this.markers = [];
+            this.pins.forEach(pin => {
+                const el = document.createElement('div');
+                el.className = 'mapbox-quest-marker';
+                const marker = new mapboxgl.Marker({ element: el })
+                    .setLngLat([pin.longitude, pin.latitude])
+                    .addTo(this.map);
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.selectedPin = pin;
+                    this.map.flyTo({ center: [pin.longitude, pin.latitude], zoom: 14 });
+                });
+                this.markers.push(marker);
+            });
+        },
+        toggleStyle() {
+            this.isSatellite = !this.isSatellite;
+            const style = this.isSatellite ? 'satellite-streets-v12' : 'streets-v12';
+            this.map.setStyle('mapbox://styles/mapbox/' + style);
+            this.map.once('style.load', () => this.addMarkers());
+        },
     }"
     x-init="
         mapboxgl.accessToken = @js(config('services.mapbox.token'));
@@ -58,21 +82,7 @@ class extends Component
             attributionControl: false,
         });
         map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-        map.on('load', () => {
-            pins.forEach(pin => {
-                const el = document.createElement('div');
-                el.className = 'mapbox-quest-marker';
-                const marker = new mapboxgl.Marker({ element: el })
-                    .setLngLat([pin.longitude, pin.latitude])
-                    .addTo(map);
-                el.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    selectedPin = pin;
-                    map.flyTo({ center: [pin.longitude, pin.latitude], zoom: 14 });
-                });
-                markers.push(marker);
-            });
-        });
+        map.on('load', () => addMarkers());
     "
 >
     <style>
@@ -132,6 +142,20 @@ class extends Component
             >&lt; 30 min</button>
         </div>
     </div>
+
+    {{-- Map style toggle --}}
+    <button
+        @click="toggleStyle()"
+        class="absolute bottom-[280px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+    >
+        {{-- Satellite icon (globe) when on streets, map icon when on satellite --}}
+        <template x-if="!isSatellite">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </template>
+        <template x-if="isSatellite">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg>
+        </template>
+    </button>
 
     {{-- My location button --}}
     <button
