@@ -125,7 +125,16 @@ class extends Component
 
             /** @var QuestifyApiGuard $guard */
             $guard = Auth::guard();
-            $guard->login($response['data']['user'], $response['data']['token']);
+            $userData = $response['data']['user'] ?? $response['user'] ?? null;
+            $token = $response['data']['token'] ?? $response['token'] ?? null;
+
+            if (! $userData || ! $token) {
+                $this->addError('email', __('auth.failed'));
+
+                return;
+            }
+
+            $guard->login($userData, $token);
 
             if ($phone) {
                 $this->api->auth()->submitPhone($phone);

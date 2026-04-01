@@ -21,8 +21,6 @@ class extends Component
 
     public string $step = 'login';
 
-    public bool $showPassword = false;
-
     public string $email = '';
 
     public string $password = '';
@@ -52,16 +50,6 @@ class extends Component
         $this->phoneEnabled = $appInfo->isAuthMethodEnabled('phone');
     }
 
-    public function continueWithEmail(): void
-    {
-        $this->validate([
-            'email' => ['required', 'email'],
-        ]);
-
-        $this->showPassword = true;
-        $this->resetErrorBag();
-    }
-
     public function login(): void
     {
         $this->validate([
@@ -72,9 +60,18 @@ class extends Component
         try {
             $response = $this->api->auth()->login($this->email, $this->password);
 
+            $userData = $response['data']['user'] ?? $response['user'] ?? null;
+            $token = $response['data']['token'] ?? $response['token'] ?? null;
+
+            if (! $userData || ! $token) {
+                $this->addError('email', __('auth.failed'));
+
+                return;
+            }
+
             /** @var QuestifyApiGuard $guard */
             $guard = Auth::guard();
-            $guard->login($response['data']['user'], $response['data']['token']);
+            $guard->login($userData, $token);
 
             $this->redirect('/discover/list');
         } catch (ApiAuthenticationException) {
@@ -97,10 +94,13 @@ class extends Component
         try {
             $response = $this->api->auth()->verifyOtp($this->otp_code, $this->login_token);
 
-            if (! empty($response['data']['user']) && ! empty($response['data']['token'])) {
+            $userData = $response['data']['user'] ?? $response['user'] ?? null;
+            $token = $response['data']['token'] ?? $response['token'] ?? null;
+
+            if ($userData && $token) {
                 /** @var QuestifyApiGuard $guard */
                 $guard = Auth::guard();
-                $guard->login($response['data']['user'], $response['data']['token']);
+                $guard->login($userData, $token);
             }
 
             $this->redirect('/discover/list');
@@ -188,31 +188,26 @@ class extends Component
             </div>
 
             {{-- Email + Password inline --}}
-            <form wire:submit="{{ $showPassword ? 'login' : 'continueWithEmail' }}">
+            <form wire:submit="login">
                 <div>
                     <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
                     <div class="relative">
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                         </div>
-                        <input type="email" wire:model="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 {{ $showPassword ? 'pr-3.5' : 'pr-[120px]' }} text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
-                        @if (! $showPassword)
-                            <button type="submit" class="absolute right-[5px] top-1/2 -translate-y-1/2 rounded-[10px] bg-forest-600 px-4 py-[8px] text-[12px] font-bold text-white">
-                                {{ __('auth.continue') }}
-                            </button>
-                        @endif
+                        <input type="email" wire:model.live="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     </div>
                     @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
 
-                @if ($showPassword)
+                @if (strlen($email) > 0)
                     <div class="mt-2.5">
                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.password') }}</label>
                         <div class="relative">
                             <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                             </div>
-                            <input type="password" wire:model="password" placeholder="{{ __('general.password') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required autofocus />
+                            <input type="password" wire:model="password" placeholder="{{ __('general.password') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                         </div>
                         @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                     </div>
