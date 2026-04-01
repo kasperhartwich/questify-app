@@ -13,6 +13,7 @@
         init() {
             this.syncFromCode()
             this.$watch('code', () => this.syncFromCode())
+            this.$nextTick(() => this.$refs['box0']?.focus())
         },
         syncFromCode() {
             const chars = (this.code || '').split('')

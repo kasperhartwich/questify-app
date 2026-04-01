@@ -95,11 +95,7 @@ class extends Component
         ]);
 
         try {
-            if ($this->phone_number) {
-                $response = $this->api->auth()->verifyPhone($this->otp_code);
-            } else {
-                $response = $this->api->auth()->verifyOtp($this->otp_code, $this->login_token);
-            }
+            $response = $this->api->auth()->verifyOtp($this->otp_code, $this->login_token);
 
             if (! empty($response['data']['user']) && ! empty($response['data']['token'])) {
                 /** @var QuestifyApiGuard $guard */
