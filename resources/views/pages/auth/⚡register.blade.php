@@ -75,6 +75,25 @@ class extends Component
         }
     }
 
+    public function submitPhoneOnly(): void
+    {
+        $this->validate([
+            'phone_number' => ['required', 'string', 'regex:/^\+[1-9]\d{6,14}$/'],
+        ]);
+
+        try {
+            $this->api->auth()->submitPhone($this->phone_number);
+            $this->step = 3;
+        } catch (ApiValidationException $e) {
+            foreach ($e->errors as $field => $messages) {
+                $fieldKey = $field === 'phone_number' ? 'phone_number' : $field;
+                $this->addError($fieldKey, $messages[0]);
+            }
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
+        }
+    }
+
     public function register(): void
     {
         $rules = [
@@ -84,14 +103,14 @@ class extends Component
             'password' => ['required', 'string', 'min:8'],
         ];
 
-        if ($this->signup_method === 'phone') {
-            $rules['phone_number'] = ['required', 'string', 'regex:/^\+[1-9]\d{6,14}$/'];
+        if (! empty($this->phone_number)) {
+            $rules['phone_number'] = ['string', 'regex:/^\+[1-9]\d{6,14}$/'];
         }
 
         $this->validate($rules);
 
         $name = trim($this->first_name . ' ' . $this->last_name);
-        $phone = $this->signup_method === 'phone' ? $this->phone_number : null;
+        $phone = ! empty($this->phone_number) ? $this->phone_number : null;
 
         try {
             $response = $this->api->auth()->register(
@@ -194,88 +213,128 @@ class extends Component
 
     {{-- Step 2: Details --}}
     @elseif ($step === 2)
-        <x-step-indicator :current="2" :total="3" back-action="goBack" />
 
-        {{-- Heading --}}
-        <h1 class="mb-1 font-heading text-[20px] font-[800] leading-tight text-bark">{{ __('auth.your_details') }}</h1>
-        <p class="mb-5 text-[12px] text-muted">{{ __('auth.step_2_of_3') }}</p>
-
-        <form wire:submit="register" class="flex flex-1 flex-col gap-2.5">
-            {{-- First + Last name --}}
-            <div class="flex gap-2">
-                <div class="flex-1">
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.first_name') }}</label>
-                    <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
-                    @error('first_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-                </div>
-                <div class="flex-1">
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.last_name') }}</label>
-                    <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" />
-                </div>
+        @if ($signup_method === 'phone')
+            {{-- Phone-only signup flow --}}
+            <div class="flex items-center gap-2.5 pb-6 pt-1">
+                <button wire:click="goBack" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
             </div>
 
-            {{-- Display name --}}
-            <div>
-                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.display_name') }}</label>
-                <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
-                <p class="mt-1 text-[9px] text-muted">{{ __('auth.display_name_hint') }}</p>
-                @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+            {{-- Icon --}}
+            <div class="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-[17px] bg-[#D4EDE4]">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>
             </div>
 
-            {{-- Email --}}
-            <div>
-                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
-                <div class="relative">
-                    <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            <h1 class="mb-1.5 font-heading text-[22px] font-extrabold leading-tight text-bark">{!! nl2br(e(__('auth.login_with_phone'))) !!}</h1>
+            <p class="mb-6 text-[13px] leading-relaxed text-muted">{{ __('auth.phone_login_subtitle') }}</p>
+
+            <form wire:submit="submitPhoneOnly" class="flex flex-1 flex-col">
+                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.phone_number') }}</label>
+                <input
+                    type="tel"
+                    wire:model="phone_number"
+                    placeholder="+45 20 12 34 56"
+                    class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-base font-semibold text-bark focus:border-forest-600 focus:outline-none"
+                    inputmode="tel"
+                    autofocus
+                    required
+                />
+                @error('phone_number') <p class="mt-1.5 text-[10px] text-coral">{{ $message }}</p> @enderror
+                <p class="mt-2 text-[11px] leading-relaxed text-muted">{{ __('auth.phone_sms_disclaimer') }}</p>
+
+                <div class="mt-auto pt-6">
+                    <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] font-heading text-sm font-bold text-bark">
+                        {{ __('auth.send_code') }} &rarr;
+                    </button>
+                </div>
+
+                <p class="mt-3 text-center text-[12px] text-muted">
+                    <button type="button" wire:click="goToEmailSignup" class="font-semibold text-forest-600">{{ __('auth.use_email_instead') }}</button>
+                </p>
+            </form>
+        @else
+            {{-- Email signup flow --}}
+            <x-step-indicator :current="2" :total="3" back-action="goBack" />
+
+            <h1 class="mb-1 font-heading text-[20px] font-[800] leading-tight text-bark">{{ __('auth.your_details') }}</h1>
+            <p class="mb-5 text-[12px] text-muted">{{ __('auth.step_2_of_3') }}</p>
+
+            <form wire:submit="register" class="flex flex-1 flex-col gap-2.5">
+                {{-- First + Last name --}}
+                <div class="flex gap-2">
+                    <div class="flex-1">
+                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.first_name') }}</label>
+                        <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                        @error('first_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                     </div>
-                    <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    <div class="flex-1">
+                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.last_name') }}</label>
+                        <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" />
+                    </div>
                 </div>
-                @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-            </div>
 
-            {{-- Phone number (only for phone signup) --}}
-            @if ($signup_method === 'phone')
+                {{-- Display name --}}
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.phone_number') }}</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.display_name') }}</label>
+                    <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    <p class="mt-1 text-[9px] text-muted">{{ __('auth.display_name_hint') }}</p>
+                    @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+                        </div>
+                        <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                    </div>
+                    @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Phone number (optional) --}}
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.phone_number') }} <span class="normal-case text-muted/60">({{ __('general.optional') }})</span></label>
                     <div class="relative">
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                         </div>
-                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
+                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" />
                     </div>
-                    <p class="mt-1 text-[9px] text-muted">{{ __('auth.phone_e164_hint') }}</p>
                     @error('phone_number') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
-            @endif
 
-            {{-- Password --}}
-            <div>
-                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.password') }}</label>
-                <div class="relative">
-                    <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                {{-- Password --}}
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.password') }}</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <input type="password" wire:model="password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
                     </div>
-                    <input type="password" wire:model="password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark focus:border-forest-600 focus:outline-none" required />
-                </div>
-                {{-- Strength meter --}}
-                <div x-data="{ get strength() { const len = $wire.password?.length || 0; if (len === 0) return 0; if (len < 6) return 1; if (len < 10) return 2; if (len < 14) return 3; return 4; } }">
-                    <div class="mt-1.5 flex gap-[3px]">
-                        <template x-for="i in 4">
-                            <div class="h-[3px] flex-1 rounded-full" :class="i <= strength ? (strength <= 1 ? 'bg-coral' : strength <= 2 ? 'bg-amber-400' : 'bg-forest-600') : 'bg-cream-border'"></div>
-                        </template>
+                    {{-- Strength meter --}}
+                    <div x-data="{ get strength() { const len = $wire.password?.length || 0; if (len === 0) return 0; if (len < 6) return 1; if (len < 10) return 2; if (len < 14) return 3; return 4; } }">
+                        <div class="mt-1.5 flex gap-[3px]">
+                            <template x-for="i in 4">
+                                <div class="h-[3px] flex-1 rounded-full" :class="i <= strength ? (strength <= 1 ? 'bg-coral' : strength <= 2 ? 'bg-amber-400' : 'bg-forest-600') : 'bg-cream-border'"></div>
+                            </template>
+                        </div>
+                        <p class="mt-1 text-[9px]" :class="strength <= 1 ? 'text-coral' : strength <= 2 ? 'text-amber-600' : 'text-forest-600'" x-show="strength > 0" x-text="strength <= 1 ? '{{ __('auth.weak_password') }}' : strength <= 2 ? '{{ __('auth.medium_password') }}' : '{{ __('auth.strong_password') }}'"></p>
                     </div>
-                    <p class="mt-1 text-[9px]" :class="strength <= 1 ? 'text-coral' : strength <= 2 ? 'text-amber-600' : 'text-forest-600'" x-show="strength > 0" x-text="strength <= 1 ? '{{ __('auth.weak_password') }}' : strength <= 2 ? '{{ __('auth.medium_password') }}' : '{{ __('auth.strong_password') }}'"></p>
+                    @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
-                @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-            </div>
 
-            <div class="mt-auto pt-4">
-                <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] font-heading text-sm font-bold text-bark">
-                    {{ __('auth.continue') }}
-                </button>
-            </div>
-        </form>
+                <div class="mt-auto pt-4">
+                    <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] font-heading text-sm font-bold text-bark">
+                        {{ __('auth.continue') }}
+                    </button>
+                </div>
+            </form>
+        @endif
 
     {{-- Step 3: Phone Verification --}}
     @elseif ($step === 3)

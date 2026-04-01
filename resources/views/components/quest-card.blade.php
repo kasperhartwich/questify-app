@@ -24,7 +24,7 @@
     @if (!empty($quest->cover_image_url))
         <img src="{{ $quest->cover_image_url }}" alt="{{ $quest->title }}" class="h-40 w-full object-cover" />
     @else
-        <div class="relative overflow-hidden px-[16px] pb-[12px] pt-[14px]" style="background: {{ $headerColor }}">
+        <div class="relative overflow-hidden bg-forest-600 px-[16px] pb-[12px] pt-[14px]">
             <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
             <div class="flex items-start justify-between">
                 <div class="min-w-0 flex-1">

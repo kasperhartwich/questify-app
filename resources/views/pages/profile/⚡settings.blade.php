@@ -126,7 +126,7 @@ class extends Component
 };
 ?>
 
-<div class="flex flex-col">
+<div class="flex min-h-screen flex-col bg-cream">
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}
@@ -152,9 +152,9 @@ class extends Component
 
                 {{-- Gear icon button --}}
                 <button wire:click="$toggle('showSettings')" class="flex h-[36px] w-[36px] items-center justify-center rounded-[10px]" style="background: rgba(255,255,255,0.12);">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: rgba(255,255,255,0.7);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/>
                         <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
                     </svg>
                 </button>
             </div>
@@ -331,7 +331,7 @@ class extends Component
                                 role="switch"
                                 aria-checked="{{ $notifications_enabled ? 'true' : 'false' }}"
                             >
-                                <span class="absolute top-[3px] h-[20px] w-[20px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $notifications_enabled ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $notifications_enabled ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
 
@@ -352,7 +352,7 @@ class extends Component
                                 role="switch"
                                 aria-checked="{{ $email_notifications_enabled ? 'true' : 'false' }}"
                             >
-                                <span class="absolute top-[3px] h-[20px] w-[20px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $email_notifications_enabled ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $email_notifications_enabled ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
                     </div>
@@ -380,7 +380,7 @@ class extends Component
                                 role="switch"
                                 aria-checked="{{ $show_on_leaderboard ? 'true' : 'false' }}"
                             >
-                                <span class="absolute top-[3px] h-[20px] w-[20px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $show_on_leaderboard ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all duration-200 {{ $show_on_leaderboard ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
                     </div>

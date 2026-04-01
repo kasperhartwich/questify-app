@@ -35,7 +35,7 @@ class extends Component
         </a>
 
         {{-- Sign Up --}}
-        <a href="/register" class="w-full rounded-[14px] border border-white/25 px-4 py-[13px] text-center text-sm font-semibold text-white" wire:navigate>
+        <a href="/register" class="w-full rounded-[14px] border-[1.5px] border-white/25 px-4 py-[13px] text-center text-sm font-semibold text-white" wire:navigate>
             {{ __('general.register') }}
         </a>
 

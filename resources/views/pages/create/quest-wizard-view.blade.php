@@ -471,7 +471,7 @@
                                 wire:click="$toggle('scoringSpeedBonus')"
                                 class="relative h-[26px] w-[44px] shrink-0 rounded-[13px] transition-colors {{ $scoringSpeedBonus ? 'bg-forest-600' : 'bg-cream-border' }}"
                             >
-                                <span class="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-all {{ $scoringSpeedBonus ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all {{ $scoringSpeedBonus ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
                         {{-- Wrong answer penalty --}}
@@ -485,7 +485,7 @@
                                 wire:click="$toggle('scoringWrongPenalty')"
                                 class="relative h-[26px] w-[44px] shrink-0 rounded-[13px] transition-colors {{ $scoringWrongPenalty ? 'bg-forest-600' : 'bg-cream-border' }}"
                             >
-                                <span class="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-all {{ $scoringWrongPenalty ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all {{ $scoringWrongPenalty ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
                         {{-- Completion bonus --}}
@@ -499,7 +499,7 @@
                                 wire:click="$toggle('scoringCompletionBonus')"
                                 class="relative h-[26px] w-[44px] shrink-0 rounded-[13px] transition-colors {{ $scoringCompletionBonus ? 'bg-forest-600' : 'bg-cream-border' }}"
                             >
-                                <span class="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-all {{ $scoringCompletionBonus ? 'left-[21px]' : 'left-[3px]' }}"></span>
+                                <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all {{ $scoringCompletionBonus ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
                     </div>

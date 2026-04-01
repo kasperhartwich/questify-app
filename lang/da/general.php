@@ -18,6 +18,7 @@ return [
     'back' => 'Tilbage',
     'next' => 'Næste',
     'previous' => 'Forrige',
+    'optional' => 'valgfri',
     'confirm' => 'Bekræft',
     'yes' => 'Ja',
     'no' => 'Nej',

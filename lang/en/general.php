@@ -18,6 +18,7 @@ return [
     'back' => 'Back',
     'next' => 'Next',
     'previous' => 'Previous',
+    'optional' => 'optional',
     'confirm' => 'Confirm',
     'yes' => 'Yes',
     'no' => 'No',

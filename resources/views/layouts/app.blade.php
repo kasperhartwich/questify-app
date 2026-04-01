@@ -24,7 +24,7 @@
         />
 
         {{-- Main Content --}}
-        <main class="pb-[60px]">
+        <main class="min-h-screen bg-cream pb-[60px]">
             {{ $slot }}
         </main>
 
@@ -48,7 +48,7 @@
                     <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
                     <polyline points="7,9 8.5,10.5 11,8"/>
                 </svg>
-                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Quests</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.my_quests') }}</span>
             </a>
 
             {{-- Join (center pill) --}}

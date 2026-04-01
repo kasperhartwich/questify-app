@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex min-h-screen flex-col bg-cream">
     {{-- Title --}}
     <div class="px-[20px] py-[6px]">
         <h1 class="font-heading text-[24px] font-[800] text-bark">{{ __('general.my_quests') }}</h1>

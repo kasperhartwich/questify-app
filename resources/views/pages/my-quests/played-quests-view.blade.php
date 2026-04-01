@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex min-h-screen flex-col bg-cream">
     {{-- Title --}}
     <div class="px-[20px] py-[6px]">
         <h1 class="font-heading text-[24px] font-[800] text-bark">{{ __('general.my_quests') }}</h1>
@@ -48,8 +48,8 @@
                             </div>
                             {{-- Progress bar --}}
                             <div class="mt-3">
-                                <div class="h-[3px] overflow-hidden rounded-full bg-white/[0.18]">
-                                    <div class="h-full rounded-full bg-amber-400" style="width: {{ $progressPercent }}%"></div>
+                                <div class="h-[3px] overflow-hidden rounded-[2px] bg-white/[0.18]">
+                                    <div class="h-full rounded-[2px] bg-amber-400" style="width: {{ $progressPercent }}%"></div>
                                 </div>
                                 <p class="mt-1.5 text-[10px] text-white/50">{{ $currentIndex }} / {{ $checkpointsCount }} {{ __('general.checkpoints_reached') }}</p>
                             </div>
