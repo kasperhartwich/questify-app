@@ -40,11 +40,6 @@ class extends Component
 };
 ?>
 
-@push('head')
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css" rel="stylesheet" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js"></script>
-@endpush
-
 <div class="relative flex h-screen flex-col bg-[#E4EDE4]"
     x-data="{
         map: null,
@@ -97,7 +92,7 @@ class extends Component
     </style>
 
     {{-- Full-screen map --}}
-    <div x-ref="mapCanvas" class="absolute inset-0"></div>
+    <div x-ref="mapCanvas" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
 
     {{-- Floating search bar --}}
     <div class="absolute left-0 right-0 top-[56px] z-10 px-4">

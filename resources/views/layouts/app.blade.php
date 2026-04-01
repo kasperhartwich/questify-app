@@ -13,7 +13,6 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
-        @stack('head')
     </head>
     <body class="min-h-screen bg-cream dark:bg-forest-800 nativephp-safe-area">
         {{-- Native Top Bar --}}

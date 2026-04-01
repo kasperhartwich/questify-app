@@ -16,5 +16,8 @@
     },
     "imports": {
         "#nativephp": "./vendor/nativephp/mobile/resources/dist/native.js"
+    },
+    "dependencies": {
+        "mapbox-gl": "^3.20.0"
     }
 }
