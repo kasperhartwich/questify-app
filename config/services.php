@@ -64,4 +64,8 @@ return [
         'timeout' => (int) env('QUESTIFY_API_TIMEOUT', 15),
     ],
 
+    'mapbox' => [
+        'token' => env('MAPBOX_TOKEN', ''),
+    ],
+
 ];

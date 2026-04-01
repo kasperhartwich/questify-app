@@ -30,9 +30,9 @@ class extends Component
 
                 return [
                     'id' => $quest['id'],
-                    'title' => $quest->title,
-                    'latitude' => (float) $startCheckpoint->latitude,
-                    'longitude' => (float) $startCheckpoint->longitude,
+                    'title' => $quest['title'] ?? '',
+                    'latitude' => (float) ($startCheckpoint['latitude'] ?? 0),
+                    'longitude' => (float) ($startCheckpoint['longitude'] ?? 0),
                 ];
             })
             ->all();
@@ -40,50 +40,64 @@ class extends Component
 };
 ?>
 
+@push('head')
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js"></script>
+@endpush
+
 <div class="relative flex h-screen flex-col bg-[#E4EDE4]"
     x-data="{
         map: null,
+        markers: [],
         pins: @js($pins),
         selectedPin: null,
         filterDifficulty: 'all',
-        init() {
-            if (typeof google !== 'undefined') {
-                this.initMap();
-            }
-        },
-        initMap() {
-            this.map = new google.maps.Map(document.getElementById('quest-map-canvas'), {
-                center: { lat: 55.6761, lng: 12.5683 },
-                zoom: 12,
-                mapTypeControl: false,
-                streetViewControl: false,
-                fullscreenControl: false,
-                zoomControl: false,
-            });
-            this.pins.forEach(pin => {
-                const marker = new google.maps.Marker({
-                    position: { lat: pin.latitude, lng: pin.longitude },
-                    map: this.map,
-                    title: pin.title,
-                });
-                marker.addListener('click', () => {
-                    this.selectedPin = pin;
-                });
-            });
-        },
-        centerOnUser() {
-            if (navigator.geolocation && this.map) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    this.map.setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                });
-            }
-        }
     }"
+    x-init="
+        mapboxgl.accessToken = @js(config('services.mapbox.token'));
+        map = new mapboxgl.Map({
+            container: $refs.mapCanvas,
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [12.5683, 55.6761],
+            zoom: 12,
+            attributionControl: false,
+        });
+        map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+        map.on('load', () => {
+            pins.forEach(pin => {
+                const el = document.createElement('div');
+                el.className = 'mapbox-quest-marker';
+                const marker = new mapboxgl.Marker({ element: el })
+                    .setLngLat([pin.longitude, pin.latitude])
+                    .addTo(map);
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectedPin = pin;
+                    map.flyTo({ center: [pin.longitude, pin.latitude], zoom: 14 });
+                });
+                markers.push(marker);
+            });
+        });
+    "
 >
+    <style>
+        .mapbox-quest-marker {
+            width: 32px;
+            height: 32px;
+            background-color: #0B3D2E;
+            border: 3px solid white;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        .mapbox-quest-marker:hover {
+            background-color: #15573F;
+        }
+    </style>
+
     {{-- Full-screen map --}}
-    <div id="quest-map-canvas" class="absolute inset-0">
-        <div class="flex h-full items-center justify-center text-sm text-muted">{{ __('general.quest_map') }}</div>
-    </div>
+    <div x-ref="mapCanvas" class="absolute inset-0"></div>
 
     {{-- Floating search bar --}}
     <div class="absolute left-0 right-0 top-[56px] z-10 px-4">
@@ -126,7 +140,13 @@ class extends Component
 
     {{-- My location button --}}
     <button
-        @click="centerOnUser()"
+        @click="
+            if (navigator.geolocation && map) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 14 });
+                });
+            }
+        "
         class="absolute bottom-[230px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
@@ -139,7 +159,7 @@ class extends Component
             {{ count($pins) }} {{ __('general.quests_in_area') }}
         </p>
 
-        {{-- Selected quest card or first quest --}}
+        {{-- Selected quest card --}}
         <template x-if="selectedPin">
             <a :href="'/quests/' + selectedPin.id" class="block overflow-hidden rounded-[16px] bg-white shadow-sm" wire:navigate>
                 <div class="relative overflow-hidden bg-forest-600 px-4 pb-3 pt-[14px]">
