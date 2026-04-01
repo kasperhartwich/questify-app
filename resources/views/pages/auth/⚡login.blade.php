@@ -60,6 +60,13 @@ class extends Component
         try {
             $response = $this->api->auth()->login($this->email, $this->password);
 
+            if (! empty($response['requires_otp'])) {
+                $this->login_token = $response['login_token'];
+                $this->step = 'otp';
+
+                return;
+            }
+
             $userData = $response['data']['user'] ?? $response['user'] ?? null;
             $token = $response['data']['token'] ?? $response['token'] ?? null;
 
@@ -74,8 +81,8 @@ class extends Component
             $guard->login($userData, $token);
 
             $this->redirect('/discover/list');
-        } catch (ApiAuthenticationException) {
-            $this->addError('email', __('auth.failed'));
+        } catch (ApiAuthenticationException $e) {
+            $this->addError('email', $e->getMessage());
         } catch (ApiValidationException $e) {
             foreach ($e->errors as $field => $messages) {
                 $this->addError($field, $messages[0]);
@@ -316,7 +323,7 @@ class extends Component
             @error('otp_code') <p class="mt-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
 
             <div class="mt-auto pt-6">
-                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($otp_code) < 6) style="opacity:0.5" @endif>
+                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white transition-opacity" wire:loading.attr="disabled" wire:loading.class="opacity-50">
                     {{ __('auth.verify') }}
                 </button>
             </div>

@@ -450,7 +450,7 @@ class extends Component
             </p>
 
             <div class="mt-auto pt-6">
-                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white" @if(strlen($phone_code) < 6) style="opacity:0.5" @endif>
+                <button type="submit" class="w-full rounded-[14px] bg-forest-600 px-4 py-3.5 text-center font-heading text-sm font-bold text-white transition-opacity" wire:loading.attr="disabled" wire:loading.class="opacity-50">
                     {{ __('auth.verify') }}
                 </button>
             </div>

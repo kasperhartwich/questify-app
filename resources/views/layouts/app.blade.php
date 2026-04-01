@@ -37,7 +37,7 @@
                     <line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/>
                     <circle cx="15" cy="10" r="2" fill="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke="none"/>
                 </svg>
-                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('discover*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Discover</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('discover*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.discover') }}</span>
             </a>
 
             {{-- Quests --}}
@@ -72,7 +72,7 @@
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                     <line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/>
                 </svg>
-                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('create*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Create</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('create*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.create') }}</span>
             </a>
 
             {{-- Profile --}}
@@ -80,7 +80,7 @@
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('profile*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round">
                     <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
                 </svg>
-                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('profile*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">Profile</span>
+                <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('profile*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.profile') }}</span>
             </a>
         </nav>
 

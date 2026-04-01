@@ -26,6 +26,8 @@
             this.code = this.boxes.join('')
             if (val && index < this.length - 1) {
                 this.$refs['box' + (index + 1)].focus()
+            } else if (val && this.boxes.every(b => b)) {
+                this.$el.closest('form')?.requestSubmit()
             }
         },
         handleKeydown(index, event) {
@@ -42,6 +44,9 @@
             this.code = this.boxes.join('')
             const nextIndex = Math.min(pasted.length, this.length - 1)
             this.$refs['box' + nextIndex].focus()
+            if (this.boxes.every(b => b)) {
+                this.$el.closest('form')?.requestSubmit()
+            }
         },
     }"
     class="flex justify-center gap-[8px]"
