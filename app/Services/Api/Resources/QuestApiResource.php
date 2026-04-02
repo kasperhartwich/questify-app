@@ -92,4 +92,9 @@ class QuestApiResource
     {
         return $this->client->post("/quests/{$id}/flag", ['reason' => $reason]);
     }
+
+    public function toggleFavourite(int $id): array
+    {
+        return $this->client->post("/quests/{$id}/favourite");
+    }
 }

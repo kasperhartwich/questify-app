@@ -110,9 +110,13 @@ class extends Component
             this.markers.forEach(m => m.remove());
             this.markers = [];
             this.removeCircles();
-            this.pins.forEach(pin => {
+            this.pins.forEach((pin, index) => {
                 const el = document.createElement('div');
                 el.className = 'mapbox-quest-marker';
+                const span = document.createElement('span');
+                span.className = 'mapbox-quest-marker-num';
+                span.textContent = pin.checkpoint_count || '';
+                el.appendChild(span);
                 const marker = new mapboxgl.Marker({ element: el })
                     .setLngLat([pin.longitude, pin.latitude])
                     .addTo(this.map);
@@ -217,9 +221,19 @@ class extends Component
             transform: rotate(-45deg);
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .mapbox-quest-marker:hover {
             background-color: #15573F;
+        }
+        .mapbox-quest-marker-num {
+            transform: rotate(45deg);
+            font-family: 'Exo 2', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: white;
         }
     </style>
 

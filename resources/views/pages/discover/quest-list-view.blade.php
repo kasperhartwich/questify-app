@@ -1,3 +1,15 @@
+<style>
+    .mapbox-quest-marker {
+        background-color: #0B3D2E;
+        border: 3px solid white;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 <div class="flex flex-col bg-cream">
     {{-- Search & Filter --}}
     <div class="flex items-center gap-2 px-[16px] pb-[10px] pt-[6px]">

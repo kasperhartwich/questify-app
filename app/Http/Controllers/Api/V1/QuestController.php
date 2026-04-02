@@ -98,25 +98,16 @@ class QuestController extends Controller
                     return null;
                 }
 
-                $quest->distance_to_start_km = $this->haversineDistance(
+                $quest->distance_to_start_km = Quest::haversineDistance(
                     $latitude, $longitude,
                     (float) $startCheckpoint->latitude, (float) $startCheckpoint->longitude,
                 );
 
                 $quest->distance_to_farthest_km = $checkpoints->max(
-                    fn ($cp) => $this->haversineDistance($latitude, $longitude, (float) $cp->latitude, (float) $cp->longitude)
+                    fn ($cp) => Quest::haversineDistance($latitude, $longitude, (float) $cp->latitude, (float) $cp->longitude)
                 );
 
-                $totalRouteDistance = 0;
-                for ($i = 1; $i < $checkpoints->count(); $i++) {
-                    $totalRouteDistance += $this->haversineDistance(
-                        (float) $checkpoints[$i - 1]->latitude,
-                        (float) $checkpoints[$i - 1]->longitude,
-                        (float) $checkpoints[$i]->latitude,
-                        (float) $checkpoints[$i]->longitude,
-                    );
-                }
-                $quest->total_route_distance_km = $totalRouteDistance;
+                $quest->total_route_distance_km = $quest->total_distance_km ?? 0;
 
                 return $quest;
             })
@@ -126,19 +117,6 @@ class QuestController extends Controller
             ->values();
 
         return NearbyQuestResource::collection($quests);
-    }
-
-    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
-    {
-        $earthRadiusKm = 6371;
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
-
-        $a = sin($dLat / 2) * sin($dLat / 2)
-            + cos(deg2rad($lat1)) * cos(deg2rad($lat2))
-            * sin($dLon / 2) * sin($dLon / 2);
-
-        return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
     /**
@@ -194,7 +172,8 @@ class QuestController extends Controller
             return $quest;
         });
 
-        $quest->load(['category', 'creator', 'checkpoints.questions.answers'])
+        $quest->refresh()
+            ->load(['category', 'creator', 'checkpoints.questions.answers'])
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
 

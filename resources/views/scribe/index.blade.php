@@ -3336,28 +3336,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "title=b"\
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
-    --form "difficulty=easy"\
-    --form "visibility=school"\
+    --form "difficulty=medium"\
+    --form "visibility=private"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
-    --form "wrong_answer_behaviour=retry_penalty"\
+    --form "wrong_answer_behaviour=lockout"\
     --form "wrong_answer_penalty_points=54"\
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
-    --form "scoring_speed_bonus_enabled="\
-    --form "scoring_wrong_attempt_penalty_enabled=1"\
-    --form "scoring_quest_completion_time_bonus_enabled=1"\
+    --form "scoring_speed_bonus_enabled=1"\
+    --form "scoring_wrong_attempt_penalty_enabled="\
+    --form "scoring_quest_completion_time_bonus_enabled="\
     --form "checkpoints[][title]=b"\
     --form "checkpoints[][description]=Eius et animi quos velit et."\
     --form "checkpoints[][latitude]=-89"\
     --form "checkpoints[][longitude]=-179"\
     --form "checkpoints[][hint]=architecto"\
     --form "checkpoints[][questions][][question_text]=architecto"\
-    --form "checkpoints[][questions][][question_type]=multiple_choice"\
+    --form "checkpoints[][questions][][question_type]=open_text"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
-    --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpvi7pum2farnj6eW5lTC" </code></pre></div>
+    --form "checkpoints[][questions][][answers][][is_correct]="\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpl4t8jqfj062760G671o" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3375,27 +3375,27 @@ const body = new FormData();
 body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
-body.append('difficulty', 'easy');
-body.append('visibility', 'school');
+body.append('difficulty', 'medium');
+body.append('visibility', 'private');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
-body.append('wrong_answer_behaviour', 'retry_penalty');
+body.append('wrong_answer_behaviour', 'lockout');
 body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
-body.append('scoring_speed_bonus_enabled', '');
-body.append('scoring_wrong_attempt_penalty_enabled', '1');
-body.append('scoring_quest_completion_time_bonus_enabled', '1');
+body.append('scoring_speed_bonus_enabled', '1');
+body.append('scoring_wrong_attempt_penalty_enabled', '');
+body.append('scoring_quest_completion_time_bonus_enabled', '');
 body.append('checkpoints[][title]', 'b');
 body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
 body.append('checkpoints[][latitude]', '-89');
 body.append('checkpoints[][longitude]', '-179');
 body.append('checkpoints[][hint]', 'architecto');
 body.append('checkpoints[][questions][][question_text]', 'architecto');
-body.append('checkpoints[][questions][][question_type]', 'multiple_choice');
+body.append('checkpoints[][questions][][question_type]', 'open_text');
 body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
-body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('checkpoints[][questions][][answers][][is_correct]', '');
 body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
 
 fetch(url, {
@@ -3562,10 +3562,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="difficulty"                data-endpoint="POSTapi-v1-quests"
-               value="easy"
+               value="medium"
                data-component="body">
     <br>
-<p>Example: <code>easy</code></p>
+<p>Example: <code>medium</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
         </div>
@@ -3576,10 +3576,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="POSTapi-v1-quests"
-               value="school"
+               value="private"
                data-component="body">
     <br>
-<p>Example: <code>school</code></p>
+<p>Example: <code>private</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
@@ -3605,7 +3605,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpvi7pum2farnj6eW5lTC</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpl4t8jqfj062760G671o</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -3638,10 +3638,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="wrong_answer_behaviour"                data-endpoint="POSTapi-v1-quests"
-               value="retry_penalty"
+               value="lockout"
                data-component="body">
     <br>
-<p>Example: <code>retry_penalty</code></p>
+<p>Example: <code>lockout</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
         </div>
@@ -3701,7 +3701,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_wrong_attempt_penalty_enabled</code></b>&nbsp;&nbsp;
@@ -3723,7 +3723,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
@@ -3745,7 +3745,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -3846,10 +3846,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="checkpoints.0.questions.0.question_type"                data-endpoint="POSTapi-v1-quests"
-               value="multiple_choice"
+               value="open_text"
                data-component="body">
     <br>
-<p>Example: <code>multiple_choice</code></p>
+<p>Example: <code>open_text</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
                     </div>
@@ -3895,7 +3895,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
                     </div>
                                     </details>
         </div>
@@ -3927,7 +3927,7 @@ Must be one of:
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
     --form "difficulty=medium"\
-    --form "visibility=public"\
+    --form "visibility=private"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
@@ -3935,7 +3935,7 @@ Must be one of:
     --form "wrong_answer_penalty_points=54"\
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
-    --form "scoring_speed_bonus_enabled=1"\
+    --form "scoring_speed_bonus_enabled="\
     --form "scoring_wrong_attempt_penalty_enabled=1"\
     --form "scoring_quest_completion_time_bonus_enabled="\
     --form "checkpoints[][title]=u"\
@@ -3947,7 +3947,7 @@ Must be one of:
     --form "checkpoints[][questions][][question_type]=true_false"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
     --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php9ibssq04aosb1cngr7R" </code></pre></div>
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpclu6pf94bioa6UUF3NF" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3966,7 +3966,7 @@ body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
 body.append('difficulty', 'medium');
-body.append('visibility', 'public');
+body.append('visibility', 'private');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
@@ -3974,7 +3974,7 @@ body.append('wrong_answer_behaviour', 'three_strikes_hint');
 body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
-body.append('scoring_speed_bonus_enabled', '1');
+body.append('scoring_speed_bonus_enabled', '');
 body.append('scoring_wrong_attempt_penalty_enabled', '1');
 body.append('scoring_quest_completion_time_bonus_enabled', '');
 body.append('checkpoints[][title]', 'u');
@@ -4186,10 +4186,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="PUTapi-v1-quests--id-"
-               value="public"
+               value="private"
                data-component="body">
     <br>
-<p>Example: <code>public</code></p>
+<p>Example: <code>private</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
@@ -4215,7 +4215,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php9ibssq04aosb1cngr7R</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpclu6pf94bioa6UUF3NF</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -4311,7 +4311,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_wrong_attempt_penalty_enabled</code></b>&nbsp;&nbsp;
@@ -5418,7 +5418,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"quest_id\": 16,
-    \"play_mode\": \"solo\"
+    \"play_mode\": \"competitive_individual\"
 }"
 </code></pre></div>
 
@@ -5436,7 +5436,7 @@ const headers = {
 
 let body = {
     "quest_id": 16,
-    "play_mode": "solo"
+    "play_mode": "competitive_individual"
 };
 
 fetch(url, {
@@ -5577,10 +5577,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="play_mode"                data-endpoint="POSTapi-v1-sessions"
-               value="solo"
+               value="competitive_individual"
                data-component="body">
     <br>
-<p>Example: <code>solo</code></p>
+<p>Example: <code>competitive_individual</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive_individual</code></li> <li><code>competitive_teams</code></li></ul>
         </div>
@@ -6277,7 +6277,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "name=John Doe"\
     --form "locale=da"\
-    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php54p006agqrgn9r4zI9L" </code></pre></div>
+    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php65gbtkaidn092Zz9C6f" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6426,7 +6426,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php54p006agqrgn9r4zI9L</code></p>
+<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php65gbtkaidn092Zz9C6f</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>locale</code></b>&nbsp;&nbsp;

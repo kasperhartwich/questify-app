@@ -6,8 +6,12 @@
 
     {{-- Tabs --}}
     <div class="mt-[12px] flex border-b-2 border-cream-border px-[20px]">
-        <button wire:click="$set('tab', 'playing')" class="-mb-[2px] flex-1 border-b-2 py-[12px] text-center text-[13px] font-semibold {{ $tab === 'playing' ? 'border-b-forest-600 text-forest-600' : 'border-b-transparent text-muted' }}">
+        {{-- Playing tab hidden for now --}}
+        {{-- <button wire:click="$set('tab', 'playing')" class="-mb-[2px] flex-1 border-b-2 py-[12px] text-center text-[13px] font-semibold {{ $tab === 'playing' ? 'border-b-forest-600 text-forest-600' : 'border-b-transparent text-muted' }}">
             {{ __('general.playing') }}
+        </button> --}}
+        <button wire:click="$set('tab', 'favourites')" class="-mb-[2px] flex-1 border-b-2 py-[12px] text-center text-[13px] font-semibold {{ $tab === 'favourites' ? 'border-b-forest-600 text-forest-600' : 'border-b-transparent text-muted' }}">
+            {{ __('general.favourites') }}
         </button>
         <button wire:click="$set('tab', 'created')" class="-mb-[2px] flex-1 border-b-2 py-[12px] text-center text-[13px] font-semibold {{ $tab === 'created' ? 'border-b-forest-600 text-forest-600' : 'border-b-transparent text-muted' }}">
             {{ __('general.created') }}
@@ -138,6 +142,39 @@
                     <p class="mt-2 whitespace-pre-line text-center text-[14px] leading-[1.6] text-muted">{{ __('general.no_created_quests_desc') }}</p>
                     <a href="/quests/create" class="mt-6 w-full rounded-[12px] bg-amber-400 py-3.5 text-center text-[14px] font-bold text-bark" wire:navigate>{{ __('general.create_quest') }} &rarr;</a>
                     <p class="mt-3 text-[13px] text-muted">{{ __('general.or_create_a_quest') }} <a href="/discover" class="font-semibold text-forest-600" wire:navigate>{{ __('general.explore_quests') }}</a></p>
+                </div>
+            @endforelse
+
+            @if (!empty($nextCursor))
+                <button wire:click="$set('cursor', '{{ $nextCursor }}')" class="mt-2 w-full rounded-[12px] bg-forest-600 px-4 py-3 text-[13px] font-bold text-white">
+                    {{ __('general.load_more') }}
+                </button>
+            @endif
+        </div>
+
+    {{-- Favourites Tab --}}
+    @elseif ($tab === 'favourites')
+        <div class="space-y-3 p-[20px]">
+            @forelse ($favouriteQuests as $quest)
+                <x-quest-card :quest="$quest" />
+            @empty
+                {{-- Empty state --}}
+                <div class="flex flex-col items-center px-6 py-16">
+                    <div class="mb-5">
+                        <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="120" height="120" rx="60" fill="#F0E8D6"/>
+                            <path d="M20 75 Q35 55 50 65 Q65 75 80 55 Q95 35 105 50" stroke="#E5DDD0" stroke-width="3" fill="none" stroke-linecap="round"/>
+                            <path d="M15 85 Q40 65 60 75 Q80 85 100 65" stroke="#E5DDD0" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <circle cx="60" cy="52" r="22" fill="#0B3D2E"/>
+                            <text x="60" y="60" text-anchor="middle" font-family="Exo 2, sans-serif" font-size="22" font-weight="800" fill="white">Q</text>
+                            <circle cx="35" cy="42" r="4" fill="#F5A623" opacity="0.8"/>
+                            <circle cx="85" cy="38" r="3" fill="#F5A623" opacity="0.6"/>
+                            <circle cx="78" cy="72" r="3.5" fill="#F5A623" opacity="0.7"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-heading text-[20px] font-[800] text-bark">{{ __('general.no_favourites_yet') }}</h2>
+                    <p class="mt-2 whitespace-pre-line text-center text-[14px] leading-[1.6] text-muted">{{ __('general.no_favourites_yet_desc') }}</p>
+                    <a href="/discover" class="mt-6 w-full rounded-[12px] bg-amber-400 py-3.5 text-center text-[14px] font-bold text-bark" wire:navigate>{{ __('general.explore_quests') }} &rarr;</a>
                 </div>
             @endforelse
 

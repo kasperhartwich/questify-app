@@ -33,6 +33,7 @@ class Quest extends Model
         'wrong_answer_penalty_points',
         'wrong_answer_lockout_seconds',
         'estimated_duration_minutes',
+        'total_distance_km',
         'checkpoint_arrival_radius_meters',
         'scoring_points_per_correct',
         'scoring_speed_bonus_enabled',

@@ -11,6 +11,12 @@ class Checkpoint extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::saved(fn (Checkpoint $checkpoint) => $checkpoint->quest->calculateTotalDistance());
+        static::deleted(fn (Checkpoint $checkpoint) => $checkpoint->quest->calculateTotalDistance());
+    }
+
     protected $fillable = [
         'quest_id',
         'title',

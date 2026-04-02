@@ -218,4 +218,9 @@ return [
     'no_leaderboard_yet' => 'No leaderboard yet. Be the first to play!',
     'be_the_first' => 'Be the First to Play',
     'min_walk' => '~:minutes min walk',
+
+    // Favourites
+    'favourites' => 'Favourites',
+    'no_favourites_yet' => 'No favourites yet',
+    'no_favourites_yet_desc' => "You haven't saved any quests yet.\nTap the bookmark icon on a quest\nto add it to your favourites!",
 ];

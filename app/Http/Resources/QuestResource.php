@@ -27,6 +27,7 @@ class QuestResource extends JsonResource
             'visibility' => $this->visibility,
             'status' => $this->status,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
+            'total_distance_km' => $this->total_distance_km ? (float) $this->total_distance_km : null,
             'average_rating' => $this->ratings_avg_rating ? round((float) $this->ratings_avg_rating, 1) : null,
             'sessions_count' => $this->whenCounted('sessions'),
             'user' => $this->whenLoaded('creator', fn () => [

@@ -11,7 +11,7 @@ class extends Component
 {
     use HandlesApiErrors, WithApiClient;
 
-    public string $tab = 'playing';
+    public string $tab = 'favourites';
 
     public string $cursor = '';
 
@@ -24,6 +24,7 @@ class extends Component
     {
         $participations = collect();
         $createdQuests = collect();
+        $favouriteQuests = collect();
         $nextCursor = null;
 
         if ($this->tab === 'playing' || $this->tab === 'history') {
@@ -37,9 +38,20 @@ class extends Component
             $nextCursor = $response['meta']['next_cursor'] ?? null;
         }
 
+        if ($this->tab === 'favourites') {
+            try {
+                $response = $this->api->user()->favourites($this->cursor ?: null);
+                $favouriteQuests = $this->toObjectCollection($response['data'] ?? []);
+                $nextCursor = $response['meta']['next_cursor'] ?? null;
+            } catch (\App\Exceptions\Api\ApiException) {
+                // Gracefully handle if the favourites endpoint is unavailable
+            }
+        }
+
         return view('pages.my-quests.played-quests-view', [
             'participations' => $participations,
             'createdQuests' => $createdQuests,
+            'favouriteQuests' => $favouriteQuests,
             'nextCursor' => $nextCursor,
         ]);
     }

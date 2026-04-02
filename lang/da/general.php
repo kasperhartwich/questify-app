@@ -214,4 +214,9 @@ return [
     'no_leaderboard_yet' => 'Ingen rangliste endnu. Vær den første til at spille!',
     'be_the_first' => 'Vær den første til at spille',
     'min_walk' => '~:minutes min gang',
+
+    // Favourites
+    'favourites' => 'Favoritter',
+    'no_favourites_yet' => 'Ingen favoritter endnu',
+    'no_favourites_yet_desc' => "Du har ikke gemt nogen quests endnu.\nTryk på bogmærkeikonet på en quest\nfor at tilføje den til dine favoritter!",
 ];

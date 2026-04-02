@@ -18,6 +18,11 @@ class UserApiResource
         return $this->client->get('/user/sessions');
     }
 
+    public function favourites(?string $cursor = null): array
+    {
+        return $this->client->get('/user/favourites', array_filter(['cursor' => $cursor]));
+    }
+
     /**
      * @param  array{name?: string, locale?: string}  $data
      * @param  string|null  $avatarPath  Local file path for avatar upload

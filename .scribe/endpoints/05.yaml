@@ -171,7 +171,7 @@ endpoints:
         name: play_mode
         description: ''
         required: true
-        example: solo
+        example: competitive_individual
         type: string
         enumValues:
           - solo
@@ -182,7 +182,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       quest_id: 16
-      play_mode: solo
+      play_mode: competitive_individual
     fileParameters: []
     responses:
       -

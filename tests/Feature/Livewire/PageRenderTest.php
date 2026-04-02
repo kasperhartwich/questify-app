@@ -47,6 +47,7 @@ function mockFullApiClient(): void
         'meta' => ['path' => 'https://questify-admin.test/api/v1/quests', 'per_page' => 15, 'next_cursor' => null, 'prev_cursor' => null],
     ]);
     $mockQuests->shouldReceive('show')->andReturn(['data' => $questDetail]);
+    $mockQuests->shouldReceive('nearby')->andReturn(['data' => []]);
 
     $mockCategories = Mockery::mock(CategoryApiResource::class);
     $mockCategories->shouldReceive('list')->andReturn([
@@ -59,6 +60,7 @@ function mockFullApiClient(): void
     $mockUser = Mockery::mock(UserApiResource::class);
     $mockUser->shouldReceive('quests')->andReturn(['data' => [$questListItem], 'meta' => ['next_cursor' => null]]);
     $mockUser->shouldReceive('sessions')->andReturn(['data' => []]);
+    $mockUser->shouldReceive('favourites')->andReturn(['data' => [], 'meta' => ['next_cursor' => null]]);
 
     $mockSessions = Mockery::mock(SessionApiResource::class);
     $mockSessions->shouldReceive('show')->andReturn([
