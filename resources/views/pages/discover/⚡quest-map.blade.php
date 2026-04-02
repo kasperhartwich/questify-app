@@ -5,6 +5,10 @@ use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Facades\Geolocation;
+use Native\Mobile\Facades\System;
 
 new
 #[Title('Quest Map')]
@@ -19,9 +23,37 @@ class extends Component
 
     public float $longitude = 12.5683;
 
+    public bool $isNative = false;
+
     public function mount(): void
     {
+        $this->isNative = System::isMobile();
         $this->loadPins();
+    }
+
+    public function requestLocation(): void
+    {
+        Geolocation::getCurrentPosition();
+    }
+
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(
+        bool $success = false,
+        float $latitude = 0,
+        float $longitude = 0,
+        float $accuracy = 0,
+        int $timestamp = 0,
+        string $provider = '',
+        string $error = '',
+    ): void {
+        if (! $success) {
+            return;
+        }
+
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->loadPins();
+        $this->dispatch('native-location', latitude: $latitude, longitude: $longitude);
     }
 
     public function loadNearby(float $latitude, float $longitude): void
@@ -104,6 +136,17 @@ class extends Component
             this.map.on('load', () => {
                 this.addMarkers();
                 this.locateUser();
+            });
+            $wire.on('native-location', (params) => {
+                const lat = params[0]?.latitude ?? params.latitude;
+                const lng = params[0]?.longitude ?? params.longitude;
+                if (!lat || !lng) return;
+                this.map.flyTo({ center: [lng, lat], zoom: 13 });
+                if (!this.userLocated) {
+                    this.userLocated = true;
+                }
+                this.pins = $wire.pins;
+                this.addMarkers();
             });
         },
         addMarkers() {
@@ -195,19 +238,24 @@ class extends Component
             });
         },
         locateUser() {
-            if (!navigator.geolocation || !this.map) return;
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-                this.map.flyTo({ center: [lng, lat], zoom: 13 });
-                if (!this.userLocated) {
-                    this.userLocated = true;
-                    $wire.loadNearby(lat, lng).then(() => {
-                        this.pins = $wire.pins;
-                        this.addMarkers();
-                    });
-                }
-            });
+            if (!this.map) return;
+            const isNative = @js($isNative);
+            if (isNative) {
+                $wire.requestLocation();
+            } else if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    this.map.flyTo({ center: [lng, lat], zoom: 13 });
+                    if (!this.userLocated) {
+                        this.userLocated = true;
+                        $wire.loadNearby(lat, lng).then(() => {
+                            this.pins = $wire.pins;
+                            this.addMarkers();
+                        });
+                    }
+                });
+            }
         },
     }"
 >

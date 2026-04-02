@@ -3,6 +3,10 @@
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Scanner\CodeScanned;
+use Native\Mobile\Facades\Scanner;
+use Native\Mobile\Facades\System;
 
 new
 #[Layout('layouts.guest')]
@@ -10,6 +14,13 @@ new
 class extends Component
 {
     public string $joinCode = '';
+
+    public bool $isNative = false;
+
+    public function mount(): void
+    {
+        $this->isNative = System::isMobile();
+    }
 
     public function joinByCode(): void
     {
@@ -22,7 +33,47 @@ class extends Component
 
     public function scanQr(): void
     {
-        $this->dispatch('scan-qr');
+        if ($this->isNative) {
+            Scanner::scan()->prompt(__('general.scan_qr'))->formats(['qr'])->id('join-scan');
+
+            return;
+        }
+
+        $this->dispatch('scan-qr-browser');
+    }
+
+    #[OnNative(CodeScanned::class)]
+    public function onCodeScanned(string $data = '', string $format = '', ?string $id = null): void
+    {
+        if ($id !== 'join-scan') {
+            return;
+        }
+
+        $code = $this->extractSessionCode($data);
+
+        if (! $code) {
+            $this->addError('joinCode', __('general.invalid_qr'));
+
+            return;
+        }
+
+        $this->redirect('/join/' . $code . '/name');
+    }
+
+    private function extractSessionCode(string $data): ?string
+    {
+        // Try to extract 6-char code from a URL path (e.g. https://example.com/join/XK92PL/name)
+        if (preg_match('/([A-Z0-9]{6})/i', basename(parse_url($data, PHP_URL_PATH) ?? ''), $matches)) {
+            return strtoupper($matches[1]);
+        }
+
+        // Bare 6-character code
+        $trimmed = trim($data);
+        if (preg_match('/^[A-Z0-9]{6}$/i', $trimmed)) {
+            return strtoupper($trimmed);
+        }
+
+        return null;
     }
 };
 ?>

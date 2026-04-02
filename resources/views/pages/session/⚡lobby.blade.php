@@ -23,6 +23,8 @@ class extends Component
 
     public string $shareUrl = '';
 
+    public string $joinUrl = '';
+
     public function mount(string $code): void
     {
         $this->code = $code;
@@ -34,7 +36,8 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->sessions()->show($this->code));
         $this->session = $response['data'] ?? [];
         $this->isHost = Auth::id() === ($this->session['host']['id'] ?? null);
-        $this->shareUrl = url('/session/' . $this->code);
+        $this->joinUrl = url('/join/' . $this->code . '/name');
+        $this->shareUrl = $this->joinUrl;
         $this->participants = $this->session['participants'] ?? [];
     }
 
@@ -113,6 +116,23 @@ class extends Component
                     {{ __('sessions.share') }}
                 </button>
             </div>
+        </div>
+
+        {{-- QR Code --}}
+        <div
+            class="mt-3 flex justify-center"
+            x-data
+            x-init="
+                if (window.QRCode) {
+                    QRCode.toCanvas($refs.qr, @js($joinUrl), {
+                        width: 160,
+                        margin: 2,
+                        color: { dark: '#0B3D2E', light: '#FFFFFF' },
+                    });
+                }
+            "
+        >
+            <canvas x-ref="qr" class="rounded-xl"></canvas>
         </div>
     </div>
 

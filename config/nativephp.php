@@ -264,7 +264,7 @@ return [
         'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
-        'scanner' => false,
+        'scanner' => true,
         'network_state' => true,
     ],
 

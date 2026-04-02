@@ -2,9 +2,14 @@
 
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use App\Models\Quest;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Facades\Geolocation;
+use Native\Mobile\Facades\System;
 
 new
 #[Title('Active Quest')]
@@ -28,9 +33,16 @@ class extends Component
 
     public bool $showQuestions = false;
 
+    public bool $isNative = false;
+
+    public int $arrivalRadius = 50;
+
+    public bool $arrivedAtCurrent = false;
+
     public function mount(string $code): void
     {
         $this->code = $code;
+        $this->isNative = System::isMobile();
         $this->participantId = session('questify_participant_id', 0);
 
         $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
@@ -39,6 +51,8 @@ class extends Component
         $questResponse = $this->tryApiCall(fn () => $this->api->quests()->show($this->session['quest']['id'] ?? 0));
         $quest = $questResponse['data'] ?? [];
 
+        $this->arrivalRadius = (int) ($quest['checkpoint_arrival_radius_meters'] ?? 50);
+
         $this->checkpoints = collect($quest['checkpoints'] ?? [])
             ->map(fn ($cp) => [
                 'id' => $cp['id'],
@@ -46,11 +60,59 @@ class extends Component
                 'description' => $cp['description'] ?? '',
                 'latitude' => $cp['latitude'] ?? null,
                 'longitude' => $cp['longitude'] ?? null,
+                'arrival_radius_override' => $cp['arrival_radius_override'] ?? null,
             ])
             ->toArray();
 
         $this->currentCheckpointIndex = session('questify_checkpoint_index', 0);
         $this->loadLeaderboard();
+    }
+
+    public function requestLocation(): void
+    {
+        Geolocation::getCurrentPosition(true);
+    }
+
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(
+        bool $success = false,
+        float $latitude = 0,
+        float $longitude = 0,
+        float $accuracy = 0,
+        int $timestamp = 0,
+        string $provider = '',
+        string $error = '',
+    ): void {
+        if (! $success) {
+            return;
+        }
+
+        $this->dispatch('player-moved', latitude: $latitude, longitude: $longitude, accuracy: $accuracy);
+
+        if ($accuracy > 50) {
+            $this->dispatch('gps-weak');
+        }
+
+        if ($this->arrivedAtCurrent || $this->showQuestions) {
+            return;
+        }
+
+        $checkpoint = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
+        if (! $checkpoint || ! $checkpoint['latitude'] || ! $checkpoint['longitude']) {
+            return;
+        }
+
+        $distanceKm = Quest::haversineDistance(
+            $latitude, $longitude,
+            (float) $checkpoint['latitude'], (float) $checkpoint['longitude'],
+        );
+        $distanceMeters = $distanceKm * 1000;
+
+        $radius = $checkpoint['arrival_radius_override'] ?? $this->arrivalRadius;
+
+        if ($distanceMeters <= $radius) {
+            $this->arriveAtCheckpoint();
+        }
     }
 
     public function arriveAtCheckpoint(): void
@@ -59,6 +121,8 @@ class extends Component
         if (! $checkpoint) {
             return;
         }
+
+        $this->arrivedAtCurrent = true;
 
         $this->tryApiCall(fn () => $this->api->gameplay()->arrived(
             $this->code,
@@ -121,6 +185,8 @@ class extends Component
         class="relative h-64 w-full bg-gray-200 dark:bg-gray-700"
         x-data="{
             map: null,
+            userMarker: null,
+            locationInterval: null,
             init() {
                 if (typeof google === 'undefined') return;
                 const checkpoints = @js($checkpoints);
@@ -144,27 +210,45 @@ class extends Component
                     });
                 });
 
-                if (navigator.geolocation) {
+                const isNative = @js($isNative);
+                if (isNative) {
+                    $wire.requestLocation();
+                    this.locationInterval = setInterval(() => {
+                        if (!$wire.showQuestions) $wire.requestLocation();
+                    }, 4000);
+                } else if (navigator.geolocation) {
                     navigator.geolocation.watchPosition((pos) => {
-                        const userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        if (this.userMarker) {
-                            this.userMarker.setPosition(userPos);
-                        } else {
-                            this.userMarker = new google.maps.Marker({
-                                position: userPos,
-                                map: this.map,
-                                icon: {
-                                    path: google.maps.SymbolPath.CIRCLE,
-                                    scale: 8,
-                                    fillColor: '#0B3D2E',
-                                    fillOpacity: 1,
-                                    strokeWeight: 2,
-                                    strokeColor: '#ffffff',
-                                },
-                            });
-                        }
+                        this.updateUserMarker(pos.coords.latitude, pos.coords.longitude);
                     });
                 }
+
+                $wire.on('player-moved', (params) => {
+                    const lat = params[0]?.latitude ?? params.latitude;
+                    const lng = params[0]?.longitude ?? params.longitude;
+                    if (lat && lng) this.updateUserMarker(lat, lng);
+                });
+            },
+            updateUserMarker(lat, lng) {
+                const userPos = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                if (this.userMarker) {
+                    this.userMarker.setPosition(userPos);
+                } else {
+                    this.userMarker = new google.maps.Marker({
+                        position: userPos,
+                        map: this.map,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 8,
+                            fillColor: '#0B3D2E',
+                            fillOpacity: 1,
+                            strokeWeight: 2,
+                            strokeColor: '#ffffff',
+                        },
+                    });
+                }
+            },
+            destroy() {
+                if (this.locationInterval) clearInterval(this.locationInterval);
             }
         }"
     >

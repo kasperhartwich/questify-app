@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83b7deb52182e3b800d2cd93640ea780",
+    "content-hash": "0857d143431cb93101fd968ad952a32a",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4612,6 +4612,94 @@
                 "source": "https://github.com/NativePHP/mobile-air/tree/3.0.4"
             },
             "time": "2026-02-17T14:41:23+00:00"
+        },
+        {
+            "name": "nativephp/mobile-geolocation",
+            "version": "1.0.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-geolocation/nativephp-mobile-geolocation-77ba8089cef164d7a850d14c86f4ecbe7296125a-zip-848581.zip",
+                "reference": "77ba8089cef164d7a850d14c86f4ecbe7296125a",
+                "shasum": "78e72e973a89dd36ea3678ca5da75c99baa3dddc"
+            },
+            "require": {
+                "nativephp/mobile": "^3.0",
+                "php": "^8.2"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Native\\Mobile\\Providers\\GeolocationServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Native\\Mobile\\Providers\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "NativePHP",
+                    "email": "support@nativephp.com"
+                }
+            ],
+            "description": "Geolocation plugin for NativePHP Mobile - GPS location and permission handling",
+            "support": {
+                "issues": "https://github.com/NativePHP/mobile-geolocation/issues"
+            },
+            "time": "2026-03-20T22:08:33+00:00"
+        },
+        {
+            "name": "nativephp/mobile-scanner",
+            "version": "1.0.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-scanner/nativephp-mobile-scanner-b819d8eb9521f9f7ad3b067c2171015894c310a5-zip-505868.zip",
+                "reference": "b819d8eb9521f9f7ad3b067c2171015894c310a5",
+                "shasum": "a6ccca07daca2e3507a8fa7a4ebbb1f225e69e68"
+            },
+            "require": {
+                "nativephp/mobile": "^3.0",
+                "php": "^8.2"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Native\\Mobile\\Providers\\ScannerServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Native\\Mobile\\Providers\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "NativePHP",
+                    "email": "support@nativephp.com"
+                }
+            ],
+            "description": "QR code and barcode scanner plugin for NativePHP Mobile - supports multiple barcode formats with continuous scanning",
+            "support": {
+                "issues": "https://github.com/NativePHP/mobile-scanner/issues"
+            },
+            "time": "2026-03-20T22:08:33+00:00"
         },
         {
             "name": "nesbot/carbon",
