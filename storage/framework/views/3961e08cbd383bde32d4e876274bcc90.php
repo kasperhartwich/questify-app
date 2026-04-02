@@ -10,6 +10,7 @@ $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
     'status' => null,
     'ctaLabel' => null,
     'ctaUrl' => null,
+    'showFavourite' => true,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -34,6 +35,7 @@ foreach (array_filter(([
     'status' => null,
     'ctaLabel' => null,
     'ctaUrl' => null,
+    'showFavourite' => true,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -56,7 +58,26 @@ unset($__defined_vars, $__key, $__value); ?>
     };
 ?>
 
-<a href="<?php echo e($ctaUrl ?? '/quests/' . ($quest->id ?? '')); ?>" class="block overflow-hidden rounded-[16px] bg-white shadow-sm mb-[12px] <?php echo e($status === 'completed' ? 'opacity-70' : ($status === 'upcoming' ? 'opacity-60' : '')); ?>" wire:navigate>
+<div class="relative mb-[12px] overflow-hidden rounded-[16px] bg-white shadow-sm <?php echo e($status === 'completed' ? 'opacity-70' : ($status === 'upcoming' ? 'opacity-60' : '')); ?>">
+    
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showFavourite && auth()->check()): ?>
+        <div class="absolute right-3 top-3 z-10"
+            x-data="{ favourited: <?php echo \Illuminate\Support\Js::from((bool) ($quest->is_favourited ?? false))->toHtml() ?> }"
+        >
+            <button
+                x-on:click.prevent.stop="
+                    favourited = !favourited;
+                    window.Livewire.find('<?php echo e($_instance->getId()); ?>').toggleCardFavourite(<?php echo e($quest->id ?? 0); ?>);
+                "
+                class="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/90 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
+            >
+                <svg x-show="!favourited" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                <svg x-show="favourited" x-cloak width="16" height="16" viewBox="0 0 24 24" fill="#0B3D2E" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+        </div>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+    <a href="<?php echo e($ctaUrl ?? '/quests/' . ($quest->id ?? '')); ?>" class="block" wire:navigate>
     
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($quest->cover_image_url)): ?>
         <img src="<?php echo e($quest->cover_image_url); ?>" alt="<?php echo e($quest->title); ?>" class="h-40 w-full object-cover" />
@@ -129,5 +150,6 @@ unset($__defined_vars, $__key, $__value); ?>
             </div>
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
-</a>
+    </a>
+</div>
 <?php /**PATH /Users/kasper/Projects/questify-app/resources/views/components/quest-card.blade.php ENDPATH**/ ?>

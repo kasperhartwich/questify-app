@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Concerns;
 
+use App\Exceptions\Api\ApiAuthenticationException;
+use App\Exceptions\Api\ApiException;
 use App\Services\Api\QuestifyApiClient;
 use Illuminate\Support\Collection;
 
@@ -34,5 +36,28 @@ trait WithApiClient
             ->filter(fn (mixed $item): bool => is_array($item))
             ->map(fn (array $item) => $this->toObject($item))
             ->values();
+    }
+
+    /**
+     * Toggle favourite on a quest from any page that renders quest cards.
+     *
+     * @return array{is_favourited: bool}|null
+     */
+    public function toggleCardFavourite(int $questId): ?array
+    {
+        try {
+            $response = $this->api->quests()->toggleFavourite($questId);
+
+            return $response['data'] ?? null;
+        } catch (ApiAuthenticationException) {
+            session()->flush();
+            $this->redirect(route('login'));
+
+            return null;
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
+
+            return null;
+        }
     }
 }
