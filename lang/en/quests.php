@@ -48,4 +48,6 @@ return [
         'rating_max' => 'The rating may not be greater than 5.',
         'flag_reason_required' => 'A reason for flagging is required.',
     ],
+
+    'checkpoints_need_coordinates' => 'All checkpoints need a location. Tap the map to place them.',
 ];

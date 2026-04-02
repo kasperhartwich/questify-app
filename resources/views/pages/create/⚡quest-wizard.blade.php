@@ -187,12 +187,28 @@ class extends Component
     public function publish(): void
     {
         $this->validateStep();
+        $this->validateBeforeSave();
         $this->saveQuest(publish: true);
     }
 
     public function saveAsDraft(): void
     {
+        $this->validateBeforeSave();
         $this->saveQuest();
+    }
+
+    private function validateBeforeSave(): void
+    {
+        $missingCoords = collect($this->checkpoints)
+            ->filter(fn (array $cp): bool => empty($cp['latitude']) || empty($cp['longitude']))
+            ->count();
+
+        if ($missingCoords > 0) {
+            $this->dispatch('api-error', message: __('quests.checkpoints_need_coordinates'));
+            $this->step = 2;
+
+            throw new \Illuminate\Validation\ValidationException(validator([], []));
+        }
     }
 
     private function saveQuest(bool $publish = false): void
@@ -215,7 +231,7 @@ class extends Component
                 ];
             }
             $checkpointsData[] = [
-                'title' => $checkpoint['title'],
+                'title' => $checkpoint['title'] ?: __('general.checkpoint') . ' ' . ($cpIndex + 1),
                 'description' => $checkpoint['description'] ?: null,
                 'latitude' => $checkpoint['latitude'],
                 'longitude' => $checkpoint['longitude'],
@@ -226,7 +242,7 @@ class extends Component
         $data = [
             'category_id' => $this->categoryId,
             'title' => $this->title,
-            'description' => $this->description,
+            'description' => $this->description ?: '',
             'difficulty' => $this->difficulty,
             'visibility' => $this->visibility,
             'estimated_duration_minutes' => 60,
@@ -236,7 +252,22 @@ class extends Component
 
         $coverImagePath = $this->coverImage ? $this->coverImage->getRealPath() : null;
 
-        $response = $this->tryApiCall(fn () => $this->api->quests()->store($data, $coverImagePath));
+        try {
+            $response = $this->api->quests()->store($data, $coverImagePath);
+        } catch (\App\Exceptions\Api\ApiValidationException $e) {
+            $this->dispatch('api-error', message: collect($e->errors)->flatten()->first());
+
+            return;
+        } catch (\App\Exceptions\Api\ApiAuthenticationException) {
+            session()->flush();
+            $this->redirect(route('login'));
+
+            return;
+        } catch (\App\Exceptions\Api\ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
+
+            return;
+        }
 
         if (! $response) {
             return;

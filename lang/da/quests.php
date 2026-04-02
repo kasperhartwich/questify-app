@@ -48,4 +48,6 @@ return [
         'rating_max' => 'Bedømmelsen må ikke være større end 5.',
         'flag_reason_required' => 'En begrundelse for markering er påkrævet.',
     ],
+
+    'checkpoints_need_coordinates' => 'Alle checkpoints skal have en placering. Tryk på kortet for at placere dem.',
 ];
