@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\ActivityType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\QuestResource;
 use App\Models\Quest;
@@ -55,7 +54,7 @@ class QuestFavouriteController extends Controller
         $isFavourited = ! empty($result['attached']);
 
         if ($isFavourited) {
-            $this->activityLogService->log($request->user(), ActivityType::QuestFavourited, $quest, [
+            $this->activityLogService->log($request->user(), 'quest_favourited', $quest, [
                 'quest_title' => $quest->title,
             ]);
         }

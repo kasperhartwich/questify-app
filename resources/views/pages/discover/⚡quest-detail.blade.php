@@ -2,6 +2,7 @@
 
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -44,7 +45,48 @@ class extends Component
 
     public function startQuest(): void
     {
-        $this->redirect('/quests/' . $this->questId . '/start');
+        $sessionResponse = $this->tryApiCall(fn () => $this->api->sessions()->create(
+            $this->questId,
+            $this->playMode,
+        ));
+
+        if (! $sessionResponse) {
+            return;
+        }
+
+        $sessionCode = $sessionResponse['data']['join_code']
+            ?? $sessionResponse['data']['session_code']
+            ?? $sessionResponse['data']['code']
+            ?? null;
+
+        if (! $sessionCode) {
+            return;
+        }
+
+        $user = Auth::user();
+        $joinResponse = $this->tryApiCall(fn () => $this->api->sessions()->join(
+            $sessionCode,
+            $user->name ?? 'Player',
+            $user->id ?? null,
+        ));
+
+        if ($joinResponse) {
+            $participantId = $joinResponse['data']['id']
+                ?? $joinResponse['data']['participant_id']
+                ?? null;
+            if ($participantId) {
+                session()->put('questify_participant_id', $participantId);
+            }
+        }
+
+        session()->put('questify_checkpoint_index', 0);
+
+        if ($this->playMode === 'solo') {
+            $this->tryApiCall(fn () => $this->api->sessions()->start($sessionCode));
+            $this->redirect('/session/' . $sessionCode . '/play');
+        } else {
+            $this->redirect('/session/' . $sessionCode);
+        }
     }
 };
 ?>

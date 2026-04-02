@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ActivityType;
 use Database\Factories\ActivityLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +15,7 @@ class ActivityLog extends Model
 
     protected $fillable = [
         'user_id',
-        'type',
+        'activity_type_id',
         'subject_type',
         'subject_id',
         'metadata',
@@ -26,7 +25,6 @@ class ActivityLog extends Model
     protected function casts(): array
     {
         return [
-            'type' => ActivityType::class,
             'metadata' => 'array',
         ];
     }
@@ -35,6 +33,12 @@ class ActivityLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<ActivityType, $this> */
+    public function activityType(): BelongsTo
+    {
+        return $this->belongsTo(ActivityType::class);
     }
 
     /** @return MorphTo<Model, $this> */

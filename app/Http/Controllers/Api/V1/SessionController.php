@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\ActivityType;
 use App\Enums\SessionStatus;
 use App\Events\ParticipantJoined;
 use App\Events\SessionEnded;
@@ -48,7 +47,7 @@ class SessionController extends Controller
 
         $session->load(['quest', 'host']);
 
-        $this->activityLogService->log($request->user(), ActivityType::QuestShared, $session, [
+        $this->activityLogService->log($request->user(), 'quest_shared', $session, [
             'quest_title' => $session->quest->title,
             'quest_id' => $session->quest_id,
             'join_code' => $session->join_code,

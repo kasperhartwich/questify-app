@@ -15,7 +15,7 @@ class ActivityController extends Controller
     /**
      * Recent activity
      *
-     * Get the authenticated user's activity feed, cursor-paginated.
+     * Get the authenticated user's activity feed, cursor-paginated. Only returns activities marked as visible in the app.
      *
      * @response 200 {"data": [{"id": 1, "type": "quest_completed", "title": "Completed City Walk quest", "subtitle": "1st · 2,340 pts", "icon": "checkmark", "metadata": {"quest_title": "City Walk", "score": 2340, "placement": 1}, "created_at": "2026-04-01T12:00:00.000000Z"}]}
      */
@@ -23,6 +23,8 @@ class ActivityController extends Controller
     {
         $activities = $request->user()
             ->activityLogs()
+            ->with('activityType')
+            ->whereHas('activityType', fn ($q) => $q->where('show_in_app', true))
             ->latest()
             ->cursorPaginate(15);
 

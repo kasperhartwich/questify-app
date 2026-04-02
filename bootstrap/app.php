@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\FetchAppInfo;
+use App\Http\Middleware\LogActivity;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        $middleware->api(append: [LogActivity::class]);
         $middleware->web(append: [FetchAppInfo::class, SetLocale::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

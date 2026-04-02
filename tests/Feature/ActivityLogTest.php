@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\ActivityType;
 use App\Models\ActivityLog;
+use App\Models\ActivityType;
 use App\Models\Category;
 use App\Models\Quest;
 use App\Models\User;
@@ -14,8 +14,8 @@ beforeEach(function () {
 it('returns activity feed for authenticated user', function () {
     $quest = Quest::factory()->create();
     $service = app(ActivityLogService::class);
-    $service->log($this->user, ActivityType::QuestCreated, $quest, ['quest_title' => $quest->title]);
-    $service->log($this->user, ActivityType::QuestPublished, $quest, ['quest_title' => $quest->title]);
+    $service->log($this->user, 'quest_created', $quest, ['quest_title' => $quest->title]);
+    $service->log($this->user, 'quest_published', $quest, ['quest_title' => $quest->title]);
 
     $response = $this->actingAs($this->user)->getJson('/api/v1/user/activities');
 
@@ -29,8 +29,8 @@ it('returns only the authenticated user activities', function () {
     $quest = Quest::factory()->create();
     $service = app(ActivityLogService::class);
 
-    $service->log($this->user, ActivityType::QuestCreated, $quest, ['quest_title' => 'My Quest']);
-    $service->log($otherUser, ActivityType::QuestCreated, $quest, ['quest_title' => 'Other Quest']);
+    $service->log($this->user, 'quest_created', $quest, ['quest_title' => 'My Quest']);
+    $service->log($otherUser, 'quest_created', $quest, ['quest_title' => 'Other Quest']);
 
     $response = $this->actingAs($this->user)->getJson('/api/v1/user/activities');
 
@@ -43,10 +43,10 @@ it('returns activities in reverse chronological order', function () {
     $quest = Quest::factory()->create();
     $service = app(ActivityLogService::class);
 
-    $older = $service->log($this->user, ActivityType::QuestCreated, $quest, ['quest_title' => 'First']);
+    $older = $service->log($this->user, 'quest_created', $quest, ['quest_title' => 'First']);
     $older->update(['created_at' => now()->subDay()]);
 
-    $newer = $service->log($this->user, ActivityType::QuestPublished, $quest, ['quest_title' => 'Second']);
+    $service->log($this->user, 'quest_published', $quest, ['quest_title' => 'Second']);
 
     $response = $this->actingAs($this->user)->getJson('/api/v1/user/activities');
 
@@ -60,7 +60,7 @@ it('cursor paginates activities', function () {
     $service = app(ActivityLogService::class);
 
     for ($i = 0; $i < 20; $i++) {
-        $service->log($this->user, ActivityType::QuestCreated, $quest, ['quest_title' => "Quest {$i}"]);
+        $service->log($this->user, 'quest_created', $quest, ['quest_title' => "Quest {$i}"]);
     }
 
     $response = $this->actingAs($this->user)->getJson('/api/v1/user/activities');
@@ -74,6 +74,23 @@ it('requires authentication for activity feed', function () {
     $response = $this->getJson('/api/v1/user/activities');
 
     $response->assertStatus(401);
+});
+
+it('only returns activities with show_in_app enabled', function () {
+    $quest = Quest::factory()->create();
+    $service = app(ActivityLogService::class);
+
+    // quest_created has show_in_app = true
+    $service->log($this->user, 'quest_created', $quest, ['quest_title' => 'Visible']);
+
+    // user_logged_in has show_in_app = false
+    $service->log($this->user, 'user_logged_in');
+
+    $response = $this->actingAs($this->user)->getJson('/api/v1/user/activities');
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.type', 'quest_created');
 });
 
 it('logs activity when quest is created', function () {
@@ -110,9 +127,10 @@ it('logs activity when quest is created', function () {
 
     $response->assertCreated();
 
+    $questCreatedType = ActivityType::where('key', 'quest_created')->first();
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,
-        'type' => ActivityType::QuestCreated->value,
+        'activity_type_id' => $questCreatedType->id,
     ]);
 });
 
@@ -121,9 +139,10 @@ it('logs activity when quest is favourited', function () {
 
     $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/favourite");
 
+    $favouritedType = ActivityType::where('key', 'quest_favourited')->first();
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,
-        'type' => ActivityType::QuestFavourited->value,
+        'activity_type_id' => $favouritedType->id,
         'subject_type' => Quest::class,
         'subject_id' => $quest->id,
     ]);
@@ -135,13 +154,16 @@ it('does not log activity when quest is unfavourited', function () {
 
     $this->actingAs($this->user)->postJson("/api/v1/quests/{$quest->id}/favourite");
 
-    expect(ActivityLog::where('user_id', $this->user->id)->count())->toBe(0);
+    $favouritedType = ActivityType::where('key', 'quest_favourited')->first();
+    expect(ActivityLog::where('user_id', $this->user->id)
+        ->where('activity_type_id', $favouritedType->id)
+        ->count())->toBe(0);
 });
 
 it('builds correct title and subtitle for completed quest', function () {
     $quest = Quest::factory()->create();
     $service = app(ActivityLogService::class);
-    $service->log($this->user, ActivityType::QuestCompleted, $quest, [
+    $service->log($this->user, 'quest_completed', $quest, [
         'quest_title' => 'Frederiksberg',
         'score' => 2340,
         'placement' => 1,
@@ -158,7 +180,7 @@ it('builds correct title and subtitle for completed quest', function () {
 it('builds correct title and subtitle for published quest', function () {
     $quest = Quest::factory()->create();
     $service = app(ActivityLogService::class);
-    $service->log($this->user, ActivityType::QuestPublished, $quest, [
+    $service->log($this->user, 'quest_published', $quest, [
         'quest_title' => 'Byens Skjulte Perler',
     ]);
 
@@ -168,4 +190,19 @@ it('builds correct title and subtitle for published quest', function () {
     expect($response->json('data.0.title'))->toBe('Published new quest');
     expect($response->json('data.0.subtitle'))->toBe('Byens Skjulte Perler');
     expect($response->json('data.0.icon'))->toBe('map_pin');
+});
+
+it('logs login activity via middleware', function () {
+    $user = User::factory()->create(['password' => bcrypt('password')]);
+
+    $this->postJson('/api/v1/auth/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertOk();
+
+    $loginType = ActivityType::where('key', 'user_logged_in')->first();
+    $this->assertDatabaseHas('activity_logs', [
+        'user_id' => $user->id,
+        'activity_type_id' => $loginType->id,
+    ]);
 });

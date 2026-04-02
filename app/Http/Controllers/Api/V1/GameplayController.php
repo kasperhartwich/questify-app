@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\ActivityType;
 use App\Enums\QuestionType;
 use App\Enums\SessionStatus;
 use App\Enums\WrongAnswerBehaviour;
@@ -230,7 +229,7 @@ class GameplayController extends Controller
                 $placement = $session->participants()->whereNotNull('finished_at')->count();
                 $this->activityLogService->log(
                     $participant->user,
-                    ActivityType::QuestCompleted,
+                    'quest_completed',
                     $session->quest,
                     [
                         'quest_title' => $session->quest->title,

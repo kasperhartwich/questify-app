@@ -216,7 +216,7 @@ endpoints:
         name: difficulty
         description: ''
         required: false
-        example: medium
+        example: hard
         type: string
         enumValues:
           - easy
@@ -230,7 +230,7 @@ endpoints:
       longitude: -179
       radius: 7
       category_id: 16
-      difficulty: medium
+      difficulty: hard
     fileParameters: []
     responses:
       -
@@ -465,7 +465,7 @@ endpoints:
         name: visibility
         description: ''
         required: true
-        example: school
+        example: public
         type: string
         enumValues:
           - public
@@ -523,7 +523,7 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: retry_free
+        example: retry_penalty
         type: string
         enumValues:
           - retry_free
@@ -593,7 +593,7 @@ endpoints:
         name: scoring_quest_completion_time_bonus_enabled
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -731,7 +731,7 @@ endpoints:
         name: 'checkpoints[].questions[].answers[].is_correct'
         description: ''
         required: true
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -742,17 +742,17 @@ endpoints:
       description: 'Eius et animi quos velit et.'
       category_id: 16
       difficulty: medium
-      visibility: school
+      visibility: public
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: retry_free
+      wrong_answer_behaviour: retry_penalty
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
       scoring_speed_bonus_enabled: false
       scoring_wrong_attempt_penalty_enabled: false
-      scoring_quest_completion_time_bonus_enabled: true
+      scoring_quest_completion_time_bonus_enabled: false
       checkpoints:
         -
           title: b
@@ -767,7 +767,7 @@ endpoints:
               answers:
                 -
                   answer_text: b
-                  is_correct: true
+                  is_correct: false
     fileParameters:
       cover_image: null
     responses:
@@ -891,7 +891,7 @@ endpoints:
         name: visibility
         description: ''
         required: false
-        example: private
+        example: public
         type: string
         enumValues:
           - public
@@ -949,7 +949,7 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: retry_penalty
+        example: three_strikes_hint
         type: string
         enumValues:
           - retry_free
@@ -1008,7 +1008,7 @@ endpoints:
         name: scoring_wrong_attempt_penalty_enabled
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1119,7 +1119,7 @@ endpoints:
         name: 'checkpoints[].questions[].question_type'
         description: ''
         required: true
-        example: true_false
+        example: multiple_choice
         type: string
         enumValues:
           - multiple_choice
@@ -1167,16 +1167,16 @@ endpoints:
       description: 'Eius et animi quos velit et.'
       category_id: 16
       difficulty: easy
-      visibility: private
+      visibility: public
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: retry_penalty
+      wrong_answer_behaviour: three_strikes_hint
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
       scoring_speed_bonus_enabled: true
-      scoring_wrong_attempt_penalty_enabled: true
+      scoring_wrong_attempt_penalty_enabled: false
       scoring_quest_completion_time_bonus_enabled: true
       checkpoints:
         -
@@ -1188,7 +1188,7 @@ endpoints:
           questions:
             -
               question_text: architecto
-              question_type: true_false
+              question_type: multiple_choice
               answers:
                 -
                   answer_text: b

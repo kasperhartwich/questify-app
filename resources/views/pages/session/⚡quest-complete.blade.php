@@ -97,12 +97,12 @@ class extends Component
         <div class="pointer-events-none absolute right-[-40px] top-[-40px] h-[160px] w-[160px] rounded-full border-[28px] border-amber-400/10"></div>
         <p class="text-5xl">🏆</p>
         <h1 class="mt-2 font-heading text-2xl font-extrabold">{{ __('sessions.quest_complete') }}</h1>
-        <p class="mt-1 text-lg text-white/80">{{ $session->quest?->title }}</p>
+        <p class="mt-1 text-lg text-white/80">{{ $questTitle }}</p>
     </div>
 
     <div class="flex-1 space-y-4 p-4">
         {{-- Score Card --}}
-        @if ($participant)
+        @if ($myScore > 0 || $myRank > 0)
             <div class="rounded-xl bg-white p-4 text-center shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('sessions.your_score') }}</p>
                 <p class="text-4xl font-bold text-forest-600 dark:text-forest-400">{{ number_format($myScore) }}</p>

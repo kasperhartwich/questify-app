@@ -23,7 +23,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-
+/test-results
 # Vibe service (deployed separately from R2)
 vibe-service/
 public/vibe/

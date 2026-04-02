@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\ActivityType;
 use App\Enums\ModerationStatus;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
@@ -181,7 +180,7 @@ class QuestController extends Controller
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
 
-        $this->activityLogService->log($request->user(), ActivityType::QuestCreated, $quest, [
+        $this->activityLogService->log($request->user(), 'quest_created', $quest, [
             'quest_title' => $quest->title,
         ]);
 
@@ -282,7 +281,7 @@ class QuestController extends Controller
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
 
-        $this->activityLogService->log($request->user(), ActivityType::QuestPublished, $quest, [
+        $this->activityLogService->log($request->user(), 'quest_published', $quest, [
             'quest_title' => $quest->title,
         ]);
 
@@ -311,7 +310,7 @@ class QuestController extends Controller
             $request->validated(),
         );
 
-        $this->activityLogService->log($request->user(), ActivityType::QuestRated, $rating, [
+        $this->activityLogService->log($request->user(), 'quest_rated', $rating, [
             'quest_title' => $quest->title,
             'quest_id' => $quest->id,
             'rating' => $rating->rating,

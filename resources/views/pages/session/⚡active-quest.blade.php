@@ -170,11 +170,17 @@ class extends Component
         $this->loadLeaderboard();
     }
 
+    public function getCurrentCheckpointProperty(): ?object
+    {
+        $cp = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
+
+        return $cp ? (object) $cp : null;
+    }
+
     #[On('echo-presence:session.{code},SessionEnded')]
     public function onSessionEnded(): void
     {
         $this->redirect('/session/' . $this->code . '/complete');
-    }
     }
 };
 ?>
@@ -219,6 +225,22 @@ class extends Component
                 } else if (navigator.geolocation) {
                     navigator.geolocation.watchPosition((pos) => {
                         this.updateUserMarker(pos.coords.latitude, pos.coords.longitude);
+
+                        if ($wire.arrivedAtCurrent || $wire.showQuestions) return;
+                        const current = checkpoints[$wire.currentCheckpointIndex];
+                        if (!current || !current.latitude) return;
+
+                        const toRad = (d) => d * Math.PI / 180;
+                        const R = 6371000;
+                        const dLat = toRad(pos.coords.latitude - current.latitude);
+                        const dLng = toRad(pos.coords.longitude - current.longitude);
+                        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(current.latitude)) * Math.cos(toRad(pos.coords.latitude)) * Math.sin(dLng/2)**2;
+                        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        const radius = current.arrival_radius_override || @js($arrivalRadius);
+
+                        if (dist <= radius) {
+                            $wire.arriveAtCheckpoint();
+                        }
                     });
                 }
 
@@ -259,26 +281,16 @@ class extends Component
 
     <div class="flex-1 space-y-3 p-4">
         {{-- Current Checkpoint Info --}}
-        @if ($currentCheckpoint)
+        @if ($this->currentCheckpoint)
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <div class="mb-2 flex items-center justify-between">
                     <span class="text-xs font-medium uppercase tracking-wider text-forest-600 dark:text-forest-400">
                         {{ __('quests.checkpoint') }} {{ $currentCheckpointIndex + 1 }}/{{ count($checkpoints) }}
                     </span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $currentCheckpoint->title }}</h2>
-                @if ($currentCheckpoint->description)
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $currentCheckpoint->description }}</p>
-                @endif
-
-                {{-- Hint Button --}}
-                @if (!$showHint && $currentCheckpoint->questions->first()?->hint)
-                    <button wire:click="showHint" class="mt-2 text-sm text-amber-600 dark:text-amber-400">💡 {{ __('sessions.show_hint') }}</button>
-                @endif
-                @if ($showHint && $currentCheckpoint->questions->first()?->hint)
-                    <div class="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
-                        💡 {{ $currentCheckpoint->questions->first()->hint }}
-                    </div>
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $this->currentCheckpoint->title }}</h2>
+                @if ($this->currentCheckpoint->description)
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $this->currentCheckpoint->description }}</p>
                 @endif
 
                 <button wire:click="goToQuestions" class="mt-3 w-full rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">

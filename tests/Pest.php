@@ -1,5 +1,6 @@
 <?php
 
+use Database\Seeders\ActivityTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,6 +17,10 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
+    ->beforeEach(function () {
+        $this->seed(ActivityTypeSeeder::class);
+        cache()->forget('activity_type_map');
+    })
     ->in('Feature', 'Unit');
 
 /*

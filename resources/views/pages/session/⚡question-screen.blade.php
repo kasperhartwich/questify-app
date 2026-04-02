@@ -36,6 +36,10 @@ class extends Component
 
     public array $answeredQuestionIds = [];
 
+    public bool $questComplete = false;
+
+    public bool $checkpointComplete = false;
+
     public function mount(string $code, int $checkpoint): void
     {
         $this->code = $code;
@@ -57,13 +61,23 @@ class extends Component
         }
     }
 
-    public function getCurrentQuestionProperty(): ?array
+    public function getCurrentQuestionProperty(): ?object
     {
         foreach ($this->questions as $index => $question) {
             if (! in_array($question['id'], $this->answeredQuestionIds)) {
                 $this->currentQuestionIndex = $index;
 
-                return $question;
+                $obj = (object) $question;
+                $obj->type = QuestionType::tryFrom($question['question_type'] ?? '') ?? QuestionType::MultipleChoice;
+                $obj->body = $question['question_text'] ?? $question['body'] ?? '';
+                $obj->points = $question['points'] ?? 10;
+                $obj->answers = collect($question['answers'] ?? [])
+                    ->map(fn ($a) => (object) [
+                        'id' => $a['id'],
+                        'body' => $a['answer_text'] ?? $a['body'] ?? '',
+                    ]);
+
+                return $obj;
             }
         }
 
@@ -111,10 +125,12 @@ class extends Component
             $this->answeredQuestionIds[] = $currentQuestion['id'];
         }
 
-        // Handle navigation based on "next" field
         $next = $data['next'] ?? 'question';
-        if ($next === 'checkpoint_complete' || $next === 'quest_complete') {
-            // All questions in this checkpoint done
+        if ($next === 'quest_complete') {
+            $this->questComplete = true;
+            $this->checkpointComplete = true;
+        } elseif ($next === 'checkpoint_complete') {
+            $this->checkpointComplete = true;
         }
     }
 
@@ -124,8 +140,14 @@ class extends Component
         $this->openEndedAnswer = '';
         $this->showFeedback = false;
 
-        if ($this->currentQuestion === null) {
-            $this->redirect('/session/' . $this->code . '/play');
+        if ($this->currentQuestion === null || $this->checkpointComplete) {
+            if ($this->questComplete) {
+                $this->redirect('/session/' . $this->code . '/complete');
+            } else {
+                $currentIndex = session('questify_checkpoint_index', 0);
+                session()->put('questify_checkpoint_index', $currentIndex + 1);
+                $this->redirect('/session/' . $this->code . '/play');
+            }
         }
     }
 };
@@ -135,7 +157,7 @@ class extends Component
     {{-- Progress Bar --}}
     <div class="bg-white px-4 py-3 dark:bg-gray-800">
         <div class="mb-1 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>{{ $checkpoint->title }}</span>
+            <span>{{ $checkpoint['title'] ?? '' }}</span>
             <span>{{ $currentQuestionIndex + 1 }}/{{ $totalQuestions }}</span>
         </div>
         <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
@@ -143,20 +165,20 @@ class extends Component
         </div>
     </div>
 
-    @if ($currentQuestion)
+    @if ($this->currentQuestion)
         <div class="flex-1 space-y-4 p-4">
             {{-- Question Body --}}
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <span class="mb-2 inline-block rounded-full bg-forest-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-900/30 dark:text-forest-400">
-                    {{ str_replace('_', ' ', ucfirst($currentQuestion->type->value)) }}
+                    {{ str_replace('_', ' ', ucfirst($this->currentQuestion->type->value)) }}
                 </span>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $currentQuestion->body }}</h2>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $currentQuestion->points }} {{ __('quests.points') }}</p>
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $this->currentQuestion->body }}</h2>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $this->currentQuestion->points }} {{ __('quests.points') }}</p>
             </div>
 
             {{-- Answer Options --}}
             @if (!$showFeedback)
-                @if ($currentQuestion->type === \App\Enums\QuestionType::OpenText)
+                @if ($this->currentQuestion->type === \App\Enums\QuestionType::OpenText)
                     <div>
                         <textarea
                             wire:model="openEndedAnswer"
@@ -167,7 +189,7 @@ class extends Component
                     </div>
                 @else
                     <div class="space-y-2">
-                        @foreach ($currentQuestion->answers as $answer)
+                        @foreach ($this->currentQuestion->answers as $answer)
                             <button
                                 wire:click="$set('selectedAnswerId', {{ $answer->id }})"
                                 class="w-full rounded-xl border-2 px-4 py-3 text-left text-sm font-medium transition-colors
@@ -185,7 +207,7 @@ class extends Component
                 <button
                     wire:click="submitAnswer"
                     class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
-                    {{ ($currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
+                    {{ ($this->currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
                 >
                     {{ __('sessions.submit_answer') }}
                 </button>

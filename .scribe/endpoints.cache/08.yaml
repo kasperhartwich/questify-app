@@ -15,7 +15,7 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Recent activity'
-      description: "Get the authenticated user's activity feed, cursor-paginated."
+      description: "Get the authenticated user's activity feed, cursor-paginated. Only returns activities marked as visible in the app."
       authenticated: true
       deprecated: false
     headers:

@@ -2689,7 +2689,7 @@ and total route distance for each quest.</p>
     \"longitude\": -179,
     \"radius\": 7,
     \"category_id\": 16,
-    \"difficulty\": \"medium\"
+    \"difficulty\": \"hard\"
 }"
 </code></pre></div>
 
@@ -2720,7 +2720,7 @@ let body = {
     "longitude": -179,
     "radius": 7,
     "category_id": 16,
-    "difficulty": "medium"
+    "difficulty": "hard"
 };
 
 fetch(url, {
@@ -2956,10 +2956,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="difficulty"                data-endpoint="GETapi-v1-quests-nearby"
-               value="medium"
+               value="hard"
                data-component="body">
     <br>
-<p>Example: <code>medium</code></p>
+<p>Example: <code>hard</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>easy</code></li> <li><code>medium</code></li> <li><code>hard</code></li></ul>
         </div>
@@ -3340,17 +3340,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
     --form "difficulty=medium"\
-    --form "visibility=school"\
+    --form "visibility=public"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
-    --form "wrong_answer_behaviour=retry_free"\
+    --form "wrong_answer_behaviour=retry_penalty"\
     --form "wrong_answer_penalty_points=54"\
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
     --form "scoring_speed_bonus_enabled="\
     --form "scoring_wrong_attempt_penalty_enabled="\
-    --form "scoring_quest_completion_time_bonus_enabled=1"\
+    --form "scoring_quest_completion_time_bonus_enabled="\
     --form "checkpoints[][title]=b"\
     --form "checkpoints[][description]=Eius et animi quos velit et."\
     --form "checkpoints[][latitude]=-89"\
@@ -3359,8 +3359,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "checkpoints[][questions][][question_text]=architecto"\
     --form "checkpoints[][questions][][question_type]=open_text"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
-    --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php21l0ulei4ik89dSr9ss" </code></pre></div>
+    --form "checkpoints[][questions][][answers][][is_correct]="\
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpna6bna9c06pm7BSR8YT" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3379,17 +3379,17 @@ body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
 body.append('difficulty', 'medium');
-body.append('visibility', 'school');
+body.append('visibility', 'public');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
-body.append('wrong_answer_behaviour', 'retry_free');
+body.append('wrong_answer_behaviour', 'retry_penalty');
 body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
 body.append('scoring_speed_bonus_enabled', '');
 body.append('scoring_wrong_attempt_penalty_enabled', '');
-body.append('scoring_quest_completion_time_bonus_enabled', '1');
+body.append('scoring_quest_completion_time_bonus_enabled', '');
 body.append('checkpoints[][title]', 'b');
 body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
 body.append('checkpoints[][latitude]', '-89');
@@ -3398,7 +3398,7 @@ body.append('checkpoints[][hint]', 'architecto');
 body.append('checkpoints[][questions][][question_text]', 'architecto');
 body.append('checkpoints[][questions][][question_type]', 'open_text');
 body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
-body.append('checkpoints[][questions][][answers][][is_correct]', '1');
+body.append('checkpoints[][questions][][answers][][is_correct]', '');
 body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
 
 fetch(url, {
@@ -3579,10 +3579,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="POSTapi-v1-quests"
-               value="school"
+               value="public"
                data-component="body">
     <br>
-<p>Example: <code>school</code></p>
+<p>Example: <code>public</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
@@ -3608,7 +3608,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php21l0ulei4ik89dSr9ss</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phpna6bna9c06pm7BSR8YT</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -3641,10 +3641,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="wrong_answer_behaviour"                data-endpoint="POSTapi-v1-quests"
-               value="retry_free"
+               value="retry_penalty"
                data-component="body">
     <br>
-<p>Example: <code>retry_free</code></p>
+<p>Example: <code>retry_penalty</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
         </div>
@@ -3748,7 +3748,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -3898,7 +3898,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
                     </div>
                                     </details>
         </div>
@@ -3930,16 +3930,16 @@ Must be one of:
     --form "description=Eius et animi quos velit et."\
     --form "category_id=16"\
     --form "difficulty=easy"\
-    --form "visibility=private"\
+    --form "visibility=public"\
     --form "estimated_duration_minutes=22"\
     --form "access_code=gzmiyvdljnikhway"\
     --form "checkpoint_arrival_radius_meters=18"\
-    --form "wrong_answer_behaviour=retry_penalty"\
+    --form "wrong_answer_behaviour=three_strikes_hint"\
     --form "wrong_answer_penalty_points=54"\
     --form "wrong_answer_lockout_seconds=38"\
     --form "scoring_points_per_correct=50"\
     --form "scoring_speed_bonus_enabled=1"\
-    --form "scoring_wrong_attempt_penalty_enabled=1"\
+    --form "scoring_wrong_attempt_penalty_enabled="\
     --form "scoring_quest_completion_time_bonus_enabled=1"\
     --form "checkpoints[][title]=u"\
     --form "checkpoints[][description]=Eius et animi quos velit et."\
@@ -3947,10 +3947,10 @@ Must be one of:
     --form "checkpoints[][longitude]=-179"\
     --form "checkpoints[][hint]=architecto"\
     --form "checkpoints[][questions][][question_text]=architecto"\
-    --form "checkpoints[][questions][][question_type]=true_false"\
+    --form "checkpoints[][questions][][question_type]=multiple_choice"\
     --form "checkpoints[][questions][][answers][][answer_text]=b"\
     --form "checkpoints[][questions][][answers][][is_correct]=1"\
-    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php83m8nddhvkhk2dTgeJU" </code></pre></div>
+    --form "cover_image=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php57g088pebddq5hHYiYu" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3969,16 +3969,16 @@ body.append('title', 'b');
 body.append('description', 'Eius et animi quos velit et.');
 body.append('category_id', '16');
 body.append('difficulty', 'easy');
-body.append('visibility', 'private');
+body.append('visibility', 'public');
 body.append('estimated_duration_minutes', '22');
 body.append('access_code', 'gzmiyvdljnikhway');
 body.append('checkpoint_arrival_radius_meters', '18');
-body.append('wrong_answer_behaviour', 'retry_penalty');
+body.append('wrong_answer_behaviour', 'three_strikes_hint');
 body.append('wrong_answer_penalty_points', '54');
 body.append('wrong_answer_lockout_seconds', '38');
 body.append('scoring_points_per_correct', '50');
 body.append('scoring_speed_bonus_enabled', '1');
-body.append('scoring_wrong_attempt_penalty_enabled', '1');
+body.append('scoring_wrong_attempt_penalty_enabled', '');
 body.append('scoring_quest_completion_time_bonus_enabled', '1');
 body.append('checkpoints[][title]', 'u');
 body.append('checkpoints[][description]', 'Eius et animi quos velit et.');
@@ -3986,7 +3986,7 @@ body.append('checkpoints[][latitude]', '-89');
 body.append('checkpoints[][longitude]', '-179');
 body.append('checkpoints[][hint]', 'architecto');
 body.append('checkpoints[][questions][][question_text]', 'architecto');
-body.append('checkpoints[][questions][][question_type]', 'true_false');
+body.append('checkpoints[][questions][][question_type]', 'multiple_choice');
 body.append('checkpoints[][questions][][answers][][answer_text]', 'b');
 body.append('checkpoints[][questions][][answers][][is_correct]', '1');
 body.append('cover_image', document.querySelector('input[name="cover_image"]').files[0]);
@@ -4189,10 +4189,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="visibility"                data-endpoint="PUTapi-v1-quests--id-"
-               value="private"
+               value="public"
                data-component="body">
     <br>
-<p>Example: <code>private</code></p>
+<p>Example: <code>public</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>public</code></li> <li><code>private</code></li> <li><code>school</code></li></ul>
         </div>
@@ -4218,7 +4218,7 @@ Must be one of:
                value=""
                data-component="body">
     <br>
-<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php83m8nddhvkhk2dTgeJU</code></p>
+<p>Must be an image. Must not be greater than 2048 kilobytes. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php57g088pebddq5hHYiYu</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>access_code</code></b>&nbsp;&nbsp;
@@ -4251,10 +4251,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="wrong_answer_behaviour"                data-endpoint="PUTapi-v1-quests--id-"
-               value="retry_penalty"
+               value="three_strikes_hint"
                data-component="body">
     <br>
-<p>Example: <code>retry_penalty</code></p>
+<p>Example: <code>three_strikes_hint</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>retry_free</code></li> <li><code>retry_penalty</code></li> <li><code>lockout</code></li> <li><code>three_strikes_hint</code></li></ul>
         </div>
@@ -4336,7 +4336,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>scoring_quest_completion_time_bonus_enabled</code></b>&nbsp;&nbsp;
@@ -4459,10 +4459,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="checkpoints.0.questions.0.question_type"                data-endpoint="PUTapi-v1-quests--id-"
-               value="true_false"
+               value="multiple_choice"
                data-component="body">
     <br>
-<p>Example: <code>true_false</code></p>
+<p>Example: <code>multiple_choice</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>multiple_choice</code></li> <li><code>true_false</code></li> <li><code>open_text</code></li></ul>
                     </div>
@@ -5421,7 +5421,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"quest_id\": 16,
-    \"play_mode\": \"competitive_teams\"
+    \"play_mode\": \"competitive_individual\"
 }"
 </code></pre></div>
 
@@ -5439,7 +5439,7 @@ const headers = {
 
 let body = {
     "quest_id": 16,
-    "play_mode": "competitive_teams"
+    "play_mode": "competitive_individual"
 };
 
 fetch(url, {
@@ -5580,10 +5580,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="play_mode"                data-endpoint="POSTapi-v1-sessions"
-               value="competitive_teams"
+               value="competitive_individual"
                data-component="body">
     <br>
-<p>Example: <code>competitive_teams</code></p>
+<p>Example: <code>competitive_individual</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>solo</code></li> <li><code>competitive_individual</code></li> <li><code>competitive_teams</code></li></ul>
         </div>
@@ -6266,7 +6266,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get the authenticated user's activity feed, cursor-paginated.</p>
+<p>Get the authenticated user's activity feed, cursor-paginated. Only returns activities marked as visible in the app.</p>
 
 <span id="example-requests-GETapi-v1-user-activities">
 <blockquote>Example request:</blockquote>
@@ -6429,7 +6429,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "name=John Doe"\
     --form "locale=da"\
-    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php42f1jmhe7ip14AU4s4x" </code></pre></div>
+    --form "avatar=@/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phphv18pe74aqir1IazzUx" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6578,7 +6578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/php42f1jmhe7ip14AU4s4x</code></p>
+<p>optional The user's avatar image. Max 2MB. Example: <code>/private/var/folders/9r/mhdnrpm56ldgyzp_hfy8513r0000gn/T/phphv18pe74aqir1IazzUx</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>locale</code></b>&nbsp;&nbsp;
