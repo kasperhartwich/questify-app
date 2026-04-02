@@ -33,6 +33,10 @@ class QuestResource extends JsonResource
                 'id' => $this->creator->id,
                 'name' => $this->creator->name,
             ]),
+            'is_favourited' => $this->when(
+                $request->user() !== null && $this->relationLoaded('favouritedByUsers'),
+                fn () => $this->favouritedByUsers->contains('id', $request->user()->id),
+            ),
             'created_at' => $this->created_at,
         ];
     }

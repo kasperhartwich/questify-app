@@ -214,7 +214,7 @@ endpoints:
         name: difficulty
         description: ''
         required: false
-        example: hard
+        example: easy
         type: string
         enumValues:
           - easy
@@ -228,7 +228,7 @@ endpoints:
       longitude: -179
       radius: 7
       category_id: 16
-      difficulty: hard
+      difficulty: easy
     fileParameters: []
     responses:
       -
@@ -521,432 +521,6 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: lockout
-        type: string
-        enumValues:
-          - retry_free
-          - retry_penalty
-          - lockout
-          - three_strikes_hint
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      wrong_answer_penalty_points:
-        custom: []
-        name: wrong_answer_penalty_points
-        description: 'Must be at least 0.'
-        required: false
-        example: 54
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      wrong_answer_lockout_seconds:
-        custom: []
-        name: wrong_answer_lockout_seconds
-        description: 'Must be at least 0.'
-        required: false
-        example: 38
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      scoring_points_per_correct:
-        custom: []
-        name: scoring_points_per_correct
-        description: 'Must be at least 0.'
-        required: false
-        example: 50
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      scoring_speed_bonus_enabled:
-        custom: []
-        name: scoring_speed_bonus_enabled
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      scoring_wrong_attempt_penalty_enabled:
-        custom: []
-        name: scoring_wrong_attempt_penalty_enabled
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      scoring_quest_completion_time_bonus_enabled:
-        custom: []
-        name: scoring_quest_completion_time_bonus_enabled
-        description: ''
-        required: false
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      checkpoints:
-        custom: []
-        name: checkpoints
-        description: 'Must have at least 1 items.'
-        required: true
-        example:
-          - []
-        type: 'object[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].title':
-        custom: []
-        name: 'checkpoints[].title'
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].description':
-        custom: []
-        name: 'checkpoints[].description'
-        description: ''
-        required: false
-        example: 'Eius et animi quos velit et.'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      'checkpoints[].latitude':
-        custom: []
-        name: 'checkpoints[].latitude'
-        description: 'Must be between -90 and 90.'
-        required: true
-        example: -89
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].longitude':
-        custom: []
-        name: 'checkpoints[].longitude'
-        description: 'Must be between -180 and 180.'
-        required: true
-        example: -179
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].hint':
-        custom: []
-        name: 'checkpoints[].hint'
-        description: ''
-        required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      'checkpoints[].questions':
-        custom: []
-        name: 'checkpoints[].questions'
-        description: 'Must have at least 1 items.'
-        required: true
-        example:
-          - []
-        type: 'object[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].questions[].question_text':
-        custom: []
-        name: 'checkpoints[].questions[].question_text'
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].questions[].question_type':
-        custom: []
-        name: 'checkpoints[].questions[].question_type'
-        description: ''
-        required: true
-        example: true_false
-        type: string
-        enumValues:
-          - multiple_choice
-          - true_false
-          - open_text
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].questions[].answers':
-        custom: []
-        name: 'checkpoints[].questions[].answers'
-        description: 'Must have at least 1 items.'
-        required: true
-        example:
-          - []
-        type: 'object[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].questions[].answers[].answer_text':
-        custom: []
-        name: 'checkpoints[].questions[].answers[].answer_text'
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      'checkpoints[].questions[].answers[].is_correct':
-        custom: []
-        name: 'checkpoints[].questions[].answers[].is_correct'
-        description: ''
-        required: true
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      title: b
-      description: 'Eius et animi quos velit et.'
-      category_id: 16
-      difficulty: easy
-      visibility: school
-      estimated_duration_minutes: 22
-      access_code: gzmiyvdljnikhway
-      checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: lockout
-      wrong_answer_penalty_points: 54
-      wrong_answer_lockout_seconds: 38
-      scoring_points_per_correct: 50
-      scoring_speed_bonus_enabled: true
-      scoring_wrong_attempt_penalty_enabled: true
-      scoring_quest_completion_time_bonus_enabled: false
-      checkpoints:
-        -
-          title: b
-          description: 'Eius et animi quos velit et.'
-          latitude: -89
-          longitude: -179
-          hint: architecto
-          questions:
-            -
-              question_text: architecto
-              question_type: true_false
-              answers:
-                -
-                  answer_text: b
-                  is_correct: false
-    fileParameters:
-      cover_image: null
-    responses:
-      -
-        custom: []
-        status: 201
-        content: '{"data": {"id": 1, "title": "City Walk", "status": "draft"}}'
-        headers: []
-        description: ''
-      -
-        custom: []
-        status: 422
-        content: '{"message": "The title field is required.", "errors": {"title": ["The title field is required."]}}'
-        headers: []
-        description: 'Validation error'
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - PUT
-    uri: 'api/v1/quests/{id}'
-    metadata:
-      custom: []
-      groupName: Quests
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update quest'
-      description: "Update a quest's details. Only the quest creator can update."
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the quest.'
-        required: true
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      quest:
-        custom: []
-        name: quest
-        description: 'The quest ID.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: 16
-      quest: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      title:
-        custom: []
-        name: title
-        description: 'Must not be greater than 255 characters.'
-        required: false
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      description:
-        custom: []
-        name: description
-        description: ''
-        required: false
-        example: 'Eius et animi quos velit et.'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      category_id:
-        custom: []
-        name: category_id
-        description: 'The <code>id</code> of an existing record in the categories table.'
-        required: false
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      difficulty:
-        custom: []
-        name: difficulty
-        description: ''
-        required: false
-        example: hard
-        type: string
-        enumValues:
-          - easy
-          - medium
-          - hard
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      visibility:
-        custom: []
-        name: visibility
-        description: ''
-        required: false
-        example: private
-        type: string
-        enumValues:
-          - public
-          - private
-          - school
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      estimated_duration_minutes:
-        custom: []
-        name: estimated_duration_minutes
-        description: 'Must be at least 1.'
-        required: false
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      cover_image:
-        custom: []
-        name: cover_image
-        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      access_code:
-        custom: []
-        name: access_code
-        description: 'Must not be greater than 20 characters.'
-        required: false
-        example: gzmiyvdljnikhway
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      checkpoint_arrival_radius_meters:
-        custom: []
-        name: checkpoint_arrival_radius_meters
-        description: 'Must be at least 10. Must not be greater than 500.'
-        required: false
-        example: 18
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      wrong_answer_behaviour:
-        custom: []
-        name: wrong_answer_behaviour
-        description: ''
-        required: false
         example: retry_penalty
         type: string
         enumValues:
@@ -995,7 +569,7 @@ endpoints:
         name: scoring_speed_bonus_enabled
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1006,7 +580,7 @@ endpoints:
         name: scoring_wrong_attempt_penalty_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1017,7 +591,7 @@ endpoints:
         name: scoring_quest_completion_time_bonus_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1027,8 +601,9 @@ endpoints:
         custom: []
         name: checkpoints
         description: 'Must have at least 1 items.'
-        required: false
-        example: null
+        required: true
+        example:
+          - []
         type: 'object[]'
         enumValues: []
         exampleWasSpecified: false
@@ -1039,7 +614,7 @@ endpoints:
         name: 'checkpoints[].title'
         description: 'Must not be greater than 255 characters.'
         required: true
-        example: u
+        example: b
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1154,7 +729,7 @@ endpoints:
         name: 'checkpoints[].questions[].answers[].is_correct'
         description: ''
         required: true
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1164,8 +739,8 @@ endpoints:
       title: b
       description: 'Eius et animi quos velit et.'
       category_id: 16
-      difficulty: hard
-      visibility: private
+      difficulty: easy
+      visibility: school
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
@@ -1173,12 +748,12 @@ endpoints:
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
-      scoring_speed_bonus_enabled: true
-      scoring_wrong_attempt_penalty_enabled: false
-      scoring_quest_completion_time_bonus_enabled: false
+      scoring_speed_bonus_enabled: false
+      scoring_wrong_attempt_penalty_enabled: true
+      scoring_quest_completion_time_bonus_enabled: true
       checkpoints:
         -
-          title: u
+          title: b
           description: 'Eius et animi quos velit et.'
           latitude: -89
           longitude: -179
@@ -1190,7 +765,432 @@ endpoints:
               answers:
                 -
                   answer_text: b
-                  is_correct: false
+                  is_correct: true
+    fileParameters:
+      cover_image: null
+    responses:
+      -
+        custom: []
+        status: 201
+        content: '{"data": {"id": 1, "title": "City Walk", "status": "draft"}}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: '{"message": "The title field is required.", "errors": {"title": ["The title field is required."]}}'
+        headers: []
+        description: 'Validation error'
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/v1/quests/{id}'
+    metadata:
+      custom: []
+      groupName: Quests
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update quest'
+      description: "Update a quest's details. Only the quest creator can update."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the quest.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+      quest: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: ''
+        required: false
+        example: 'Eius et animi quos velit et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      category_id:
+        custom: []
+        name: category_id
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      difficulty:
+        custom: []
+        name: difficulty
+        description: ''
+        required: false
+        example: medium
+        type: string
+        enumValues:
+          - easy
+          - medium
+          - hard
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      visibility:
+        custom: []
+        name: visibility
+        description: ''
+        required: false
+        example: public
+        type: string
+        enumValues:
+          - public
+          - private
+          - school
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      estimated_duration_minutes:
+        custom: []
+        name: estimated_duration_minutes
+        description: 'Must be at least 1.'
+        required: false
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cover_image:
+        custom: []
+        name: cover_image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      access_code:
+        custom: []
+        name: access_code
+        description: 'Must not be greater than 20 characters.'
+        required: false
+        example: gzmiyvdljnikhway
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      checkpoint_arrival_radius_meters:
+        custom: []
+        name: checkpoint_arrival_radius_meters
+        description: 'Must be at least 10. Must not be greater than 500.'
+        required: false
+        example: 18
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      wrong_answer_behaviour:
+        custom: []
+        name: wrong_answer_behaviour
+        description: ''
+        required: false
+        example: three_strikes_hint
+        type: string
+        enumValues:
+          - retry_free
+          - retry_penalty
+          - lockout
+          - three_strikes_hint
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      wrong_answer_penalty_points:
+        custom: []
+        name: wrong_answer_penalty_points
+        description: 'Must be at least 0.'
+        required: false
+        example: 54
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      wrong_answer_lockout_seconds:
+        custom: []
+        name: wrong_answer_lockout_seconds
+        description: 'Must be at least 0.'
+        required: false
+        example: 38
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      scoring_points_per_correct:
+        custom: []
+        name: scoring_points_per_correct
+        description: 'Must be at least 0.'
+        required: false
+        example: 50
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      scoring_speed_bonus_enabled:
+        custom: []
+        name: scoring_speed_bonus_enabled
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      scoring_wrong_attempt_penalty_enabled:
+        custom: []
+        name: scoring_wrong_attempt_penalty_enabled
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      scoring_quest_completion_time_bonus_enabled:
+        custom: []
+        name: scoring_quest_completion_time_bonus_enabled
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      checkpoints:
+        custom: []
+        name: checkpoints
+        description: 'Must have at least 1 items.'
+        required: false
+        example: null
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].title':
+        custom: []
+        name: 'checkpoints[].title'
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: u
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].description':
+        custom: []
+        name: 'checkpoints[].description'
+        description: ''
+        required: false
+        example: 'Eius et animi quos velit et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      'checkpoints[].latitude':
+        custom: []
+        name: 'checkpoints[].latitude'
+        description: 'Must be between -90 and 90.'
+        required: true
+        example: -89
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].longitude':
+        custom: []
+        name: 'checkpoints[].longitude'
+        description: 'Must be between -180 and 180.'
+        required: true
+        example: -179
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].hint':
+        custom: []
+        name: 'checkpoints[].hint'
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      'checkpoints[].questions':
+        custom: []
+        name: 'checkpoints[].questions'
+        description: 'Must have at least 1 items.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].questions[].question_text':
+        custom: []
+        name: 'checkpoints[].questions[].question_text'
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].questions[].question_type':
+        custom: []
+        name: 'checkpoints[].questions[].question_type'
+        description: ''
+        required: true
+        example: true_false
+        type: string
+        enumValues:
+          - multiple_choice
+          - true_false
+          - open_text
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].questions[].answers':
+        custom: []
+        name: 'checkpoints[].questions[].answers'
+        description: 'Must have at least 1 items.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].questions[].answers[].answer_text':
+        custom: []
+        name: 'checkpoints[].questions[].answers[].answer_text'
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'checkpoints[].questions[].answers[].is_correct':
+        custom: []
+        name: 'checkpoints[].questions[].answers[].is_correct'
+        description: ''
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: b
+      description: 'Eius et animi quos velit et.'
+      category_id: 16
+      difficulty: medium
+      visibility: public
+      estimated_duration_minutes: 22
+      access_code: gzmiyvdljnikhway
+      checkpoint_arrival_radius_meters: 18
+      wrong_answer_behaviour: three_strikes_hint
+      wrong_answer_penalty_points: 54
+      wrong_answer_lockout_seconds: 38
+      scoring_points_per_correct: 50
+      scoring_speed_bonus_enabled: true
+      scoring_wrong_attempt_penalty_enabled: true
+      scoring_quest_completion_time_bonus_enabled: false
+      checkpoints:
+        -
+          title: u
+          description: 'Eius et animi quos velit et.'
+          latitude: -89
+          longitude: -179
+          hint: architecto
+          questions:
+            -
+              question_text: architecto
+              question_type: true_false
+              answers:
+                -
+                  answer_text: b
+                  is_correct: true
     fileParameters:
       cover_image: null
     responses:

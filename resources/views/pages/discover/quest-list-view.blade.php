@@ -38,29 +38,48 @@
     </div>
 
     {{-- Mini Map Widget --}}
-    <a href="/discover/map" class="relative mx-[16px] mb-[12px] block h-[120px] overflow-hidden rounded-[14px] bg-[#E4EDE4]" wire:navigate>
-        {{-- Decorative road lines --}}
-        <div class="absolute left-0 top-[40%] h-[3px] w-full rounded-sm bg-white/60"></div>
-        <div class="absolute left-[35%] top-0 h-full w-[3px] rounded-sm bg-white/60"></div>
-        <div class="absolute left-0 top-[70%] h-[2px] w-full rounded-sm bg-white/40"></div>
-        <div class="absolute left-[65%] top-0 h-full w-[2px] rounded-sm bg-white/40"></div>
-        {{-- Colored pins --}}
-        <div class="absolute left-[28%] top-[18%]">
-            <div class="h-[18px] w-[18px] origin-center rotate-[-45deg] rounded-full rounded-bl-none bg-amber-400 shadow-md"></div>
-        </div>
-        <div class="absolute left-[58%] top-[52%]">
-            <div class="h-[14px] w-[14px] origin-center rotate-[-45deg] rounded-full rounded-bl-none bg-forest-600 shadow-sm"></div>
-        </div>
-        <div class="absolute left-[72%] top-[28%]">
-            <div class="h-[14px] w-[14px] origin-center rotate-[-45deg] rounded-full rounded-bl-none bg-coral shadow-sm"></div>
-        </div>
-        {{-- Blue location dot --}}
-        <div class="absolute left-[42%] top-[50%] h-3 w-3 rounded-full bg-[#2563EB] shadow-[0_0_0_4px_rgba(37,99,235,0.2)]"></div>
+    <div class="relative mx-[16px] mb-[12px] h-[120px] overflow-hidden rounded-[14px]"
+        x-data
+        x-init="
+            mapboxgl.accessToken = @js(config('services.mapbox.token'));
+            const miniMap = new mapboxgl.Map({
+                container: $refs.miniMap,
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                attributionControl: false,
+                interactive: false,
+            });
+            miniMap.on('load', () => {
+                const quests = @js(
+                    collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
+                    ->map(fn($q) => [
+                        'lat' => (float) ($q->starting_checkpoint->latitude ?? $q->checkpoints[0]->latitude),
+                        'lng' => (float) ($q->starting_checkpoint->longitude ?? $q->checkpoints[0]->longitude),
+                    ])->values()->all()
+                );
+                quests.forEach(q => {
+                    const el = document.createElement('div');
+                    el.className = 'mapbox-quest-marker';
+                    el.style.cssText = 'width:16px;height:16px;border-width:2px;';
+                    new mapboxgl.Marker({ element: el }).setLngLat([q.lng, q.lat]).addTo(miniMap);
+                });
+                if (quests.length) {
+                    const bounds = new mapboxgl.LngLatBounds();
+                    quests.forEach(q => bounds.extend([q.lng, q.lat]));
+                    miniMap.fitBounds(bounds, { padding: 20 });
+                }
+            });
+        "
+    >
+        <div x-ref="miniMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+        {{-- Clickable overlay to navigate to full map --}}
+        <a href="/discover/map" class="absolute inset-0 z-10" wire:navigate></a>
         {{-- Nearby badge --}}
-        <div class="absolute bottom-2.5 right-2.5 rounded-[10px] bg-white px-2.5 py-1 text-[10px] font-semibold text-forest-600 shadow-md">
+        <div class="absolute bottom-2.5 right-2.5 z-20 rounded-[10px] bg-white px-2.5 py-1 text-[10px] font-semibold text-forest-600 shadow-md">
             {{ count($quests) }} {{ __('general.quests_nearby') }}
         </div>
-    </a>
+    </div>
 
     {{-- Section Header --}}
     <div class="flex items-center justify-between px-[16px] pb-2 pt-3">

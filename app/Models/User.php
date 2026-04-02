@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -93,5 +94,10 @@ class User extends Authenticatable implements FilamentUser
     public function moderatedFlags(): HasMany
     {
         return $this->hasMany(ModerationFlag::class, 'moderator_id');
+    }
+
+    public function favouriteQuests(): BelongsToMany
+    {
+        return $this->belongsToMany(Quest::class, 'quest_favourites')->withTimestamps();
     }
 }

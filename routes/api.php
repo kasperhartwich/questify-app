@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\GameplayController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\QuestController;
+use App\Http\Controllers\Api\V1\QuestFavouriteController;
 use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserProfileController;
 use App\Http\Controllers\Api\V1\UserQuestController;
@@ -56,6 +57,8 @@ Route::prefix('v1')->group(function () {
         Route::delete('/quests/{quest}', [QuestController::class, 'destroy'])->name('quests.destroy');
         Route::post('/quests/{quest}/publish', [QuestController::class, 'publish'])->name('quests.publish');
         Route::post('/quests/{quest}/rate', [QuestController::class, 'rate'])->name('quests.rate');
+        Route::post('/quests/{quest}/favourite', [QuestFavouriteController::class, 'toggle'])->name('quests.favourite.toggle');
+        Route::get('/user/favourites', [QuestFavouriteController::class, 'index'])->name('user.favourites');
 
         // Sessions
         Route::post('/sessions', [SessionController::class, 'store'])->name('sessions.store');

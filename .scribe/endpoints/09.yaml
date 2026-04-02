@@ -1,96 +1,19 @@
-name: 'User Profile'
+name: 'User Sessions'
 description: ''
 endpoints:
   -
     custom: []
     httpMethods:
-      - PUT
-    uri: api/v1/user/profile
+      - GET
+    uri: api/v1/user/sessions
     metadata:
       custom: []
-      groupName: 'User Profile'
+      groupName: 'User Sessions'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update profile'
-      description: "Update the authenticated user's name, avatar, and locale. Email cannot be changed."
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        custom: []
-        name: name
-        description: "optional The user's name."
-        required: false
-        example: 'John Doe'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-      avatar:
-        custom: []
-        name: avatar
-        description: "optional The user's avatar image. Max 2MB."
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      locale:
-        custom: []
-        name: locale
-        description: "optional The user's locale (en or da)."
-        required: false
-        example: da
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      name: 'John Doe'
-      locale: da
-    fileParameters:
-      avatar: null
-    responses:
-      -
-        custom: []
-        status: 200
-        content: '{"data": {"id": 1, "name": "Updated Name", "avatar_url": "...", "locale": "da"}}'
-        headers: []
-        description: ''
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - DELETE
-    uri: api/v1/user
-    metadata:
-      custom: []
-      groupName: 'User Profile'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Delete account'
-      description: "Permanently delete the authenticated user's account and all associated tokens (GDPR)."
+      title: "List user's session history"
+      description: 'Get a paginated list of sessions the user participated in, with session and quest details.'
       authenticated: true
       deprecated: false
     headers:
@@ -99,8 +22,20 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      page:
+        custom: []
+        name: page
+        description: 'The page number.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      page: 1
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -108,7 +43,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"message": "Account deleted."}'
+        content: '{"data": [{"participant_id": 1, "display_name": "Lars", "total_score": 500, "quest_completed_at": null, "session": {"id": 1, "session_code": "ABC123", "status": "completed", "quest": {"id": 1, "title": "City Walk"}}}]}'
         headers: []
         description: ''
     responseFields: []

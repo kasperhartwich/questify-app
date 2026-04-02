@@ -1,19 +1,90 @@
-name: 'User Quests'
+name: Favourites
 description: ''
 endpoints:
   -
     custom: []
     httpMethods:
-      - GET
-    uri: api/v1/user/quests
+      - POST
+    uri: 'api/v1/quests/{quest_id}/favourite'
     metadata:
       custom: []
-      groupName: 'User Quests'
+      groupName: Favourites
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: "List user's created quests"
-      description: 'Get a cursor-paginated list of quests created by the authenticated user.'
+      title: 'Toggle favourite'
+      description: "Add or remove a quest from the authenticated user's favourites."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      quest_id:
+        custom: []
+        name: quest_id
+        description: 'The ID of the quest.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      quest:
+        custom: []
+        name: quest
+        description: 'The quest ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      quest_id: 16
+      quest: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data": {"is_favourited": true}, "message": "Quest added to favourites."}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 200
+        content: '{"data": {"is_favourited": false}, "message": "Quest removed from favourites."}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/user/favourites
+    metadata:
+      custom: []
+      groupName: Favourites
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List favourite quests'
+      description: "Get the authenticated user's favourite quests, cursor-paginated."
       authenticated: true
       deprecated: false
     headers:
@@ -31,7 +102,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data": [{"id": 1, "title": "City Walk", "status": "draft", "category": {"id": 1, "name": "History"}, "sessions_count": 3}]}'
+        content: '{"data": [{"id": 1, "title": "City Walk", "is_favourited": true}]}'
         headers: []
         description: ''
     responseFields: []
