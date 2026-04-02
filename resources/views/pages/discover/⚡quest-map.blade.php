@@ -91,6 +91,21 @@ class extends Component
         filterDifficulty: 'all',
         isSatellite: false,
         userLocated: false,
+        init() {
+            mapboxgl.accessToken = @js(config('services.mapbox.token'));
+            this.map = new mapboxgl.Map({
+                container: this.$refs.mapCanvas,
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                attributionControl: false,
+            });
+            this.map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+            this.map.on('load', () => {
+                this.addMarkers();
+                this.locateUser();
+            });
+        },
         addMarkers() {
             this.markers.forEach(m => m.remove());
             this.markers = [];
@@ -191,21 +206,6 @@ class extends Component
             });
         },
     }"
-    x-init="
-        mapboxgl.accessToken = @js(config('services.mapbox.token'));
-        map = new mapboxgl.Map({
-            container: $refs.mapCanvas,
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: [12.5683, 55.6761],
-            zoom: 12,
-            attributionControl: false,
-        });
-        map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-        map.on('load', () => {
-            addMarkers();
-            locateUser();
-        });
-    "
 >
     <style>
         .mapbox-quest-marker {
@@ -224,7 +224,7 @@ class extends Component
     </style>
 
     {{-- Full-screen map --}}
-    <div x-ref="mapCanvas" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+    <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
 
     {{-- Floating search bar --}}
     <div class="absolute left-0 right-0 top-[56px] z-10 px-4">
