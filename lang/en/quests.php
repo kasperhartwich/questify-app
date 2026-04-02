@@ -35,6 +35,7 @@ return [
     'discover_description' => 'Explore quests near you and around the world.',
     'by_creator' => 'by :name',
     'no_questions' => 'No questions added yet.',
+    'checkpoints_hidden_note' => 'Checkpoint locations and questions are hidden until you start. Part of the adventure is not knowing what\'s ahead.',
 
     'validation' => [
         'category_required' => 'A category is required.',

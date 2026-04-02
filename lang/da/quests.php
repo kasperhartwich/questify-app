@@ -35,6 +35,7 @@ return [
     'discover_description' => 'Udforsk quests i nærheden og rundt i verden.',
     'by_creator' => 'af :name',
     'no_questions' => 'Ingen spørgsmål tilføjet endnu.',
+    'checkpoints_hidden_note' => 'Checkpoint-placeringer og spørgsmål er skjulte, indtil du starter. En del af eventyret er ikke at vide, hvad der venter.',
 
     'validation' => [
         'category_required' => 'En kategori er påkrævet.',
