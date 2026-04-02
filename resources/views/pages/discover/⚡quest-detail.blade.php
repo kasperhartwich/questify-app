@@ -15,6 +15,8 @@ class extends Component
 
     public object $questData;
 
+    public bool $isFavourited = false;
+
     public string $activeTab = 'overview';
 
     public string $playMode = 'solo';
@@ -24,13 +26,14 @@ class extends Component
         $this->questId = $quest;
         $response = $this->tryApiCall(fn () => $this->api->quests()->show($quest));
         $this->questData = $this->toObject($response['data'] ?? []);
+        $this->isFavourited = (bool) ($this->questData->is_favourited ?? false);
     }
 
     public function toggleFavourite(): void
     {
         try {
             $response = $this->api->quests()->toggleFavourite($this->questId);
-            $this->questData->is_favourited = $response['data']['is_favourited'] ?? false;
+            $this->isFavourited = $response['data']['is_favourited'] ?? false;
         } catch (\App\Exceptions\Api\ApiAuthenticationException) {
             session()->flush();
             $this->redirect(route('login'));
@@ -139,7 +142,7 @@ class extends Component
 
         {{-- Bookmark button --}}
         <button wire:click="toggleFavourite" class="absolute right-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
-            @if ($questData->is_favourited ?? false)
+            @if ($isFavourited)
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#0B3D2E" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
             @else
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
