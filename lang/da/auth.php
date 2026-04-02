@@ -60,4 +60,5 @@ return [
     'reset_link_sent' => 'Vi har sendt et link til nulstilling af adgangskode til din e-mailadresse.',
     'back_to_login' => 'Tilbage til login',
     'send_sms' => 'Send SMS →',
+    'complete_your_profile' => 'Fortæl os lidt om dig selv',
 ];

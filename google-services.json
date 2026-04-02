@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "284645309886",
+    "project_id": "focusweb-questify",
+    "storage_bucket": "focusweb-questify.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284645309886:android:f69341e37f35d3e3a04def",
+        "android_client_info": {
+          "package_name": "focusweb.questify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOHd_aPCqk1kHqNzNyMgWFLFfM-oThx2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -53,6 +53,7 @@ class extends Component
         $this->redirect('/session/' . $this->code . '/play');
     }
 
+    #[On('confirm-start-session')]
     public function startSession(): void
     {
         if (! $this->isHost) {
@@ -191,8 +192,14 @@ class extends Component
     @if ($isHost)
         <div class="border-t border-cream-border bg-cream px-5 pb-5 pt-4">
             <button
-                wire:click="startSession"
-                wire:confirm="{{ __('sessions.start_confirm') }}"
+                wire:click="$dispatch('show-dialog', {
+                    type: 'warning',
+                    title: '{{ __('sessions.start_confirm_title') }}',
+                    message: '{{ __('sessions.start_confirm_message') }}',
+                    confirmLabel: '{{ __('sessions.start') }}',
+                    cancelLabel: '{{ __('general.dismiss') }}',
+                    confirmEvent: 'confirm-start-session'
+                })"
                 class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark hover:bg-amber-500"
                 {{ count($participants) < 1 ? 'disabled' : '' }}
             >

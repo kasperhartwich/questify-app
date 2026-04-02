@@ -28,7 +28,7 @@
             {{ $slot }}
         </main>
 
-        <livewire:error-modal />
+        <livewire:dialog />
 
         @livewireScripts
     </body>

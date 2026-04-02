@@ -64,6 +64,7 @@ class extends Component
         $this->loadDashboard();
     }
 
+    #[On('confirm-end-session')]
     public function endSession(): void
     {
         $this->tryApiCall(fn () => $this->api->sessions()->end($this->code));
@@ -135,9 +136,15 @@ class extends Component
     {{-- End Session Button --}}
     <div class="border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
         <button
-            wire:click="endSession"
-            wire:confirm="{{ __('sessions.end_confirm') }}"
-            class="w-full rounded-lg bg-red-600 px-4 py-3 font-semibold text-white hover:bg-red-700"
+            wire:click="$dispatch('show-dialog', {
+                type: 'destructive',
+                title: '{{ __('sessions.end_confirm_title') }}',
+                message: '{{ __('sessions.end_confirm_message') }}',
+                confirmLabel: '{{ __('sessions.end') }}',
+                cancelLabel: '{{ __('general.cancel') }}',
+                confirmEvent: 'confirm-end-session'
+            })"
+            class="w-full rounded-lg bg-coral px-4 py-3 font-semibold text-white hover:bg-coral/90"
         >
             {{ __('sessions.end') }}
         </button>

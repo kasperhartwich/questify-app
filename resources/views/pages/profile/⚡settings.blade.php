@@ -5,6 +5,7 @@ use App\Enums\SocialProvider;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -100,6 +101,7 @@ class extends Component
         $this->redirect('/');
     }
 
+    #[On('confirm-delete-account')]
     public function deleteAccount(): void
     {
         $this->tryApiCall(fn () => $this->api->user()->deleteAccount());
@@ -387,7 +389,18 @@ class extends Component
 
                 {{-- Delete Account --}}
                 <div>
-                    <button wire:click="deleteAccount" wire:confirm="{{ __('general.delete_account_confirm') }}" class="flex w-full items-center gap-3 rounded-[14px] bg-coral-light p-[14px_16px]" style="border: 1.5px solid rgba(232,92,58,0.2);">
+                    <button
+                        wire:click="$dispatch('show-dialog', {
+                            type: 'destructive',
+                            title: '{{ __('general.delete_account_title') }}',
+                            message: '{{ __('general.delete_account_message') }}',
+                            confirmLabel: '{{ __('general.delete') }}',
+                            cancelLabel: '{{ __('general.cancel') }}',
+                            confirmEvent: 'confirm-delete-account'
+                        })"
+                        class="flex w-full items-center gap-3 rounded-[14px] bg-coral-light p-[14px_16px]"
+                        style="border: 1.5px solid rgba(232,92,58,0.2);"
+                    >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E85C3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"/>
                             <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>

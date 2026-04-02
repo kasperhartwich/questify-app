@@ -123,7 +123,7 @@
             />
         </native:bottom-nav>
 
-        <livewire:error-modal />
+        <livewire:dialog />
 
         @livewireScripts
     </body>

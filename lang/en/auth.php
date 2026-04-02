@@ -60,4 +60,5 @@ return [
     'reset_link_sent' => "We've sent a password reset link to your email address.",
     'back_to_login' => 'Back to Login',
     'send_sms' => 'Send SMS →',
+    'complete_your_profile' => 'Tell us a bit about yourself',
 ];

@@ -37,7 +37,11 @@ return [
     // Gameplay
     'share_link' => 'Share Link',
     'start_confirm' => 'Are you sure you want to start the session?',
+    'start_confirm_title' => 'Start session?',
+    'start_confirm_message' => 'All players in the lobby will begin the quest. Make sure everyone is ready.',
     'end_confirm' => 'Are you sure you want to end the session?',
+    'end_confirm_title' => 'End session?',
+    'end_confirm_message' => 'This will end the session for all players. This cannot be undone.',
     'show_hint' => 'Show Hint',
     'answer_questions' => 'Answer Questions',
     'submit_answer' => 'Submit Answer',

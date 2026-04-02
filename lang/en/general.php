@@ -227,4 +227,12 @@ return [
     // Language
     'select_language' => 'Select language',
     'choose_language' => 'Choose your preferred language',
+
+    // Dialog
+    'ok' => 'OK',
+    'dismiss' => 'Dismiss',
+    'something_went_wrong' => 'Something went wrong',
+    'unexpected_error' => 'An unexpected error occurred. Please try again.',
+    'delete_account_title' => 'Delete account?',
+    'delete_account_message' => 'This will permanently remove your account and all its data. This cannot be undone.',
 ];

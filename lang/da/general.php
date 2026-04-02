@@ -223,4 +223,12 @@ return [
     // Language
     'select_language' => 'Vælg sprog',
     'choose_language' => 'Vælg dit foretrukne sprog',
+
+    // Dialog
+    'ok' => 'OK',
+    'dismiss' => 'Afvis',
+    'something_went_wrong' => 'Noget gik galt',
+    'unexpected_error' => 'Der opstod en uventet fejl. Prøv igen.',
+    'delete_account_title' => 'Slet konto?',
+    'delete_account_message' => 'Dette vil permanent fjerne din konto og alle dens data. Dette kan ikke fortrydes.',
 ];

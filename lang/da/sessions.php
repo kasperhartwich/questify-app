@@ -37,7 +37,11 @@ return [
     // Gameplay
     'share_link' => 'Del link',
     'start_confirm' => 'Er du sikker på, at du vil starte sessionen?',
+    'start_confirm_title' => 'Start session?',
+    'start_confirm_message' => 'Alle spillere i lobbyen vil begynde questen. Sørg for at alle er klar.',
     'end_confirm' => 'Er du sikker på, at du vil afslutte sessionen?',
+    'end_confirm_title' => 'Afslut session?',
+    'end_confirm_message' => 'Dette vil afslutte sessionen for alle spillere. Dette kan ikke fortrydes.',
     'show_hint' => 'Vis hint',
     'answer_questions' => 'Besvar spørgsmål',
     'submit_answer' => 'Indsend svar',
