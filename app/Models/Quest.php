@@ -100,4 +100,35 @@ class Quest extends Model
     {
         return $this->belongsToMany(User::class, 'quest_favourites')->withTimestamps();
     }
+
+    public function calculateTotalDistance(): void
+    {
+        $checkpoints = $this->checkpoints()->orderBy('sort_order')->get();
+
+        $totalDistance = 0.0;
+
+        for ($i = 1; $i < $checkpoints->count(); $i++) {
+            $totalDistance += self::haversineDistance(
+                (float) $checkpoints[$i - 1]->latitude,
+                (float) $checkpoints[$i - 1]->longitude,
+                (float) $checkpoints[$i]->latitude,
+                (float) $checkpoints[$i]->longitude,
+            );
+        }
+
+        $this->updateQuietly(['total_distance_km' => round($totalDistance, 2)]);
+    }
+
+    public static function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earthRadiusKm = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2)
+            + cos(deg2rad($lat1)) * cos(deg2rad($lat2))
+            * sin($dLon / 2) * sin($dLon / 2);
+
+        return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
+    }
 }

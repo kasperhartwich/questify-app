@@ -23,6 +23,11 @@ class SetLocale
 
     private function resolveLocale(Request $request): string
     {
+        $sessionLocale = session('locale');
+        if ($sessionLocale && in_array($sessionLocale, self::SUPPORTED_LOCALES, true)) {
+            return $sessionLocale;
+        }
+
         if (Auth::check() && in_array(Auth::user()->locale, self::SUPPORTED_LOCALES, true)) {
             return Auth::user()->locale;
         }

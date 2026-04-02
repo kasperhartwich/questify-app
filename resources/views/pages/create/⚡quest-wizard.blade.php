@@ -79,7 +79,6 @@ class extends Component
         $this->categories = collect($response['data'] ?? [])
             ->pluck('name', 'id')
             ->toArray();
-        $this->addCheckpoint();
     }
 
     public function nextStep(): void
@@ -293,6 +292,11 @@ class extends Component
             2 => $this->validate([
                 'checkpoints' => ['required', 'array', 'min:1'],
                 'checkpoints.*.title' => ['nullable', 'string', 'max:255'],
+                'checkpoints.*.latitude' => ['required', 'numeric'],
+                'checkpoints.*.longitude' => ['required', 'numeric'],
+            ], [
+                'checkpoints.*.latitude.required' => __('quests.checkpoints_need_coordinates'),
+                'checkpoints.*.longitude.required' => __('quests.checkpoints_need_coordinates'),
             ]),
             3 => $this->validateQuestions(),
             4 => $this->validate([

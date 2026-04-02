@@ -223,4 +223,8 @@ return [
     'favourites' => 'Favourites',
     'no_favourites_yet' => 'No favourites yet',
     'no_favourites_yet_desc' => "You haven't saved any quests yet.\nTap the bookmark icon on a quest\nto add it to your favourites!",
+
+    // Language
+    'select_language' => 'Select language',
+    'choose_language' => 'Choose your preferred language',
 ];

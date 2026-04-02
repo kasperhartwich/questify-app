@@ -100,4 +100,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Quest::class, 'quest_favourites')->withTimestamps();
     }
+
+    /** @return HasMany<ActivityLog, $this> */
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }

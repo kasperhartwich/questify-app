@@ -19,6 +19,9 @@ class UserResource extends JsonResource
             'avatar_url' => $this->resolveImageUrl($this->avatar_path),
             'locale' => $this->locale,
             'created_at' => $this->created_at,
+            'quests_played_count' => $this->whenHas('quests_played_count'),
+            'quests_created_count' => $this->whenHas('quests_created_count'),
+            'total_points' => $this->whenHas('total_points', (int) ($this->total_points ?? 0)),
         ];
     }
 }

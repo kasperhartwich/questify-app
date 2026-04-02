@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\ActivityType;
 use App\Enums\SessionStatus;
 use App\Events\ParticipantJoined;
 use App\Events\SessionEnded;
@@ -12,6 +13,7 @@ use App\Http\Requests\StoreSessionRequest;
 use App\Http\Resources\SessionResource;
 use App\Models\Quest;
 use App\Models\QuestSession;
+use App\Services\ActivityLogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,6 +25,8 @@ use Illuminate\Support\Str;
  */
 class SessionController extends Controller
 {
+    public function __construct(private ActivityLogService $activityLogService) {}
+
     /**
      * Create session
      *
@@ -43,6 +47,12 @@ class SessionController extends Controller
         ]);
 
         $session->load(['quest', 'host']);
+
+        $this->activityLogService->log($request->user(), ActivityType::QuestShared, $session, [
+            'quest_title' => $session->quest->title,
+            'quest_id' => $session->quest_id,
+            'join_code' => $session->join_code,
+        ]);
 
         return response()->json([
             'data' => [

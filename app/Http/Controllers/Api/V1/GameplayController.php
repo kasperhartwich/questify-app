@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\ActivityType;
 use App\Enums\QuestionType;
 use App\Enums\SessionStatus;
 use App\Enums\WrongAnswerBehaviour;
@@ -17,6 +18,7 @@ use App\Models\CheckpointProgress;
 use App\Models\Question;
 use App\Models\QuestSession;
 use App\Models\SessionParticipant;
+use App\Services\ActivityLogService;
 use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
@@ -30,6 +32,7 @@ class GameplayController extends Controller
 {
     public function __construct(
         private ScoringService $scoringService,
+        private ActivityLogService $activityLogService,
     ) {}
 
     /**
@@ -222,6 +225,21 @@ class GameplayController extends Controller
                 $participant->fresh(),
                 $participant->fresh()->score,
             ))->toOthers();
+
+            if ($participant->user_id) {
+                $placement = $session->participants()->whereNotNull('finished_at')->count();
+                $this->activityLogService->log(
+                    $participant->user,
+                    ActivityType::QuestCompleted,
+                    $session->quest,
+                    [
+                        'quest_title' => $session->quest->title,
+                        'score' => $participant->fresh()->score,
+                        'placement' => $placement,
+                        'session_id' => $session->id,
+                    ],
+                );
+            }
         }
 
         // Broadcast leaderboard update

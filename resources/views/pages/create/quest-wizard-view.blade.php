@@ -206,6 +206,7 @@
 
             {{-- Checkpoint list --}}
             <div class="flex-1 overflow-y-auto px-4 pb-4 pt-4">
+                @error('checkpoints') <p class="mb-2 text-[10px] text-coral">{{ __('quests.checkpoints_need_coordinates') }}</p> @enderror
                 <p class="mb-3 text-[10px] font-bold uppercase tracking-wide text-muted">
                     {{ __('general.checkpoints_added', ['count' => count($checkpoints)]) }}
                 </p>
@@ -226,6 +227,7 @@
                                     placeholder="{{ __('quests.title') }}"
                                 />
                                 @error("checkpoints.{$cpIndex}.title") <p class="text-[10px] text-coral">{{ $message }}</p> @enderror
+                                @error("checkpoints.{$cpIndex}.latitude") <p class="text-[10px] text-coral">{{ $message }}</p> @enderror
                                 @if ($checkpoint['latitude'] && $checkpoint['longitude'])
                                     <p class="text-[11px] text-muted">{{ number_format($checkpoint['latitude'], 4) }}, {{ number_format($checkpoint['longitude'], 4) }}</p>
                                 @endif
@@ -240,13 +242,8 @@
                         </div>
                     @endforeach
 
-                    {{-- Add another --}}
-                    <button wire:click="addCheckpoint" class="flex items-center gap-3 rounded-[12px] border-2 border-dashed border-cream-border p-3">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-cream-border">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                        </div>
-                        <span class="text-[13px] font-semibold text-forest-400">{{ __('general.add_another_checkpoint') }}</span>
-                    </button>
+                    {{-- Hint to tap map --}}
+                    <p class="py-2 text-center text-[12px] text-muted">{{ __('general.tap_map_to_add') }}</p>
                 </div>
             </div>
 

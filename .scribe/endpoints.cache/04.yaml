@@ -216,7 +216,7 @@ endpoints:
         name: difficulty
         description: ''
         required: false
-        example: easy
+        example: medium
         type: string
         enumValues:
           - easy
@@ -230,7 +230,7 @@ endpoints:
       longitude: -179
       radius: 7
       category_id: 16
-      difficulty: easy
+      difficulty: medium
     fileParameters: []
     responses:
       -
@@ -465,7 +465,7 @@ endpoints:
         name: visibility
         description: ''
         required: true
-        example: private
+        example: school
         type: string
         enumValues:
           - public
@@ -523,7 +523,7 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: lockout
+        example: retry_free
         type: string
         enumValues:
           - retry_free
@@ -571,7 +571,7 @@ endpoints:
         name: scoring_speed_bonus_enabled
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -593,7 +593,7 @@ endpoints:
         name: scoring_quest_completion_time_bonus_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -731,7 +731,7 @@ endpoints:
         name: 'checkpoints[].questions[].answers[].is_correct'
         description: ''
         required: true
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -742,17 +742,17 @@ endpoints:
       description: 'Eius et animi quos velit et.'
       category_id: 16
       difficulty: medium
-      visibility: private
+      visibility: school
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: lockout
+      wrong_answer_behaviour: retry_free
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
-      scoring_speed_bonus_enabled: true
+      scoring_speed_bonus_enabled: false
       scoring_wrong_attempt_penalty_enabled: false
-      scoring_quest_completion_time_bonus_enabled: false
+      scoring_quest_completion_time_bonus_enabled: true
       checkpoints:
         -
           title: b
@@ -767,7 +767,7 @@ endpoints:
               answers:
                 -
                   answer_text: b
-                  is_correct: false
+                  is_correct: true
     fileParameters:
       cover_image: null
     responses:
@@ -877,7 +877,7 @@ endpoints:
         name: difficulty
         description: ''
         required: false
-        example: medium
+        example: easy
         type: string
         enumValues:
           - easy
@@ -949,7 +949,7 @@ endpoints:
         name: wrong_answer_behaviour
         description: ''
         required: false
-        example: three_strikes_hint
+        example: retry_penalty
         type: string
         enumValues:
           - retry_free
@@ -997,7 +997,7 @@ endpoints:
         name: scoring_speed_bonus_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1019,7 +1019,7 @@ endpoints:
         name: scoring_quest_completion_time_bonus_enabled
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -1166,18 +1166,18 @@ endpoints:
       title: b
       description: 'Eius et animi quos velit et.'
       category_id: 16
-      difficulty: medium
+      difficulty: easy
       visibility: private
       estimated_duration_minutes: 22
       access_code: gzmiyvdljnikhway
       checkpoint_arrival_radius_meters: 18
-      wrong_answer_behaviour: three_strikes_hint
+      wrong_answer_behaviour: retry_penalty
       wrong_answer_penalty_points: 54
       wrong_answer_lockout_seconds: 38
       scoring_points_per_correct: 50
-      scoring_speed_bonus_enabled: false
+      scoring_speed_bonus_enabled: true
       scoring_wrong_attempt_penalty_enabled: true
-      scoring_quest_completion_time_bonus_enabled: false
+      scoring_quest_completion_time_bonus_enabled: true
       checkpoints:
         -
           title: u

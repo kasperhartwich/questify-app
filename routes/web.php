@@ -6,6 +6,15 @@ use Illuminate\Support\Facades\Route;
 // Welcome (guest landing page)
 Route::livewire('/', 'pages::welcome.index')->name('welcome');
 
+// Locale toggle
+Route::get('/locale/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'da'])) {
+        session(['locale' => $locale]);
+    }
+
+    return redirect('/');
+})->name('locale.switch');
+
 // Join (guest-accessible)
 Route::livewire('/join', 'pages::join.index')->name('join');
 Route::livewire('/join/{code}/name', 'pages::join.display-name')->name('join.name');

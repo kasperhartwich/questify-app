@@ -20,8 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
-        $middleware->web(append: [FetchAppInfo::class]);
-        $middleware->append(SetLocale::class);
+        $middleware->web(append: [FetchAppInfo::class, SetLocale::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

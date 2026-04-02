@@ -219,4 +219,8 @@ return [
     'favourites' => 'Favoritter',
     'no_favourites_yet' => 'Ingen favoritter endnu',
     'no_favourites_yet_desc' => "Du har ikke gemt nogen quests endnu.\nTryk på bogmærkeikonet på en quest\nfor at tilføje den til dine favoritter!",
+
+    // Language
+    'select_language' => 'Vælg sprog',
+    'choose_language' => 'Vælg dit foretrukne sprog',
 ];

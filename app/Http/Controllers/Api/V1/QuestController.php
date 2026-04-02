@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\ActivityType;
 use App\Enums\ModerationStatus;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
@@ -16,6 +17,7 @@ use App\Http\Resources\QuestDetailResource;
 use App\Http\Resources\QuestRatingResource;
 use App\Http\Resources\QuestResource;
 use App\Models\Quest;
+use App\Services\ActivityLogService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +30,8 @@ use Illuminate\Support\Facades\DB;
 class QuestController extends Controller
 {
     use AuthorizesRequests;
+
+    public function __construct(private ActivityLogService $activityLogService) {}
 
     /**
      * List quests
@@ -177,6 +181,10 @@ class QuestController extends Controller
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
 
+        $this->activityLogService->log($request->user(), ActivityType::QuestCreated, $quest, [
+            'quest_title' => $quest->title,
+        ]);
+
         return response()->json([
             'data' => new QuestDetailResource($quest),
         ], 201);
@@ -274,6 +282,10 @@ class QuestController extends Controller
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
 
+        $this->activityLogService->log($request->user(), ActivityType::QuestPublished, $quest, [
+            'quest_title' => $quest->title,
+        ]);
+
         return response()->json([
             'data' => new QuestDetailResource($quest),
             'message' => $message,
@@ -298,6 +310,12 @@ class QuestController extends Controller
             ['user_id' => $request->user()->id],
             $request->validated(),
         );
+
+        $this->activityLogService->log($request->user(), ActivityType::QuestRated, $rating, [
+            'quest_title' => $quest->title,
+            'quest_id' => $quest->id,
+            'rating' => $rating->rating,
+        ]);
 
         return response()->json([
             'data' => new QuestRatingResource($rating->load('user')),

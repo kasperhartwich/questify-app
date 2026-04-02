@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
@@ -67,6 +68,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/sessions/{code}/dashboard', [SessionController::class, 'dashboard'])->name('sessions.dashboard');
 
         // User
+        Route::get('/user/activities', [ActivityController::class, 'index'])->name('user.activities');
         Route::get('/user/quests', [UserQuestController::class, 'index'])->name('user.quests');
         Route::get('/user/sessions', [UserSessionController::class, 'index'])->name('user.sessions');
         Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');

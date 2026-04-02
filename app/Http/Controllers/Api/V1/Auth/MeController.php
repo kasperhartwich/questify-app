@@ -20,6 +20,10 @@ class MeController extends Controller
      */
     public function show(Request $request): UserResource
     {
-        return new UserResource($request->user());
+        $user = $request->user();
+        $user->loadCount(['sessionParticipations as quests_played_count', 'quests as quests_created_count'])
+            ->loadSum('sessionParticipations as total_points', 'score');
+
+        return new UserResource($user);
     }
 }

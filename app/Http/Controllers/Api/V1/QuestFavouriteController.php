@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\ActivityType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\QuestResource;
 use App\Models\Quest;
+use App\Services\ActivityLogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -14,6 +16,8 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
  */
 class QuestFavouriteController extends Controller
 {
+    public function __construct(private ActivityLogService $activityLogService) {}
+
     /**
      * List favourite quests
      *
@@ -49,6 +53,12 @@ class QuestFavouriteController extends Controller
         $result = $request->user()->favouriteQuests()->toggle($quest->id);
 
         $isFavourited = ! empty($result['attached']);
+
+        if ($isFavourited) {
+            $this->activityLogService->log($request->user(), ActivityType::QuestFavourited, $quest, [
+                'quest_title' => $quest->title,
+            ]);
+        }
 
         return response()->json([
             'data' => ['is_favourited' => $isFavourited],
