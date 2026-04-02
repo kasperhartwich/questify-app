@@ -59,7 +59,7 @@ There are only two user types. "Quest Master" is a UI label only — it refers t
 - No history saved after the session ends
 
 ### Registered User
-- Email + password, or social login via Google, Facebook, Apple, or Microsoft
+- Email + password, phone number (OTP verified), or social login via Google, Facebook, Apple, or Microsoft
 - Can create quests (unlimited)
 - Can start sessions and share QR codes / invite links
 - Has personal history: quests played, quests created, scores

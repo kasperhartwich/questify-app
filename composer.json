@@ -21,6 +21,7 @@
         "laravel/socialite": "^5.25",
         "laravel/tinker": "^2.10.1",
         "nativephp/mobile": "^3.0",
+        "nativephp/mobile-firebase": "^1.0",
         "nativephp/mobile-geolocation": "^1.0",
         "nativephp/mobile-scanner": "^1.0"
     },

@@ -9,6 +9,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Native\Mobile\Facades\PushNotifications;
 
 new
 #[Title('Profile')]
@@ -111,6 +112,25 @@ class extends Component
         $guard->logout();
 
         $this->redirect('/');
+    }
+
+    public function togglePushNotifications(): void
+    {
+        $this->notifications_enabled = ! $this->notifications_enabled;
+
+        if ($this->notifications_enabled) {
+            try {
+                PushNotifications::enroll();
+            } catch (\Throwable) {
+                // Not running on native device
+            }
+        } else {
+            $fcmToken = session('questify_fcm_token');
+            if ($fcmToken) {
+                $this->tryApiCall(fn () => $this->api->user()->deleteFcmToken($fcmToken));
+                session()->forget('questify_fcm_token');
+            }
+        }
     }
 
     /**
@@ -326,7 +346,7 @@ class extends Component
                             <span class="flex-1 text-[14px] font-semibold text-bark">{{ __('general.push_notifications') }}</span>
                             {{-- Toggle --}}
                             <button
-                                wire:click="$toggle('notifications_enabled')"
+                                wire:click="togglePushNotifications"
                                 class="relative h-[26px] w-[44px] rounded-[13px] transition-colors duration-200"
                                 style="background-color: {{ $notifications_enabled ? '#0B3D2E' : '#E5DDD0' }};"
                                 role="switch"

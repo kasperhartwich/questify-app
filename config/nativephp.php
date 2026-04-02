@@ -259,7 +259,7 @@ return [
         'camera' => true,
         'microphone' => false,
         'microphone_background' => false,
-        'push_notifications' => false,
+        'push_notifications' => true,
         'location' => true,
         'vibrate' => true,
         'storage_read' => false,

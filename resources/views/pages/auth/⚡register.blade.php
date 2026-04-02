@@ -75,7 +75,7 @@ class extends Component
         $this->signup_method = 'phone';
 
         try {
-            $response = $this->api->auth()->loginPhone($this->phone_number);
+            $response = $this->api->auth()->registerPhone($this->phone_number);
 
             if (! empty($response['requires_otp'])) {
                 $this->login_token = $response['login_token'] ?? '';
@@ -193,7 +193,7 @@ class extends Component
         $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'display_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
         ]);
 
         $name = trim($this->first_name . ' ' . $this->last_name);
@@ -271,7 +271,7 @@ class extends Component
                     <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                     </div>
-                    <input type="email" wire:model="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-[120px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
+                    <input type="email" wire:model="email" name="email" autocomplete="email" placeholder="{{ __('auth.email_placeholder') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-[120px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
                     <button type="submit" class="absolute right-[5px] top-1/2 -translate-y-1/2 rounded-[10px] bg-forest-600 px-4 py-[8px] text-[12px] font-bold text-white">
                         {{ __('auth.continue') }}
                     </button>
@@ -324,6 +324,8 @@ class extends Component
                         <input
                             type="tel"
                             wire:model="phone_local"
+                            name="phone"
+                            autocomplete="tel-national"
                             placeholder="20 12 34 56"
                             class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] pr-[110px] text-[13px] font-semibold text-bark placeholder:font-normal placeholder:text-forest-300 focus:border-forest-600 focus:outline-none"
                             inputmode="tel"
@@ -408,19 +410,19 @@ class extends Component
                 <div class="flex gap-2">
                     <div class="flex-1">
                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.first_name') }}</label>
-                        <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="text" wire:model="first_name" name="first_name" autocomplete="given-name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                         @error('first_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex-1">
                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.last_name') }}</label>
-                        <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
+                        <input type="text" wire:model="last_name" name="last_name" autocomplete="family-name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
                     </div>
                 </div>
 
                 {{-- Display name --}}
                 <div>
                     <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.display_name') }}</label>
-                    <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                    <input type="text" wire:model="display_name" name="display_name" autocomplete="username" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     <p class="mt-1 text-[9px] text-muted">{{ __('auth.display_name_hint') }}</p>
                     @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -432,7 +434,7 @@ class extends Component
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                         </div>
-                        <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="email" wire:model="email" name="email" autocomplete="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     </div>
                     @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -444,7 +446,7 @@ class extends Component
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                         </div>
-                        <input type="tel" wire:model="phone_number" placeholder="+45 20 12 34 56" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
+                        <input type="tel" wire:model="phone_number" name="phone" autocomplete="tel" placeholder="+45 20 12 34 56" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
                     </div>
                     @error('phone_number') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -456,7 +458,7 @@ class extends Component
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                         </div>
-                        <input type="password" wire:model="password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="password" wire:model="password" name="password" autocomplete="new-password" placeholder="{{ __('auth.min_8_characters') }}" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     </div>
                     {{-- Strength meter --}}
                     <div x-data="{ get strength() { const len = $wire.password?.length || 0; if (len === 0) return 0; if (len < 6) return 1; if (len < 10) return 2; if (len < 14) return 3; return 4; } }">
@@ -497,19 +499,19 @@ class extends Component
                 <div class="flex gap-2">
                     <div class="flex-1">
                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.first_name') }}</label>
-                        <input type="text" wire:model="first_name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="text" wire:model="first_name" name="first_name" autocomplete="given-name" placeholder="Anna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                         @error('first_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex-1">
                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.last_name') }}</label>
-                        <input type="text" wire:model="last_name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
+                        <input type="text" wire:model="last_name" name="last_name" autocomplete="family-name" placeholder="Jensen" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
                     </div>
                 </div>
 
                 {{-- Display name --}}
                 <div>
                     <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('auth.display_name') }}</label>
-                    <input type="text" wire:model="display_name" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                    <input type="text" wire:model="display_name" name="display_name" autocomplete="username" placeholder="AdventureAnna" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[13px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     <p class="mt-1 text-[9px] text-muted">{{ __('auth.display_name_hint') }}</p>
                     @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
@@ -521,7 +523,7 @@ class extends Component
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                         </div>
-                        <input type="email" wire:model="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="email" wire:model="email" name="email" autocomplete="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
                     </div>
                     @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>

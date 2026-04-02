@@ -45,4 +45,24 @@ class UserApiResource
     {
         return $this->client->delete('/user');
     }
+
+    /**
+     * @return array{message: string}
+     */
+    public function storeFcmToken(string $token, string $platform, ?string $deviceName = null): array
+    {
+        return $this->client->post('/fcm-tokens', array_filter([
+            'token' => $token,
+            'platform' => $platform,
+            'device_name' => $deviceName,
+        ]));
+    }
+
+    /**
+     * @return array{message: string}
+     */
+    public function deleteFcmToken(string $token): array
+    {
+        return $this->client->delete('/fcm-tokens');
+    }
 }

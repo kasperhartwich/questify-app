@@ -36,6 +36,7 @@ class QuestifyApiClient
             ->acceptJson()
             ->withHeaders([
                 'Accept-Language' => app()->getLocale(),
+                'User-Agent' => 'Questify/'.config('nativephp.version', '1.0.0'),
             ]);
 
         $token = session('questify_api_token');

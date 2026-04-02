@@ -124,6 +124,7 @@
         </native:bottom-nav>
 
         <livewire:dialog />
+        <livewire:push-notification-manager />
 
         @livewireScripts
     </body>

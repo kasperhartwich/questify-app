@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0857d143431cb93101fd968ad952a32a",
+    "content-hash": "f6775b7fa615f69ac056aea7d84efa7a",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4612,6 +4612,50 @@
                 "source": "https://github.com/NativePHP/mobile-air/tree/3.0.4"
             },
             "time": "2026-02-17T14:41:23+00:00"
+        },
+        {
+            "name": "nativephp/mobile-firebase",
+            "version": "1.0.6",
+            "dist": {
+                "type": "zip",
+                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-firebase/nativephp-mobile-firebase-f1e4dbb4e93dbd0a80dbb5629af3c86ef7c14a92-zip-25b73b.zip",
+                "reference": "f1e4dbb4e93dbd0a80dbb5629af3c86ef7c14a92",
+                "shasum": "1c93f4f072dc3d51a3eb63e65acf42335a9ef543"
+            },
+            "require": {
+                "nativephp/mobile": "^3.0",
+                "php": "^8.2"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Native\\Mobile\\Providers\\PushNotificationsServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Native\\Mobile\\Providers\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "NativePHP",
+                    "email": "info@nativephp.com"
+                }
+            ],
+            "description": "Firebase plugin for NativePHP Mobile (Push notifications via FCM/APNs)",
+            "support": {
+                "issues": "https://github.com/NativePHP/mobile-firebase/issues"
+            },
+            "time": "2026-03-20T22:08:33+00:00"
         },
         {
             "name": "nativephp/mobile-geolocation",

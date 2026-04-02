@@ -95,6 +95,16 @@ class AuthResource
         ]);
     }
 
+    /**
+     * @return array{message: string, requires_otp: bool, login_token: string}
+     */
+    public function registerPhone(string $phoneNumber): array
+    {
+        return $this->client->post('/auth/register/phone', [
+            'phone_number' => $phoneNumber,
+        ]);
+    }
+
     public function forgotPassword(string $email): array
     {
         return $this->client->post('/auth/forgot-password', ['email' => $email]);

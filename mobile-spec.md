@@ -95,20 +95,40 @@ Guests who tap My Quests, Create, or Profile are shown a prompt to sign up.
 ---
 
 ### 5.3 Sign Up Screen
-- Fields: Name, Email, Password, Confirm Password
-- Social sign-up buttons: Google, Facebook, Apple, Microsoft (each triggers OAuth via in-app browser → `/auth/{provider}/redirect`)
-- Terms & Privacy Policy checkbox (required)
-- "Create Account" submit button
+
+Three sign-up methods are available. The user picks one on the first screen.
+
+**Method 1 — Social Auth**
+- Buttons: Google, Facebook, Apple, Microsoft (each triggers OAuth via in-app browser → `/auth/{provider}/redirect`)
+- On success: store Sanctum token, navigate to Discover tab
+
+**Method 2 — Email**
+1. User enters email on the method screen and taps "Continue"
+2. Step 2 collects: First Name, Last Name (optional), Display Name, Email (pre-filled), Phone (optional), Password
+3. Calls `POST /api/v1/auth/register` with name, email, password, password_confirmation, optional phone_number
+4. If a phone number was provided, the backend sends an OTP → Step 3 shows phone verification
+5. On success: store Sanctum token, navigate to Discover tab
+
+**Method 3 — Phone**
+1. User enters phone number (with country code selector) on the method screen and taps "Send SMS"
+2. Calls `POST /api/v1/auth/register/phone` with phone_number → backend creates user, sends OTP, returns login_token
+3. Step 2 shows OTP verification screen → calls `POST /api/v1/auth/verify-otp` with code and login_token
+4. On OTP success: user is logged in. Step 3 collects profile details (First Name, Display Name, Email — all optional at this point) via `PUT /api/v1/user/profile`
+5. On success: store Sanctum token, navigate to Discover tab
+
+**Common elements:**
 - "Already have an account? Log In" link
+- Terms & Privacy Policy agreement text
 - On success: store Sanctum token, navigate to Discover tab
 
 ---
 
 ### 5.4 Log In Screen
-- Fields: Email, Password
+- Email + Password login, or Phone + OTP login (tab or toggle to switch)
 - Social login buttons: Google, Facebook, Apple, Microsoft
-- "Forgot password?" link → Password Reset Screen
-- "Log In" submit button
+- "Forgot password?" link → Password Reset Screen (email login only)
+- "Log In" / "Send SMS" submit button
+- Phone login: sends OTP via `POST /api/v1/auth/login/phone`, then verifies via `POST /api/v1/auth/verify-otp`
 - "Don't have an account? Sign Up" link
 - On success: store token, navigate to Discover tab
 
