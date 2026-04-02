@@ -106,7 +106,63 @@
     {{-- STEP 2: Checkpoints --}}
     {{-- ============================================================ --}}
     @if ($step === 2)
-        <div class="flex flex-1 flex-col">
+        <div class="flex flex-1 flex-col"
+            x-data="{
+                map: null,
+                markers: [],
+                initMap() {
+                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
+                    this.map = new mapboxgl.Map({
+                        container: this.$refs.createMap,
+                        style: 'mapbox://styles/mapbox/streets-v12',
+                        center: [12.5683, 55.6761],
+                        zoom: 13,
+                        attributionControl: false,
+                    });
+                    this.map.on('load', () => {
+                        @foreach ($checkpoints as $cpIndex => $checkpoint)
+                            @if ($checkpoint['latitude'] && $checkpoint['longitude'])
+                                this.addMarker({{ $cpIndex }}, {{ $checkpoint['latitude'] }}, {{ $checkpoint['longitude'] }});
+                            @endif
+                        @endforeach
+                    });
+                    this.map.on('click', (e) => {
+                        const nextIndex = this.markers.length;
+                        @this.addCheckpoint();
+                        @this.updateCheckpointCoordinates(nextIndex, e.lngLat.lat, e.lngLat.lng);
+                        this.addMarker(nextIndex, e.lngLat.lat, e.lngLat.lng);
+                    });
+                },
+                addMarker(index, lat, lng) {
+                    const el = document.createElement('div');
+                    el.className = 'create-map-pin';
+                    const span = document.createElement('span');
+                    span.className = 'create-map-pin-num';
+                    span.textContent = index + 1;
+                    el.appendChild(span);
+                    const marker = new mapboxgl.Marker({ element: el, draggable: true })
+                        .setLngLat([lng, lat])
+                        .addTo(this.map);
+                    marker.on('dragend', () => {
+                        const lngLat = marker.getLngLat();
+                        @this.updateCheckpointCoordinates(index, lngLat.lat, lngLat.lng);
+                    });
+                    this.markers.push(marker);
+                },
+                locateUser() {
+                    if (!navigator.geolocation) return;
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                        this.map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 15 });
+                    });
+                },
+                focusCheckpoint(lat, lng) {
+                    if (this.map && lat && lng) {
+                        this.map.flyTo({ center: [lng, lat], zoom: 16 });
+                    }
+                }
+            }"
+            x-init="initMap()"
+        >
             {{-- Forest header --}}
             <div class="bg-forest-600 px-4 pb-4 pt-2">
                 <div class="flex items-center gap-2.5 pb-3 pt-1">
@@ -136,58 +192,7 @@
                     font-size: 11px; font-weight: 800; color: white;
                 }
             </style>
-            <div class="relative h-[280px] bg-[#E4EDE4]"
-                x-data="{
-                    map: null,
-                    markers: [],
-                    init() {
-                        mapboxgl.accessToken = @js(config('services.mapbox.token'));
-                        this.map = new mapboxgl.Map({
-                            container: this.$refs.createMap,
-                            style: 'mapbox://styles/mapbox/streets-v12',
-                            center: [12.5683, 55.6761],
-                            zoom: 13,
-                            attributionControl: false,
-                        });
-                        this.map.on('load', () => {
-                            {{-- Place existing markers --}}
-                            @foreach ($checkpoints as $cpIndex => $checkpoint)
-                                @if ($checkpoint['latitude'] && $checkpoint['longitude'])
-                                    this.addMarker({{ $cpIndex }}, {{ $checkpoint['latitude'] }}, {{ $checkpoint['longitude'] }});
-                                @endif
-                            @endforeach
-                        });
-                        this.map.on('click', (e) => {
-                            const nextIndex = this.markers.length;
-                            @this.addCheckpoint();
-                            @this.updateCheckpointCoordinates(nextIndex, e.lngLat.lat, e.lngLat.lng);
-                            this.addMarker(nextIndex, e.lngLat.lat, e.lngLat.lng);
-                        });
-                    },
-                    addMarker(index, lat, lng) {
-                        const el = document.createElement('div');
-                        el.className = 'create-map-pin';
-                        const span = document.createElement('span');
-                        span.className = 'create-map-pin-num';
-                        span.textContent = index + 1;
-                        el.appendChild(span);
-                        const marker = new mapboxgl.Marker({ element: el, draggable: true })
-                            .setLngLat([lng, lat])
-                            .addTo(this.map);
-                        marker.on('dragend', () => {
-                            const lngLat = marker.getLngLat();
-                            @this.updateCheckpointCoordinates(index, lngLat.lat, lngLat.lng);
-                        });
-                        this.markers.push(marker);
-                    },
-                    locateUser() {
-                        if (!navigator.geolocation) return;
-                        navigator.geolocation.getCurrentPosition((pos) => {
-                            this.map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 15 });
-                        });
-                    }
-                }"
-            >
+            <div class="relative h-[280px] bg-[#E4EDE4]">
                 <div x-ref="createMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
                 {{-- Locate me button --}}
                 <button @click="locateUser()" type="button" class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
@@ -208,7 +213,11 @@
                 <div class="flex flex-col gap-2.5">
                     @foreach ($checkpoints as $cpIndex => $checkpoint)
                         <div class="flex items-center gap-3 rounded-[12px] bg-white p-3 shadow-sm" wire:key="cp-{{ $cpIndex }}">
-                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[11px] font-bold text-white">{{ $cpIndex + 1 }}</div>
+                            <button
+                                type="button"
+                                x-on:click="focusCheckpoint({{ $checkpoint['latitude'] ?? 'null' }}, {{ $checkpoint['longitude'] ?? 'null' }})"
+                                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[11px] font-bold text-white"
+                            >{{ $cpIndex + 1 }}</button>
                             <div class="min-w-0 flex-1">
                                 <input
                                     type="text"

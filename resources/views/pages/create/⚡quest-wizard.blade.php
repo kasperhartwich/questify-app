@@ -261,7 +261,7 @@ class extends Component
             ]),
             2 => $this->validate([
                 'checkpoints' => ['required', 'array', 'min:1'],
-                'checkpoints.*.title' => ['required', 'string', 'max:255'],
+                'checkpoints.*.title' => ['nullable', 'string', 'max:255'],
             ]),
             3 => $this->validateQuestions(),
             4 => $this->validate([
