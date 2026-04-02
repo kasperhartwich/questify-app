@@ -8,9 +8,9 @@ class ApiTokenUser implements Authenticatable
 {
     public int $id;
 
-    public string $name;
+    public ?string $name;
 
-    public string $email;
+    public ?string $email;
 
     public ?string $avatarUrl;
 
@@ -21,8 +21,8 @@ class ApiTokenUser implements Authenticatable
     public function __construct(array $data)
     {
         $this->id = $data['id'];
-        $this->name = $data['name'];
-        $this->email = $data['email'];
+        $this->name = $data['name'] ?? null;
+        $this->email = $data['email'] ?? null;
         $this->avatarUrl = $data['avatar_url'] ?? null;
         $this->locale = $data['locale'] ?? 'en';
         $this->createdAt = $data['created_at'] ?? null;

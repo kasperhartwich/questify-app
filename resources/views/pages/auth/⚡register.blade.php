@@ -36,6 +36,11 @@ class extends Component
         $this->socialProviders = $appInfo->enabledSocialProviders();
         $this->emailEnabled = $appInfo->isAuthMethodEnabled('email');
         $this->phoneEnabled = $appInfo->isAuthMethodEnabled('phone');
+
+        if (request()->query('step') === '3' && Auth::check()) {
+            $this->step = 3;
+            $this->signup_method = 'phone';
+        }
     }
 
     public string $first_name = '';
@@ -176,7 +181,8 @@ class extends Component
                     $guard->login($userData, $token);
                 }
 
-                $this->step = 3;
+                // Redirect to force a full page load with the new session/CSRF token
+                $this->redirect('/register?step=3');
             } else {
                 $this->api->auth()->verifyPhone($this->phone_code);
                 $this->redirect('/discover/list');
@@ -516,14 +522,14 @@ class extends Component
                     @error('display_name') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Email --}}
+                {{-- Email (optional for phone signups) --}}
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }}</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.email') }} <span class="normal-case text-muted/60">({{ __('general.optional') }})</span></label>
                     <div class="relative">
                         <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-muted"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                         </div>
-                        <input type="email" wire:model="email" name="email" autocomplete="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" required />
+                        <input type="email" wire:model="email" name="email" autocomplete="email" placeholder="anna@example.com" class="w-full rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-9 pr-3.5 text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none" />
                     </div>
                     @error('email') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
