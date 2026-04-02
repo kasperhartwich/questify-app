@@ -167,7 +167,7 @@ use Livewire\Component;
                 <div class="mt-0.5 text-[10px] font-medium text-muted"><?php echo e(__('general.stops')); ?></div>
             </div>
             <div class="border-r border-cream-border px-2 py-3 text-center">
-                <div class="font-heading text-[18px] font-extrabold text-forest-600"><?php echo e(number_format(($questData->total_route_distance_km ?? 0), 1)); ?></div>
+                <div class="font-heading text-[18px] font-extrabold text-forest-600"><?php echo e(number_format(($questData->total_distance_km ?? 0), 1)); ?></div>
                 <div class="mt-0.5 text-[10px] font-medium text-muted">km</div>
             </div>
             <div class="border-r border-cream-border px-2 py-3 text-center">
