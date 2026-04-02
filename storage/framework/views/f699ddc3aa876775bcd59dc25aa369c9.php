@@ -175,46 +175,75 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
             </div>
 
             
+            <style>
+                .create-map-pin {
+                    width: 28px; height: 28px; background: #0B3D2E; border: 2.5px solid white;
+                    border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+                    display: flex; align-items: center; justify-content: center;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3); cursor: grab;
+                }
+                .create-map-pin-num {
+                    transform: rotate(45deg); font-family: 'Exo 2', sans-serif;
+                    font-size: 11px; font-weight: 800; color: white;
+                }
+            </style>
             <div class="relative h-[280px] bg-[#E4EDE4]"
                 x-data="{
                     map: null,
                     markers: [],
                     init() {
-                        if (typeof google === 'undefined') return;
-                        this.map = new google.maps.Map(this.$el, {
-                            center: { lat: 55.6761, lng: 12.5683 },
+                        mapboxgl.accessToken = <?php echo \Illuminate\Support\Js::from(config('services.mapbox.token'))->toHtml() ?>;
+                        this.map = new mapboxgl.Map({
+                            container: this.$refs.createMap,
+                            style: 'mapbox://styles/mapbox/streets-v12',
+                            center: [12.5683, 55.6761],
                             zoom: 13,
-                            mapTypeControl: false,
-                            streetViewControl: false,
+                            attributionControl: false,
                         });
-                        
-                        <?php $__currentLoopData = $checkpoints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cpIndex => $checkpoint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <?php if($checkpoint['latitude'] && $checkpoint['longitude']): ?>
-                                this.addMarker(<?php echo e($cpIndex); ?>, <?php echo e($checkpoint['latitude']); ?>, <?php echo e($checkpoint['longitude']); ?>);
-                            <?php endif; ?>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        this.map.addListener('click', (e) => {
+                        this.map.on('load', () => {
+                            
+                            <?php $__currentLoopData = $checkpoints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cpIndex => $checkpoint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if($checkpoint['latitude'] && $checkpoint['longitude']): ?>
+                                    this.addMarker(<?php echo e($cpIndex); ?>, <?php echo e($checkpoint['latitude']); ?>, <?php echo e($checkpoint['longitude']); ?>);
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        });
+                        this.map.on('click', (e) => {
                             const nextIndex = this.markers.length;
-                            $wire.addCheckpoint();
-                            $wire.updateCheckpointCoordinates(nextIndex, e.latLng.lat(), e.latLng.lng());
-                            this.addMarker(nextIndex, e.latLng.lat(), e.latLng.lng());
+                            window.Livewire.find('<?php echo e($_instance->getId()); ?>').addCheckpoint();
+                            window.Livewire.find('<?php echo e($_instance->getId()); ?>').updateCheckpointCoordinates(nextIndex, e.lngLat.lat, e.lngLat.lng);
+                            this.addMarker(nextIndex, e.lngLat.lat, e.lngLat.lng);
                         });
                     },
                     addMarker(index, lat, lng) {
-                        const marker = new google.maps.Marker({
-                            position: { lat, lng },
-                            map: this.map,
-                            draggable: true,
-                            label: { text: String(index + 1), color: 'white', fontWeight: 'bold', fontSize: '12px' },
-                        });
-                        marker.addListener('dragend', (e) => {
-                            $wire.updateCheckpointCoordinates(index, e.latLng.lat(), e.latLng.lng());
+                        const el = document.createElement('div');
+                        el.className = 'create-map-pin';
+                        const span = document.createElement('span');
+                        span.className = 'create-map-pin-num';
+                        span.textContent = index + 1;
+                        el.appendChild(span);
+                        const marker = new mapboxgl.Marker({ element: el, draggable: true })
+                            .setLngLat([lng, lat])
+                            .addTo(this.map);
+                        marker.on('dragend', () => {
+                            const lngLat = marker.getLngLat();
+                            window.Livewire.find('<?php echo e($_instance->getId()); ?>').updateCheckpointCoordinates(index, lngLat.lat, lngLat.lng);
                         });
                         this.markers.push(marker);
+                    },
+                    locateUser() {
+                        if (!navigator.geolocation) return;
+                        navigator.geolocation.getCurrentPosition((pos) => {
+                            this.map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 15 });
+                        });
                     }
                 }"
             >
-                <div class="flex h-full items-center justify-center text-sm text-gray-500"><?php echo e(__('general.loading')); ?></div>
+                <div x-ref="createMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+                
+                <button @click="locateUser()" type="button" class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="8"/></svg>
+                </button>
                 
                 <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/40 to-transparent px-4 pb-3 pt-6">
                     <p class="text-center text-[13px] font-semibold text-white"><?php echo e(__('general.tap_map_to_add')); ?></p>

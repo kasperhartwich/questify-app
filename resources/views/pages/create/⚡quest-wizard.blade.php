@@ -1,7 +1,9 @@
 <?php
 
 use App\Enums\Difficulty;
+use App\Enums\PlayMode;
 use App\Enums\QuestionType;
+use App\Enums\WrongAnswerBehaviour;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
@@ -24,7 +26,7 @@ class extends Component
     #[Validate('nullable|string|max:2000')]
     public string $description = '';
 
-    #[Validate('required|exists:categories,id')]
+    #[Validate('required')]
     public $categoryId = '';
 
     #[Validate('required')]
@@ -254,7 +256,7 @@ class extends Component
         match ($this->step) {
             1 => $this->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'categoryId' => ['required', 'exists:categories,id'],
+                'categoryId' => ['required', 'in:' . implode(',', array_keys($this->categories))],
                 'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             2 => $this->validate([
