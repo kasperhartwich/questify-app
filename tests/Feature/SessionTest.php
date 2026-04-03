@@ -3,6 +3,9 @@
 use App\Enums\PlayMode;
 use App\Enums\QuestStatus;
 use App\Enums\SessionStatus;
+use App\Events\ParticipantJoined;
+use App\Events\SessionEnded;
+use App\Events\SessionStarted;
 use App\Models\Quest;
 use App\Models\QuestSession;
 use App\Models\SessionParticipant;
@@ -60,6 +63,11 @@ it('joins a waiting session without auth', function () {
         'quest_session_id' => $session->id,
         'display_name' => 'Player One',
     ]);
+
+    Event::assertDispatched(ParticipantJoined::class, function ($event) use ($session) {
+        return $event->sessionCode === $session->join_code
+            && $event->participant->display_name === 'Player One';
+    });
 });
 
 it('joins with optional user_id', function () {
@@ -104,6 +112,10 @@ it('host starts session', function () {
     $session->refresh();
     expect($session->status)->toBe(SessionStatus::Active);
     expect($session->started_at)->not->toBeNull();
+
+    Event::assertDispatched(SessionStarted::class, function ($event) use ($session) {
+        return $event->session->id === $session->id;
+    });
 });
 
 it('non-host cannot start session', function () {
@@ -140,6 +152,10 @@ it('host ends session', function () {
 
     $participant->refresh();
     expect($participant->finished_at)->not->toBeNull();
+
+    Event::assertDispatched(SessionEnded::class, function ($event) use ($session) {
+        return $event->session->id === $session->id;
+    });
 });
 
 it('non-host cannot end session', function () {

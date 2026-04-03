@@ -9,8 +9,10 @@ beforeEach(function () {
 });
 
 it('logs activity for mapped routes on success', function () {
-    // Login is a mapped route that is NOT in SKIP_ROUTES
-    $this->actingAs($this->user)->postJson('/api/v1/auth/logout');
+    // user.profile.update is in ROUTE_TYPE_MAP and NOT in SKIP_ROUTES
+    $this->actingAs($this->user)->putJson('/api/v1/user/profile', [
+        'name' => 'Updated Name',
+    ]);
 
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,

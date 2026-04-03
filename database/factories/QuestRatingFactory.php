@@ -23,7 +23,7 @@ class QuestRatingFactory extends Factory
             'quest_id' => Quest::factory(),
             'user_id' => User::factory(),
             'rating' => fake()->numberBetween(1, 5),
-            'review' => fake()->optional()->paragraph(),
+            'comment' => fake()->optional()->paragraph(),
         ];
     }
 }
