@@ -7,6 +7,7 @@ use Livewire\Component;
 
 new
 #[Title('Quest Complete')]
+#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600'])]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient;

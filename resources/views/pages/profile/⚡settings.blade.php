@@ -13,6 +13,7 @@ use Native\Mobile\Facades\PushNotifications;
 
 new
 #[Title('Profile')]
+#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600'])]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient, WithFileUploads;

@@ -6,7 +6,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new
-#[Layout('layouts.guest')]
+#[Layout('layouts.guest', ['bodyClass' => 'bg-forest-600'])]
 #[Title('Welcome')]
 class extends Component
 {
@@ -19,7 +19,7 @@ class extends Component
 };
 ?>
 
-<div class="relative flex h-dvh flex-col bg-forest-600 overflow-hidden">
+<div class="relative flex h-dvh flex-col bg-forest-600 overflow-hidden pt-6 pb-4">
     {{-- Decorative circles --}}
     <div class="pointer-events-none absolute right-[-60px] top-[-60px] h-[240px] w-[240px] rounded-full border-[40px]" style="border-color: rgba(245,166,35,0.07)"></div>
     <div class="pointer-events-none absolute bottom-24 left-[-50px] h-[160px] w-[160px] rounded-full border-[28px]" style="border-color: rgba(245,166,35,0.05)"></div>

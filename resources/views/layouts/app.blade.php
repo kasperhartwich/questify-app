@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-cream dark:bg-forest-800 nativephp-safe-area">
+    <body class="min-h-screen {{ $bodyClass ?? 'bg-cream' }} dark:bg-forest-800 nativephp-safe-area">
         {{-- WebSocket Reconnection Indicator --}}
         <div
             x-data="{
@@ -37,7 +37,7 @@
         </div>
 
         {{-- Main Content --}}
-        <main class="min-h-screen bg-cream pb-[60px]">
+        <main class="min-h-screen bg-cream pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-[calc(env(safe-area-inset-bottom,0px)+76px)]">
             {{ $slot }}
         </main>
 
@@ -82,7 +82,7 @@
         </native:bottom-nav>
         @else
         {{-- HTML Tab Bar (browser fallback) --}}
-        <nav class="fixed bottom-0 left-0 right-0 z-50 flex h-[60px] items-center border-t border-black/[0.07] bg-white px-0.5">
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-black/[0.07] bg-white px-0.5 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-2">
             {{-- Discover --}}
             <a href="/discover/list" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
