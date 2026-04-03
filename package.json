@@ -19,7 +19,9 @@
         "#nativephp": "./vendor/nativephp/mobile/resources/dist/native.js"
     },
     "dependencies": {
+        "laravel-echo": "^2.3.3",
         "mapbox-gl": "^3.20.0",
+        "pusher-js": "^8.5.0",
         "qrcode": "^1.5.4"
     }
 }
