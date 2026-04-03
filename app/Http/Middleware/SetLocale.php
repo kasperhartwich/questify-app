@@ -28,8 +28,9 @@ class SetLocale
             return $sessionLocale;
         }
 
-        if (Auth::check() && in_array(Auth::user()->locale, self::SUPPORTED_LOCALES, true)) {
-            return Auth::user()->locale;
+        $userLocale = Auth::user()?->locale;
+        if ($userLocale && in_array($userLocale, self::SUPPORTED_LOCALES, true)) {
+            return $userLocale;
         }
 
         $preferred = $request->getPreferredLanguage(self::SUPPORTED_LOCALES);
