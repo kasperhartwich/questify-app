@@ -63,6 +63,6 @@ class UserApiResource
      */
     public function deleteFcmToken(string $token): array
     {
-        return $this->client->delete('/fcm-tokens');
+        return $this->client->delete("/fcm-tokens/{$token}");
     }
 }

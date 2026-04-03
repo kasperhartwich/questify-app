@@ -6,7 +6,7 @@
     @if ($step === 1)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="1" :total="4" back-url="/" />
+            <x-step-indicator :current="1" :total="5" back-url="/" />
 
             <h1 class="font-heading text-[22px] font-extrabold text-bark">{{ __('general.quest_info') }}</h1>
             <p class="mb-5 mt-1 text-[13px] text-muted">{{ __('general.quest_info_subtitle') }}</p>
@@ -170,11 +170,11 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     </button>
                     <div class="flex flex-1 gap-1">
-                        @for ($i = 1; $i <= 4; $i++)
+                        @for ($i = 1; $i <= 5; $i++)
                             <div class="h-[3px] flex-1 rounded-[2px] {{ $i <= 2 ? 'bg-white' : 'bg-white/30' }}"></div>
                         @endfor
                     </div>
-                    <span class="shrink-0 text-[11px] text-white/70">{{ __('general.step_of', ['current' => 2, 'total' => 4]) }}</span>
+                    <span class="shrink-0 text-[11px] text-white/70">{{ __('general.step_of', ['current' => 2, 'total' => 5]) }}</span>
                 </div>
                 <h1 class="font-heading text-[22px] font-extrabold text-white">{{ __('general.add_checkpoints') }}</h1>
             </div>
@@ -262,7 +262,7 @@
     @if ($step === 3)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="3" :total="4" back-action="previousStep" />
+            <x-step-indicator :current="3" :total="5" back-action="previousStep" />
 
             @php
                 $cpI = $activeCheckpointIndex;
@@ -422,7 +422,7 @@
     @if ($step === 4)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="4" :total="4" back-action="previousStep" />
+            <x-step-indicator :current="4" :total="5" back-action="previousStep" />
 
             <h1 class="mb-5 font-heading text-[22px] font-extrabold text-bark">{{ __('general.quest_settings') }}</h1>
 
@@ -555,7 +555,7 @@
     {{-- ============================================================ --}}
     @if ($step === 5)
         <div class="flex flex-1 flex-col px-4">
-            <x-step-indicator :current="4" :total="4" back-action="previousStep" />
+            <x-step-indicator :current="5" :total="5" back-action="previousStep" />
 
             <h1 class="mb-4 font-heading text-[22px] font-extrabold text-bark">{{ __('sessions.review_publish') }}</h1>
 

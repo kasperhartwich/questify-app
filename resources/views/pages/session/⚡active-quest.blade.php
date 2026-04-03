@@ -207,26 +207,30 @@ class extends Component
             userMarker: null,
             locationInterval: null,
             init() {
-                if (typeof google === 'undefined') return;
+                if (typeof mapboxgl === 'undefined') return;
+                mapboxgl.accessToken = @js(config('services.mapbox.token'));
+
                 const checkpoints = @js($checkpoints);
                 const current = checkpoints[{{ $currentCheckpointIndex }}];
                 if (!current || !current.latitude) return;
 
-                this.map = new google.maps.Map(this.$el, {
-                    center: { lat: parseFloat(current.latitude), lng: parseFloat(current.longitude) },
+                this.map = new mapboxgl.Map({
+                    container: this.$el,
+                    style: 'mapbox://styles/mapbox/streets-v12',
+                    center: [parseFloat(current.longitude), parseFloat(current.latitude)],
                     zoom: 15,
-                    mapTypeControl: false,
-                    streetViewControl: false,
                 });
 
                 checkpoints.forEach((cp, i) => {
                     if (!cp.latitude || !cp.longitude) return;
-                    new google.maps.Marker({
-                        position: { lat: parseFloat(cp.latitude), lng: parseFloat(cp.longitude) },
-                        map: this.map,
-                        label: String(i + 1),
-                        opacity: i === {{ $currentCheckpointIndex }} ? 1.0 : 0.4,
-                    });
+                    const isCurrent = i === {{ $currentCheckpointIndex }};
+                    const el = document.createElement('div');
+                    el.className = 'flex items-center justify-center rounded-full text-xs font-bold text-white';
+                    el.style.cssText = 'width:28px;height:28px;background:#0B3D2E;opacity:' + (isCurrent ? '1' : '0.4');
+                    el.textContent = String(i + 1);
+                    new mapboxgl.Marker({ element: el })
+                        .setLngLat([parseFloat(cp.longitude), parseFloat(cp.latitude)])
+                        .addTo(this.map);
                 });
 
                 const isNative = @js($isNative);
@@ -264,26 +268,20 @@ class extends Component
                 });
             },
             updateUserMarker(lat, lng) {
-                const userPos = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                const lngLat = [parseFloat(lng), parseFloat(lat)];
                 if (this.userMarker) {
-                    this.userMarker.setPosition(userPos);
+                    this.userMarker.setLngLat(lngLat);
                 } else {
-                    this.userMarker = new google.maps.Marker({
-                        position: userPos,
-                        map: this.map,
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 8,
-                            fillColor: '#0B3D2E',
-                            fillOpacity: 1,
-                            strokeWeight: 2,
-                            strokeColor: '#ffffff',
-                        },
-                    });
+                    const el = document.createElement('div');
+                    el.style.cssText = 'width:16px;height:16px;background:#0B3D2E;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.3)';
+                    this.userMarker = new mapboxgl.Marker({ element: el })
+                        .setLngLat(lngLat)
+                        .addTo(this.map);
                 }
             },
             destroy() {
                 if (this.locationInterval) clearInterval(this.locationInterval);
+                if (this.map) this.map.remove();
             }
         }"
     >
