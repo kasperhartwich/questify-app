@@ -49,6 +49,11 @@
     --color-success: #D4EDE4;
 }
 
+/* Disable iOS overscroll bounce */
+html, body {
+    overscroll-behavior: none;
+}
+
 /* Global cursor rules */
 button, [type="button"], [type="submit"], [type="reset"], a[href], select, [role="button"] {
     cursor: pointer;
