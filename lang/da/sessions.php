@@ -92,6 +92,7 @@ return [
     'what_team_name' => 'Hvad hedder jeres hold?',
     'team_name_visible' => 'Dette er hvad andre hold ser under questen.',
     'your_team_name' => 'Jeres holdnavn',
+    'members' => 'medlemmer',
 
     // Validation
     'validation' => [

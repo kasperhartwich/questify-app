@@ -92,6 +92,7 @@ return [
     'what_team_name' => 'What is your team name?',
     'team_name_visible' => 'This is what other teams will see during the quest.',
     'your_team_name' => 'Your team name',
+    'members' => 'members',
 
     // Validation
     'validation' => [

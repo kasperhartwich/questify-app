@@ -166,15 +166,31 @@ class extends Component
     public function loadLeaderboard(): void
     {
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
-        $this->leaderboard = collect($response['data'] ?? [])
-            ->take(5)
-            ->map(fn ($p, $i) => [
-                'rank' => $i + 1,
-                'display_name' => $p['display_name'],
-                'score' => $p['total_score'],
-                'is_me' => $p['id'] === $this->participantId,
-            ])
-            ->toArray();
+        $isTeamMode = ($this->session['play_mode'] ?? '') === 'competitive_teams';
+
+        if ($isTeamMode) {
+            $myDisplayName = session('questify_display_name', '');
+
+            $this->leaderboard = collect($response['data'] ?? [])
+                ->take(5)
+                ->map(fn ($team, $i) => [
+                    'rank' => $i + 1,
+                    'display_name' => $team['team_name'],
+                    'score' => $team['score'],
+                    'is_me' => $team['team_name'] === $myDisplayName,
+                ])
+                ->toArray();
+        } else {
+            $this->leaderboard = collect($response['data'] ?? [])
+                ->take(5)
+                ->map(fn ($p, $i) => [
+                    'rank' => $i + 1,
+                    'display_name' => $p['display_name'],
+                    'score' => $p['total_score'],
+                    'is_me' => $p['id'] === $this->participantId,
+                ])
+                ->toArray();
+        }
     }
 
     #[On('echo-presence:session.{code},LeaderboardUpdated')]

@@ -46,6 +46,7 @@ class extends Component
 
         if ($response) {
             session()->put('questify_participant_id', $response['data']['id'] ?? $response['data']['participant_id'] ?? null);
+            session()->put('questify_display_name', $this->displayName);
             $this->redirect('/session/' . $this->code);
         }
     }

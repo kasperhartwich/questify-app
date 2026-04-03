@@ -47,15 +47,31 @@ class extends Component
     public function loadLeaderboard(int $participantId = 0): void
     {
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
+        $isTeamMode = ($this->session['play_mode'] ?? '') === 'competitive_teams';
 
-        $this->leaderboard = collect($response['data'] ?? [])
-            ->map(fn ($p, $i) => [
-                'rank' => $i + 1,
-                'display_name' => $p['display_name'],
-                'score' => $p['total_score'],
-                'is_me' => $p['id'] === $participantId,
-            ])
-            ->toArray();
+        if ($isTeamMode) {
+            $myDisplayName = session('questify_display_name', '');
+
+            $this->leaderboard = collect($response['data'] ?? [])
+                ->map(fn ($team, $i) => [
+                    'rank' => $i + 1,
+                    'display_name' => $team['team_name'],
+                    'score' => $team['score'],
+                    'member_count' => $team['member_count'] ?? 1,
+                    'members' => $team['members'] ?? [],
+                    'is_me' => $team['team_name'] === $myDisplayName,
+                ])
+                ->toArray();
+        } else {
+            $this->leaderboard = collect($response['data'] ?? [])
+                ->map(fn ($p, $i) => [
+                    'rank' => $i + 1,
+                    'display_name' => $p['display_name'],
+                    'score' => $p['total_score'],
+                    'is_me' => $p['id'] === $participantId,
+                ])
+                ->toArray();
+        }
 
         $me = collect($this->leaderboard)->firstWhere('is_me');
         $this->myScore = $me['score'] ?? 0;
@@ -119,20 +135,35 @@ class extends Component
             <h2 class="mb-3 font-semibold text-gray-900 dark:text-white">{{ __('sessions.leaderboard') }}</h2>
             <div class="space-y-2">
                 @foreach ($leaderboard as $entry)
-                    <div class="flex items-center justify-between rounded-lg px-3 py-2 {{ $entry['is_me'] ? 'bg-forest-50 dark:bg-forest-900/20' : '' }}">
-                        <span class="flex items-center gap-3">
-                            <span class="flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold
-                                {{ match($entry['rank']) { 1 => 'bg-amber-100 text-amber-700', 2 => 'bg-gray-200 text-gray-600', 3 => 'bg-orange-100 text-orange-700', default => 'bg-gray-100 text-gray-500' } }}">
-                                {{ $entry['rank'] }}
+                    <div>
+                        <div class="flex items-center justify-between rounded-lg px-3 py-2 {{ $entry['is_me'] ? 'bg-forest-50 dark:bg-forest-900/20' : '' }}">
+                            <span class="flex items-center gap-3">
+                                <span class="flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold
+                                    {{ match($entry['rank']) { 1 => 'bg-amber-100 text-amber-700', 2 => 'bg-gray-200 text-gray-600', 3 => 'bg-orange-100 text-orange-700', default => 'bg-gray-100 text-gray-500' } }}">
+                                    {{ $entry['rank'] }}
+                                </span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ $entry['display_name'] }}
+                                    @if ($entry['is_me'])
+                                        <span class="text-xs text-forest-600 dark:text-forest-400">({{ __('sessions.you') }})</span>
+                                    @endif
+                                    @if (!empty($entry['member_count']) && $entry['member_count'] > 1)
+                                        <span class="text-xs text-gray-400 dark:text-gray-500">{{ $entry['member_count'] }} {{ __('sessions.members') }}</span>
+                                    @endif
+                                </span>
                             </span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">
-                                {{ $entry['display_name'] }}
-                                @if ($entry['is_me'])
-                                    <span class="text-xs text-forest-600 dark:text-forest-400">({{ __('sessions.you') }})</span>
-                                @endif
-                            </span>
-                        </span>
-                        <span class="font-mono text-sm font-semibold text-gray-700 dark:text-gray-300">{{ number_format($entry['score']) }}</span>
+                            <span class="font-mono text-sm font-semibold text-gray-700 dark:text-gray-300">{{ number_format($entry['score']) }}</span>
+                        </div>
+                        @if (!empty($entry['members']))
+                            <div class="ml-12 mt-1 space-y-0.5">
+                                @foreach ($entry['members'] as $member)
+                                    <div class="flex items-center justify-between px-2 py-0.5 text-xs text-gray-500 dark:text-gray-400">
+                                        <span>{{ $member['display_name'] }}</span>
+                                        <span class="font-mono">{{ number_format($member['score']) }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
