@@ -15,16 +15,6 @@
         @livewireStyles
     </head>
     <body class="h-dvh overflow-hidden {{ $bodyClass ?? 'bg-cream' }} nativephp-safe-area">
-        @if ($isNative ?? false)
-        {{-- Native Top Bar --}}
-        <native:top-bar
-            id="top-bar"
-            title="{{ $title ?? config('app.name', 'Questify') }}"
-            background-color="#0B3D2E"
-            text-color="#ffffff"
-        />
-        @endif
-
         {{-- Main Content --}}
         <main class="h-full pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
             {{ $slot }}

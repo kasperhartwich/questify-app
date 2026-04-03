@@ -6,12 +6,12 @@
     @if ($step === 1)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="1" :total="5" back-url="/" />
+            <x-step-indicator :current="1" :total="6" back-url="/" />
 
             <h1 class="font-heading text-[22px] font-extrabold text-bark">{{ __('general.quest_info') }}</h1>
             <p class="mb-5 mt-1 text-[13px] text-muted">{{ __('general.quest_info_subtitle') }}</p>
 
-            <div class="flex flex-1 flex-col gap-4 pb-4">
+            <div class="flex flex-col gap-4 pb-4">
                 {{-- Quest Name --}}
                 <div>
                     <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.quest_name') }}</label>
@@ -35,46 +35,6 @@
                     ></textarea>
                 </div>
 
-                {{-- Category (chip selector) --}}
-                <div>
-                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.category') }}</label>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach ($categories as $id => $name)
-                            <button
-                                type="button"
-                                wire:click="$set('categoryId', '{{ $id }}')"
-                                class="rounded-full border-[1.5px] px-[14px] py-[7px] text-[13px] font-semibold transition-colors
-                                    {{ $categoryId == $id
-                                        ? 'border-forest-600 bg-forest-600 text-white'
-                                        : 'border-cream-border bg-white text-muted' }}"
-                            >
-                                {{ $name }}
-                            </button>
-                        @endforeach
-                    </div>
-                    @error('categoryId') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-                </div>
-
-                {{-- Difficulty (segmented control) --}}
-                <div>
-                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.difficulty') }}</label>
-                    <div class="flex rounded-[11px] bg-cream-dark p-[3px]">
-                        @foreach (\App\Enums\Difficulty::cases() as $diff)
-                            <button
-                                type="button"
-                                wire:click="$set('difficulty', '{{ $diff->value }}')"
-                                class="flex-1 rounded-[9px] py-2 text-center text-[13px] font-semibold transition-all
-                                    {{ $difficulty === $diff->value
-                                        ? 'bg-white text-bark shadow-sm'
-                                        : 'text-muted' }}"
-                            >
-                                {{ ucfirst($diff->value) }}
-                            </button>
-                        @endforeach
-                    </div>
-                    @error('difficulty') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-                </div>
-
                 {{-- Language --}}
                 <div>
                     <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.language') }}</label>
@@ -85,12 +45,6 @@
                     </div>
                 </div>
 
-                {{-- Cover Image --}}
-                <div>
-                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.cover_image') }}</label>
-                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-xs text-muted" />
-                    @error('coverImage') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
-                </div>
             </div>
 
             {{-- CTA --}}
@@ -170,11 +124,11 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     </button>
                     <div class="flex flex-1 gap-1">
-                        @for ($i = 1; $i <= 5; $i++)
+                        @for ($i = 1; $i <= 6; $i++)
                             <div class="h-[3px] flex-1 rounded-[2px] {{ $i <= 2 ? 'bg-white' : 'bg-white/30' }}"></div>
                         @endfor
                     </div>
-                    <span class="shrink-0 text-[11px] text-white/70">{{ __('general.step_of', ['current' => 2, 'total' => 5]) }}</span>
+                    <span class="shrink-0 text-[11px] text-white/70">{{ __('general.step_of', ['current' => 2, 'total' => 6]) }}</span>
                 </div>
                 <h1 class="font-heading text-[22px] font-extrabold text-white">{{ __('general.add_checkpoints') }}</h1>
             </div>
@@ -262,7 +216,7 @@
     @if ($step === 3)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="3" :total="5" back-action="previousStep" />
+            <x-step-indicator :current="3" :total="6" back-action="previousStep" />
 
             @php
                 $cpI = $activeCheckpointIndex;
@@ -422,7 +376,7 @@
     @if ($step === 4)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="4" :total="5" back-action="previousStep" />
+            <x-step-indicator :current="4" :total="6" back-action="previousStep" />
 
             <h1 class="mb-5 font-heading text-[22px] font-extrabold text-bark">{{ __('general.quest_settings') }}</h1>
 
@@ -551,11 +505,79 @@
     @endif
 
     {{-- ============================================================ --}}
-    {{-- STEP 5: Review & Publish --}}
+    {{-- STEP 5: Category, Difficulty & Cover Image --}}
     {{-- ============================================================ --}}
     @if ($step === 5)
         <div class="flex flex-1 flex-col px-4">
-            <x-step-indicator :current="5" :total="5" back-action="previousStep" />
+            <x-step-indicator :current="5" :total="6" back-action="previousStep" />
+
+            <h1 class="font-heading text-[22px] font-extrabold text-bark">{{ __('general.details') }}</h1>
+            <p class="mb-5 mt-1 text-[13px] text-muted">{{ __('general.details_subtitle') }}</p>
+
+            <div class="flex flex-col gap-4 pb-4">
+                {{-- Category (chip selector) --}}
+                <div>
+                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.category') }}</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($categories as $id => $name)
+                            <button
+                                type="button"
+                                wire:click="$set('categoryId', '{{ $id }}')"
+                                class="rounded-full border-[1.5px] px-[14px] py-[7px] text-[13px] font-semibold transition-colors
+                                    {{ $categoryId == $id
+                                        ? 'border-forest-600 bg-forest-600 text-white'
+                                        : 'border-cream-border bg-white text-muted' }}"
+                            >
+                                {{ $name }}
+                            </button>
+                        @endforeach
+                    </div>
+                    @error('categoryId') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Difficulty (segmented control) --}}
+                <div>
+                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.difficulty') }}</label>
+                    <div class="flex rounded-[11px] bg-cream-dark p-[3px]">
+                        @foreach (\App\Enums\Difficulty::cases() as $diff)
+                            <button
+                                type="button"
+                                wire:click="$set('difficulty', '{{ $diff->value }}')"
+                                class="flex-1 rounded-[9px] py-2 text-center text-[13px] font-semibold transition-all
+                                    {{ $difficulty === $diff->value
+                                        ? 'bg-white text-bark shadow-sm'
+                                        : 'text-muted' }}"
+                            >
+                                {{ ucfirst($diff->value) }}
+                            </button>
+                        @endforeach
+                    </div>
+                    @error('difficulty') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Cover Image --}}
+                <div>
+                    <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.cover_image') }}</label>
+                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-xs text-muted" />
+                    @error('coverImage') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            {{-- CTA --}}
+            <div class="pb-4">
+                <button wire:click="nextStep" class="flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark shadow-sm">
+                    {{ __('general.next_review') }} &rarr;
+                </button>
+            </div>
+        </div>
+    @endif
+
+    {{-- ============================================================ --}}
+    {{-- STEP 6: Review & Publish --}}
+    {{-- ============================================================ --}}
+    @if ($step === 6)
+        <div class="flex flex-1 flex-col px-4">
+            <x-step-indicator :current="6" :total="6" back-action="previousStep" />
 
             <h1 class="mb-4 font-heading text-[22px] font-extrabold text-bark">{{ __('sessions.review_publish') }}</h1>
 

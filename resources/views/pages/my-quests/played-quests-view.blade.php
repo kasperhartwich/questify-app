@@ -1,11 +1,11 @@
-<div class="flex min-h-screen flex-col bg-cream">
+<div class="flex h-[calc(100dvh-env(safe-area-inset-top,0px)-12px-env(safe-area-inset-bottom,0px)-76px)] flex-col bg-cream">
     {{-- Title --}}
-    <div class="px-[20px] py-[6px]">
+    <div class="shrink-0 px-[20px] py-[6px]">
         <h1 class="font-heading text-[24px] font-[800] text-bark">{{ __('general.my_quests') }}</h1>
     </div>
 
     {{-- Tabs --}}
-    <div class="mt-[12px] flex border-b-2 border-cream-border px-[20px]">
+    <div class="mt-[12px] flex shrink-0 border-b-2 border-cream-border px-[20px]">
         {{-- Playing tab hidden for now --}}
         {{-- <button wire:click="$set('tab', 'playing')" class="-mb-[2px] flex-1 border-b-2 py-[12px] text-center text-[13px] font-semibold {{ $tab === 'playing' ? 'border-b-forest-600 text-forest-600' : 'border-b-transparent text-muted' }}">
             {{ __('general.playing') }}
@@ -20,6 +20,9 @@
             {{ __('general.history') }}
         </button>
     </div>
+
+    {{-- Tab Content (scrollable) --}}
+    <div class="flex-1 overflow-y-auto">
 
     {{-- Playing Tab --}}
     @if ($tab === 'playing')
@@ -244,4 +247,6 @@
             @endunless
         </div>
     @endif
+
+    </div>{{-- end scrollable --}}
 </div>

@@ -51,38 +51,49 @@
 
     {{-- Mini Map Widget --}}
     <div class="relative mx-[16px] mb-[12px] h-[120px] overflow-hidden rounded-[14px]"
-        x-data
-        x-init="
-            mapboxgl.accessToken = @js(config('services.mapbox.token'));
-            const miniMap = new mapboxgl.Map({
-                container: $refs.miniMap,
-                style: 'mapbox://styles/mapbox/streets-v12',
-                center: [12.5683, 55.6761],
-                zoom: 12,
-                attributionControl: false,
-                interactive: false,
-            });
-            miniMap.on('load', () => {
-                const quests = @js(
-                    collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
-                    ->map(fn($q) => [
-                        'lat' => (float) ($q->starting_checkpoint->latitude ?? $q->checkpoints[0]->latitude),
-                        'lng' => (float) ($q->starting_checkpoint->longitude ?? $q->checkpoints[0]->longitude),
-                    ])->values()->all()
-                );
-                quests.forEach(q => {
-                    const el = document.createElement('div');
-                    el.className = 'mapbox-quest-marker';
-                    el.style.cssText = 'width:16px;height:16px;border-width:2px;';
-                    new mapboxgl.Marker({ element: el }).setLngLat([q.lng, q.lat]).addTo(miniMap);
-                });
-                if (quests.length) {
-                    const bounds = new mapboxgl.LngLatBounds();
-                    quests.forEach(q => bounds.extend([q.lng, q.lat]));
-                    miniMap.fitBounds(bounds, { padding: 20 });
-                }
-            });
-        "
+        x-data="{
+            init() {
+                const boot = () => {
+                    if (typeof mapboxgl === 'undefined') {
+                        setTimeout(boot, 50);
+                        return;
+                    }
+                    try {
+                        mapboxgl.accessToken = @js(config('services.mapbox.token'));
+                        const miniMap = new mapboxgl.Map({
+                            container: this.$refs.miniMap,
+                            style: 'mapbox://styles/mapbox/streets-v12',
+                            center: [12.5683, 55.6761],
+                            zoom: 12,
+                            attributionControl: false,
+                            interactive: false,
+                        });
+                        miniMap.on('error', (e) => console.warn('Mapbox error:', e));
+                        miniMap.on('load', () => {
+                            const quests = @js(
+                                collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
+                                ->map(fn($q) => [
+                                    'lat' => (float) ($q->starting_checkpoint->latitude ?? $q->checkpoints[0]->latitude),
+                                    'lng' => (float) ($q->starting_checkpoint->longitude ?? $q->checkpoints[0]->longitude),
+                                ])->values()->all()
+                            );
+                            quests.forEach(q => {
+                                const el = document.createElement('div');
+                                el.className = 'mapbox-quest-marker';
+                                el.style.cssText = 'width:16px;height:16px;border-width:2px;';
+                                new mapboxgl.Marker({ element: el }).setLngLat([q.lng, q.lat]).addTo(miniMap);
+                            });
+                            if (quests.length) {
+                                const bounds = new mapboxgl.LngLatBounds();
+                                quests.forEach(q => bounds.extend([q.lng, q.lat]));
+                                miniMap.fitBounds(bounds, { padding: 20 });
+                            }
+                        });
+                    } catch (e) { console.error('Mini map init failed:', e); }
+                };
+                boot();
+            }
+        }"
     >
         <div x-ref="miniMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
         {{-- Clickable overlay to navigate to full map --}}

@@ -236,18 +236,20 @@ class extends Component
             locationInterval: null,
             init() {
                 if (typeof mapboxgl === 'undefined') return;
-                mapboxgl.accessToken = @js(config('services.mapbox.token'));
+                try {
+                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
 
-                const checkpoints = @js($checkpoints);
-                const current = checkpoints[{{ $currentCheckpointIndex }}];
-                if (!current || !current.latitude) return;
+                    const checkpoints = @js($checkpoints);
+                    const current = checkpoints[{{ $currentCheckpointIndex }}];
+                    if (!current || !current.latitude) return;
 
-                this.map = new mapboxgl.Map({
-                    container: this.$el,
-                    style: 'mapbox://styles/mapbox/streets-v12',
-                    center: [parseFloat(current.longitude), parseFloat(current.latitude)],
-                    zoom: 15,
-                });
+                    this.map = new mapboxgl.Map({
+                        container: this.$el,
+                        style: 'mapbox://styles/mapbox/streets-v12',
+                        center: [parseFloat(current.longitude), parseFloat(current.latitude)],
+                        zoom: 15,
+                    });
+                    this.map.on('error', (e) => console.warn('Mapbox error:', e));
 
                 checkpoints.forEach((cp, i) => {
                     if (!cp.latitude || !cp.longitude) return;
@@ -294,6 +296,7 @@ class extends Component
                     const lng = params[0]?.longitude ?? params.longitude;
                     if (lat && lng) this.updateUserMarker(lat, lng);
                 });
+                } catch (e) { console.error('Active quest map init failed:', e); }
             },
             updateUserMarker(lat, lng) {
                 const lngLat = [parseFloat(lng), parseFloat(lat)];

@@ -160,7 +160,7 @@ class extends Component
 };
 ?>
 
-<div class="flex h-dvh flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
+<div class="flex h-full flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
     @if ($step === 'login')
         {{-- Heading --}}
         <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.welcome_back'))) !!}</h1>

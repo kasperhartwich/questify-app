@@ -84,7 +84,7 @@ class extends Component
     public function nextStep(): void
     {
         $this->validateStep();
-        $this->step = min(5, $this->step + 1);
+        $this->step = min(6, $this->step + 1);
     }
 
     public function previousStep(): void
@@ -286,8 +286,6 @@ class extends Component
         match ($this->step) {
             1 => $this->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'categoryId' => ['required', 'in:' . implode(',', array_keys($this->categories))],
-                'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             2 => $this->validate([
                 'checkpoints' => ['required', 'array', 'min:1'],
@@ -303,7 +301,11 @@ class extends Component
                 'playMode' => ['required', 'in:' . implode(',', array_column(PlayMode::cases(), 'value'))],
                 'wrongAnswerBehaviour' => ['required', 'in:' . implode(',', array_column(WrongAnswerBehaviour::cases(), 'value'))],
             ]),
-            5 => null,
+            5 => $this->validate([
+                'categoryId' => ['required', 'in:' . implode(',', array_keys($this->categories))],
+                'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
+            ]),
+            6 => null,
             default => null,
         };
     }

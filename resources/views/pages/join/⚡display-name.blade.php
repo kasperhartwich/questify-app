@@ -53,7 +53,7 @@ class extends Component
 };
 ?>
 
-<div class="flex h-dvh flex-col overflow-hidden bg-cream">
+<div class="flex h-full flex-col overflow-hidden bg-cream">
     {{-- Header --}}
     <div class="flex items-center gap-3 px-4 pb-3 pt-4">
         <a href="/join" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>
@@ -100,7 +100,7 @@ class extends Component
             @error('displayName') <p class="mb-2 text-[10px] text-coral">{{ $message }}</p> @enderror
             <p class="mb-5 text-center text-[11px] text-muted">{{ __('sessions.no_account_just_session') }}</p>
 
-            <div class="mt-auto pb-2">
+            <div class="pb-2">
                 <button type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark">
                     {{ __('sessions.enter_the_quest') }}
                 </button>

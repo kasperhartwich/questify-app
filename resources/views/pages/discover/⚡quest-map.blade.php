@@ -124,19 +124,32 @@ class extends Component
         isSatellite: false,
         userLocated: false,
         init() {
-            mapboxgl.accessToken = @js(config('services.mapbox.token'));
-            this.map = new mapboxgl.Map({
-                container: this.$refs.mapCanvas,
-                style: 'mapbox://styles/mapbox/streets-v12',
-                center: [12.5683, 55.6761],
-                zoom: 12,
-                attributionControl: false,
-            });
-            this.map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-            this.map.on('load', () => {
-                this.addMarkers();
-                this.locateUser();
-            });
+            const boot = () => {
+                if (typeof mapboxgl === 'undefined') {
+                    setTimeout(boot, 50);
+                    return;
+                }
+                try {
+                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
+                    this.map = new mapboxgl.Map({
+                        container: this.$refs.mapCanvas,
+                        style: 'mapbox://styles/mapbox/streets-v12',
+                        center: [12.5683, 55.6761],
+                        zoom: 12,
+                        attributionControl: false,
+                    });
+                    this.map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+                    this.map.on('error', (e) => console.warn('Mapbox error:', e));
+                    this.map.on('load', () => {
+                        this.addMarkers();
+                        this.locateUser();
+                    });
+                } catch (e) {
+                    console.error('Map init failed:', e);
+                    return;
+                }
+            };
+            boot();
             $wire.on('native-location', (params) => {
                 const lat = params[0]?.latitude ?? params.latitude;
                 const lng = params[0]?.longitude ?? params.longitude;

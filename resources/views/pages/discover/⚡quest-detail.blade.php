@@ -136,6 +136,7 @@ class extends Component
         map: null,
     }"
     x-init="
+        try {
         mapboxgl.accessToken = @js(config('services.mapbox.token'));
         map = new mapboxgl.Map({
             container: $refs.detailMap,
@@ -145,6 +146,7 @@ class extends Component
             attributionControl: false,
             interactive: false,
         });
+        map.on('error', (e) => console.warn('Mapbox error:', e));
         map.on('load', () => {
             const cps = @js($mapCheckpoints);
             const coords = [];
@@ -172,6 +174,7 @@ class extends Component
                 map.fitBounds(bounds, { padding: 50 });
             }
         });
+        } catch (e) { console.error('Detail map init failed:', e); }
     "
 >
     <style>

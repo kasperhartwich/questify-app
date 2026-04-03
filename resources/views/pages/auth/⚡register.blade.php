@@ -245,7 +245,7 @@ class extends Component
 };
 ?>
 
-<div class="flex h-dvh flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
+<div class="flex h-full flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
     {{-- Step 1: Method Selection --}}
     @if ($step === 1)
         {{-- Heading --}}

@@ -39,7 +39,7 @@ class extends Component
 };
 ?>
 
-<div class="flex h-dvh flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
+<div class="flex h-full flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
     {{-- Back + Logo --}}
     <div class="flex items-center gap-2.5 pb-5 pt-1">
         <a href="/login" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>
