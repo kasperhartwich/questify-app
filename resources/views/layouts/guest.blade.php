@@ -15,6 +15,7 @@
         @livewireStyles
     </head>
     <body class="h-dvh overflow-hidden bg-cream dark:bg-forest-800 nativephp-safe-area">
+        @if ($isNative ?? false)
         {{-- Native Top Bar --}}
         <native:top-bar
             id="top-bar"
@@ -22,6 +23,7 @@
             background-color="#0B3D2E"
             text-color="#ffffff"
         />
+        @endif
 
         {{-- Main Content --}}
         <main>

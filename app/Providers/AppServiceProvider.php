@@ -8,8 +8,10 @@ use App\Services\AppInfoService;
 use App\Services\MissingTranslationReporter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\Events\MissingTranslationKey;
+use Native\Mobile\Facades\System;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,5 +40,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->terminating(function () {
             app(MissingTranslationReporter::class)->flush();
         });
+
+        try {
+            $isNative = System::isMobile();
+        } catch (\Throwable) {
+            $isNative = false;
+        }
+
+        View::share('isNative', $isNative);
     }
 }

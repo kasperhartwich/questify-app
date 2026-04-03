@@ -36,20 +36,52 @@
             {{ __('sessions.reconnecting') }}
         </div>
 
-        {{-- Native Top Bar --}}
-        <native:top-bar
-            id="top-bar"
-            title="{{ $title ?? config('app.name', 'Questify') }}"
-            background-color="#0B3D2E"
-            text-color="#ffffff"
-        />
-
         {{-- Main Content --}}
         <main class="min-h-screen bg-cream pb-[60px]">
             {{ $slot }}
         </main>
 
-        {{-- HTML Tab Bar (visible in browser, hidden on native) --}}
+        @if ($isNative ?? false)
+        {{-- Native Bottom Navigation --}}
+        <native:bottom-nav>
+            <native:bottom-nav-item
+                id="discover"
+                icon="map"
+                label="{{ __('general.discover') }}"
+                url="/discover/list"
+                :active="request()->is('discover*')"
+            />
+            <native:bottom-nav-item
+                id="my-quests"
+                icon="list.clipboard"
+                label="{{ __('general.my_quests') }}"
+                url="/my-quests"
+                :active="request()->is('my-quests*')"
+            />
+            <native:bottom-nav-item
+                id="join"
+                icon="qrcode"
+                label="{{ __('general.join') }}"
+                url="/join"
+                :active="request()->is('join*')"
+            />
+            <native:bottom-nav-item
+                id="create"
+                icon="mappin.circle"
+                label="{{ __('general.create') }}"
+                url="/create"
+                :active="request()->is('create*')"
+            />
+            <native:bottom-nav-item
+                id="profile"
+                icon="person.circle"
+                label="{{ __('general.profile') }}"
+                url="/profile"
+                :active="request()->is('profile*')"
+            />
+        </native:bottom-nav>
+        @else
+        {{-- HTML Tab Bar (browser fallback) --}}
         <nav class="fixed bottom-0 left-0 right-0 z-50 flex h-[60px] items-center border-t border-black/[0.07] bg-white px-0.5">
             {{-- Discover --}}
             <a href="/discover/list" class="flex flex-1 flex-col items-center justify-center gap-[3px] py-2" wire:navigate>
@@ -104,45 +136,7 @@
                 <span class="whitespace-nowrap text-[7px] font-semibold tracking-[0.02em] {{ request()->is('profile*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.profile') }}</span>
             </a>
         </nav>
-
-        {{-- Native Bottom Navigation (renders on native devices only) --}}
-        <native:bottom-nav>
-            <native:bottom-nav-item
-                id="discover"
-                icon="map"
-                label="{{ __('general.discover') }}"
-                url="/discover/list"
-                :active="request()->is('discover*')"
-            />
-            <native:bottom-nav-item
-                id="my-quests"
-                icon="list.clipboard"
-                label="{{ __('general.my_quests') }}"
-                url="/my-quests"
-                :active="request()->is('my-quests*')"
-            />
-            <native:bottom-nav-item
-                id="join"
-                icon="qrcode"
-                label="{{ __('general.join') }}"
-                url="/join"
-                :active="request()->is('join*')"
-            />
-            <native:bottom-nav-item
-                id="create"
-                icon="mappin.circle"
-                label="{{ __('general.create') }}"
-                url="/create"
-                :active="request()->is('create*')"
-            />
-            <native:bottom-nav-item
-                id="profile"
-                icon="person.circle"
-                label="{{ __('general.profile') }}"
-                url="/profile"
-                :active="request()->is('profile*')"
-            />
-        </native:bottom-nav>
+        @endif
 
         <livewire:dialog />
         <livewire:push-notification-manager />
