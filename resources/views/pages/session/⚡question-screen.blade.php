@@ -16,7 +16,7 @@ class extends Component
 
     public int $participantId = 0;
 
-    public array $checkpoint = [];
+    public array $checkpointData = [];
 
     public array $questions = [];
 
@@ -55,8 +55,8 @@ class extends Component
         ));
 
         if ($response) {
-            $this->checkpoint = $response['data'] ?? [];
-            $this->questions = $this->checkpoint['questions'] ?? [];
+            $this->checkpointData = $response['data'] ?? [];
+            $this->questions = $this->checkpointData['questions'] ?? [];
             $this->totalQuestions = count($this->questions);
         }
     }
@@ -94,7 +94,7 @@ class extends Component
         $answerId = null;
         $answerText = null;
 
-        if (($currentQuestion['question_type'] ?? '') === QuestionType::OpenText->value) {
+        if ($currentQuestion->type === QuestionType::OpenText) {
             $answerText = trim($this->openEndedAnswer);
         } else {
             if (! $this->selectedAnswerId) {
@@ -106,7 +106,7 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->answer(
             $this->code,
             $this->participantId,
-            $currentQuestion['id'],
+            $currentQuestion->id,
             $answerId,
             $answerText,
         ));
@@ -122,7 +122,7 @@ class extends Component
         $this->showFeedback = true;
 
         if ($this->lastAnswerCorrect) {
-            $this->answeredQuestionIds[] = $currentQuestion['id'];
+            $this->answeredQuestionIds[] = $currentQuestion->id;
         }
 
         $next = $data['next'] ?? 'question';
@@ -157,7 +157,7 @@ class extends Component
     {{-- Progress Bar --}}
     <div class="bg-white px-4 py-3 dark:bg-gray-800">
         <div class="mb-1 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>{{ $checkpoint['title'] ?? '' }}</span>
+            <span>{{ $checkpointData['title'] ?? '' }}</span>
             <span>{{ $currentQuestionIndex + 1 }}/{{ $totalQuestions }}</span>
         </div>
         <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">

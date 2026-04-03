@@ -69,14 +69,6 @@ class extends Component
     {
         $this->dispatch('share-session', url: $this->shareUrl, code: $this->code);
     }
-
-    public function getListeners(): array
-    {
-        return [
-            "echo-presence:session.{$this->session->join_code},ParticipantJoined" => 'onParticipantJoined',
-            "echo-presence:session.{$this->session->join_code},SessionStarted" => 'onSessionStarted',
-        ];
-    }
 };
 ?>
 

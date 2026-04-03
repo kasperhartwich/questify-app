@@ -3,6 +3,7 @@
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use App\Models\Quest;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -47,6 +48,18 @@ class extends Component
 
         $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
         $this->session = $response['data'] ?? [];
+
+        // Auto-detect participant_id from session data if not in PHP session
+        if (! $this->participantId && Auth::check()) {
+            $participants = $this->session['participants'] ?? [];
+            foreach ($participants as $p) {
+                if (($p['user_id'] ?? null) === Auth::id()) {
+                    $this->participantId = $p['id'];
+                    session()->put('questify_participant_id', $p['id']);
+                    break;
+                }
+            }
+        }
 
         $questResponse = $this->tryApiCall(fn () => $this->api->quests()->show($this->session['quest']['id'] ?? 0));
         $quest = $questResponse['data'] ?? [];

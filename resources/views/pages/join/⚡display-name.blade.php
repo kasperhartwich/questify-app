@@ -23,7 +23,7 @@ class extends Component
     {
         $this->code = strtoupper($code);
 
-        $response = $this->tryApiCall(fn () => $this->api->session()->show($this->code));
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($this->code));
 
         if ($response) {
             $this->session = $this->toObject($response['data']);
@@ -38,14 +38,14 @@ class extends Component
 
         $userId = auth()->id();
 
-        $response = $this->tryApiCall(fn () => $this->api->session()->join(
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->join(
             $this->code,
             $this->displayName,
             $userId,
         ));
 
         if ($response) {
-            session()->put('questify_participant_id', $response['data']['id'] ?? null);
+            session()->put('questify_participant_id', $response['data']['id'] ?? $response['data']['participant_id'] ?? null);
             $this->redirect('/session/' . $this->code);
         }
     }
