@@ -13,6 +13,17 @@ export default defineConfig({
         tailwindcss(),
         nativephpMobile(),
     ],
+    build: {
+        chunkSizeWarningLimit: 1800,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    mapbox: ['mapbox-gl'],
+                    echo: ['laravel-echo', 'pusher-js'],
+                },
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

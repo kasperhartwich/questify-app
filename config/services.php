@@ -60,7 +60,7 @@ return [
     ],
 
     'questify' => [
-        'url' => env('QUESTIFY_API_URL', 'https://questify-admin.test'),
+        'url' => env('QUESTIFY_API_URL', 'https://questifyapp.net'),
         'timeout' => (int) env('QUESTIFY_API_TIMEOUT', 15),
     ],
 
