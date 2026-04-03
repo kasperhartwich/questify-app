@@ -19,7 +19,7 @@ class extends Component
 };
 ?>
 
-<div class="relative flex h-screen flex-col bg-forest-600 overflow-hidden">
+<div class="relative flex h-dvh flex-col bg-forest-600 overflow-hidden">
     {{-- Decorative circles --}}
     <div class="pointer-events-none absolute right-[-60px] top-[-60px] h-[240px] w-[240px] rounded-full border-[40px]" style="border-color: rgba(245,166,35,0.07)"></div>
     <div class="pointer-events-none absolute bottom-24 left-[-50px] h-[160px] w-[160px] rounded-full border-[28px]" style="border-color: rgba(245,166,35,0.05)"></div>
@@ -110,5 +110,5 @@ class extends Component
         </a>
     </div>
 
-    <p class="pb-8 text-center text-[11px] text-white/30">{{ __('general.no_account_needed') }}</p>
+    <p class="pb-[env(safe-area-inset-bottom,8px)] text-center text-[11px] text-white/30">{{ __('general.no_account_needed') }}</p>
 </div>

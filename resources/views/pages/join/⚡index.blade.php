@@ -78,7 +78,7 @@ class extends Component
 };
 ?>
 
-<div class="flex min-h-screen flex-col bg-cream">
+<div class="flex h-dvh flex-col overflow-hidden bg-cream">
     {{-- Header --}}
     <div class="flex items-center gap-3 px-4 pb-3 pt-4">
         <a href="/" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>

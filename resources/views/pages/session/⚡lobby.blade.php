@@ -72,7 +72,7 @@ class extends Component
 };
 ?>
 
-<div class="flex min-h-screen flex-col">
+<div class="flex h-dvh flex-col overflow-hidden">
     {{-- Forest Header --}}
     <div class="relative overflow-hidden bg-forest-600 px-5 pb-5 pt-6 text-white">
         <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[120px] w-[120px] rounded-full border-[22px] border-[rgba(245,166,35,0.1)]"></div>
@@ -130,7 +130,7 @@ class extends Component
     </div>
 
     {{-- Body --}}
-    <div class="flex-1 bg-cream px-5 py-5">
+    <div class="flex-1 overflow-y-auto bg-cream px-5 py-5">
         {{-- Players Section Header --}}
         <div class="mb-3 flex items-center justify-between">
             <h2 class="font-heading text-[15px] font-bold text-bark">{{ ($session['play_mode'] ?? '') === 'competitive_teams' ? __('sessions.teams') : __('sessions.players') }}</h2>
