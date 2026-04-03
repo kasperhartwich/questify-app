@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="min-h-screen {{ $bodyClass ?? 'bg-cream' }} dark:bg-forest-800 nativephp-safe-area">
+    <body class="min-h-screen {{ $bodyClass ?? 'bg-cream' }} nativephp-safe-area">
         {{-- WebSocket Reconnection Indicator --}}
         <div
             x-data="{

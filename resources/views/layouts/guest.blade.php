@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="h-dvh overflow-hidden {{ $bodyClass ?? 'bg-cream' }} dark:bg-forest-800 nativephp-safe-area">
+    <body class="h-dvh overflow-hidden {{ $bodyClass ?? 'bg-cream' }} nativephp-safe-area">
         @if ($isNative ?? false)
         {{-- Native Top Bar --}}
         <native:top-bar
