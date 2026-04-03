@@ -23,7 +23,8 @@
         "nativephp/mobile": "^3.0",
         "nativephp/mobile-firebase": "^1.0",
         "nativephp/mobile-geolocation": "^1.0",
-        "nativephp/mobile-scanner": "^1.0"
+        "nativephp/mobile-scanner": "^1.0",
+        "sentry/sentry-laravel": "^4.24"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

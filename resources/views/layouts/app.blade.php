@@ -11,6 +11,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
+        <script src="https://js.sentry-cdn.com/09f17f769de593054c277df8493bef0a.min.js" crossorigin="anonymous"></script>
+
         @if (Native\Mobile\Facades\System::isMobile())
         <script>
             window.__reverb = {

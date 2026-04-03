@@ -130,6 +130,16 @@ class extends Component
                     return;
                 }
                 try {
+                    if (!mapboxgl.supported()) {
+                        const diag = mapboxgl.supported.diagnostics();
+                        if (window.Sentry) {
+                            Sentry.captureMessage('Mapbox GL not supported', {
+                                level: 'error',
+                                extra: { diagnostics: diag },
+                            });
+                        }
+                        return;
+                    }
                     mapboxgl.accessToken = @js(config('services.mapbox.token'));
                     this.map = new mapboxgl.Map({
                         container: this.$refs.mapCanvas,
@@ -139,13 +149,22 @@ class extends Component
                         attributionControl: false,
                     });
                     this.map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-                    this.map.on('error', (e) => console.warn('Mapbox error:', e));
+                    this.map.on('error', (e) => {
+                        if (window.Sentry) {
+                            Sentry.captureMessage('Mapbox runtime error', {
+                                level: 'warning',
+                                extra: { error: e.error?.message || e.message || e },
+                            });
+                        }
+                    });
                     this.map.on('load', () => {
                         this.addMarkers();
                         this.locateUser();
                     });
                 } catch (e) {
-                    console.error('Map init failed:', e);
+                    if (window.Sentry) {
+                        Sentry.captureException(e, { tags: { component: 'mapbox' } });
+                    }
                     return;
                 }
             };
