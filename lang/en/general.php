@@ -51,6 +51,7 @@ return [
     'played_quests' => 'Played',
     'created_quests' => 'Created',
     'start_quest' => 'Start Quest',
+    'see_quest' => 'See Quest',
     'join' => 'Join',
     'rating' => 'Rating',
     'ratings' => 'Ratings',

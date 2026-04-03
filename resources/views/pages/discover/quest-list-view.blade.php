@@ -102,7 +102,7 @@
     {{-- Quest Cards --}}
     <div class="space-y-[12px] px-[16px] pb-5">
         @forelse ($quests as $quest)
-            <x-quest-card :quest="$quest" variant="discover" :cta-label="__('general.start_quest')" />
+            <x-quest-card :quest="$quest" variant="discover" :cta-label="__('general.see_quest')" />
         @empty
             <div class="py-12 text-center text-muted">
                 <p>{{ __('general.no_quests_found') }}</p>

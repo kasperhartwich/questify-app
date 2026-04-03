@@ -51,6 +51,7 @@ return [
     'played_quests' => 'Spillet',
     'created_quests' => 'Oprettet',
     'start_quest' => 'Start Quest',
+    'see_quest' => 'Se Quest',
     'join' => 'Deltag',
     'rating' => 'Bedømmelse',
     'ratings' => 'Bedømmelser',

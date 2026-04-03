@@ -178,9 +178,9 @@ class extends Component
         @endif
 
         {{-- Back button --}}
-        <a href="{{ url()->previous() }}" class="absolute left-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+        <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/discover/list'; }" class="absolute left-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </a>
+        </button>
 
         {{-- Bookmark button --}}
         <button wire:click="toggleFavourite" class="absolute right-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
