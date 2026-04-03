@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -9,6 +10,12 @@ new
 #[Title('Welcome')]
 class extends Component
 {
+    public function mount(): void
+    {
+        if (Auth::check()) {
+            $this->redirect('/discover/list');
+        }
+    }
 };
 ?>
 
