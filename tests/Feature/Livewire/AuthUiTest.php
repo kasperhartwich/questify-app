@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Livewire\Livewire;
 
 it('renders the login page', function () {
@@ -47,11 +48,30 @@ it('signup step 1 shows email and continue button', function () {
 it('clicking email signup advances to step 2', function () {
     Livewire::test('pages::auth.register')
         ->assertSet('step', 1)
+        ->set('email', 'new@example.com')
         ->call('goToEmailSignup')
         ->assertSet('step', 2)
         ->assertSee(__('auth.your_details'))
         ->assertSee(__('auth.first_name'))
         ->assertSee(__('auth.display_name'));
+});
+
+it('blocks email signup with duplicate email on step 1', function () {
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    Livewire::test('pages::auth.register')
+        ->set('email', 'taken@example.com')
+        ->call('goToEmailSignup')
+        ->assertSet('step', 1)
+        ->assertHasErrors('email');
+});
+
+it('blocks email signup with invalid email on step 1', function () {
+    Livewire::test('pages::auth.register')
+        ->set('email', 'not-an-email')
+        ->call('goToEmailSignup')
+        ->assertSet('step', 1)
+        ->assertHasErrors('email');
 });
 
 it('step 2 back button returns to step 1', function () {
@@ -100,6 +120,7 @@ it('clicking phone signup advances to step 2 with phone field', function () {
 
 it('email signup does not show phone field', function () {
     Livewire::test('pages::auth.register')
+        ->set('email', 'test@example.com')
         ->call('goToEmailSignup')
         ->assertSet('signup_method', 'email')
         ->assertDontSee(__('auth.phone_e164_hint'));

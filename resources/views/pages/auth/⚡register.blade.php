@@ -65,6 +65,16 @@ class extends Component
 
     public function goToEmailSignup(): void
     {
+        $this->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        if (\App\Models\User::where('email', $this->email)->exists()) {
+            $this->addError('email', __('validation.unique', ['attribute' => 'email']));
+
+            return;
+        }
+
         $this->signup_method = 'email';
         $this->step = 2;
     }
@@ -282,6 +292,9 @@ class extends Component
                         {{ __('auth.continue') }}
                     </button>
                 </form>
+                @error('email')
+                    <p class="mt-1.5 text-[11px] text-red-500">{{ $message }}</p>
+                @enderror
             </div>
         @endif
 
