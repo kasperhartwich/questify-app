@@ -11,6 +11,17 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
+        @if (Native\Mobile\Facades\System::isMobile())
+        <script>
+            window.__reverb = {
+                key: @js(config('broadcasting.connections.reverb.key')),
+                host: @js(config('broadcasting.connections.reverb.options.host')),
+                port: {{ (int) config('broadcasting.connections.reverb.options.port', 80) }},
+                scheme: @js(config('broadcasting.connections.reverb.options.scheme', 'http')),
+            };
+        </script>
+        @endif
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>

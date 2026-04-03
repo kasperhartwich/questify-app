@@ -14,14 +14,14 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-if (import.meta.env.VITE_REVERB_APP_KEY) {
+if (window.__reverb?.key) {
     window.Echo = new Echo({
         broadcaster: 'reverb',
-        key: import.meta.env.VITE_REVERB_APP_KEY,
-        wsHost: import.meta.env.VITE_REVERB_HOST,
-        wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+        key: window.__reverb.key,
+        wsHost: window.__reverb.host,
+        wsPort: window.__reverb.port ?? 80,
+        wssPort: window.__reverb.port ?? 443,
+        forceTLS: (window.__reverb.scheme ?? 'https') === 'https',
         enabledTransports: ['ws', 'wss'],
     });
 }
