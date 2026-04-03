@@ -76,8 +76,9 @@ class extends Component
         @endif
 
         {{-- Heading --}}
-        <h1 class="mb-1.5 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ __('sessions.what_should_we_call_you') }}</h1>
-        <p class="mb-5 text-[13px] text-muted">{{ __('sessions.display_name_visible') }}</p>
+        @php $isTeamMode = ($session->play_mode ?? '') === 'competitive_teams'; @endphp
+        <h1 class="mb-1.5 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ $isTeamMode ? __('sessions.what_team_name') : __('sessions.what_should_we_call_you') }}</h1>
+        <p class="mb-5 text-[13px] text-muted">{{ $isTeamMode ? __('sessions.team_name_visible') : __('sessions.display_name_visible') }}</p>
 
         {{-- Display name input --}}
         <form wire:submit="join" class="flex flex-1 flex-col">
@@ -85,7 +86,7 @@ class extends Component
                 <input
                     type="text"
                     wire:model="displayName"
-                    placeholder="{{ __('sessions.your_display_name') }}"
+                    placeholder="{{ $isTeamMode ? __('sessions.your_team_name') : __('sessions.your_display_name') }}"
                     class="w-full rounded-xl border-2 border-cream-border bg-white px-3.5 py-3 pr-11 text-[14px] font-semibold text-bark focus:border-forest-600 focus:outline-none"
                     required
                 />

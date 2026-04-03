@@ -15,6 +15,27 @@
         @livewireStyles
     </head>
     <body class="min-h-screen bg-cream dark:bg-forest-800 nativephp-safe-area">
+        {{-- WebSocket Reconnection Indicator --}}
+        <div
+            x-data="{
+                connected: true,
+                init() {
+                    if (!window.Echo?.connector?.pusher) return;
+                    const pusher = window.Echo.connector.pusher;
+                    pusher.connection.bind('connected', () => this.connected = true);
+                    pusher.connection.bind('connecting', () => this.connected = false);
+                    pusher.connection.bind('unavailable', () => this.connected = false);
+                    pusher.connection.bind('disconnected', () => this.connected = false);
+                }
+            }"
+            x-show="!connected"
+            x-transition
+            x-cloak
+            class="fixed inset-x-0 top-0 z-[100] bg-amber-500 py-1 text-center text-[11px] font-semibold text-white"
+        >
+            {{ __('sessions.reconnecting') }}
+        </div>
+
         {{-- Native Top Bar --}}
         <native:top-bar
             id="top-bar"

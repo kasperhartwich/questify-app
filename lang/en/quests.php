@@ -50,4 +50,10 @@ return [
     ],
 
     'checkpoints_need_coordinates' => 'All checkpoints need a location. Tap the map to place them.',
+
+    'access_code_required' => 'Access Code Required',
+    'access_code_description' => 'This quest requires an access code to play.',
+    'enter_access_code' => 'Enter code',
+    'verify' => 'Verify',
+    'invalid_access_code' => 'Invalid access code. Please try again.',
 ];

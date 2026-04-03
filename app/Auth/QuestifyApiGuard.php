@@ -4,6 +4,7 @@ namespace App\Auth;
 
 use App\Exceptions\Api\ApiAuthenticationException;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\TokenStorage;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
@@ -21,7 +22,7 @@ class QuestifyApiGuard implements Guard
 
     public function check(): bool
     {
-        return $this->user !== null || $this->session->has('questify_api_token');
+        return $this->user !== null || TokenStorage::has();
     }
 
     public function guest(): bool
@@ -84,7 +85,7 @@ class QuestifyApiGuard implements Guard
      */
     public function login(array $userData, string $token): void
     {
-        $this->session->put('questify_api_token', $token);
+        TokenStorage::set($token);
         $this->session->put('questify_user', $userData);
         $this->session->regenerate();
 
@@ -100,7 +101,8 @@ class QuestifyApiGuard implements Guard
             // Ignore API errors during logout
         }
 
-        $this->session->forget(['questify_api_token', 'questify_user']);
+        TokenStorage::forget();
+        $this->session->forget('questify_user');
         $this->session->invalidate();
         $this->session->regenerateToken();
 

@@ -2,6 +2,7 @@
 
 use App\Exceptions\Api\ApiException;
 use App\Livewire\Concerns\WithApiClient;
+use App\Services\TokenStorage;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\PushNotification\TokenGenerated;
@@ -13,7 +14,7 @@ new class extends Component
 
     public function mount(): void
     {
-        if (! session('questify_api_token')) {
+        if (! TokenStorage::has()) {
             return;
         }
 
@@ -42,7 +43,7 @@ new class extends Component
     #[OnNative(TokenGenerated::class)]
     public function handlePushToken(string $token): void
     {
-        if (! session('questify_api_token')) {
+        if (! TokenStorage::has()) {
             return;
         }
 

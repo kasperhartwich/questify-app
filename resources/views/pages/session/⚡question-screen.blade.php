@@ -71,11 +71,14 @@ class extends Component
                 $obj->type = QuestionType::tryFrom($question['question_type'] ?? '') ?? QuestionType::MultipleChoice;
                 $obj->body = $question['question_text'] ?? $question['body'] ?? '';
                 $obj->points = $question['points'] ?? 10;
-                $obj->answers = collect($question['answers'] ?? [])
-                    ->map(fn ($a) => (object) [
-                        'id' => $a['id'],
-                        'body' => $a['answer_text'] ?? $a['body'] ?? '',
-                    ]);
+                $answers = collect($question['answers'] ?? []);
+                if ($obj->type !== QuestionType::TrueFalse) {
+                    $answers = $answers->shuffle();
+                }
+                $obj->answers = $answers->map(fn ($a) => (object) [
+                    'id' => $a['id'],
+                    'body' => $a['answer_text'] ?? $a['body'] ?? '',
+                ]);
 
                 return $obj;
             }

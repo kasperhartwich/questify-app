@@ -199,6 +199,18 @@ class extends Component
 ?>
 
 <div class="flex flex-col">
+    {{-- GPS Accuracy Warning --}}
+    <div
+        x-data="{ show: false, timeout: null }"
+        x-on:gps-weak.window="show = true; clearTimeout(timeout); timeout = setTimeout(() => show = false, 5000)"
+        x-show="show"
+        x-transition
+        x-cloak
+        class="bg-amber-50 px-4 py-2 text-center text-xs font-medium text-amber-700"
+    >
+        {{ __('sessions.gps_weak') }}
+    </div>
+
     {{-- Map View --}}
     <div
         class="relative h-64 w-full bg-gray-200 dark:bg-gray-700"

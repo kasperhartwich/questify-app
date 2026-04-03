@@ -133,7 +133,7 @@ class extends Component
     <div class="flex-1 bg-cream px-5 py-5">
         {{-- Players Section Header --}}
         <div class="mb-3 flex items-center justify-between">
-            <h2 class="font-heading text-[15px] font-bold text-bark">{{ __('sessions.players') }}</h2>
+            <h2 class="font-heading text-[15px] font-bold text-bark">{{ ($session['play_mode'] ?? '') === 'competitive_teams' ? __('sessions.teams') : __('sessions.players') }}</h2>
             <div class="flex items-center gap-1.5">
                 <div class="h-[8px] w-[8px] animate-pulse rounded-full bg-[#22C55E]"></div>
                 <span class="text-[13px] font-semibold text-[#22C55E]">{{ count($participants) }} {{ __('sessions.joined') }}</span>
@@ -163,7 +163,7 @@ class extends Component
             @endforeach
 
             @if (empty($participants))
-                <p class="py-6 text-center text-[13px] text-muted">{{ __('sessions.waiting_for_players') }}</p>
+                <p class="py-6 text-center text-[13px] text-muted">{{ ($session['play_mode'] ?? '') === 'competitive_teams' ? __('sessions.waiting_for_teams') : __('sessions.waiting_for_players') }}</p>
             @endif
         </div>
 

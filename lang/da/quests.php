@@ -50,4 +50,10 @@ return [
     ],
 
     'checkpoints_need_coordinates' => 'Alle checkpoints skal have en placering. Tryk på kortet for at placere dem.',
+
+    'access_code_required' => 'Adgangskode påkrævet',
+    'access_code_description' => 'Denne quest kræver en adgangskode for at spille.',
+    'enter_access_code' => 'Indtast kode',
+    'verify' => 'Bekræft',
+    'invalid_access_code' => 'Ugyldig adgangskode. Prøv igen.',
 ];

@@ -75,6 +75,7 @@ return [
     'players' => 'Spillere',
     'quest_master' => 'Quest Master',
     'waiting_for_players' => 'Venter på at spillere deltager...',
+    'waiting_for_teams' => 'Venter på at hold deltager...',
     'waiting_for_host' => 'Venter på at Quest Master starter',
     'start_quest' => 'Start Quest',
     'session_code' => 'Sessionskode',
@@ -85,6 +86,12 @@ return [
     'your_display_name' => 'Dit visningsnavn',
     'no_account_just_session' => 'Ingen konto nødvendig · Kun for denne session',
     'enter_the_quest' => 'Gå ind i questen',
+    'gps_weak' => 'Svagt GPS-signal — flyt til et åbent område for bedre nøjagtighed',
+    'reconnecting' => 'Genopretter forbindelse...',
+    'teams' => 'Hold',
+    'what_team_name' => 'Hvad hedder jeres hold?',
+    'team_name_visible' => 'Dette er hvad andre hold ser under questen.',
+    'your_team_name' => 'Jeres holdnavn',
 
     // Validation
     'validation' => [

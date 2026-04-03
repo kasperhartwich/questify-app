@@ -22,6 +22,10 @@ class extends Component
 
     public string $playMode = 'solo';
 
+    public string $accessCode = '';
+
+    public bool $accessGranted = false;
+
     public function mount(int $quest): void
     {
         $this->questId = $quest;
@@ -41,6 +45,21 @@ class extends Component
         } catch (\App\Exceptions\Api\ApiException $e) {
             $this->dispatch('api-error', message: $e->getMessage());
         }
+    }
+
+    public function verifyAccessCode(): void
+    {
+        $questCode = $this->questData->access_code ?? '';
+        if (strtoupper(trim($this->accessCode)) === strtoupper(trim($questCode))) {
+            $this->accessGranted = true;
+        } else {
+            $this->addError('accessCode', __('quests.invalid_access_code'));
+        }
+    }
+
+    public function getRequiresAccessCodeProperty(): bool
+    {
+        return in_array($this->questData->visibility ?? 'public', ['private', 'school']);
     }
 
     public function startQuest(): void
@@ -310,29 +329,51 @@ class extends Component
                 @endif
             </div>
 
-            {{-- Play mode --}}
-            <h3 class="mb-2.5 font-heading text-[14px] font-bold text-bark">{{ __('general.play_mode') }}</h3>
-            <div class="mb-5 flex gap-2">
-                <button @click="playMode = 'solo'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'solo' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                    <div class="text-[12px] font-bold" :class="playMode === 'solo' ? 'text-forest-600' : 'text-muted'">{{ __('general.solo') }}</div>
-                    <div class="text-[10px] text-muted">{{ __('general.just_you') }}</div>
-                </button>
-                <button @click="playMode = 'individual'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'individual' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                    <div class="text-[12px] font-bold" :class="playMode === 'individual' ? 'text-forest-600' : 'text-muted'">{{ __('general.individual') }}</div>
-                    <div class="text-[10px] text-muted">{{ __('general.race_friends') }}</div>
-                </button>
-                <button @click="playMode = 'teams'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'teams' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                    <div class="text-[12px] font-bold" :class="playMode === 'teams' ? 'text-forest-600' : 'text-muted'">{{ __('general.teams') }}</div>
-                    <div class="text-[10px] text-muted">{{ __('general.groups') }}</div>
-                </button>
-            </div>
+            {{-- Access Code Gate --}}
+            @if ($this->requiresAccessCode && !$accessGranted)
+                <div class="mb-5 rounded-[14px] border-[1.5px] border-cream-border bg-white p-4">
+                    <h3 class="mb-2 font-heading text-[14px] font-bold text-bark">{{ __('quests.access_code_required') }}</h3>
+                    <p class="mb-3 text-[12px] text-muted">{{ __('quests.access_code_description') }}</p>
+                    <form wire:submit="verifyAccessCode" class="flex gap-2">
+                        <input
+                            type="text"
+                            wire:model="accessCode"
+                            placeholder="{{ __('quests.enter_access_code') }}"
+                            class="flex-1 rounded-xl border-2 border-cream-border bg-cream px-3 py-2.5 text-[13px] font-semibold text-bark uppercase tracking-wider focus:border-forest-600 focus:outline-none"
+                        />
+                        <button type="submit" class="rounded-xl bg-forest-600 px-4 py-2.5 text-[13px] font-bold text-white">
+                            {{ __('quests.verify') }}
+                        </button>
+                    </form>
+                    @error('accessCode') <p class="mt-2 text-[11px] text-coral">{{ $message }}</p> @enderror
+                </div>
+            @endif
 
-            {{-- Start Quest CTA --}}
-            <button wire:click="startQuest" class="mb-2.5 flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-[15px] font-heading text-[16px] font-bold text-bark">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                {{ __('general.start_quest') }}
-            </button>
-            <p class="text-center text-[13px] text-muted">{{ __('general.or') }} <span class="font-semibold text-forest-600">{{ __('general.host_a_session') }}</span> {{ __('general.for_friends') }}</p>
+            @if (!$this->requiresAccessCode || $accessGranted)
+                {{-- Play mode --}}
+                <h3 class="mb-2.5 font-heading text-[14px] font-bold text-bark">{{ __('general.play_mode') }}</h3>
+                <div class="mb-5 flex gap-2">
+                    <button @click="playMode = 'solo'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'solo' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
+                        <div class="text-[12px] font-bold" :class="playMode === 'solo' ? 'text-forest-600' : 'text-muted'">{{ __('general.solo') }}</div>
+                        <div class="text-[10px] text-muted">{{ __('general.just_you') }}</div>
+                    </button>
+                    <button @click="playMode = 'individual'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'individual' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
+                        <div class="text-[12px] font-bold" :class="playMode === 'individual' ? 'text-forest-600' : 'text-muted'">{{ __('general.individual') }}</div>
+                        <div class="text-[10px] text-muted">{{ __('general.race_friends') }}</div>
+                    </button>
+                    <button @click="playMode = 'teams'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'teams' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
+                        <div class="text-[12px] font-bold" :class="playMode === 'teams' ? 'text-forest-600' : 'text-muted'">{{ __('general.teams') }}</div>
+                        <div class="text-[10px] text-muted">{{ __('general.groups') }}</div>
+                    </button>
+                </div>
+
+                {{-- Start Quest CTA --}}
+                <button wire:click="startQuest" class="mb-2.5 flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-[15px] font-heading text-[16px] font-bold text-bark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    {{ __('general.start_quest') }}
+                </button>
+                <p class="text-center text-[13px] text-muted">{{ __('general.or') }} <span class="font-semibold text-forest-600">{{ __('general.host_a_session') }}</span> {{ __('general.for_friends') }}</p>
+            @endif
         </div>
 
         {{-- Checkpoints tab --}}

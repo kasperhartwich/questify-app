@@ -75,6 +75,7 @@ return [
     'players' => 'Players',
     'quest_master' => 'Quest Master',
     'waiting_for_players' => 'Waiting for players to join...',
+    'waiting_for_teams' => 'Waiting for teams to join...',
     'waiting_for_host' => 'Waiting for Quest Master to start',
     'start_quest' => 'Start Quest',
     'session_code' => 'Session code',
@@ -85,6 +86,12 @@ return [
     'your_display_name' => 'Your display name',
     'no_account_just_session' => 'No account needed · Just for this session',
     'enter_the_quest' => 'Enter the Quest',
+    'gps_weak' => 'GPS signal weak — move to an open area for better accuracy',
+    'reconnecting' => 'Reconnecting...',
+    'teams' => 'Teams',
+    'what_team_name' => 'What is your team name?',
+    'team_name_visible' => 'This is what other teams will see during the quest.',
+    'your_team_name' => 'Your team name',
 
     // Validation
     'validation' => [

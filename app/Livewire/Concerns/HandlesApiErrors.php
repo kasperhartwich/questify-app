@@ -6,6 +6,7 @@ use App\Exceptions\Api\ApiAuthenticationException;
 use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiNotFoundException;
 use App\Exceptions\Api\ApiValidationException;
+use App\Services\TokenStorage;
 use Closure;
 
 trait HandlesApiErrors
@@ -15,6 +16,7 @@ trait HandlesApiErrors
         try {
             return $callback();
         } catch (ApiAuthenticationException) {
+            TokenStorage::forget();
             session()->flush();
 
             return $this->redirect(route('login'));

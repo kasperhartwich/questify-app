@@ -13,6 +13,8 @@ use App\Services\Api\Resources\GameplayApiResource;
 use App\Services\Api\Resources\QuestApiResource;
 use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
+use App\Services\TokenStorage;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -33,13 +35,14 @@ class QuestifyApiClient
     {
         $request = Http::baseUrl($this->baseUrl.'/api/v1')
             ->timeout($this->timeout)
+            ->retry(3, 200, fn (\Exception $e) => $e instanceof ConnectionException, throw: false)
             ->acceptJson()
             ->withHeaders([
                 'Accept-Language' => app()->getLocale(),
                 'User-Agent' => 'Questify/'.config('nativephp.version', '1.0.0'),
             ]);
 
-        $token = session('questify_api_token');
+        $token = TokenStorage::get();
         if ($token) {
             $request = $request->withToken($token);
         }
