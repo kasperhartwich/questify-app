@@ -18,6 +18,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Native\Mobile\Facades\System;
 
 class QuestifyApiClient
 {
@@ -27,7 +28,9 @@ class QuestifyApiClient
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.questify.url'), '/');
+        $this->baseUrl = System::isMobile()
+            ? 'https://questifyapp.net'
+            : rtrim(config('services.questify.url'), '/');
         $this->timeout = config('services.questify.timeout', 15);
     }
 
