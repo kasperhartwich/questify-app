@@ -60,7 +60,7 @@ return [
     ],
 
     'questify' => [
-        'url' => env('QUESTIFY_API_URL', 'https://questifyapp.net'),
+        'url' => env('NATIVEPHP_RUNNING') ? 'https://questifyapp.net' : env('QUESTIFY_API_URL', 'https://questifyapp.net'),
         'timeout' => (int) env('QUESTIFY_API_TIMEOUT', 15),
     ],
 
