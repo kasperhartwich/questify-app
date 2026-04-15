@@ -3,8 +3,8 @@
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
-// Welcome — redirect to discover
-Route::redirect('/', '/discover/list')->name('welcome');
+// Welcome (guest landing page)
+Route::livewire('/', 'pages::welcome.index')->name('welcome');
 
 // Locale toggle
 Route::get('/locale/{locale}', function (string $locale) {
