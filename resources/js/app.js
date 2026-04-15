@@ -1,8 +1,8 @@
 import './bootstrap';
 
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import QRCode from 'qrcode';
 
-window.mapboxgl = mapboxgl;
+window.L = L;
 window.QRCode = QRCode;

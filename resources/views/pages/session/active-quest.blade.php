@@ -235,79 +235,79 @@ class extends Component
             userMarker: null,
             locationInterval: null,
             init() {
-                if (typeof mapboxgl === 'undefined') return;
+                if (typeof L === 'undefined') return;
                 try {
-                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
-
                     const checkpoints = @js($checkpoints);
                     const current = checkpoints[{{ $currentCheckpointIndex }}];
                     if (!current || !current.latitude) return;
 
-                    this.map = new mapboxgl.Map({
-                        container: this.$el,
-                        style: 'mapbox://styles/mapbox/streets-v12',
-                        center: [parseFloat(current.longitude), parseFloat(current.latitude)],
+                    this.map = L.map(this.$refs.activeMap, {
+                        center: [parseFloat(current.latitude), parseFloat(current.longitude)],
                         zoom: 15,
+                        attributionControl: false,
+                        zoomControl: false,
                     });
-                    this.map.on('error', (e) => console.warn('Mapbox error:', e));
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
 
-                checkpoints.forEach((cp, i) => {
-                    if (!cp.latitude || !cp.longitude) return;
-                    const isCurrent = i === {{ $currentCheckpointIndex }};
-                    const el = document.createElement('div');
-                    el.className = 'flex items-center justify-center rounded-full text-xs font-bold text-white';
-                    el.style.cssText = 'width:28px;height:28px;background:#0B3D2E;opacity:' + (isCurrent ? '1' : '0.4');
-                    el.textContent = String(i + 1);
-                    new mapboxgl.Marker({ element: el })
-                        .setLngLat([parseFloat(cp.longitude), parseFloat(cp.latitude)])
-                        .addTo(this.map);
-                });
-
-                const isNative = @js($isNative);
-                if (isNative) {
-                    $wire.requestLocation();
-                    this.locationInterval = setInterval(() => {
-                        if (!$wire.showQuestions) $wire.requestLocation();
-                    }, 4000);
-                } else if (navigator.geolocation) {
-                    navigator.geolocation.watchPosition((pos) => {
-                        this.updateUserMarker(pos.coords.latitude, pos.coords.longitude);
-
-                        if ($wire.arrivedAtCurrent || $wire.showQuestions) return;
-                        const current = checkpoints[$wire.currentCheckpointIndex];
-                        if (!current || !current.latitude) return;
-
-                        const toRad = (d) => d * Math.PI / 180;
-                        const R = 6371000;
-                        const dLat = toRad(pos.coords.latitude - current.latitude);
-                        const dLng = toRad(pos.coords.longitude - current.longitude);
-                        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(current.latitude)) * Math.cos(toRad(pos.coords.latitude)) * Math.sin(dLng/2)**2;
-                        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                        const radius = current.arrival_radius_override || @js($arrivalRadius);
-
-                        if (dist <= radius) {
-                            $wire.arriveAtCheckpoint();
-                        }
+                    checkpoints.forEach((cp, i) => {
+                        if (!cp.latitude || !cp.longitude) return;
+                        const isCurrent = i === {{ $currentCheckpointIndex }};
+                        const icon = L.divIcon({
+                            className: '',
+                            html: '<div style=\'width:28px;height:28px;background:#0B3D2E;opacity:' + (isCurrent ? '1' : '0.4') + ';border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;\'>' + (i + 1) + '</div>',
+                            iconSize: [28, 28],
+                            iconAnchor: [14, 14],
+                        });
+                        L.marker([parseFloat(cp.latitude), parseFloat(cp.longitude)], { icon: icon }).addTo(this.map);
                     });
-                }
 
-                $wire.on('player-moved', (params) => {
-                    const lat = params[0]?.latitude ?? params.latitude;
-                    const lng = params[0]?.longitude ?? params.longitude;
-                    if (lat && lng) this.updateUserMarker(lat, lng);
-                });
+                    const isNative = @js($isNative);
+                    if (isNative) {
+                        $wire.requestLocation();
+                        this.locationInterval = setInterval(() => {
+                            if (!$wire.showQuestions) $wire.requestLocation();
+                        }, 4000);
+                    } else if (navigator.geolocation) {
+                        navigator.geolocation.watchPosition((pos) => {
+                            this.updateUserMarker(pos.coords.latitude, pos.coords.longitude);
+
+                            if ($wire.arrivedAtCurrent || $wire.showQuestions) return;
+                            const current = checkpoints[$wire.currentCheckpointIndex];
+                            if (!current || !current.latitude) return;
+
+                            const toRad = (d) => d * Math.PI / 180;
+                            const R = 6371000;
+                            const dLat = toRad(pos.coords.latitude - current.latitude);
+                            const dLng = toRad(pos.coords.longitude - current.longitude);
+                            const a = Math.sin(dLat/2)**2 + Math.cos(toRad(current.latitude)) * Math.cos(toRad(pos.coords.latitude)) * Math.sin(dLng/2)**2;
+                            const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            const radius = current.arrival_radius_override || @js($arrivalRadius);
+
+                            if (dist <= radius) {
+                                $wire.arriveAtCheckpoint();
+                            }
+                        });
+                    }
+
+                    $wire.on('player-moved', (params) => {
+                        const lat = params[0]?.latitude ?? params.latitude;
+                        const lng = params[0]?.longitude ?? params.longitude;
+                        if (lat && lng) this.updateUserMarker(lat, lng);
+                    });
                 } catch (e) { console.error('Active quest map init failed:', e); }
             },
             updateUserMarker(lat, lng) {
-                const lngLat = [parseFloat(lng), parseFloat(lat)];
+                const latLng = [parseFloat(lat), parseFloat(lng)];
                 if (this.userMarker) {
-                    this.userMarker.setLngLat(lngLat);
+                    this.userMarker.setLatLng(latLng);
                 } else {
-                    const el = document.createElement('div');
-                    el.style.cssText = 'width:16px;height:16px;background:#0B3D2E;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.3)';
-                    this.userMarker = new mapboxgl.Marker({ element: el })
-                        .setLngLat(lngLat)
-                        .addTo(this.map);
+                    const icon = L.divIcon({
+                        className: '',
+                        html: '<div style=\'width:16px;height:16px;background:#0B3D2E;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.3)\'></div>',
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8],
+                    });
+                    this.userMarker = L.marker(latLng, { icon: icon }).addTo(this.map);
                 }
             },
             destroy() {
@@ -316,9 +316,7 @@ class extends Component
             }
         }"
     >
-        <div class="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
-            {{ __('general.loading') }}
-        </div>
+        <div x-ref="activeMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
     </div>
 
     <div class="flex-1 space-y-3 p-4">

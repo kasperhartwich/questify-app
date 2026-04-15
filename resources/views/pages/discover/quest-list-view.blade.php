@@ -1,16 +1,16 @@
-<style>
-    .mapbox-quest-marker {
-        background-color: #0B3D2E;
-        border: 3px solid white;
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
 <div class="flex flex-col bg-cream">
+    <style>
+        .leaflet-quest-marker {
+            background-color: #0B3D2E;
+            border: 3px solid white;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
     {{-- Search & Filter --}}
     <div class="flex items-center gap-2 px-[16px] pb-[10px] pt-[6px]">
         <div class="flex flex-1 items-center gap-2 rounded-[13px] border-[1.5px] border-cream-border bg-white px-[14px] py-[11px]">
@@ -54,41 +54,40 @@
         x-data="{
             init() {
                 const boot = () => {
-                    if (typeof mapboxgl === 'undefined') {
+                    if (typeof L === 'undefined') {
                         setTimeout(boot, 50);
                         return;
                     }
                     try {
-                        mapboxgl.accessToken = @js(config('services.mapbox.token'));
-                        const miniMap = new mapboxgl.Map({
-                            container: this.$refs.miniMap,
-                            style: 'mapbox://styles/mapbox/streets-v12',
-                            center: [12.5683, 55.6761],
+                        const miniMap = L.map(this.$refs.miniMap, {
+                            center: [55.6761, 12.5683],
                             zoom: 12,
                             attributionControl: false,
-                            interactive: false,
+                            zoomControl: false,
+                            dragging: false,
+                            scrollWheelZoom: false,
+                            doubleClickZoom: false,
+                            touchZoom: false,
                         });
-                        miniMap.on('error', (e) => console.warn('Mapbox error:', e));
-                        miniMap.on('load', () => {
-                            const quests = @js(
-                                collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
-                                ->map(fn($q) => [
-                                    'lat' => (float) ($q->starting_checkpoint->latitude ?? $q->checkpoints[0]->latitude),
-                                    'lng' => (float) ($q->starting_checkpoint->longitude ?? $q->checkpoints[0]->longitude),
-                                ])->values()->all()
-                            );
-                            quests.forEach(q => {
-                                const el = document.createElement('div');
-                                el.className = 'mapbox-quest-marker';
-                                el.style.cssText = 'width:16px;height:16px;border-width:2px;';
-                                new mapboxgl.Marker({ element: el }).setLngLat([q.lng, q.lat]).addTo(miniMap);
-                            });
-                            if (quests.length) {
-                                const bounds = new mapboxgl.LngLatBounds();
-                                quests.forEach(q => bounds.extend([q.lng, q.lat]));
-                                miniMap.fitBounds(bounds, { padding: 20 });
-                            }
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                        }).addTo(miniMap);
+                        const quests = @js(
+                            collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
+                            ->map(fn($q) => [
+                                'lat' => (float) ($q->starting_checkpoint->latitude ?? $q->checkpoints[0]->latitude),
+                                'lng' => (float) ($q->starting_checkpoint->longitude ?? $q->checkpoints[0]->longitude),
+                            ])->values()->all()
+                        );
+                        const pinIcon = L.divIcon({ className: '', html: '<div class=\'leaflet-quest-marker\' style=\'width:16px;height:16px;border-width:2px;\'></div>', iconSize: [16, 16], iconAnchor: [8, 16] });
+                        const markers = [];
+                        quests.forEach(q => {
+                            markers.push(L.marker([q.lat, q.lng], { icon: pinIcon }).addTo(miniMap));
                         });
+                        if (markers.length) {
+                            const group = L.featureGroup(markers);
+                            miniMap.fitBounds(group.getBounds(), { padding: [20, 20] });
+                        }
                     } catch (e) { console.error('Mini map init failed:', e); }
                 };
                 boot();

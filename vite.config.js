@@ -18,7 +18,7 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    mapbox: ['mapbox-gl'],
+                    leaflet: ['leaflet'],
                     echo: ['laravel-echo', 'pusher-js'],
                 },
             },

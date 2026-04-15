@@ -117,54 +117,35 @@ class extends Component
     x-data="{
         map: null,
         markers: [],
-        circles: [],
+        circleLayer: null,
         pins: @js($pins),
         selectedPin: null,
         filterDifficulty: 'all',
         isSatellite: false,
         userLocated: false,
+        streetsLayer: null,
+        satelliteLayer: null,
         init() {
             const boot = () => {
-                if (typeof mapboxgl === 'undefined') {
+                if (typeof L === 'undefined') {
                     setTimeout(boot, 50);
                     return;
                 }
                 try {
-                    if (!mapboxgl.supported()) {
-                        const diag = mapboxgl.supported.diagnostics();
-                        if (window.Sentry) {
-                            Sentry.captureMessage('Mapbox GL not supported', {
-                                level: 'error',
-                                extra: { diagnostics: diag },
-                            });
-                        }
-                        return;
-                    }
-                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
-                    this.map = new mapboxgl.Map({
-                        container: this.$refs.mapCanvas,
-                        style: 'mapbox://styles/mapbox/streets-v12',
-                        center: [12.5683, 55.6761],
+                    this.map = L.map(this.$refs.mapCanvas, {
+                        center: [55.6761, 12.5683],
                         zoom: 12,
                         attributionControl: false,
+                        zoomControl: false,
                     });
-                    this.map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-                    this.map.on('error', (e) => {
-                        if (window.Sentry) {
-                            Sentry.captureMessage('Mapbox runtime error', {
-                                level: 'warning',
-                                extra: { error: e.error?.message || e.message || e },
-                            });
-                        }
-                    });
-                    this.map.on('load', () => {
-                        this.addMarkers();
-                        this.locateUser();
-                    });
+                    this.streetsLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
+                    this.satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 });
+                    this.streetsLayer.addTo(this.map);
+                    L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(this.map);
+                    this.addMarkers();
+                    this.locateUser();
                 } catch (e) {
-                    if (window.Sentry) {
-                        Sentry.captureException(e, { tags: { component: 'mapbox' } });
-                    }
+                    console.error('Map init failed:', e);
                     return;
                 }
             };
@@ -173,7 +154,7 @@ class extends Component
                 const lat = params[0]?.latitude ?? params.latitude;
                 const lng = params[0]?.longitude ?? params.longitude;
                 if (!lat || !lng) return;
-                this.map.flyTo({ center: [lng, lat], zoom: 13 });
+                this.map.flyTo([lat, lng], 13);
                 if (!this.userLocated) {
                     this.userLocated = true;
                 }
@@ -182,92 +163,53 @@ class extends Component
             });
         },
         addMarkers() {
-            this.markers.forEach(m => m.remove());
+            this.markers.forEach(m => this.map.removeLayer(m));
             this.markers = [];
-            this.removeCircles();
-            this.pins.forEach((pin, index) => {
-                const el = document.createElement('div');
-                el.className = 'mapbox-quest-marker';
-                const span = document.createElement('span');
-                span.className = 'mapbox-quest-marker-num';
-                span.textContent = pin.checkpoint_count || '';
-                el.appendChild(span);
-                const marker = new mapboxgl.Marker({ element: el })
-                    .setLngLat([pin.longitude, pin.latitude])
-                    .addTo(this.map);
-                el.addEventListener('click', (e) => {
-                    e.stopPropagation();
+            this.removeCircle();
+            this.pins.forEach((pin) => {
+                const icon = L.divIcon({
+                    className: '',
+                    html: '<div class=\'leaflet-quest-marker\'><span class=\'leaflet-quest-marker-num\'>' + (pin.checkpoint_count || '') + '</span></div>',
+                    iconSize: [32, 32],
+                    iconAnchor: [8, 32],
+                });
+                const marker = L.marker([pin.latitude, pin.longitude], { icon: icon }).addTo(this.map);
+                marker.on('click', () => {
                     this.selectedPin = pin;
-                    this.map.flyTo({ center: [pin.longitude, pin.latitude], zoom: 14 });
+                    this.map.flyTo([pin.latitude, pin.longitude], 14);
                     this.drawCircle(pin);
                 });
                 this.markers.push(marker);
             });
         },
-        removeCircles() {
-            this.circles.forEach(id => {
-                if (this.map.getLayer(id)) this.map.removeLayer(id);
-                if (this.map.getLayer(id + '-line')) this.map.removeLayer(id + '-line');
-                if (this.map.getSource(id)) this.map.removeSource(id);
-            });
-            this.circles = [];
+        removeCircle() {
+            if (this.circleLayer) {
+                this.map.removeLayer(this.circleLayer);
+                this.circleLayer = null;
+            }
         },
         drawCircle(pin) {
-            this.removeCircles();
+            this.removeCircle();
             if (!pin.distance_to_farthest_km || pin.distance_to_farthest_km <= 0) return;
-
-            const id = 'quest-radius-' + pin.id;
-            const center = [pin.longitude, pin.latitude];
-            const radiusKm = pin.distance_to_farthest_km;
-            const points = 64;
-            const coords = [];
-
-            for (let i = 0; i <= points; i++) {
-                const angle = (i / points) * 2 * Math.PI;
-                const dx = radiusKm * Math.cos(angle);
-                const dy = radiusKm * Math.sin(angle);
-                const lat = center[1] + (dy / 111.32);
-                const lng = center[0] + (dx / (111.32 * Math.cos(center[1] * Math.PI / 180)));
-                coords.push([lng, lat]);
-            }
-
-            this.map.addSource(id, {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    geometry: { type: 'Polygon', coordinates: [coords] },
-                },
-            });
-            this.map.addLayer({
-                id: id,
-                type: 'fill',
-                source: id,
-                paint: {
-                    'fill-color': '#0B3D2E',
-                    'fill-opacity': 0.08,
-                },
-            });
-            this.map.addLayer({
-                id: id + '-line',
-                type: 'line',
-                source: id,
-                paint: {
-                    'line-color': '#0B3D2E',
-                    'line-width': 2,
-                    'line-opacity': 0.4,
-                    'line-dasharray': [3, 2],
-                },
-            });
-            this.circles.push(id);
+            this.circleLayer = L.circle([pin.latitude, pin.longitude], {
+                radius: pin.distance_to_farthest_km * 1000,
+                color: '#0B3D2E',
+                weight: 2,
+                opacity: 0.4,
+                dashArray: '8,5',
+                fillColor: '#0B3D2E',
+                fillOpacity: 0.08,
+            }).addTo(this.map);
         },
         toggleStyle() {
             this.isSatellite = !this.isSatellite;
-            const style = this.isSatellite ? 'satellite-streets-v12' : 'streets-v12';
-            this.map.setStyle('mapbox://styles/mapbox/' + style);
-            this.map.once('style.load', () => {
-                this.addMarkers();
-                if (this.selectedPin) this.drawCircle(this.selectedPin);
-            });
+            if (this.isSatellite) {
+                this.map.removeLayer(this.streetsLayer);
+                this.satelliteLayer.addTo(this.map);
+            } else {
+                this.map.removeLayer(this.satelliteLayer);
+                this.streetsLayer.addTo(this.map);
+            }
         },
         locateUser() {
             if (!this.map) return;
@@ -278,7 +220,7 @@ class extends Component
                 navigator.geolocation.getCurrentPosition((pos) => {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
-                    this.map.flyTo({ center: [lng, lat], zoom: 13 });
+                    this.map.flyTo([lat, lng], 13);
                     if (!this.userLocated) {
                         this.userLocated = true;
                         $wire.loadNearby(lat, lng).then(() => {
@@ -292,7 +234,7 @@ class extends Component
     }"
 >
     <style>
-        .mapbox-quest-marker {
+        .leaflet-quest-marker {
             width: 32px;
             height: 32px;
             background-color: #0B3D2E;
@@ -305,10 +247,10 @@ class extends Component
             align-items: center;
             justify-content: center;
         }
-        .mapbox-quest-marker:hover {
+        .leaflet-quest-marker:hover {
             background-color: #15573F;
         }
-        .mapbox-quest-marker-num {
+        .leaflet-quest-marker-num {
             transform: rotate(45deg);
             font-family: 'Exo 2', sans-serif;
             font-size: 11px;
@@ -318,10 +260,10 @@ class extends Component
     </style>
 
     {{-- Full-screen map --}}
-    <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+    <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;"></div>
 
     {{-- Floating search bar --}}
-    <div class="absolute left-0 right-0 top-[56px] z-10 px-4">
+    <div class="absolute left-0 right-0 top-[56px] z-[1000] px-4">
         <div class="flex gap-2">
             <a href="/discover/list" class="flex h-[44px] w-[36px] shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -362,7 +304,7 @@ class extends Component
     {{-- Map style toggle --}}
     <button
         @click="toggleStyle()"
-        class="absolute bottom-[280px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+        class="absolute bottom-[280px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <template x-if="!isSatellite">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
@@ -375,13 +317,13 @@ class extends Component
     {{-- My location button --}}
     <button
         @click="locateUser()"
-        class="absolute bottom-[230px] right-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+        class="absolute bottom-[230px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
     </button>
 
     {{-- Bottom sheet --}}
-    <div class="absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+    <div class="absolute inset-x-0 bottom-0 z-[1000] rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
         <div class="mx-auto mb-[14px] h-1 w-9 rounded-full bg-cream-border"></div>
         <p class="mb-3 font-heading text-[15px] font-bold text-bark">
             <span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}

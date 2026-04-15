@@ -65,53 +65,49 @@
                 map: null,
                 markers: [],
                 initMap() {
-                    mapboxgl.accessToken = @js(config('services.mapbox.token'));
-                    this.map = new mapboxgl.Map({
-                        container: this.$refs.createMap,
-                        style: 'mapbox://styles/mapbox/streets-v12',
-                        center: [12.5683, 55.6761],
+                    if (typeof L === 'undefined') { setTimeout(() => this.initMap(), 50); return; }
+                    this.map = L.map(this.$refs.createMap, {
+                        center: [55.6761, 12.5683],
                         zoom: 13,
                         attributionControl: false,
+                        zoomControl: false,
                     });
-                    this.map.on('load', () => {
-                        @foreach ($checkpoints as $cpIndex => $checkpoint)
-                            @if ($checkpoint['latitude'] && $checkpoint['longitude'])
-                                this.addMarker({{ $cpIndex }}, {{ $checkpoint['latitude'] }}, {{ $checkpoint['longitude'] }});
-                            @endif
-                        @endforeach
-                    });
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
+                    @foreach ($checkpoints as $cpIndex => $checkpoint)
+                        @if ($checkpoint['latitude'] && $checkpoint['longitude'])
+                            this.addMarker({{ $cpIndex }}, {{ $checkpoint['latitude'] }}, {{ $checkpoint['longitude'] }});
+                        @endif
+                    @endforeach
                     this.map.on('click', (e) => {
                         const nextIndex = this.markers.length;
                         @this.addCheckpoint();
-                        @this.updateCheckpointCoordinates(nextIndex, e.lngLat.lat, e.lngLat.lng);
-                        this.addMarker(nextIndex, e.lngLat.lat, e.lngLat.lng);
+                        @this.updateCheckpointCoordinates(nextIndex, e.latlng.lat, e.latlng.lng);
+                        this.addMarker(nextIndex, e.latlng.lat, e.latlng.lng);
                     });
                 },
                 addMarker(index, lat, lng) {
-                    const el = document.createElement('div');
-                    el.className = 'create-map-pin';
-                    const span = document.createElement('span');
-                    span.className = 'create-map-pin-num';
-                    span.textContent = index + 1;
-                    el.appendChild(span);
-                    const marker = new mapboxgl.Marker({ element: el, draggable: true })
-                        .setLngLat([lng, lat])
-                        .addTo(this.map);
+                    const icon = L.divIcon({
+                        className: '',
+                        html: '<div class=\'create-map-pin\'><span class=\'create-map-pin-num\'>' + (index + 1) + '</span></div>',
+                        iconSize: [28, 28],
+                        iconAnchor: [7, 28],
+                    });
+                    const marker = L.marker([lat, lng], { icon: icon, draggable: true }).addTo(this.map);
                     marker.on('dragend', () => {
-                        const lngLat = marker.getLngLat();
-                        @this.updateCheckpointCoordinates(index, lngLat.lat, lngLat.lng);
+                        const pos = marker.getLatLng();
+                        @this.updateCheckpointCoordinates(index, pos.lat, pos.lng);
                     });
                     this.markers.push(marker);
                 },
                 locateUser() {
                     if (!navigator.geolocation) return;
                     navigator.geolocation.getCurrentPosition((pos) => {
-                        this.map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 15 });
+                        this.map.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
                     });
                 },
                 focusCheckpoint(lat, lng) {
                     if (this.map && lat && lng) {
-                        this.map.flyTo({ center: [lng, lat], zoom: 16 });
+                        this.map.flyTo([lat, lng], 16);
                     }
                 }
             }"

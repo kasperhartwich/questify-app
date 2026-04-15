@@ -137,43 +137,37 @@ class extends Component
     }"
     x-init="
         try {
-        mapboxgl.accessToken = @js(config('services.mapbox.token'));
-        map = new mapboxgl.Map({
-            container: $refs.detailMap,
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: [@js($mapCenter['lng']), @js($mapCenter['lat'])],
-            zoom: 13,
-            attributionControl: false,
-            interactive: false,
-        });
-        map.on('error', (e) => console.warn('Mapbox error:', e));
-        map.on('load', () => {
-            const cps = @js($mapCheckpoints);
-            const coords = [];
-            cps.forEach(cp => {
-                coords.push([cp.lng, cp.lat]);
-                const el = document.createElement('div');
-                el.className = 'detail-map-pin';
-                const span = document.createElement('span');
-                span.className = 'detail-map-pin-num';
-                span.textContent = cp.num;
-                el.appendChild(span);
-                new mapboxgl.Marker({ element: el }).setLngLat([cp.lng, cp.lat]).addTo(map);
+        const boot = () => {
+            if (typeof L === 'undefined') { setTimeout(boot, 50); return; }
+            map = L.map($refs.detailMap, {
+                center: [@js($mapCenter['lat']), @js($mapCenter['lng'])],
+                zoom: 13,
+                attributionControl: false,
+                zoomControl: false,
+                dragging: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                touchZoom: false,
             });
-            if (coords.length > 1) {
-                map.addSource('route', {
-                    type: 'geojson',
-                    data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } },
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            const cps = @js($mapCheckpoints);
+            const latLngs = [];
+            cps.forEach(cp => {
+                latLngs.push([cp.lat, cp.lng]);
+                const icon = L.divIcon({
+                    className: '',
+                    html: '<div class=\'detail-map-pin\'><span class=\'detail-map-pin-num\'>' + cp.num + '</span></div>',
+                    iconSize: [28, 28],
+                    iconAnchor: [7, 28],
                 });
-                map.addLayer({
-                    id: 'route', type: 'line', source: 'route',
-                    paint: { 'line-color': '#0B3D2E', 'line-width': 3, 'line-dasharray': [2, 1.5], 'line-opacity': 0.6 },
-                });
-                const bounds = new mapboxgl.LngLatBounds();
-                coords.forEach(c => bounds.extend(c));
-                map.fitBounds(bounds, { padding: 50 });
+                L.marker([cp.lat, cp.lng], { icon: icon }).addTo(map);
+            });
+            if (latLngs.length > 1) {
+                L.polyline(latLngs, { color: '#0B3D2E', weight: 3, dashArray: '6,4', opacity: 0.6 }).addTo(map);
+                map.fitBounds(L.latLngBounds(latLngs), { padding: [50, 50] });
             }
-        });
+        };
+        boot();
         } catch (e) { console.error('Detail map init failed:', e); }
     "
 >
@@ -214,7 +208,7 @@ class extends Component
         </button>
 
         {{-- Expand/collapse map button --}}
-        <button @click="mapExpanded = !mapExpanded; setTimeout(() => map.resize(), 350)" class="absolute bottom-3 left-3 z-10 flex items-center gap-[5px] rounded-[10px] bg-white px-3 py-[7px] text-[12px] font-semibold text-forest-600 shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+        <button @click="mapExpanded = !mapExpanded; setTimeout(() => map.invalidateSize(), 350)" class="absolute bottom-3 left-3 z-10 flex items-center gap-[5px] rounded-[10px] bg-white px-3 py-[7px] text-[12px] font-semibold text-forest-600 shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
             <template x-if="!mapExpanded">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
             </template>
