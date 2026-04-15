@@ -16,6 +16,22 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('verifyEmail')
+                ->label('Verify Email')
+                ->icon('heroicon-o-check-badge')
+                ->color('success')
+                ->requiresConfirmation()
+                ->modalHeading('Verify User Email')
+                ->modalDescription(fn (User $record): string => "Mark {$record->email} as verified?")
+                ->action(function (User $record): void {
+                    $record->forceFill(['email_verified_at' => now()])->save();
+
+                    Notification::make()
+                        ->success()
+                        ->title('Email verified')
+                        ->send();
+                })
+                ->hidden(fn (User $record): bool => $record->hasVerifiedEmail()),
             Actions\Action::make('changePassword')
                 ->label('Change Password')
                 ->icon('heroicon-o-key')

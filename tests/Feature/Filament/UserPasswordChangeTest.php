@@ -35,6 +35,24 @@ it('requires password confirmation to match', function () {
         ->assertHasActionErrors(['password_confirmation' => 'same']);
 });
 
+it('can verify an unverified user email', function () {
+    $user = User::factory()->create(['email_verified_at' => null]);
+
+    Livewire::test(ViewUser::class, ['record' => $user->getRouteKey()])
+        ->callAction('verifyEmail')
+        ->assertHasNoActionErrors();
+
+    $user->refresh();
+    expect($user->hasVerifiedEmail())->toBeTrue();
+});
+
+it('hides verify action for already verified users', function () {
+    $user = User::factory()->create(['email_verified_at' => now()]);
+
+    Livewire::test(ViewUser::class, ['record' => $user->getRouteKey()])
+        ->assertActionHidden('verifyEmail');
+});
+
 it('requires a minimum password length of 8', function () {
     $user = User::factory()->create();
 
