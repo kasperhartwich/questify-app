@@ -24,7 +24,9 @@ class ScoringService
 
         if ($quest->scoring_speed_bonus_enabled && $progress->time_taken_seconds !== null) {
             $secondsTaken = $progress->time_taken_seconds;
-            $speedBonus = (int) floor(50 * max(0, (30 - $secondsTaken) / 30));
+            $window = config('questify.scoring.speed_bonus_window_seconds', 30);
+            $maxBonus = config('questify.scoring.speed_bonus_max_points', 50);
+            $speedBonus = (int) floor($maxBonus * max(0, ($window - $secondsTaken) / $window));
         }
 
         return [
@@ -73,7 +75,9 @@ class ScoringService
 
         $secondsTaken = $session->started_at->diffInSeconds($participant->finished_at);
 
-        return (int) floor(200 * max(0, ($secondsEstimated - $secondsTaken) / $secondsEstimated));
+        $maxBonus = config('questify.scoring.completion_bonus_max_points', 200);
+
+        return (int) floor($maxBonus * max(0, ($secondsEstimated - $secondsTaken) / $secondsEstimated));
     }
 
     /**

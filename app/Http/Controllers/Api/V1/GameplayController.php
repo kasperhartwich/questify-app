@@ -21,6 +21,7 @@ use App\Services\ActivityLogService;
 use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @group Gameplay
@@ -101,28 +102,82 @@ class GameplayController extends Controller
      */
     public function answer(AnswerQuestionRequest $request, string $code): JsonResponse
     {
-        $session = $this->getActiveSession($code);
-        $quest = $session->quest;
+        return DB::transaction(function () use ($request, $code): JsonResponse {
+            $session = $this->getActiveSession($code);
+            $quest = $session->quest;
 
-        $participant = SessionParticipant::where('id', $request->validated('participant_id'))
-            ->where('quest_session_id', $session->id)
-            ->firstOrFail();
+            $participant = SessionParticipant::lockForUpdate()
+                ->where('id', $request->validated('participant_id'))
+                ->where('quest_session_id', $session->id)
+                ->firstOrFail();
 
-        $question = Question::findOrFail($request->validated('question_id'));
-        $checkpoint = $question->checkpoint;
+            $question = Question::findOrFail($request->validated('question_id'));
+            $checkpoint = $question->checkpoint;
 
-        // Get existing progress for this question
-        $existingProgress = CheckpointProgress::where('session_participant_id', $participant->id)
-            ->where('question_id', $question->id)
-            ->first();
+            // Get existing progress for this question
+            $existingProgress = CheckpointProgress::lockForUpdate()
+                ->where('session_participant_id', $participant->id)
+                ->where('question_id', $question->id)
+                ->first();
 
-        // Determine correctness
-        $isCorrect = $this->evaluateAnswer($question, $request);
+            // Determine correctness
+            $isCorrect = $this->evaluateAnswer($question, $request);
 
-        if (! $isCorrect) {
-            $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts + 1 : 1;
+            if (! $isCorrect) {
+                $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts + 1 : 1;
 
-            $progress = CheckpointProgress::updateOrCreate(
+                $progress = CheckpointProgress::updateOrCreate(
+                    [
+                        'session_participant_id' => $participant->id,
+                        'question_id' => $question->id,
+                    ],
+                    [
+                        'checkpoint_id' => $checkpoint->id,
+                        'answer_id' => $request->validated('answer_id'),
+                        'open_ended_answer' => $request->validated('answer_text'),
+                        'is_correct' => false,
+                        'points_earned' => 0,
+                        'wrong_attempts' => $wrongAttempts,
+                    ]
+                );
+
+                $responseData = [
+                    'correct' => false,
+                    'behaviour' => $quest->wrong_answer_behaviour->value,
+                    'attempts' => $wrongAttempts,
+                ];
+
+                match ($quest->wrong_answer_behaviour) {
+                    WrongAnswerBehaviour::Lockout => $responseData['locked_until'] = now()
+                        ->addSeconds($quest->wrong_answer_lockout_seconds ?? 30)
+                        ->toIso8601String(),
+                    WrongAnswerBehaviour::ThreeStrikesHint => $wrongAttempts >= 3
+                        ? $responseData['hint'] = ($question->hint ?? $checkpoint->hint ?? null)
+                        : null,
+                    WrongAnswerBehaviour::RetryPenalty => $responseData['penalty'] = $quest->wrong_answer_penalty_points ?? 0,
+                    default => null,
+                };
+
+                return response()->json(['data' => $responseData]);
+            }
+
+            // Calculate score using ScoringService
+            $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts : 0;
+            $scoreResult = $this->scoringService->calculateCorrectAnswerScore($quest, $existingProgress ?? new CheckpointProgress([
+                'time_taken_seconds' => $request->validated('time_taken_seconds'),
+            ]));
+
+            $pointsEarned = $scoreResult['total'];
+            $speedBonus = $scoreResult['speed_bonus'];
+
+            // Apply wrong attempt penalty if enabled
+            if ($quest->scoring_wrong_attempt_penalty_enabled && $wrongAttempts > 0) {
+                $penalty = ($quest->wrong_answer_penalty_points ?? 0) * $wrongAttempts;
+                $pointsEarned = max(0, $pointsEarned - $penalty);
+            }
+
+            // Record progress
+            CheckpointProgress::updateOrCreate(
                 [
                     'session_participant_id' => $participant->id,
                     'question_id' => $question->id,
@@ -131,129 +186,79 @@ class GameplayController extends Controller
                     'checkpoint_id' => $checkpoint->id,
                     'answer_id' => $request->validated('answer_id'),
                     'open_ended_answer' => $request->validated('answer_text'),
-                    'is_correct' => false,
-                    'points_earned' => 0,
+                    'is_correct' => true,
+                    'points_earned' => $pointsEarned,
                     'wrong_attempts' => $wrongAttempts,
                 ]
             );
 
-            $responseData = [
-                'correct' => false,
-                'behaviour' => $quest->wrong_answer_behaviour->value,
-                'attempts' => $wrongAttempts,
-            ];
+            // Update participant total score
+            $totalScore = CheckpointProgress::where('session_participant_id', $participant->id)
+                ->where('is_correct', true)
+                ->sum('points_earned');
+            $participant->update(['score' => $totalScore]);
 
-            match ($quest->wrong_answer_behaviour) {
-                WrongAnswerBehaviour::Lockout => $responseData['locked_until'] = now()
-                    ->addSeconds($quest->wrong_answer_lockout_seconds ?? 30)
-                    ->toIso8601String(),
-                WrongAnswerBehaviour::ThreeStrikesHint => $wrongAttempts >= 3
-                    ? $responseData['hint'] = ($question->hint ?? $checkpoint->hint ?? null)
-                    : null,
-                WrongAnswerBehaviour::RetryPenalty => $responseData['penalty'] = $quest->wrong_answer_penalty_points ?? 0,
-                default => null,
-            };
+            // Check if checkpoint is complete
+            $checkpointQuestionCount = $checkpoint->questions()->count();
+            $answeredCorrectly = CheckpointProgress::where('session_participant_id', $participant->id)
+                ->where('checkpoint_id', $checkpoint->id)
+                ->where('is_correct', true)
+                ->count();
 
-            return response()->json(['data' => $responseData]);
-        }
+            $checkpointComplete = $answeredCorrectly >= $checkpointQuestionCount;
+            $next = $checkpointComplete ? 'checkpoint_complete' : 'question';
 
-        // Calculate score using ScoringService
-        $wrongAttempts = $existingProgress ? $existingProgress->wrong_attempts : 0;
-        $scoreResult = $this->scoringService->calculateCorrectAnswerScore($quest, $existingProgress ?? new CheckpointProgress([
-            'time_taken_seconds' => $request->validated('time_taken_seconds'),
-        ]));
-
-        $pointsEarned = $scoreResult['total'];
-        $speedBonus = $scoreResult['speed_bonus'];
-
-        // Apply wrong attempt penalty if enabled
-        if ($quest->scoring_wrong_attempt_penalty_enabled && $wrongAttempts > 0) {
-            $penalty = ($quest->wrong_answer_penalty_points ?? 0) * $wrongAttempts;
-            $pointsEarned = max(0, $pointsEarned - $penalty);
-        }
-
-        // Record progress
-        CheckpointProgress::updateOrCreate(
-            [
-                'session_participant_id' => $participant->id,
-                'question_id' => $question->id,
-            ],
-            [
-                'checkpoint_id' => $checkpoint->id,
-                'answer_id' => $request->validated('answer_id'),
-                'open_ended_answer' => $request->validated('answer_text'),
-                'is_correct' => true,
-                'points_earned' => $pointsEarned,
-                'wrong_attempts' => $wrongAttempts,
-            ]
-        );
-
-        // Update participant total score
-        $totalScore = CheckpointProgress::where('session_participant_id', $participant->id)
-            ->where('is_correct', true)
-            ->sum('points_earned');
-        $participant->update(['score' => $totalScore]);
-
-        // Check if checkpoint is complete
-        $checkpointQuestionCount = $checkpoint->questions()->count();
-        $answeredCorrectly = CheckpointProgress::where('session_participant_id', $participant->id)
-            ->where('checkpoint_id', $checkpoint->id)
-            ->where('is_correct', true)
-            ->count();
-
-        $checkpointComplete = $answeredCorrectly >= $checkpointQuestionCount;
-        $next = $checkpointComplete ? 'checkpoint_complete' : 'question';
-
-        if ($checkpointComplete) {
-            $participant->update(['current_checkpoint_index' => $participant->current_checkpoint_index + 1]);
-            broadcast(new CheckpointCompleted($session->join_code, $participant, $checkpoint))->toOthers();
-        }
-
-        // Check if quest is complete
-        $questComplete = $this->isQuestComplete($session, $participant);
-        if ($questComplete) {
-            $participant->update(['finished_at' => now()]);
-
-            $completionBonus = $this->scoringService->calculateCompletionBonus($quest, $participant->fresh(), $session);
-            if ($completionBonus > 0) {
-                $participant->increment('score', $completionBonus);
+            if ($checkpointComplete) {
+                $participant->update(['current_checkpoint_index' => $participant->current_checkpoint_index + 1]);
+                broadcast(new CheckpointCompleted($session->join_code, $participant, $checkpoint))->toOthers();
             }
 
-            broadcast(new QuestCompleted(
-                $session->join_code,
-                $participant->fresh(),
-                $participant->fresh()->score,
-            ))->toOthers();
+            // Check if quest is complete
+            $questComplete = $this->isQuestComplete($session, $participant);
+            if ($questComplete) {
+                $participant->update(['finished_at' => now()]);
 
-            if ($participant->user_id) {
-                $placement = $session->participants()->whereNotNull('finished_at')->count();
-                $this->activityLogService->log(
-                    $participant->user,
-                    'quest_completed',
-                    $session->quest,
-                    [
-                        'quest_title' => $session->quest->title,
-                        'score' => $participant->fresh()->score,
-                        'placement' => $placement,
-                        'session_id' => $session->id,
-                    ],
-                );
+                $completionBonus = $this->scoringService->calculateCompletionBonus($quest, $participant->fresh(), $session);
+                if ($completionBonus > 0) {
+                    $participant->increment('score', $completionBonus);
+                }
+
+                broadcast(new QuestCompleted(
+                    $session->join_code,
+                    $participant->fresh(),
+                    $participant->fresh()->score,
+                ))->toOthers();
+
+                if ($participant->user_id) {
+                    $placement = $session->participants()->whereNotNull('finished_at')->count();
+                    $this->activityLogService->log(
+                        $participant->user,
+                        'quest_completed',
+                        $session->quest,
+                        [
+                            'quest_title' => $session->quest->title,
+                            'score' => $participant->fresh()->score,
+                            'placement' => $placement,
+                            'session_id' => $session->id,
+                        ],
+                    );
+                }
             }
-        }
 
-        // Broadcast leaderboard update
-        $leaderboard = $this->buildLeaderboard($session);
-        broadcast(new LeaderboardUpdated($session->join_code, $leaderboard))->toOthers();
+            // Broadcast leaderboard update
+            $leaderboard = $this->buildLeaderboard($session);
+            broadcast(new LeaderboardUpdated($session->join_code, $leaderboard))->toOthers();
 
-        return response()->json([
-            'data' => [
-                'correct' => true,
-                'score_earned' => $pointsEarned,
-                'speed_bonus' => $speedBonus,
-                'total_score' => $participant->fresh()->score,
-                'next' => $next,
-            ],
-        ]);
+            return response()->json([
+                'data' => [
+                    'correct' => true,
+                    'score_earned' => $pointsEarned,
+                    'speed_bonus' => $speedBonus,
+                    'total_score' => $participant->fresh()->score,
+                    'next' => $next,
+                ],
+            ]);
+        }); // end DB::transaction
     }
 
     /**
@@ -300,7 +305,11 @@ class GameplayController extends Controller
                 return false;
             }
 
-            return mb_strtolower(trim($answerText)) === mb_strtolower(trim($correctAnswer->body));
+            $normalize = fn (string $text): string => mb_strtolower(
+                preg_replace('/\s+/', ' ', trim(preg_replace('/[^\p{L}\p{N}\s]/u', '', $text)))
+            );
+
+            return $normalize($answerText) === $normalize($correctAnswer->body);
         }
 
         $answerId = $request->validated('answer_id');

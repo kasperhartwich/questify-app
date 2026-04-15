@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @group User Profile
@@ -55,8 +56,26 @@ class UserProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->tokens()->delete();
-        $user->delete();
+        DB::transaction(function () use ($user): void {
+            // Anonymize participations (preserve gameplay data)
+            $user->sessionParticipations()->update([
+                'user_id' => null,
+                'display_name' => 'Deleted User',
+            ]);
+
+            $user->socialAccounts()->delete();
+            $user->activityLogs()->delete();
+            $user->favouriteQuests()->detach();
+            $user->tokens()->delete();
+
+            $user->update([
+                'name' => 'Deleted User',
+                'email' => null,
+                'phone_number' => null,
+                'avatar_path' => null,
+            ]);
+            $user->delete();
+        });
 
         return response()->json(['message' => __('general.account_deleted')]);
     }

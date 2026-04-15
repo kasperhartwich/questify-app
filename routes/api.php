@@ -45,9 +45,9 @@ Route::prefix('v1')->group(function () {
 
     // Guest-accessible session/gameplay
     Route::get('/sessions/{code}', [SessionController::class, 'show'])->name('sessions.show');
-    Route::post('/sessions/{code}/join', [SessionController::class, 'join'])->name('sessions.join');
-    Route::post('/sessions/{code}/arrived', [GameplayController::class, 'arrived'])->name('gameplay.arrived');
-    Route::post('/sessions/{code}/answer', [GameplayController::class, 'answer'])->name('gameplay.answer');
+    Route::post('/sessions/{code}/join', [SessionController::class, 'join'])->middleware('throttle:30,1')->name('sessions.join');
+    Route::post('/sessions/{code}/arrived', [GameplayController::class, 'arrived'])->middleware('throttle:60,1')->name('gameplay.arrived');
+    Route::post('/sessions/{code}/answer', [GameplayController::class, 'answer'])->middleware('throttle:60,1')->name('gameplay.answer');
     Route::get('/sessions/{code}/leaderboard', [GameplayController::class, 'leaderboard'])->name('gameplay.leaderboard');
 
     // Authenticated

@@ -19,6 +19,7 @@ class AnswerQuestionRequest extends FormRequest
             'question_id' => ['required', 'integer', 'exists:questions,id'],
             'answer_id' => ['nullable', 'integer', 'exists:answers,id', 'required_without:answer_text'],
             'answer_text' => ['nullable', 'string', 'required_without:answer_id'],
+            'time_taken_seconds' => ['nullable', 'integer', 'min:0'],
         ];
     }
 
