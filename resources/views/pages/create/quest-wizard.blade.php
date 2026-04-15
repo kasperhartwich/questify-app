@@ -79,6 +79,11 @@ class extends Component
         $this->categories = collect($response['data'] ?? [])
             ->pluck('name', 'id')
             ->toArray();
+
+        $this->checkpoints = [
+            ['title' => '', 'description' => '', 'latitude' => null, 'longitude' => null],
+        ];
+        $this->questions = [[]];
     }
 
     public function nextStep(): void
@@ -286,6 +291,7 @@ class extends Component
         match ($this->step) {
             1 => $this->validate([
                 'title' => ['required', 'string', 'max:255'],
+                'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             2 => $this->validate([
                 'checkpoints' => ['required', 'array', 'min:1'],

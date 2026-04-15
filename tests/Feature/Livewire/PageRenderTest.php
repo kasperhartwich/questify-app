@@ -91,8 +91,8 @@ beforeEach(fn () => mockFullApiClient());
 
 // --- Public Pages ---
 
-it('renders welcome page', function () {
-    $this->get('/')->assertOk();
+it('redirects welcome page to discover', function () {
+    $this->get('/')->assertRedirect('/discover/list');
 });
 
 it('renders login page', function () {

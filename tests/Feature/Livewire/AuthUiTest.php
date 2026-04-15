@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Services\Api\QuestifyApiClient;
+use App\Services\Api\Resources\AuthResource;
 use Livewire\Livewire;
 
 it('renders the login page', function () {
@@ -110,12 +112,21 @@ it('signup step 1 shows phone option', function () {
 });
 
 it('clicking phone signup advances to step 2 with phone field', function () {
+    $mockAuth = Mockery::mock(AuthResource::class);
+    $mockAuth->shouldReceive('registerPhone')->andReturn([
+        'requires_otp' => true,
+        'login_token' => 'test-token',
+    ]);
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
     Livewire::test('pages::auth.register')
-        ->call('goToPhoneSignup')
+        ->set('country_code', '+45')
+        ->set('phone_local', '12345678')
+        ->call('sendPhoneCode')
         ->assertSet('step', 2)
-        ->assertSet('signup_method', 'phone')
-        ->assertSee(__('auth.phone_number'))
-        ->assertSee(__('auth.phone_sms_disclaimer'));
+        ->assertSet('signup_method', 'phone');
 });
 
 it('email signup does not show phone field', function () {
@@ -128,15 +139,10 @@ it('email signup does not show phone field', function () {
 
 it('phone signup requires phone number', function () {
     Livewire::test('pages::auth.register')
-        ->set('step', 2)
-        ->set('signup_method', 'phone')
-        ->set('first_name', 'Anna')
-        ->set('display_name', 'AdventureAnna')
-        ->set('email', 'anna@example.com')
-        ->set('password', 'password123')
-        ->set('phone_number', '')
-        ->call('register')
-        ->assertHasErrors('phone_number');
+        ->set('country_code', '+45')
+        ->set('phone_local', '')
+        ->call('sendPhoneCode')
+        ->assertHasErrors('phone_local');
 });
 
 it('phone signup validates E.164 format', function () {
