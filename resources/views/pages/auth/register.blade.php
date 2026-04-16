@@ -249,7 +249,7 @@ class extends Component
     {{-- Step 1: Method Selection --}}
     @if ($step === 1)
         {{-- Heading --}}
-        <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.create_your_account'))) !!}</h1>
+        <h1 class="mb-1 mt-16 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.create_your_account') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.create_account_subtitle') }}</p>
 
         {{-- Social auth grid (OAuth providers only, 2x2) --}}

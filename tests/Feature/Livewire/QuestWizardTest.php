@@ -32,6 +32,7 @@ function mockQuestWizardApiClient(?array $storeResponse = null): void
     $mockClient = Mockery::mock(QuestifyApiClient::class);
     $mockClient->shouldReceive('categories')->andReturn($mockCategories);
     $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
 
     app()->instance(QuestifyApiClient::class, $mockClient);
 }

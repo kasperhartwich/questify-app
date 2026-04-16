@@ -2,6 +2,7 @@
 
 use Database\Seeders\ActivityTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 /*
@@ -20,6 +21,21 @@ pest()->extend(TestCase::class)
     ->beforeEach(function () {
         $this->seed(ActivityTypeSeeder::class);
         cache()->forget('activity_type_map');
+
+        Http::fake([
+            '*/api/v1/info' => Http::response([
+                'data' => [
+                    'auth_methods' => [
+                        'email' => true,
+                        'phone' => true,
+                        'google' => true,
+                        'facebook' => true,
+                        'apple' => true,
+                        'microsoft' => true,
+                    ],
+                ],
+            ], 200),
+        ]);
     })
     ->in('Feature', 'Unit');
 
@@ -49,7 +65,24 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Default /info payload used to satisfy AppInfoService in Livewire tests that
+ * mock QuestifyApiClient. Keeps all auth methods enabled so UI branches render.
+ *
+ * @return array<string, mixed>
+ */
+function appInfoStub(): array
 {
-    // ..
+    return [
+        'data' => [
+            'auth_methods' => [
+                'email' => true,
+                'phone' => true,
+                'google' => true,
+                'facebook' => true,
+                'apple' => true,
+                'microsoft' => true,
+            ],
+        ],
+    ];
 }

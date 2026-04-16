@@ -1,7 +1,13 @@
 <?php
 
-test('the application redirects to discover', function () {
-    $response = $this->get('/');
+use App\Models\User;
 
-    $response->assertRedirect('/discover/list');
+test('the welcome page renders for guests', function () {
+    $this->get('/')->assertOk();
+});
+
+test('the welcome page redirects authenticated users to discover', function () {
+    $this->actingAs(User::factory()->create())
+        ->get('/')
+        ->assertRedirect('/discover/list');
 });

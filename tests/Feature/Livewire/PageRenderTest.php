@@ -83,6 +83,7 @@ function mockFullApiClient(): void
     $mockClient->shouldReceive('sessions')->andReturn($mockSessions);
     $mockClient->shouldReceive('gameplay')->andReturn($mockGameplay);
     $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
 
     app()->instance(QuestifyApiClient::class, $mockClient);
 }
@@ -91,8 +92,14 @@ beforeEach(fn () => mockFullApiClient());
 
 // --- Public Pages ---
 
-it('redirects welcome page to discover', function () {
-    $this->get('/')->assertRedirect('/discover/list');
+it('renders welcome page for guests', function () {
+    $this->get('/')->assertOk();
+});
+
+it('redirects authenticated users from welcome to discover', function () {
+    $this->actingAs(User::factory()->create())
+        ->get('/')
+        ->assertRedirect('/discover/list');
 });
 
 it('renders login page', function () {

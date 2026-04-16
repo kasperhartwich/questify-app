@@ -18,6 +18,7 @@ function mockDiscoverApiClient(): void
     $mockClient = Mockery::mock(QuestifyApiClient::class);
     $mockClient->shouldReceive('quests')->andReturn($mockQuests);
     $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
 
     app()->instance(QuestifyApiClient::class, $mockClient);
 }

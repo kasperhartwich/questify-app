@@ -163,7 +163,7 @@ class extends Component
 <div class="flex h-full flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
     @if ($step === 'login')
         {{-- Heading --}}
-        <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{!! nl2br(e(__('auth.welcome_back'))) !!}</h1>
+        <h1 class="mb-1 mt-16 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.welcome_back') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.login_subtitle') }}</p>
 
         {{-- Social auth grid (OAuth providers only, 2x2) --}}

@@ -119,6 +119,7 @@ it('clicking phone signup advances to step 2 with phone field', function () {
     ]);
     $mockClient = Mockery::mock(QuestifyApiClient::class);
     $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
     app()->instance(QuestifyApiClient::class, $mockClient);
 
     Livewire::test('pages::auth.register')
