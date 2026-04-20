@@ -225,12 +225,12 @@ class extends Component
         <div class="mb-2 flex items-start justify-between">
             <div class="flex-1">
                 <h1 class="mb-1 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ $questData->title }}</h1>
-                @if($questData->user)
+                @if($questData->user ?? null)
                     <div class="flex items-center gap-1.5 text-[13px] text-muted">
                         <div class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[#1565C0] font-heading text-[9px] font-extrabold text-white">
                             {{ strtoupper(substr($questData->user->name ?? '', 0, 1)) }}
                         </div>
-                        {{ __('quests.by_creator', ['name' => $questData->user->name]) }}
+                        {{ __('quests.by_creator', ['name' => $questData->user->name ?? '']) }}
                     </div>
                 @endif
             </div>
@@ -254,7 +254,7 @@ class extends Component
             @if(!empty($questData->difficulty))
                 <span class="{{ $difficultyClass }} rounded-full px-2.5 py-[3px] text-[11px] font-bold">{{ ucfirst($questData->difficulty) }}</span>
             @endif
-            @if($questData->category)
+            @if($questData->category ?? null)
                 <span class="rounded-full bg-amber-light px-2.5 py-[3px] text-[11px] font-bold text-amber-dark">{{ $questData->category->name }}</span>
             @endif
             <span class="rounded-full bg-[#E8EDF7] px-2.5 py-[3px] text-[11px] font-bold text-[#2A4A8A]">{{ ucfirst($questData->visibility ?? 'public') }}</span>
