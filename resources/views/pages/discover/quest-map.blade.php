@@ -113,7 +113,7 @@ class extends Component
 };
 ?>
 
-<div class="relative flex h-screen flex-col bg-[#E4EDE4]"
+<div class="fixed inset-0 flex flex-col bg-[#E4EDE4]"
     x-data="{
         map: null,
         markers: [],
@@ -263,7 +263,7 @@ class extends Component
     <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;"></div>
 
     {{-- Floating search bar --}}
-    <div class="absolute left-0 right-0 top-[56px] z-[1000] px-4">
+    <div class="absolute left-0 right-0 z-[1000] px-4" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
         <div class="flex gap-2">
             <a href="/discover/list" class="flex h-[44px] w-[36px] shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -304,7 +304,7 @@ class extends Component
     {{-- Map style toggle --}}
     <button
         @click="toggleStyle()"
-        class="absolute bottom-[280px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+        class="absolute bottom-[370px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <template x-if="!isSatellite">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
@@ -317,13 +317,13 @@ class extends Component
     {{-- My location button --}}
     <button
         @click="locateUser()"
-        class="absolute bottom-[230px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+        class="absolute bottom-[320px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
     >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
     </button>
 
     {{-- Bottom sheet --}}
-    <div class="absolute inset-x-0 bottom-0 z-[1000] rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+    <div class="absolute inset-x-0 bottom-[90px] z-[1000] rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
         <div class="mx-auto mb-[14px] h-1 w-9 rounded-full bg-cream-border"></div>
         <p class="mb-3 font-heading text-[15px] font-bold text-bark">
             <span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}
