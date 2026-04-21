@@ -21,7 +21,18 @@
             this.focusIndex = Math.min(chars.length, this.length - 1)
         },
         handleInput(index, event) {
-            const val = event.target.value.slice(-1).toUpperCase()
+            const raw = (event.target.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '')
+            if (raw.length > 1) {
+                raw.split('').slice(0, this.length).forEach((ch, i) => { this.boxes[i] = ch })
+                this.code = this.boxes.join('')
+                const nextIndex = Math.min(raw.length, this.length - 1)
+                this.$refs['box' + nextIndex].focus()
+                if (this.boxes.every(b => b)) {
+                    this.$el.closest('form')?.requestSubmit()
+                }
+                return
+            }
+            const val = raw.slice(-1)
             this.boxes[index] = val
             this.code = this.boxes.join('')
             if (val && index < this.length - 1) {
@@ -54,8 +65,9 @@
     @for ($i = 0; $i < $length; $i++)
         <input
             type="text"
-            maxlength="1"
+            maxlength="{{ $i === 0 ? $length : 1 }}"
             inputmode="{{ $inputmode }}"
+            @if ($i === 0) autocomplete="one-time-code" @endif
             x-ref="box{{ $i }}"
             :value="boxes[{{ $i }}]"
             @input="handleInput({{ $i }}, $event)"

@@ -153,7 +153,7 @@ class extends Component
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}
-        <div class="relative overflow-hidden bg-forest-600 px-[16px] pb-[34px] pt-[16px]">
+        <div class="relative -mt-[calc(env(safe-area-inset-top,0px)+12px)] overflow-hidden bg-forest-600 px-[16px] pb-[34px] pt-[calc(env(safe-area-inset-top,0px)+20px)]">
             {{-- Decorative amber circle --}}
             <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[120px] w-[120px] rounded-full border-[22px]" style="border-color: rgba(245,166,35,0.1);"></div>
 

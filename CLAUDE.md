@@ -7,6 +7,58 @@ Before starting any task, read these files in order:
 All backend API calls, data models, and business logic are defined in those files.
 Do not invent endpoints or data structures — use only what is specified.
 
+## iOS Deployment (App Store / TestFlight)
+
+The app is currently on TestFlight (not publicly released).
+
+### Version Bumping
+
+Before packaging, bump the version:
+```bash
+php artisan native:release patch   # 0.0.1 → 0.0.2
+php artisan native:release minor   # 0.0.2 → 0.1.0
+php artisan native:release major   # 0.1.0 → 1.0.0
+```
+Also increment `NATIVEPHP_APP_VERSION_CODE` in `.env` (integer build number).
+
+### Building the IPA
+
+The project uses CI-style manual signing. Required env vars to pass at build time:
+
+```bash
+IOS_DISTRIBUTION_CERTIFICATE_PATH=/tmp/questify-dist.p12 \
+IOS_DISTRIBUTION_CERTIFICATE_PASSWORD=temp123 \
+IOS_DISTRIBUTION_PROVISIONING_PROFILE_PATH="/Users/kasper/Library/MobileDevice/Provisioning Profiles/9c30f5b6-6ec3-46c6-bbdb-aa08397b5d6a.mobileprovision" \
+IOS_TEAM_ID=2KF539NBBF \
+EXTRACTED_PROVISIONING_PROFILE_UUID=9c30f5b6-6ec3-46c6-bbdb-aa08397b5d6a \
+php artisan native:package ios --export-method=app-store --rebuild --no-interaction
+```
+
+If no .p12 certificate file exists, export it first:
+```bash
+security export -k ~/Library/Keychains/login.keychain-db -t identities -f pkcs12 -P "temp123" -o /tmp/questify-dist.p12
+```
+
+The IPA is output to `nativephp/ios/build/export/NativePHP.ipa`.
+
+### Uploading to App Store Connect
+
+Add `--upload-to-app-store` to the package command, plus API key credentials:
+```bash
+--upload-to-app-store \
+--api-key-path=/path/to/api-key.p8 \
+--api-key-id=ABC123DEF \
+--api-issuer-id=01234567-89ab-cdef-0123-456789abcdef
+```
+
+### Key Details
+
+- **Team ID**: `2KF539NBBF` (Kasper Hartwich)
+- **App ID**: `com.focusweb.questify`
+- **Provisioning Profile**: `9c30f5b6-6ec3-46c6-bbdb-aa08397b5d6a` (name: "Questify")
+- **Distribution Certificate**: `Apple Distribution: Kasper Hartwich (2KF539NBBF)` — SHA1: `DE528B8FE19D28D892A3841320051175E9414C94`
+- Always run `npm run build` before packaging
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
