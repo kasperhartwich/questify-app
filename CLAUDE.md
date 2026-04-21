@@ -61,6 +61,8 @@ Add `--upload-to-app-store` to the package command, plus API key credentials:
 
 ## iOS Simulator Testing
 
+You CAN and SHOULD run `php artisan native:run ios` yourself. After completing a UI task, always rebuild and verify it in the simulator before reporting it as done.
+
 Use `xcrun simctl` to take screenshots and `cliclick` to tap UI elements. Ghost OS cannot interact with the Simulator's internal webview.
 
 ### Device

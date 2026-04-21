@@ -13,7 +13,7 @@ use Native\Mobile\Facades\PushNotifications;
 
 new
 #[Title('Profile')]
-#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600'])]
+#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600', 'skipSafeAreaTop' => true])]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient, WithFileUploads;
@@ -149,11 +149,11 @@ class extends Component
 };
 ?>
 
-<div class="flex min-h-screen flex-col bg-cream">
+<div class="flex min-h-screen flex-col bg-forest-600">
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}
-        <div class="relative overflow-hidden bg-forest-600 px-[16px] pb-[34px] pt-[16px]">
+        <div class="relative overflow-hidden bg-forest-600 px-[16px] pb-[34px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
             {{-- Decorative amber circle --}}
             <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[120px] w-[120px] rounded-full border-[22px]" style="border-color: rgba(245,166,35,0.1);"></div>
 
@@ -183,6 +183,8 @@ class extends Component
             </div>
         </div>
 
+        {{-- Content area with cream background --}}
+        <div class="flex-1 bg-cream">
         {{-- Stats Row (overlapping header) --}}
         <div class="-mt-[18px] relative z-10">
             <x-stat-row :stats="[
@@ -237,21 +239,22 @@ class extends Component
 
         {{-- Log Out Button --}}
         <div class="px-[16px] pb-6">
-            <button wire:click="logout" class="flex w-full items-center gap-3 rounded-[14px] bg-coral-light p-[14px_16px]" style="border: 1.5px solid rgba(232,92,58,0.2);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E85C3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button wire:click="logout" class="flex w-full items-center gap-3 rounded-[14px] bg-white p-[14px_16px]" style="border: 1.5px solid #E5DDD0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A0937D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
                     <polyline points="16 17 21 12 16 7"/>
                     <line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
-                <span class="flex-1 text-left text-[14px] font-semibold text-coral">{{ __('general.logout') }}</span>
+                <span class="flex-1 text-left text-[14px] font-semibold text-muted">{{ __('general.logout') }}</span>
             </button>
         </div>
+        </div>{{-- end cream content area --}}
 
     @else
         {{-- Settings Screen --}}
-        <div class="flex flex-col">
+        <div class="flex flex-1 flex-col bg-cream">
             {{-- Settings Header --}}
-            <div class="flex items-center gap-3 px-[16px] pb-[12px] pt-[16px]">
+            <div class="flex items-center gap-3 px-[16px] pb-[12px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
                 <button wire:click="$toggle('showSettings')" class="flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-cream-dark">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="15 18 9 12 15 6"/>

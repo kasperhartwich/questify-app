@@ -134,7 +134,7 @@ class extends Component
                 try {
                     this.map = L.map(this.$refs.mapCanvas, {
                         center: [55.6761, 12.5683],
-                        zoom: 12,
+                        zoom: 14,
                         attributionControl: false,
                         zoomControl: false,
                     });
