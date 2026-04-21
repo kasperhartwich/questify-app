@@ -59,6 +59,71 @@ Add `--upload-to-app-store` to the package command, plus API key credentials:
 - **Distribution Certificate**: `Apple Distribution: Kasper Hartwich (2KF539NBBF)` — SHA1: `DE528B8FE19D28D892A3841320051175E9414C94`
 - Always run `npm run build` before packaging
 
+## iOS Simulator Testing
+
+Use `xcrun simctl` to take screenshots and `cliclick` to tap UI elements. Ghost OS cannot interact with the Simulator's internal webview.
+
+### Device
+
+- **iPhone 17 Pro UDID**: `D82C54BB-96D7-4277-A154-D22AA8ABFED2`
+
+### Commands
+
+```bash
+# Boot simulator and open window
+xcrun simctl boot D82C54BB-96D7-4277-A154-D22AA8ABFED2
+open -a Simulator
+
+# Run app on simulator (skips device selection prompt)
+php artisan native:run ios D82C54BB-96D7-4277-A154-D22AA8ABFED2 --no-tty
+
+# Take screenshot (read with Read tool to view)
+xcrun simctl io D82C54BB-96D7-4277-A154-D22AA8ABFED2 screenshot /tmp/sim.png
+
+# Uninstall app (clears cached views/sessions)
+xcrun simctl uninstall D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
+
+# Terminate app
+xcrun simctl terminate D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
+
+# Launch app (without rebuilding)
+xcrun simctl launch D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
+```
+
+### Clicking UI Elements
+
+The Simulator window's content area starts at macOS coordinates that can be found via AppleScript:
+
+```bash
+osascript -e '
+tell application "System Events"
+    tell process "Simulator"
+        set p to position of window 1
+        set s to size of window 1
+        -- Find the content group (the actual phone screen render area)
+        set elems to entire contents of window 1
+    end tell
+end tell
+'
+```
+
+The content group position and size (e.g. `pos:1347,126 size:402,874`) maps to the simulator screenshot (1206x2622 at 3x retina). To convert screenshot pixel coordinates to macOS click coordinates:
+
+```
+mac_x = content_x + (screenshot_x / 3)
+mac_y = content_y + (screenshot_y / 3)
+```
+
+Then click with: `cliclick c:{mac_x},{mac_y}`
+
+### Public Pages (no auth required)
+
+`/discover/list`, `/discover/map`, `/quests/{id}`, `/join`, `/login`, `/register`
+
+### Tester Login
+
+The app has a "Tester" button on the login page that calls `POST /api/v1/auth/tester` (no credentials needed) to instantly log in as a test user.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
