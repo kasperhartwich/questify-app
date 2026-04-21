@@ -28,22 +28,57 @@ class extends Component
     #[Url]
     public string $cursor = '';
 
+    /** @var array<int, array<string, mixed>> */
+    public array $questsData = [];
+
+    /** @var array<int, array<string, mixed>> */
+    public array $categoriesData = [];
+
+    public ?string $nextCursor = null;
+
+    public ?string $prevCursor = null;
+
+    public function mount(): void
+    {
+        $categoryResponse = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
+        $this->categoriesData = $categoryResponse['data'] ?? [];
+
+        $this->loadQuests();
+    }
+
     public function updatedSearch(): void
     {
         $this->cursor = '';
+        $this->loadQuests();
     }
 
     public function updatedCategory(): void
     {
         $this->cursor = '';
+        $this->loadQuests();
     }
 
     public function updatedDifficulty(): void
     {
         $this->cursor = '';
+        $this->loadQuests();
+    }
+
+    public function updatedCursor(): void
+    {
+        $this->loadQuests();
     }
 
     public function render(): mixed
+    {
+        return view('pages.discover.quest-list-view', [
+            'quests' => $this->toObjectCollection($this->questsData),
+            'categories' => $this->toObjectCollection($this->categoriesData),
+            'difficulties' => Difficulty::cases(),
+        ]);
+    }
+
+    private function loadQuests(): void
     {
         $filters = array_filter([
             'search' => $this->search ?: null,
@@ -52,16 +87,11 @@ class extends Component
             'cursor' => $this->cursor ?: null,
         ]);
 
-        $questResponse = $this->tryApiCall(fn () => $this->api->quests()->list($filters)) ?? ['data' => [], 'meta' => []];
-        $categoryResponse = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
+        $response = $this->tryApiCall(fn () => $this->api->quests()->list($filters)) ?? ['data' => [], 'meta' => []];
 
-        return view('pages.discover.quest-list-view', [
-            'quests' => $this->toObjectCollection($questResponse['data'] ?? []),
-            'nextCursor' => $questResponse['meta']['next_cursor'] ?? null,
-            'prevCursor' => $questResponse['meta']['prev_cursor'] ?? null,
-            'categories' => $this->toObjectCollection($categoryResponse['data'] ?? []),
-            'difficulties' => Difficulty::cases(),
-        ]);
+        $this->questsData = $response['data'] ?? [];
+        $this->nextCursor = $response['meta']['next_cursor'] ?? null;
+        $this->prevCursor = $response['meta']['prev_cursor'] ?? null;
     }
 };
 ?>
