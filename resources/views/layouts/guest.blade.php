@@ -16,9 +16,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="h-dvh overflow-hidden {{ $bodyClass ?? 'bg-cream' }} nativephp-safe-area">
+    <body class="h-dvh overflow-hidden {{ $bodyClass ?? 'bg-cream' }}">
         {{-- Main Content --}}
-        <main class="h-full pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
+        <main class="h-full pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]">
             {{ $slot }}
         </main>
 

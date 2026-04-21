@@ -129,6 +129,25 @@ class extends Component
         $this->resetErrorBag();
     }
 
+    public function loginAsTester(): void
+    {
+        try {
+            $response = $this->api->auth()->tester();
+
+            $userData = $response['data']['user'] ?? null;
+            $token = $response['data']['token'] ?? null;
+
+            if ($userData && $token) {
+                /** @var QuestifyApiGuard $guard */
+                $guard = Auth::guard();
+                $guard->login($userData, $token);
+                $this->redirect('/discover/list');
+            }
+        } catch (ApiException $e) {
+            $this->dispatch('api-error', message: $e->getMessage());
+        }
+    }
+
     public function sendPhoneOtpFromMain(): void
     {
         $this->validate([
@@ -163,7 +182,7 @@ class extends Component
 <div class="flex h-full flex-col overflow-hidden bg-cream px-5 pb-6 pt-2">
     @if ($step === 'login')
         {{-- Heading --}}
-        <h1 class="mb-1 mt-16 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.welcome_back') }}</h1>
+        <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.welcome_back') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.login_subtitle') }}</p>
 
         {{-- Social auth grid (OAuth providers only, 2x2) --}}
@@ -185,6 +204,12 @@ class extends Component
                 @endforeach
             </div>
         @endif
+
+        {{-- Tester login --}}
+        <button wire:click="loginAsTester" class="mt-[8px] flex w-full items-center justify-center gap-[8px] rounded-[14px] border-[1.5px] border-cream-border bg-transparent py-[13px] text-[14px] font-semibold text-bark">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Tester
+        </button>
 
         {{-- OR divider --}}
         @if ($emailEnabled)

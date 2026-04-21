@@ -12,7 +12,7 @@
         }
     </style>
     {{-- Search & Filter --}}
-    <div class="flex items-center gap-2 px-[16px] pb-[10px] pt-[6px]">
+    <div class="flex items-center gap-2 px-[16px] pb-[10px] pt-[2px]">
         <div class="flex flex-1 items-center gap-2 rounded-[13px] border-[1.5px] border-cream-border bg-white px-[14px] py-[11px]">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8078" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
             <input

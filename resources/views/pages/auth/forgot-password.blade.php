@@ -61,7 +61,7 @@ class extends Component
 
     @if (! $linkSent)
         {{-- Heading --}}
-        <h1 class="mb-1 mt-16 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.forgot_password_title') }}</h1>
+        <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.forgot_password_title') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.forgot_password_subtitle') }}</p>
 
         {{-- Email form --}}
@@ -83,7 +83,7 @@ class extends Component
         </form>
     @else
         {{-- Success State --}}
-        <h1 class="mb-1 mt-16 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.reset_password') }}</h1>
+        <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.reset_password') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.reset_link_sent') }}</p>
 
         <div class="mb-4 rounded-[14px] bg-[#D4EDE4] p-4 text-[13px] font-medium text-forest-600">

@@ -1,4 +1,4 @@
-<div class="flex h-[calc(100dvh-env(safe-area-inset-top,0px)-12px-env(safe-area-inset-bottom,0px)-76px)] flex-col bg-cream">
+<div class="flex h-full flex-col bg-cream">
     {{-- Title --}}
     <div class="shrink-0 px-[20px] py-[6px]">
         <h1 class="font-heading text-[24px] font-[800] text-bark">{{ __('general.my_quests') }}</h1>

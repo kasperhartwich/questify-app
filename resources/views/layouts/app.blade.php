@@ -27,7 +27,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="min-h-screen {{ $bodyClass ?? 'bg-cream' }} nativephp-safe-area">
+    <body class="min-h-screen {{ $bodyClass ?? 'bg-cream' }}">
         {{-- WebSocket Reconnection Indicator --}}
         <div
             x-data="{
@@ -50,7 +50,7 @@
         </div>
 
         {{-- Main Content --}}
-        <main class="min-h-screen bg-cream pt-[env(safe-area-inset-top,0px)] pb-[calc(env(safe-area-inset-bottom,0px)+76px)]">
+        <main class="min-h-screen bg-cream pt-[env(safe-area-inset-top,0px)] pb-[76px]">
             {{ $slot }}
         </main>
 

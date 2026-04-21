@@ -125,4 +125,14 @@ class AuthResource
     {
         return $this->client->delete("/auth/social/{$provider}");
     }
+
+    /**
+     * Log in as the test user (no credentials needed).
+     *
+     * @return array{data: array{user: array, token: string}, message: string}
+     */
+    public function tester(): array
+    {
+        return $this->client->post('/auth/tester');
+    }
 }
