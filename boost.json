@@ -15,6 +15,7 @@
         "socialite-development",
         "pest-testing",
         "echo-development",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "nativephp-mobile"
     ]
 }

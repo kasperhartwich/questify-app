@@ -5,6 +5,7 @@ namespace App\Auth;
 use App\Exceptions\Api\ApiAuthenticationException;
 use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\AppInfoService;
 use App\Services\TokenStorage;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
@@ -99,6 +100,7 @@ class QuestifyApiGuard implements Guard
         try {
             $this->client->auth()->me();
             $this->client->categories()->list();
+            app(AppInfoService::class)->refresh();
         } catch (\Throwable) {
             // Non-critical — pages will fetch on demand
         }

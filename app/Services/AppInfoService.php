@@ -20,6 +20,9 @@ class AppInfoService
     /**
      * Fetch app info from the API, falling back to cache, then defaults.
      *
+     * Uses Cache::remember() so the first request on cold start serves
+     * cached data instantly instead of blocking on a network call.
+     *
      * @return array<string, mixed>
      */
     public function get(): array
@@ -28,13 +31,10 @@ class AppInfoService
             return $this->info;
         }
 
-        try {
-            $this->info = $this->apiClient->get('/info');
-            Cache::put(self::CACHE_KEY, $this->info, self::CACHE_TTL_SECONDS);
-        } catch (\Throwable $e) {
-            Log::warning('Failed to fetch /info from API, using cache', ['error' => $e->getMessage()]);
-            $this->info = Cache::get(self::CACHE_KEY, $this->defaults());
-        }
+        // Serve from cache instantly — never block a request on a network call.
+        // The cache is populated after login (QuestifyApiGuard::login) and
+        // refreshed by refresh() when needed.
+        $this->info = Cache::get(self::CACHE_KEY, $this->defaults());
 
         return $this->info;
     }
@@ -72,6 +72,21 @@ class AppInfoService
             ['google', 'facebook', 'apple', 'microsoft'],
             fn (string $provider): bool => (bool) ($methods[$provider] ?? false),
         ));
+    }
+
+    /**
+     * Fetch fresh data from the API and update the cache.
+     * Called during login to seed the cache.
+     */
+    public function refresh(): void
+    {
+        try {
+            $fresh = $this->apiClient->get('/info');
+            Cache::put(self::CACHE_KEY, $fresh, self::CACHE_TTL_SECONDS);
+            $this->info = $fresh;
+        } catch (\Throwable $e) {
+            Log::warning('Failed to refresh /info from API', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
