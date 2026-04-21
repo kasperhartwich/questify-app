@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Resources;
 
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 
 class UserApiResource
@@ -10,17 +11,21 @@ class UserApiResource
 
     public function quests(?string $cursor = null): array
     {
-        return $this->client->get('/user/quests', array_filter(['cursor' => $cursor]));
+        $key = 'user:quests:'.($cursor ?? 'first');
+
+        return ApiCache::remember($key, fn () => $this->client->get('/user/quests', array_filter(['cursor' => $cursor])));
     }
 
     public function sessions(): array
     {
-        return $this->client->get('/user/sessions');
+        return ApiCache::remember('user:sessions', fn () => $this->client->get('/user/sessions'));
     }
 
     public function favourites(?string $cursor = null): array
     {
-        return $this->client->get('/user/favourites', array_filter(['cursor' => $cursor]));
+        $key = 'user:favourites:'.($cursor ?? 'first');
+
+        return ApiCache::remember($key, fn () => $this->client->get('/user/favourites', array_filter(['cursor' => $cursor])));
     }
 
     /**
@@ -29,21 +34,28 @@ class UserApiResource
      */
     public function updateProfile(array $data, ?string $avatarPath = null): array
     {
-        if ($avatarPath) {
-            return $this->client->postMultipart('/user/profile', array_merge($data, ['_method' => 'PUT']), [
+        $result = $avatarPath
+            ? $this->client->postMultipart('/user/profile', array_merge($data, ['_method' => 'PUT']), [
                 'avatar' => [
                     'path' => $avatarPath,
                     'name' => basename($avatarPath),
                 ],
-            ]);
-        }
+            ])
+            : $this->client->put('/user/profile', $data);
 
-        return $this->client->put('/user/profile', $data);
+        ApiCache::forget('auth:me');
+        ApiCache::forgetPrefix('user:');
+
+        return $result;
     }
 
     public function deleteAccount(): array
     {
-        return $this->client->delete('/user');
+        $result = $this->client->delete('/user');
+
+        ApiCache::flush();
+
+        return $result;
     }
 
     /**

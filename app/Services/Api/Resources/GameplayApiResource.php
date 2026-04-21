@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Resources;
 
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 
 class GameplayApiResource
@@ -10,12 +11,16 @@ class GameplayApiResource
 
     public function arrived(string $code, int $participantId, int $checkpointId, float $latitude, float $longitude): array
     {
-        return $this->client->post("/sessions/{$code}/arrived", [
+        $result = $this->client->post("/sessions/{$code}/arrived", [
             'participant_id' => $participantId,
             'checkpoint_id' => $checkpointId,
             'latitude' => $latitude,
             'longitude' => $longitude,
         ]);
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function answer(string $code, int $participantId, int $questionId, ?int $answerId = null, ?string $answerText = null): array

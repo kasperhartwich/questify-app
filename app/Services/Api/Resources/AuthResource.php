@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Resources;
 
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 
 class AuthResource
@@ -82,7 +83,7 @@ class AuthResource
      */
     public function me(): array
     {
-        return $this->client->get('/auth/me');
+        return ApiCache::remember('auth:me', fn () => $this->client->get('/auth/me'));
     }
 
     /**

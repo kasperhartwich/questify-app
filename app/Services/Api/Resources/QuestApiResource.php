@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Resources;
 
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 
 class QuestApiResource
@@ -13,7 +14,10 @@ class QuestApiResource
      */
     public function list(array $filters = []): array
     {
-        return $this->client->get('/quests', array_filter($filters));
+        $filtered = array_filter($filters);
+        $hash = md5(serialize($filtered));
+
+        return ApiCache::remember("quests:list:{$hash}", fn () => $this->client->get('/quests', $filtered));
     }
 
     /**
@@ -21,16 +25,19 @@ class QuestApiResource
      */
     public function nearby(float $latitude, float $longitude, array $filters = []): array
     {
-        return $this->client->get('/quests/nearby', array_filter([
+        $params = array_filter([
             'latitude' => $latitude,
             'longitude' => $longitude,
             ...$filters,
-        ]));
+        ]);
+        $hash = md5(serialize($params));
+
+        return ApiCache::remember("quests:nearby:{$hash}", fn () => $this->client->get('/quests/nearby', $params));
     }
 
     public function show(int $id): array
     {
-        return $this->client->get("/quests/{$id}");
+        return ApiCache::remember("quests:show:{$id}", fn () => $this->client->get("/quests/{$id}"));
     }
 
     /**
@@ -41,16 +48,19 @@ class QuestApiResource
      */
     public function store(array $data, ?string $coverImagePath = null): array
     {
-        if ($coverImagePath) {
-            return $this->client->postMultipart('/quests', $data, [
+        $result = $coverImagePath
+            ? $this->client->postMultipart('/quests', $data, [
                 'cover_image' => [
                     'path' => $coverImagePath,
                     'name' => basename($coverImagePath),
                 ],
-            ]);
-        }
+            ])
+            : $this->client->post('/quests', $data);
 
-        return $this->client->post('/quests', $data);
+        ApiCache::forgetPrefix('quests:');
+        ApiCache::forgetPrefix('user:quests:');
+
+        return $result;
     }
 
     /**
@@ -58,34 +68,51 @@ class QuestApiResource
      */
     public function update(int $id, array $data, ?string $coverImagePath = null): array
     {
-        if ($coverImagePath) {
-            return $this->client->postMultipart("/quests/{$id}", array_merge($data, ['_method' => 'PUT']), [
+        $result = $coverImagePath
+            ? $this->client->postMultipart("/quests/{$id}", array_merge($data, ['_method' => 'PUT']), [
                 'cover_image' => [
                     'path' => $coverImagePath,
                     'name' => basename($coverImagePath),
                 ],
-            ]);
-        }
+            ])
+            : $this->client->put("/quests/{$id}", $data);
 
-        return $this->client->put("/quests/{$id}", $data);
+        ApiCache::forgetPrefix('quests:');
+        ApiCache::forgetPrefix('user:quests:');
+
+        return $result;
     }
 
     public function destroy(int $id): array
     {
-        return $this->client->delete("/quests/{$id}");
+        $result = $this->client->delete("/quests/{$id}");
+
+        ApiCache::forgetPrefix('quests:');
+        ApiCache::forgetPrefix('user:quests:');
+
+        return $result;
     }
 
     public function publish(int $id): array
     {
-        return $this->client->post("/quests/{$id}/publish");
+        $result = $this->client->post("/quests/{$id}/publish");
+
+        ApiCache::forgetPrefix('quests:');
+        ApiCache::forgetPrefix('user:quests:');
+
+        return $result;
     }
 
     public function rate(int $id, int $rating, ?string $comment = null): array
     {
-        return $this->client->post("/quests/{$id}/rate", array_filter([
+        $result = $this->client->post("/quests/{$id}/rate", array_filter([
             'rating' => $rating,
             'comment' => $comment,
         ]));
+
+        ApiCache::forget("quests:show:{$id}");
+
+        return $result;
     }
 
     public function flag(int $id, string $reason): array
@@ -95,6 +122,12 @@ class QuestApiResource
 
     public function toggleFavourite(int $id): array
     {
-        return $this->client->post("/quests/{$id}/favourite");
+        $result = $this->client->post("/quests/{$id}/favourite");
+
+        ApiCache::forget("quests:show:{$id}");
+        ApiCache::forgetPrefix('quests:list:');
+        ApiCache::forgetPrefix('user:favourites:');
+
+        return $result;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Exceptions\Api\ApiAuthenticationException;
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\TokenStorage;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -85,12 +86,22 @@ class QuestifyApiGuard implements Guard
      */
     public function login(array $userData, string $token): void
     {
+        ApiCache::flush();
+
         TokenStorage::set($token);
         $this->session->put('questify_user', $userData);
         $this->session->regenerate();
 
         $this->user = new ApiTokenUser($userData);
         $this->resolved = true;
+
+        // Prefetch commonly needed data into cache
+        try {
+            $this->client->auth()->me();
+            $this->client->categories()->list();
+        } catch (\Throwable) {
+            // Non-critical — pages will fetch on demand
+        }
     }
 
     public function logout(): void
@@ -101,6 +112,7 @@ class QuestifyApiGuard implements Guard
             // Ignore API errors during logout
         }
 
+        ApiCache::flush();
         TokenStorage::forget();
         $this->session->forget('questify_user');
         $this->session->invalidate();

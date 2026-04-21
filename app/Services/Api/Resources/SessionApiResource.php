@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Resources;
 
+use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 
 class SessionApiResource
@@ -10,10 +11,14 @@ class SessionApiResource
 
     public function create(int $questId, string $playMode): array
     {
-        return $this->client->post('/sessions', [
+        $result = $this->client->post('/sessions', [
             'quest_id' => $questId,
             'play_mode' => $playMode,
         ]);
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function show(string $code): array
@@ -31,12 +36,20 @@ class SessionApiResource
 
     public function start(string $code): array
     {
-        return $this->client->post("/sessions/{$code}/start");
+        $result = $this->client->post("/sessions/{$code}/start");
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function end(string $code): array
     {
-        return $this->client->post("/sessions/{$code}/end");
+        $result = $this->client->post("/sessions/{$code}/end");
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function dashboard(string $code): array
