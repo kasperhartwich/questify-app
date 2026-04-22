@@ -114,6 +114,9 @@ class extends Component
 };
 ?>
 
+{{-- Clear native bottom nav on this page --}}
+<native:bottom-nav></native:bottom-nav>
+
 <div class="fixed inset-0 flex flex-col bg-[#E4EDE4]"
     x-data="{
         map: null,
@@ -304,7 +307,7 @@ class extends Component
     </div>
 
     {{-- Floating buttons (bottom right) --}}
-    <div class="absolute right-4 z-[1000] flex flex-col gap-2" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 170px);">
+    <div class="absolute right-4 z-[1000] flex flex-col gap-2" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);">
         {{-- Expand button (only when quest selected) --}}
         <template x-if="selectedPin">
             <a :href="'/quests/' + selectedPin.id" class="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
@@ -321,7 +324,7 @@ class extends Component
     </div>
 
     {{-- Bottom: floating pill (no selection) or quest card (selected) --}}
-    <div class="absolute inset-x-0 z-[1000] px-4 transition-all duration-300" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);">
+    <div class="absolute inset-x-0 z-[1000] px-4 transition-all duration-300" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);">
         {{-- Floating pill: quest count --}}
         <template x-if="!selectedPin">
             <div class="mx-auto w-fit rounded-full bg-forest-600 px-5 py-[12px] shadow-[0_4px_16px_rgba(11,61,46,0.35)]">
