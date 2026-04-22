@@ -194,12 +194,12 @@ class extends Component
         @endif
 
         {{-- Back button --}}
-        <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/discover/list'; }" class="absolute left-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+        <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/discover/list'; }" class="absolute left-4 z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
         {{-- Bookmark button --}}
-        <button wire:click="toggleFavourite" class="absolute right-4 top-[60px] z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+        <button wire:click="toggleFavourite" class="absolute right-4 z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
             @if ($isFavourited)
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#0B3D2E" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
             @else
