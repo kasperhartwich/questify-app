@@ -12,6 +12,7 @@ use Native\Mobile\Facades\System;
 
 new
 #[Title('Quest Map')]
+#[\Livewire\Attributes\Layout('layouts.app', ['fullscreen' => true, 'skipSafeAreaTop' => true])]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient;
@@ -166,18 +167,18 @@ class extends Component
             this.markers.forEach(m => this.map.removeLayer(m));
             this.markers = [];
             this.removeCircle();
+            const colorClass = (d) => d === 'easy' ? 'marker-easy' : d === 'medium' ? 'marker-medium' : d === 'hard' ? 'marker-hard' : 'marker-default';
             this.pins.forEach((pin) => {
                 const icon = L.divIcon({
                     className: '',
-                    html: '<div class=\'leaflet-quest-marker\'><span class=\'leaflet-quest-marker-num\'>' + (pin.checkpoint_count || '') + '</span></div>',
-                    iconSize: [32, 32],
-                    iconAnchor: [8, 32],
+                    html: '<div class=\'leaflet-quest-marker ' + colorClass(pin.difficulty) + '\'><span class=\'leaflet-quest-marker-num\'>' + (pin.checkpoint_count || '') + '</span></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [8, 30],
                 });
                 const marker = L.marker([pin.latitude, pin.longitude], { icon: icon }).addTo(this.map);
                 marker.on('click', () => {
                     this.selectedPin = pin;
-                    this.map.flyTo([pin.latitude, pin.longitude], 14);
-                    this.drawCircle(pin);
+                    this.map.flyTo([pin.latitude, pin.longitude], 15);
                 });
                 this.markers.push(marker);
             });
@@ -235,20 +236,16 @@ class extends Component
 >
     <style>
         .leaflet-quest-marker {
-            width: 32px;
-            height: 32px;
-            background-color: #0B3D2E;
-            border: 3px solid white;
+            width: 30px;
+            height: 30px;
+            border: 2.5px solid white;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .leaflet-quest-marker:hover {
-            background-color: #15573F;
         }
         .leaflet-quest-marker-num {
             transform: rotate(45deg);
@@ -257,10 +254,15 @@ class extends Component
             font-weight: 800;
             color: white;
         }
+        .marker-easy { background-color: #E5A117; }
+        .marker-medium { background-color: #0B3D2E; }
+        .marker-hard { background-color: #E85C3A; }
+        .marker-default { background-color: #7C3AED; }
     </style>
 
     {{-- Full-screen map --}}
-    <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;"></div>
+    <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;"
+         @click="if (!$event.target.closest('.leaflet-quest-marker')) { selectedPin = null; removeCircle(); }"></div>
 
     {{-- Floating search bar --}}
     <div class="absolute left-0 right-0 z-[1000] px-4" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
@@ -301,54 +303,63 @@ class extends Component
         </div>
     </div>
 
-    {{-- Map style toggle --}}
-    <button
-        @click="toggleStyle()"
-        class="absolute bottom-[370px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
-    >
-        <template x-if="!isSatellite">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        </template>
-        <template x-if="isSatellite">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/></svg>
-        </template>
-    </button>
-
-    {{-- My location button --}}
-    <button
-        @click="locateUser()"
-        class="absolute bottom-[320px] right-4 z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
-    >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-    </button>
-
-    {{-- Bottom sheet --}}
-    <div class="absolute inset-x-0 bottom-[90px] z-[1000] rounded-t-[22px] bg-white px-4 pb-5 pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-        <div class="mx-auto mb-[14px] h-1 w-9 rounded-full bg-cream-border"></div>
-        <p class="mb-3 font-heading text-[15px] font-bold text-bark">
-            <span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}
-        </p>
-
-        {{-- Selected quest card --}}
+    {{-- Floating buttons (bottom right) --}}
+    <div class="absolute right-4 z-[1000] flex flex-col gap-2" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 170px);">
+        {{-- Expand button (only when quest selected) --}}
         <template x-if="selectedPin">
-            <a :href="'/quests/' + selectedPin.id" class="block overflow-hidden rounded-[16px] bg-white shadow-sm" wire:navigate>
-                <div class="relative overflow-hidden bg-forest-600 px-4 pb-3 pt-[14px]">
-                    <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-white/[0.08]"></div>
-                    <div>
-                        <h3 class="font-heading text-[15px] font-bold text-white" x-text="selectedPin.title"></h3>
-                        <p class="mt-1 text-[11px] text-white/70">
-                            <span x-text="selectedPin.checkpoint_count"></span> checkpoints
-                            <span x-show="selectedPin.distance_to_start_km"> &middot; <span x-text="selectedPin.distance_to_start_km.toFixed(1)"></span> km away</span>
+            <a :href="'/quests/' + selectedPin.id" class="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            </a>
+        </template>
+        {{-- My location button --}}
+        <button
+            @click="locateUser()"
+            class="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]"
+        >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </button>
+    </div>
+
+    {{-- Bottom: floating pill (no selection) or quest card (selected) --}}
+    <div class="absolute inset-x-0 z-[1000] px-4 transition-all duration-300" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);">
+        {{-- Floating pill: quest count --}}
+        <template x-if="!selectedPin">
+            <div class="mx-auto w-fit rounded-full bg-forest-600 px-5 py-[12px] shadow-[0_4px_16px_rgba(11,61,46,0.35)]">
+                <div class="flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="white" stroke="none"/></svg>
+                    <span class="text-[14px] font-bold text-white"><span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}</span>
+                </div>
+            </div>
+        </template>
+
+        {{-- Quest detail card --}}
+        <template x-if="selectedPin">
+            <div class="overflow-hidden rounded-[18px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+                <div class="flex items-start gap-3 px-4 pt-4 pb-3">
+                    {{-- Pin icon --}}
+                    <div class="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#E8F5E9]">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#0B3D2E" stroke="none"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-heading text-[15px] font-bold leading-tight text-bark" x-text="selectedPin.title"></h3>
+                        <p class="mt-0.5 text-[12px] text-muted">
+                            <span x-show="selectedPin.distance_to_start_km"><span x-text="selectedPin.distance_to_start_km.toFixed(1)"></span> km {{ __('general.away') }}</span>
                         </p>
                     </div>
                 </div>
-                <div class="px-4 py-[10px]">
-                    <span class="block rounded-[10px] bg-forest-600 py-[10px] text-center text-[13px] font-bold text-white">{{ __('general.view_quest') }} &rarr;</span>
+                {{-- Tags row --}}
+                <div class="flex flex-wrap gap-[6px] px-4 pb-3">
+                    <span class="rounded-full px-2.5 py-[3px] text-[11px] font-semibold"
+                          :class="selectedPin.difficulty === 'easy' ? 'bg-amber-100 text-amber-700' : (selectedPin.difficulty === 'hard' ? 'bg-red-50 text-coral' : 'bg-[#D4EDE4] text-forest-600')"
+                          x-text="selectedPin.difficulty"></span>
+                    <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.checkpoint_count + ' stops'"></span>
+                    <span x-show="selectedPin.distance_to_farthest_km" class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.distance_to_farthest_km.toFixed(1) + ' km'"></span>
                 </div>
-            </a>
-        </template>
-        <template x-if="!selectedPin">
-            <p class="py-4 text-center text-[13px] text-muted">{{ __('general.tap_pin_to_preview') }}</p>
+                {{-- View Quest button --}}
+                <div class="px-4 pb-4">
+                    <a :href="'/quests/' + selectedPin.id" class="block rounded-[12px] bg-forest-600 py-[13px] text-center text-[14px] font-bold text-white" wire:navigate>{{ __('general.view_quest') }} &rarr;</a>
+                </div>
+            </div>
         </template>
     </div>
 </div>

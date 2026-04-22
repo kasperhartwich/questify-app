@@ -50,7 +50,7 @@
         </div>
 
         {{-- Main Content --}}
-        <main class="min-h-screen {{ $bodyClass ?? 'bg-cream' }} {{ ($skipSafeAreaTop ?? false) ? '' : 'pt-[env(safe-area-inset-top,0px)]' }} pb-[90px]">
+        <main class="{{ ($fullscreen ?? false) ? 'h-screen overflow-hidden' : 'min-h-screen pb-[90px]' }} {{ $bodyClass ?? 'bg-cream' }} {{ ($skipSafeAreaTop ?? false) ? '' : 'pt-[env(safe-area-inset-top,0px)]' }}">
             {{ $slot }}
         </main>
 
@@ -95,7 +95,7 @@
         </native:bottom-nav>
         @else
         {{-- HTML Tab Bar (browser fallback) --}}
-        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-black/[0.07] bg-white px-1 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] pt-2.5">
+        <nav id="app-tab-bar" class="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-black/[0.07] bg-white px-1 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] pt-2.5">
             {{-- Discover --}}
             <a href="/discover/list" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
