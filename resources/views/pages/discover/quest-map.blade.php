@@ -308,32 +308,7 @@ class extends Component
                 <span class="text-[14px] text-[#B0A898]">{{ __('general.search_area') }}...</span>
             </div>
         </div>
-        {{-- Filter chips --}}
-        <div class="mt-2 flex gap-[6px] overflow-x-auto pb-[2px]">
-            <button
-                @click="filterDifficulty = 'all'"
-                class="whitespace-nowrap rounded-full border-[1.5px] px-3 py-[5px] text-[12px] font-semibold transition-colors"
-                :class="filterDifficulty === 'all' ? 'border-forest-600 bg-forest-600 text-white' : 'border-cream-border bg-white text-muted'"
-            >{{ __('general.all') }}</button>
-            <button
-                @click="filterDifficulty = 'easy'"
-                class="whitespace-nowrap rounded-full border-[1.5px] px-3 py-[5px] text-[12px] font-semibold transition-colors"
-                :class="filterDifficulty === 'easy' ? 'border-forest-600 bg-forest-600 text-white' : 'border-cream-border bg-white text-muted'"
-            >{{ __('general.easy') }}</button>
-            <button
-                @click="filterDifficulty = 'medium'"
-                class="whitespace-nowrap rounded-full border-[1.5px] px-3 py-[5px] text-[12px] font-semibold transition-colors"
-                :class="filterDifficulty === 'medium' ? 'border-forest-600 bg-forest-600 text-white' : 'border-cream-border bg-white text-muted'"
-            >{{ __('general.medium') }}</button>
-            <button
-                @click="filterDifficulty = 'hard'"
-                class="whitespace-nowrap rounded-full border-[1.5px] px-3 py-[5px] text-[12px] font-semibold transition-colors"
-                :class="filterDifficulty === 'hard' ? 'border-forest-600 bg-forest-600 text-white' : 'border-cream-border bg-white text-muted'"
-            >{{ __('general.hard') }}</button>
-            <button
-                class="whitespace-nowrap rounded-full border-[1.5px] border-cream-border bg-white px-3 py-[5px] text-[12px] font-semibold text-muted"
-            >&lt; 30 min</button>
-        </div>
+        {{-- Filter chips (disabled for now) --}}
     </div>
 
     {{-- Floating buttons (bottom right) --}}
@@ -353,19 +328,8 @@ class extends Component
         </button>
     </div>
 
-    {{-- Bottom: floating pill (no selection) or quest card (selected) --}}
+    {{-- Bottom: quest card (only when selected) --}}
     <div class="absolute inset-x-0 z-[1000] px-4 transition-all duration-300" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);">
-        {{-- Floating pill: quest count --}}
-        <template x-if="!selectedPin">
-            <div class="mx-auto w-fit rounded-full bg-forest-600 px-5 py-[12px] shadow-[0_4px_16px_rgba(11,61,46,0.35)]">
-                <div class="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="white" stroke="none"/></svg>
-                    <span class="text-[14px] font-bold text-white"><span x-text="visibleCount">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}</span>
-                </div>
-            </div>
-        </template>
-
-        {{-- Quest detail card --}}
         <template x-if="selectedPin">
             <div class="overflow-hidden rounded-[18px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
                 <div class="flex items-start gap-3 px-4 pt-4 pb-3">
