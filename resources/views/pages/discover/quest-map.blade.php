@@ -7,6 +7,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\Geolocation;
 use Native\Mobile\Facades\System;
 
@@ -31,6 +32,7 @@ class extends Component
         $this->isNative = System::isMobile();
         $this->loadPins();
     }
+
 
     public function requestLocation(): void
     {
@@ -114,9 +116,6 @@ class extends Component
 };
 ?>
 
-{{-- Clear native bottom nav on this page --}}
-<native:bottom-nav></native:bottom-nav>
-
 <div class="fixed inset-0 flex flex-col bg-[#E4EDE4]"
     x-data="{
         map: null,
@@ -130,6 +129,26 @@ class extends Component
         streetsLayer: null,
         satelliteLayer: null,
         init() {
+            // Clear native EDGE bottom nav via JS bridge
+            fetch('/_native/api/call', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ function: 'Edge.Set', parameters: { components: [] } })
+            }).catch(() => {});
+            // Also hide HTML tab bar as fallback
+            const hideTab = () => {
+                const el = document.getElementById('app-tab-bar');
+                if (el) { el.style.display = 'none'; return true; }
+                return false;
+            };
+            if (!hideTab()) {
+                const iv = setInterval(() => { if (hideTab()) clearInterval(iv); }, 50);
+                setTimeout(() => clearInterval(iv), 5000);
+            }
+            document.addEventListener('livewire:navigating', () => {
+                const el = document.getElementById('app-tab-bar');
+                if (el) el.style.display = '';
+            }, { once: true });
             const boot = () => {
                 if (typeof L === 'undefined') {
                     setTimeout(boot, 50);
@@ -366,3 +385,21 @@ class extends Component
         </template>
     </div>
 </div>
+
+@script
+<script>
+    // Hide tab bar on map page
+    const hideTab = () => {
+        const el = document.getElementById('app-tab-bar');
+        if (el) { el.style.display = 'none'; return true; }
+        return false;
+    };
+    const iv = setInterval(() => { if (hideTab()) clearInterval(iv); }, 50);
+    setTimeout(() => clearInterval(iv), 5000);
+    document.addEventListener('livewire:navigating', () => {
+        clearInterval(iv);
+        const el = document.getElementById('app-tab-bar');
+        if (el) el.style.display = '';
+    }, { once: true });
+</script>
+@endscript
