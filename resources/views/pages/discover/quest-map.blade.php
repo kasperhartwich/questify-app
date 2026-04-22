@@ -132,8 +132,8 @@ class extends Component
             // Clear native EDGE bottom nav via JS bridge
             fetch('/_native/api/call', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ function: 'Edge.Set', parameters: { components: [] } })
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ method: 'Edge.Set', params: { components: [] } })
             }).catch(() => {});
             // Also hide HTML tab bar as fallback
             const hideTab = () => {
