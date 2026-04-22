@@ -124,6 +124,7 @@ class extends Component
         pins: @js($pins),
         visibleCount: 0,
         selectedPin: null,
+        searchQuery: '',
         filterDifficulty: 'all',
         isSatellite: false,
         userLocated: false,
@@ -265,6 +266,24 @@ class extends Component
                 });
             }
         },
+        searchArea() {
+            if (!this.searchQuery.trim() || !this.map) return;
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(this.searchQuery) + '&limit=1')
+                .then(r => r.json())
+                .then(results => {
+                    if (results.length > 0) {
+                        const lat = parseFloat(results[0].lat);
+                        const lng = parseFloat(results[0].lon);
+                        this.map.flyTo([lat, lng], 14);
+                        $wire.loadNearby(lat, lng).then(() => {
+                            this.pins = $wire.pins;
+                            this.addMarkers();
+                            this.updateVisibleCount();
+                        });
+                    }
+                })
+                .catch(() => {});
+        },
     }"
 >
     <style>
@@ -303,10 +322,10 @@ class extends Component
             <a href="/discover/list" class="flex h-[44px] w-[36px] shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
             </a>
-            <div class="flex flex-1 items-center gap-2 rounded-[12px] bg-white px-[14px] py-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.15)]">
+            <form @submit.prevent="searchArea()" class="flex flex-1 items-center gap-2 rounded-[12px] bg-white px-[14px] py-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.15)]">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A8078" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-                <span class="text-[14px] text-[#B0A898]">{{ __('general.search_area') }}...</span>
-            </div>
+                <input x-model="searchQuery" type="text" placeholder="{{ __('general.search_area') }}..." class="flex-1 border-0 bg-transparent p-0 text-[14px] text-bark placeholder-[#B0A898] outline-none focus:ring-0" />
+            </form>
         </div>
         {{-- Filter chips (disabled for now) --}}
     </div>
