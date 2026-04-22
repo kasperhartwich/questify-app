@@ -122,6 +122,7 @@ class extends Component
         markers: [],
         circleLayer: null,
         pins: @js($pins),
+        visibleCount: 0,
         selectedPin: null,
         filterDifficulty: 'all',
         isSatellite: false,
@@ -165,7 +166,11 @@ class extends Component
                     this.satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 });
                     this.streetsLayer.addTo(this.map);
                     L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(this.map);
+                    // Force map to recalculate size (fixes blank map on wire:navigate)
+                    setTimeout(() => this.map.invalidateSize(), 100);
                     this.addMarkers();
+                    this.updateVisibleCount();
+                    this.map.on('moveend zoomend', () => this.updateVisibleCount());
                     this.locateUser();
                 } catch (e) {
                     console.error('Map init failed:', e);
@@ -183,6 +188,7 @@ class extends Component
                 }
                 this.pins = $wire.pins;
                 this.addMarkers();
+                this.updateVisibleCount();
             });
         },
         addMarkers() {
@@ -204,6 +210,11 @@ class extends Component
                 });
                 this.markers.push(marker);
             });
+        },
+        updateVisibleCount() {
+            if (!this.map) return;
+            const bounds = this.map.getBounds();
+            this.visibleCount = this.pins.filter(p => bounds.contains([p.latitude, p.longitude])).length;
         },
         removeCircle() {
             if (this.circleLayer) {
@@ -349,7 +360,7 @@ class extends Component
             <div class="mx-auto w-fit rounded-full bg-forest-600 px-5 py-[12px] shadow-[0_4px_16px_rgba(11,61,46,0.35)]">
                 <div class="flex items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="white" stroke="none"/></svg>
-                    <span class="text-[14px] font-bold text-white"><span x-text="pins.length">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}</span>
+                    <span class="text-[14px] font-bold text-white"><span x-text="visibleCount">{{ count($pins) }}</span> {{ __('general.quests_in_area') }}</span>
                 </div>
             </div>
         </template>
