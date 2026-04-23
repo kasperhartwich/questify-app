@@ -120,7 +120,7 @@ Then click with: `cliclick c:{mac_x},{mac_y}`
 
 ### Public Pages (no auth required)
 
-`/discover/list`, `/discover/map`, `/quests/{id}`, `/join`, `/login`, `/register`
+`/join`, `/login`, `/register`
 
 ### Tester Login
 

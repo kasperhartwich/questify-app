@@ -29,13 +29,13 @@ Route::livewire('/forgot-password', 'pages::auth.forgot-password')->name('passwo
 Route::get('auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
-// Discover (public)
-Route::livewire('/discover/list', 'pages::discover.quest-list')->name('discover.list');
-Route::livewire('/discover/map', 'pages::discover.quest-map')->name('discover.map')->middleware(ClearEdgeComponents::class);
-Route::livewire('/quests/{quest}', 'pages::discover.quest-detail')->name('discover.quest');
-
 // Authenticated routes
 Route::middleware('auth')->group(function () {
+    // Discover
+    Route::livewire('/discover/list', 'pages::discover.quest-list')->name('discover.list');
+    Route::livewire('/discover/map', 'pages::discover.quest-map')->name('discover.map')->middleware(ClearEdgeComponents::class);
+    Route::livewire('/quests/{quest}', 'pages::discover.quest-detail')->name('discover.quest');
+
     // My Quests
     Route::livewire('/my-quests', 'pages::my-quests.played-quests')->name('my-quests');
     Route::livewire('/my-quests/created', 'pages::my-quests.created-quests')->name('my-quests.created');
