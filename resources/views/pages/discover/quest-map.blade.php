@@ -248,23 +248,7 @@ class extends Component
         },
         locateUser() {
             if (!this.map) return;
-            const isNative = @js($isNative);
-            if (isNative) {
-                $wire.requestLocation();
-            } else if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    this.map.flyTo([lat, lng], 13);
-                    if (!this.userLocated) {
-                        this.userLocated = true;
-                        $wire.loadNearby(lat, lng).then(() => {
-                            this.pins = $wire.pins;
-                            this.addMarkers();
-                        });
-                    }
-                });
-            }
+            $wire.requestLocation();
         },
         searchArea() {
             if (!this.searchQuery.trim() || !this.map) return;
