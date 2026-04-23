@@ -93,6 +93,9 @@ class QuestifyApiGuard implements Guard
         $this->session->put('questify_user', $userData);
         $this->session->regenerate();
 
+        // Remember that user has logged in before (for welcome screen redirect)
+        cookie()->queue(cookie()->forever('has_logged_in', '1'));
+
         $this->user = new ApiTokenUser($userData);
         $this->resolved = true;
 

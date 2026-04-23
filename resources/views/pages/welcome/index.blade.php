@@ -14,6 +14,8 @@ class extends Component
     {
         if (Auth::check()) {
             $this->redirect('/discover/list');
+        } elseif (cookie('has_logged_in')) {
+            $this->redirect('/login');
         }
     }
 };

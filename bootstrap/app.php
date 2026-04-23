@@ -28,6 +28,7 @@ return $app
         $middleware->statefulApi();
         $middleware->api(append: [LogActivity::class]);
         $middleware->web(append: [FetchAppInfo::class, SetLocale::class]);
+        $middleware->redirectGuestsTo('/');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
