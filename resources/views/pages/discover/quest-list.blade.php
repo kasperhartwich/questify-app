@@ -6,6 +6,9 @@ use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Facades\Geolocation;
 
 new
 #[Title('Discover')]
@@ -22,11 +25,9 @@ class extends Component
     #[Url]
     public string $difficulty = '';
 
-    #[Url]
-    public string $sortBy = 'latest';
+    public float $latitude = 55.6761;
 
-    #[Url]
-    public string $cursor = '';
+    public float $longitude = 12.5683;
 
     /** @var array<int, array<string, mixed>> */
     public array $questsData = [];
@@ -34,37 +35,46 @@ class extends Component
     /** @var array<int, array<string, mixed>> */
     public array $categoriesData = [];
 
-    public ?string $nextCursor = null;
-
-    public ?string $prevCursor = null;
-
     public function mount(): void
     {
         $categoryResponse = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
         $this->categoriesData = $categoryResponse['data'] ?? [];
 
         $this->loadQuests();
+
+        try {
+            Geolocation::getCurrentPosition();
+        } catch (\Throwable) {
+            // Not on native device
+        }
+    }
+
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(
+        bool $success = false,
+        float $latitude = 0,
+        float $longitude = 0,
+    ): void {
+        if (! $success) {
+            return;
+        }
+
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->loadQuests();
     }
 
     public function updatedSearch(): void
     {
-        $this->cursor = '';
         $this->loadQuests();
     }
 
     public function updatedCategory(): void
     {
-        $this->cursor = '';
         $this->loadQuests();
     }
 
     public function updatedDifficulty(): void
-    {
-        $this->cursor = '';
-        $this->loadQuests();
-    }
-
-    public function updatedCursor(): void
     {
         $this->loadQuests();
     }
@@ -81,17 +91,26 @@ class extends Component
     private function loadQuests(): void
     {
         $filters = array_filter([
-            'search' => $this->search ?: null,
             'category_id' => $this->category ?: null,
             'difficulty' => $this->difficulty ?: null,
-            'cursor' => $this->cursor ?: null,
+            'radius' => 50,
         ]);
 
-        $response = $this->tryApiCall(fn () => $this->api->quests()->list($filters)) ?? ['data' => [], 'meta' => []];
+        $response = $this->tryApiCall(fn () => $this->api->quests()->nearby(
+            $this->latitude,
+            $this->longitude,
+            $filters,
+        )) ?? ['data' => []];
 
-        $this->questsData = $response['data'] ?? [];
-        $this->nextCursor = $response['meta']['next_cursor'] ?? null;
-        $this->prevCursor = $response['meta']['prev_cursor'] ?? null;
+        $questsData = $response['data'] ?? [];
+
+        // Client-side search filter (nearby endpoint doesn't support search)
+        if ($this->search) {
+            $search = mb_strtolower($this->search);
+            $questsData = array_values(array_filter($questsData, fn ($q) => str_contains(mb_strtolower($q['title'] ?? ''), $search)));
+        }
+
+        $this->questsData = $questsData;
     }
 };
 ?>

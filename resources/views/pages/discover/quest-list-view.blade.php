@@ -119,10 +119,5 @@
             </div>
         @endforelse
 
-        @if (!empty($nextCursor))
-            <button wire:click="$set('cursor', '{{ $nextCursor }}')" class="mt-2 w-full rounded-[12px] bg-forest-600 px-4 py-[11px] text-sm font-bold text-white">
-                {{ __('general.load_more') }}
-            </button>
-        @endif
     </div>
 </div>
