@@ -188,11 +188,6 @@ class extends Component
     <div class="relative flex-shrink-0 transition-all duration-300" :class="mapExpanded ? 'h-[70vh]' : 'h-[260px]'">
         <div x-ref="detailMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
 
-        {{-- More stops badge --}}
-        @if($remainingCount > 0)
-            <div class="absolute bottom-3 right-3 z-[1000] rounded-[10px] bg-forest-600/85 px-3 py-1.5 text-[11px] font-semibold text-white">+{{ $remainingCount }} {{ __('general.more_stops') }}</div>
-        @endif
-
         {{-- Back button --}}
         <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/discover/list'; }" class="absolute left-4 z-[1000] flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1810" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
