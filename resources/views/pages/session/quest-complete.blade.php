@@ -7,10 +7,18 @@ use Livewire\Component;
 
 new
 #[Title('Quest Complete')]
-#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600'])]
+#[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient;
+
+    /**
+     * Kept as a constant so the `#[Layout]` attribute contains no inline array —
+     * Livewire's single-file-component detector rejects `]` between `new` and `class`.
+     *
+     * @var array<string, string>
+     */
+    public const LAYOUT_PARAMS = ['bodyClass' => 'bg-forest-600'];
 
     public string $code = '';
 

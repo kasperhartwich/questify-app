@@ -13,10 +13,18 @@ use Native\Mobile\Facades\System;
 
 new
 #[Title('Quest Map')]
-#[\Livewire\Attributes\Layout('layouts.app', ['fullscreen' => true, 'skipSafeAreaTop' => true])]
+#[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient;
+
+    /**
+     * Kept as a constant so the `#[Layout]` attribute contains no inline array —
+     * Livewire's single-file-component detector rejects `]` between `new` and `class`.
+     *
+     * @var array<string, bool>
+     */
+    public const LAYOUT_PARAMS = ['fullscreen' => true, 'skipSafeAreaTop' => true];
 
     /** @var array<int, array{id: int, title: string, latitude: float, longitude: float, distance_to_farthest_km: float}> */
     public array $pins = [];

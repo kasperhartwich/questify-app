@@ -13,10 +13,18 @@ use Native\Mobile\Facades\PushNotifications;
 
 new
 #[Title('Profile')]
-#[\Livewire\Attributes\Layout('layouts.app', ['bodyClass' => 'bg-forest-600', 'skipSafeAreaTop' => true])]
+#[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient, WithFileUploads;
+
+    /**
+     * Kept as a constant so the `#[Layout]` attribute contains no inline array —
+     * Livewire's single-file-component detector rejects `]` between `new` and `class`.
+     *
+     * @var array<string, string|bool>
+     */
+    public const LAYOUT_PARAMS = ['bodyClass' => 'bg-forest-600', 'skipSafeAreaTop' => true];
 
     public string $name = '';
 

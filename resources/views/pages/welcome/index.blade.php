@@ -6,10 +6,19 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new
-#[Layout('layouts.guest', ['bodyClass' => 'bg-forest-600'])]
+#[Layout('layouts.guest', self::LAYOUT_PARAMS)]
 #[Title('Welcome')]
 class extends Component
 {
+    /**
+     * Layout params kept as a constant so the `#[Layout]` attribute contains no
+     * inline array — Livewire's single-file-component detector rejects `]` between
+     * `new` and `class`.
+     *
+     * @var array<string, string>
+     */
+    public const LAYOUT_PARAMS = ['bodyClass' => 'bg-forest-600'];
+
     public function mount(): void
     {
         //
