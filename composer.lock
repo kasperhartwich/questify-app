@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ea0a8c15e99899e5b1bea36712338a2",
+    "content-hash": "239f9b5190fddd18c9eb32f79a12f434",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4605,16 +4605,16 @@
         },
         {
             "name": "nativephp/mobile",
-            "version": "3.3.6",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NativePHP/mobile-air.git",
-                "reference": "045bebc999463a351827d7bb7e6087e592e5defe"
+                "reference": "7a9041ac3e9b095b91315377e421abf8543998c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NativePHP/mobile-air/zipball/045bebc999463a351827d7bb7e6087e592e5defe",
-                "reference": "045bebc999463a351827d7bb7e6087e592e5defe",
+                "url": "https://api.github.com/repos/NativePHP/mobile-air/zipball/7a9041ac3e9b095b91315377e421abf8543998c7",
+                "reference": "7a9041ac3e9b095b91315377e421abf8543998c7",
                 "shasum": ""
             },
             "require": {
@@ -4625,10 +4625,16 @@
                 "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
                 "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
                 "laravel/prompts": "^0.1.1|^0.2|^0.3",
-                "php": "^8.3",
+                "php": "^8.4",
                 "react/datagram": "^1.10",
                 "spatie/laravel-package-tools": "^1.14.0",
                 "workerman/workerman": "^4.1"
+            },
+            "conflict": {
+                "nativephp/mobile-device": "*",
+                "nativephp/mobile-dialog": "*",
+                "nativephp/mobile-file": "*",
+                "nativephp/mobile-system": "*"
             },
             "require-dev": {
                 "larastan/larastan": "^2.0",
@@ -4643,6 +4649,9 @@
                 "phpstan/phpstan-phpunit": "^1.0",
                 "spatie/laravel-ray": "^1.26"
             },
+            "suggest": {
+                "ext-zip": "Required by native:install to validate and extract the downloaded Android PHP binary archives"
+            },
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4652,6 +4661,9 @@
                 }
             },
             "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
                 "psr-4": {
                     "Native\\Mobile\\": "src/"
                 }
@@ -4682,9 +4694,9 @@
             ],
             "support": {
                 "issues": "https://github.com/NativePHP/mobile-air/issues",
-                "source": "https://github.com/NativePHP/mobile-air/tree/3.3.6"
+                "source": "https://github.com/NativePHP/mobile-air/tree/4.0.0"
             },
-            "time": "2026-06-05T17:27:23+00:00"
+            "time": "2026-07-30T02:45:28+00:00"
         },
         {
             "name": "nativephp/mobile-firebase",
@@ -4732,16 +4744,20 @@
         },
         {
             "name": "nativephp/mobile-geolocation",
-            "version": "1.0.3",
+            "version": "2.0.0",
             "dist": {
                 "type": "zip",
-                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-geolocation/nativephp-mobile-geolocation-3fe651d9a84eff9b6df15a3b3e9ee0fcd48a82b5-zip-29e3cd.zip",
-                "reference": "3fe651d9a84eff9b6df15a3b3e9ee0fcd48a82b5",
-                "shasum": "0fd3af8fb37d5fee178d82dd69c2f00799347abd"
+                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-geolocation/nativephp-mobile-geolocation-156606aff2263e6bd1220bc78d32058ab5193c2e-zip-36debd.zip",
+                "reference": "156606aff2263e6bd1220bc78d32058ab5193c2e",
+                "shasum": "7e2842216f1b737e40c595ae43b2b51ec010f893"
             },
             "require": {
-                "nativephp/mobile": "^3.0",
-                "php": "^8.2"
+                "nativephp/mobile": "^4.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^2.7|^3.0|^4.0"
             },
             "type": "nativephp-plugin",
             "extra": {
@@ -4756,8 +4772,19 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Native\\Mobile\\Providers\\": "src/"
+                    "Native\\Mobile\\Providers\\": "src/",
+                    "NativePHP\\Geolocation\\": "src/"
                 }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
             },
             "license": [
                 "proprietary"
@@ -4769,7 +4796,7 @@
                 }
             ],
             "description": "Geolocation plugin for NativePHP Mobile - GPS location and permission handling",
-            "time": "2026-05-06T10:26:06+00:00"
+            "time": "2026-07-17T19:35:42+00:00"
         },
         {
             "name": "nativephp/mobile-scanner",
