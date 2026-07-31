@@ -49,12 +49,12 @@ class extends Component
     #[OnNative(LocationReceived::class)]
     public function onLocationReceived(
         bool $success = false,
-        float $latitude = 0,
-        float $longitude = 0,
-        float $accuracy = 0,
-        int $timestamp = 0,
-        string $provider = '',
-        string $error = '',
+        ?float $latitude = null,
+        ?float $longitude = null,
+        ?float $accuracy = null,
+        ?int $timestamp = null,
+        ?string $provider = null,
+        ?string $error = null,
     ): void {
         if (! $success) {
             return;
