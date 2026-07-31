@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\CategoryApiResource;
 use App\Services\Api\Resources\QuestApiResource;
@@ -11,6 +12,7 @@ function mockDiscoverApiClient(): void
         'data' => [],
         'meta' => ['next_cursor' => null, 'prev_cursor' => null],
     ]);
+    $mockQuests->shouldReceive('nearby')->andReturn(['data' => []]);
 
     $mockCategories = Mockery::mock(CategoryApiResource::class);
     $mockCategories->shouldReceive('list')->andReturn(['data' => []]);
@@ -23,20 +25,22 @@ function mockDiscoverApiClient(): void
     app()->instance(QuestifyApiClient::class, $mockClient);
 }
 
-it('redirects my-quests to login when not authenticated', function () {
-    $this->get('/my-quests')->assertRedirect('/login');
+it('redirects my-quests to welcome when not authenticated', function () {
+    $this->get('/my-quests')->assertRedirect('/');
 });
 
-it('redirects profile to login when not authenticated', function () {
-    $this->get('/profile')->assertRedirect('/login');
+it('redirects profile to welcome when not authenticated', function () {
+    $this->get('/profile')->assertRedirect('/');
 });
 
 it('renders the discover page', function () {
     mockDiscoverApiClient();
-    $this->get('/discover/list')->assertOk();
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/list')->assertOk();
 });
 
 it('discover page shows nearby quests heading', function () {
     mockDiscoverApiClient();
-    $this->get('/discover/list')->assertSee('Nearby Quests');
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/list')->assertSee('Nearby Quests');
 });

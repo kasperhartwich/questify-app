@@ -46,7 +46,7 @@ it('renders the quest wizard page for authenticated users', function () {
 });
 
 it('redirects guests away from the quest wizard', function () {
-    $this->get('/create')->assertRedirect('/login');
+    $this->get('/create')->assertRedirect('/');
 });
 
 it('loads categories from the API on mount', function () {

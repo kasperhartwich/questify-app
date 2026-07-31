@@ -1,7 +1,7 @@
 <?php
 
-it('guest is redirected to login from protected routes', function (string $route) {
-    $this->get($route)->assertRedirect('/login');
+it('guest is redirected to welcome from protected routes', function (string $route) {
+    $this->get($route)->assertRedirect('/');
 })->with([
     '/create',
     '/profile',
