@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
-use App\Http\Middleware\ClearEdgeComponents;
 use Illuminate\Support\Facades\Route;
 
 // Welcome (guest landing page)
@@ -33,7 +32,7 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']
 Route::middleware('auth')->group(function () {
     // Discover
     Route::livewire('/discover/list', 'pages::discover.quest-list')->name('discover.list');
-    Route::livewire('/discover/map', 'pages::discover.quest-map')->name('discover.map')->middleware(ClearEdgeComponents::class);
+    Route::livewire('/discover/map', 'pages::discover.quest-map')->name('discover.map');
     Route::livewire('/quests/{quest}', 'pages::discover.quest-detail')->name('discover.quest');
 
     // My Quests

@@ -7,7 +7,6 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\Geolocation\LocationReceived;
-use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\Geolocation;
 use Native\Mobile\Facades\System;
 
