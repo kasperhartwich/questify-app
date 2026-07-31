@@ -52,8 +52,8 @@ class extends Component
     #[OnNative(LocationReceived::class)]
     public function onLocationReceived(
         bool $success = false,
-        float $latitude = 0,
-        float $longitude = 0,
+        ?float $latitude = null,
+        ?float $longitude = null,
     ): void {
         if (! $success) {
             return;

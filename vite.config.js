@@ -17,9 +17,13 @@ export default defineConfig({
         chunkSizeWarningLimit: 1800,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    leaflet: ['leaflet'],
-                    echo: ['laravel-echo', 'pusher-js'],
+                manualChunks(id) {
+                    if (id.includes('node_modules/leaflet')) {
+                        return 'leaflet';
+                    }
+                    if (id.includes('node_modules/laravel-echo') || id.includes('node_modules/pusher-js')) {
+                        return 'echo';
+                    }
                 },
             },
         },

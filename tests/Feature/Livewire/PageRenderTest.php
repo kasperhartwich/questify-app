@@ -47,7 +47,7 @@ function mockFullApiClient(): void
         'meta' => ['path' => 'https://questify-admin.test/api/v1/quests', 'per_page' => 15, 'next_cursor' => null, 'prev_cursor' => null],
     ]);
     $mockQuests->shouldReceive('show')->andReturn(['data' => $questDetail]);
-    $mockQuests->shouldReceive('nearby')->andReturn(['data' => []]);
+    $mockQuests->shouldReceive('nearby')->andReturn(['data' => [$questListItem]]);
 
     $mockCategories = Mockery::mock(CategoryApiResource::class);
     $mockCategories->shouldReceive('list')->andReturn([
@@ -96,10 +96,10 @@ it('renders welcome page for guests', function () {
     $this->get('/')->assertOk();
 });
 
-it('redirects authenticated users from welcome to discover', function () {
+it('renders welcome page for authenticated users', function () {
     $this->actingAs(User::factory()->create())
         ->get('/')
-        ->assertRedirect('/discover/list');
+        ->assertOk();
 });
 
 it('renders login page', function () {
@@ -111,44 +111,48 @@ it('renders register page', function () {
 });
 
 it('renders quest list page with quests', function () {
-    $this->get('/discover/list')
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/list')
         ->assertOk()
         ->assertSee('Copenhagen History Hunt');
 });
 
 it('renders quest list with category filters', function () {
-    $this->get('/discover/list')
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/list')
         ->assertOk()
         ->assertSee('History')
         ->assertSee('General Knowledge');
 });
 
 it('renders quest detail page', function () {
-    $this->get('/quests/1')
+    $this->actingAs(User::factory()->create())
+        ->get('/quests/1')
         ->assertOk()
         ->assertSee('Copenhagen History Hunt');
 });
 
 it('renders quest map page', function () {
-    $this->get('/discover/map')->assertOk();
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/map')->assertOk();
 });
 
 // --- Guest Redirects ---
 
 it('redirects guest from create page', function () {
-    $this->get('/create')->assertRedirect('/login');
+    $this->get('/create')->assertRedirect('/');
 });
 
 it('redirects guest from profile page', function () {
-    $this->get('/profile')->assertRedirect('/login');
+    $this->get('/profile')->assertRedirect('/');
 });
 
 it('redirects guest from my-quests page', function () {
-    $this->get('/my-quests')->assertRedirect('/login');
+    $this->get('/my-quests')->assertRedirect('/');
 });
 
 it('redirects guest from created-quests page', function () {
-    $this->get('/my-quests/created')->assertRedirect('/login');
+    $this->get('/my-quests/created')->assertRedirect('/');
 });
 
 // --- Authenticated Pages ---

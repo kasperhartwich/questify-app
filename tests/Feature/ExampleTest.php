@@ -6,8 +6,8 @@ test('the welcome page renders for guests', function () {
     $this->get('/')->assertOk();
 });
 
-test('the welcome page redirects authenticated users to discover', function () {
+test('the welcome page renders for authenticated users', function () {
     $this->actingAs(User::factory()->create())
         ->get('/')
-        ->assertRedirect('/discover/list');
+        ->assertOk();
 });

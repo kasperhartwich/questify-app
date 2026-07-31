@@ -2,6 +2,7 @@
     "agents": [
         "claude_code"
     ],
+    "cloud": false,
     "guidelines": true,
     "herd_mcp": false,
     "mcp": true,
@@ -11,11 +12,14 @@
     ],
     "sail": false,
     "skills": [
+        "laravel-best-practices",
         "configuring-horizon",
         "socialite-development",
         "pest-testing",
         "echo-development",
         "tailwindcss-development",
-        "nativephp-mobile"
+        "nativephp-mobile",
+        "nativephp-v3-to-v4-upgrade",
+        "nativephp-webview-to-native"
     ]
 }

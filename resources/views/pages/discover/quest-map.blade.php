@@ -7,16 +7,23 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\Geolocation\LocationReceived;
-use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\Geolocation;
 use Native\Mobile\Facades\System;
 
 new
 #[Title('Quest Map')]
-#[\Livewire\Attributes\Layout('layouts.app', ['fullscreen' => true, 'skipSafeAreaTop' => true])]
+#[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
     use HandlesApiErrors, WithApiClient;
+
+    /**
+     * Kept as a constant so the `#[Layout]` attribute contains no inline array —
+     * Livewire's single-file-component detector rejects `]` between `new` and `class`.
+     *
+     * @var array<string, bool>
+     */
+    public const LAYOUT_PARAMS = ['fullscreen' => true, 'skipSafeAreaTop' => true];
 
     /** @var array<int, array{id: int, title: string, latitude: float, longitude: float, distance_to_farthest_km: float}> */
     public array $pins = [];
@@ -42,12 +49,12 @@ class extends Component
     #[OnNative(LocationReceived::class)]
     public function onLocationReceived(
         bool $success = false,
-        float $latitude = 0,
-        float $longitude = 0,
-        float $accuracy = 0,
-        int $timestamp = 0,
-        string $provider = '',
-        string $error = '',
+        ?float $latitude = null,
+        ?float $longitude = null,
+        ?float $accuracy = null,
+        ?int $timestamp = null,
+        ?string $provider = null,
+        ?string $error = null,
     ): void {
         if (! $success) {
             return;

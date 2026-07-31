@@ -137,9 +137,9 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.4.19
+- php - 8.4
 - filament/filament (FILAMENT) - v5
-- laravel/framework (LARAVEL) - v12
+- laravel/framework (LARAVEL) - v13
 - laravel/horizon (HORIZON) - v5
 - laravel/prompts (PROMPTS) - v0
 - laravel/reverb (REVERB) - v1
@@ -151,21 +151,14 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
 - laravel/sail (SAIL) - v1
-- pestphp/pest (PEST) - v4
-- phpunit/phpunit (PHPUNIT) - v12
+- pestphp/pest (PEST) - v5
+- phpunit/phpunit (PHPUNIT) - v13
 - laravel-echo (ECHO) - v2
 - tailwindcss (TAILWINDCSS) - v4
 
 ## Skills Activation
 
-This project has domain-specific skills available. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
-
-- `configuring-horizon` — Use this skill whenever the user mentions Horizon by name in a Laravel context. Covers the full Horizon lifecycle: installing Horizon (horizon:install, Sail setup), configuring config/horizon.php (supervisor blocks, queue assignments, balancing strategies, minProcesses/maxProcesses), fixing the dashboard (authorization via Gate::define viewHorizon, blank metrics, horizon:snapshot scheduling), and troubleshooting production issues (worker crashes, timeout chain ordering, LongWaitDetected notifications, waits config). Also covers job tagging and silencing. Do not use for generic Laravel queues without Horizon, SQS or database drivers, standalone Redis setup, Linux supervisord, Telescope, or job batching.
-- `socialite-development` — Manages OAuth social authentication with Laravel Socialite. Activate when adding social login providers; configuring OAuth redirect/callback flows; retrieving authenticated user details; customizing scopes or parameters; setting up community providers; testing with Socialite fakes; or when the user mentions social login, OAuth, Socialite, or third-party authentication.
-- `pest-testing` — Tests applications using the Pest 4 PHP framework. Activates when writing tests, creating unit or feature tests, adding assertions, testing Livewire components, browser testing, debugging test failures, working with datasets or mocking; or when the user mentions test, spec, TDD, expects, assertion, coverage, or needs to verify functionality works.
-- `echo-development` — Develops real-time broadcasting with Laravel Echo. Activates when setting up broadcasting (Reverb, Pusher, Ably); creating ShouldBroadcast events; defining broadcast channels (public, private, presence, encrypted); authorizing channels; configuring Echo; listening for events; implementing client events (whisper); setting up model broadcasting; broadcasting notifications; or when the user mentions broadcasting, Echo, WebSockets, real-time events, Reverb, or presence channels.
-- `tailwindcss-development` — Styles applications using Tailwind CSS v4 utilities. Activates when adding styles, restyling components, working with gradients, spacing, layout, flex, grid, responsive design, dark mode, colors, typography, or borders; or when the user mentions CSS, styling, classes, Tailwind, restyle, hero section, cards, buttons, or any visual/UI changes.
-- `nativephp-mobile` — Builds native iOS and Android apps with PHP & Larvel. Activate when using native device APIs (camera, dialog, biometrics, scanner, geolocation, push notifications), EDGE components (bottom-nav, top-bar, side-nav), `#nativephp` JavaScript imports, native mobile events, NativePHP Artisan commands (native:run, native:install, native:watch), deep links, secure storage, or mobile app deployment.
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
 ## Conventions
 
@@ -198,82 +191,56 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 # Laravel Boost
 
-- Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. Use them.
+## Tools
 
-## Artisan Commands
+- Laravel Boost is an MCP server with tools designed specifically for this application. Prefer Boost tools over manual alternatives like shell commands or file reads.
+- Use `database-query` to run read-only queries against the database instead of writing raw SQL in tinker.
+- Use `database-schema` to inspect table structure before writing migrations or models.
+- Use `get-absolute-url` to resolve the correct scheme, domain, and port for project URLs. Always use this before sharing a URL with the user.
+- Use `browser-logs` to read browser logs, errors, and exceptions. Only recent logs are useful, ignore old entries.
 
-- Run Artisan commands directly via the command line (e.g., `php artisan route:list`, `php artisan tinker --execute "..."`).
-- Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
+## Searching Documentation (IMPORTANT)
 
-## URLs
+- Always use `search-docs` before making code changes. Do not skip this step. It returns version-specific docs based on installed packages automatically.
+- Pass a `packages` array to scope results when you know which packages are relevant.
+- Use multiple broad, topic-based queries: `['rate limiting', 'routing rate limiting', 'routing']`. Expect the most relevant results first.
+- Do not add package names to queries because package info is already shared. Use `test resource table`, not `filament 4 test resource table`.
 
-- Whenever you share a project URL with the user, you should use the `get-absolute-url` tool to ensure you're using the correct scheme, domain/IP, and port.
+### Search Syntax
 
-## Debugging
+1. Use words for auto-stemmed AND logic: `rate limit` matches both "rate" AND "limit".
+2. Use `"quoted phrases"` for exact position matching: `"infinite scroll"` requires adjacent words in order.
+3. Combine words and phrases for mixed queries: `middleware "rate limit"`.
+4. Use multiple queries for OR logic: `queries=["authentication", "middleware"]`.
 
-- Use the `database-query` tool when you only need to read from the database.
-- Use the `database-schema` tool to inspect table structure before writing migrations or models.
-- To execute PHP code for debugging, run `php artisan tinker --execute "your code here"` directly.
-- To read configuration values, read the config files directly or run `php artisan config:show [key]`.
-- To inspect routes, run `php artisan route:list` directly.
-- To check environment variables, read the `.env` file directly.
+## Artisan
 
-## Reading Browser Logs With the `browser-logs` Tool
+- Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
+- Inspect routes with `php artisan route:list`. Filter with: `--method=GET`, `--name=users`, `--path=api`, `--except-vendor`, `--only-vendor`.
+- Read configuration values using dot notation: `php artisan config:show app.name`, `php artisan config:show database.default`. Or read config files directly from the `config/` directory.
 
-- You can read browser logs, errors, and exceptions using the `browser-logs` tool from Boost.
-- Only recent browser logs will be useful - ignore old logs.
+## Tinker
 
-## Searching Documentation (Critically Important)
-
-- Boost comes with a powerful `search-docs` tool you should use before trying other approaches when working with Laravel or Laravel ecosystem packages. This tool automatically passes a list of installed packages and their versions to the remote Boost API, so it returns only version-specific documentation for the user's circumstance. You should pass an array of packages to filter on if you know you need docs for particular packages.
-- Search the documentation before making code changes to ensure we are taking the correct approach.
-- Use multiple, broad, simple, topic-based queries at once. For example: `['rate limiting', 'routing rate limiting', 'routing']`. The most relevant results will be returned first.
-- Do not add package names to queries; package information is already shared. For example, use `test resource table`, not `filament 4 test resource table`.
-
-### Available Search Syntax
-
-1. Simple Word Searches with auto-stemming - query=authentication - finds 'authenticate' and 'auth'.
-2. Multiple Words (AND Logic) - query=rate limit - finds knowledge containing both "rate" AND "limit".
-3. Quoted Phrases (Exact Position) - query="infinite scroll" - words must be adjacent and in that order.
-4. Mixed Queries - query=middleware "rate limit" - "middleware" AND exact phrase "rate limit".
-5. Multiple Queries - queries=["authentication", "middleware"] - ANY of these terms.
+- Execute PHP in app context for debugging and testing code. Do not create models without user approval, prefer tests with factories instead. Prefer existing Artisan commands over custom tinker code.
+- Always use single quotes to prevent shell expansion: `php artisan tinker --execute 'Your::code();'`
+  - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
 
 === php rules ===
 
 # PHP
 
 - Always use curly braces for control structures, even for single-line bodies.
+- Use PHP 8 constructor property promotion: `public function __construct(public GitHub $github) { }`. Do not leave empty zero-parameter `__construct()` methods unless the constructor is private.
+- Use explicit return type declarations and type hints for all method parameters: `function isAccessible(User $user, ?string $path = null): bool`
+- Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
+- Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
+- Use array shape type definitions in PHPDoc blocks.
 
-## Constructors
+=== deployments rules ===
 
-- Use PHP 8 constructor property promotion in `__construct()`.
-    - `public function __construct(public GitHub $github) { }`
-- Do not allow empty `__construct()` methods with zero parameters unless the constructor is private.
+# Deployment
 
-## Type Declarations
-
-- Always use explicit return type declarations for methods and functions.
-- Use appropriate PHP type hints for method parameters.
-
-<!-- Explicit Return Types and Method Params -->
-```php
-protected function isAccessible(User $user, ?string $path = null): bool
-{
-    ...
-}
-```
-
-## Enums
-
-- Typically, keys in an Enum should be TitleCase. For example: `FavoritePerson`, `BestLake`, `Monthly`.
-
-## Comments
-
-- Prefer PHPDoc blocks over inline comments. Never use comments within the code itself unless the logic is exceptionally complex.
-
-## PHPDoc Blocks
-
-- Add useful array shape type definitions when appropriate.
+- Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
 
 === tests rules ===
 
@@ -290,42 +257,17 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - If you're creating a generic PHP class, use `php artisan make:class`.
 - Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
 
-## Database
-
-- Always use proper Eloquent relationship methods with return type hints. Prefer relationship methods over raw queries or manual joins.
-- Use Eloquent models and relationships before suggesting raw database queries.
-- Avoid `DB::`; prefer `Model::query()`. Generate code that leverages Laravel's ORM capabilities rather than bypassing them.
-- Generate code that prevents N+1 query problems by using eager loading.
-- Use Laravel's query builder for very complex database operations.
-
 ### Model Creation
 
 - When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `php artisan make:model --help` to check the available options.
 
-### APIs & Eloquent Resources
+## APIs & Eloquent Resources
 
 - For APIs, default to using Eloquent API Resources and API versioning unless existing API routes do not, then you should follow existing application convention.
-
-## Controllers & Validation
-
-- Always create Form Request classes for validation rather than inline validation in controllers. Include both validation rules and custom error messages.
-- Check sibling Form Requests to see if the application uses array or string based validation rules.
-
-## Authentication & Authorization
-
-- Use Laravel's built-in authentication and authorization features (gates, policies, Sanctum, etc.).
 
 ## URL Generation
 
 - When generating links to other pages, prefer named routes and the `route()` function.
-
-## Queues
-
-- Use queued jobs for time-consuming operations with the `ShouldQueue` interface.
-
-## Configuration
-
-- Use environment variables only in configuration files - never use the `env()` function directly outside of config files. Always use `config('app.name')`, not `env('APP_NAME')`.
 
 ## Testing
 
@@ -336,31 +278,6 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## Vite Error
 
 - If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
-
-=== laravel/v12 rules ===
-
-# Laravel 12
-
-- CRITICAL: ALWAYS use `search-docs` tool for version-specific Laravel documentation and updated code examples.
-- Since Laravel 11, Laravel has a new streamlined file structure which this project uses.
-
-## Laravel 12 Structure
-
-- In Laravel 12, middleware are no longer registered in `app/Http/Kernel.php`.
-- Middleware are configured declaratively in `bootstrap/app.php` using `Application::configure()->withMiddleware()`.
-- `bootstrap/app.php` is the file to register middleware, exceptions, and routing files.
-- `bootstrap/providers.php` contains application specific service providers.
-- The `app\Console\Kernel.php` file no longer exists; use `bootstrap/app.php` or `routes/console.php` for console configuration.
-- Console commands in `app/Console/Commands/` are automatically available and do not require manual registration.
-
-## Database
-
-- When modifying a column, the migration must include all of the attributes that were previously defined on the column. Otherwise, they will be dropped and lost.
-- Laravel 12 allows limiting eagerly loaded records natively, without external packages: `$query->latest()->limit(10);`.
-
-### Models
-
-- Casts can and likely should be set in a `casts()` method on a model rather than the `$casts` property. Follow existing conventions from other models.
 
 === pint/core rules ===
 
@@ -374,44 +291,149 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## Pest
 
 - This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
+- The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
-- CRITICAL: ALWAYS use `search-docs` tool for version-specific Pest documentation and updated code examples.
-- IMPORTANT: Activate `pest-testing` every time you're working with a Pest or testing-related task.
-
-=== tailwindcss/core rules ===
-
-# Tailwind CSS
-
-- Always use existing Tailwind conventions; check project patterns before adding new ones.
-- IMPORTANT: Always use `search-docs` tool for version-specific Tailwind CSS documentation and updated code examples. Never rely on training data.
-- IMPORTANT: Activate `tailwindcss-development` every time you're working with a Tailwind CSS or styling-related task.
 
 === nativephp/mobile rules ===
 
 ## NativePHP Mobile
 
-- NativePHP Mobile is a Laravel package for building native iOS and Android apps using PHP and native UI components. It runs a full PHP runtime directly on the device with SQLite — no web server required.
-- Documentation: `https://nativephp.com/docs/mobile/3/**`
+- NativePHP Mobile is a Laravel package for building **fully native** iOS and Android apps with PHP. Screens are
+rendered as real SwiftUI (iOS) and Jetpack Compose (Android) UI — driven entirely by PHP via SuperNative components
+and EDGE Blade elements. A full PHP runtime runs directly on the device with SQLite — no web server required.
+- Documentation: `https://nativephp.com/docs/mobile/4/**`
 - IMPORTANT: Always activate the `nativephp-mobile` skill every time you work on any NativePHP functionality.
+
+### Native UI First — Always
+
+**Always build screens with native UI: `NativeComponent` classes registered via `Route::native()`, rendering EDGE
+elements (`native:column`, `native:text`, `native:button`, …).** This is the way to build NativePHP apps.
+
+- Never scaffold new screens as web views, Blade-over-WebView pages, Livewire components, or Inertia pages.
+- The web view (the `native:web-view` element) is a legacy/edge-case escape hatch for embedding web content — never the
+  foundation of a screen. If the user asks for a webview-based screen, build it natively with EDGE instead and
+  explain why; only fall back to the web view if they explicitly insist.
+- If the app contains legacy webview screens, proactively suggest converting them to native UI (see the
+  `nativephp-webview-to-native` skill).
+- Style EDGE elements with Tailwind utility classes via `class="..."` / `:class="..."` only — never inline
+  CSS `style="..."` attributes or ad-hoc styling props.
+- Compose screens from **nested child components**: any `NativeComponent` under `app/NativeComponents` mounts
+  as a tag (`UserCard` → `<native:user-card :user="$u" key="user-{{ $u->id }}" @saved="onSaved" />`) with live
+  props, its own persistent state, and `emit()` events bubbling to `@event` tag bindings / `#[On('event')]`
+  listeners. Prefer extracting a reusable child component over duplicating Blade across screens; give list
+  children a stable domain `key` (never the loop index).
+- Use `native:icon` (SF Symbols on iOS, Material Icons on Android) for iconography — never emoji characters in
+  UI text, labels, or buttons, unless the user explicitly asks for emojis. Prefer the typed icon enums
+  (`App\Icons\Ios`, `App\Icons\Android`, `App\Icons\AndroidOutlined`) bound via the `:ios` / `:android`
+  attributes, e.g. `:ios="Ios::Gearshape" :android="Android::Settings"`, importing each enum into the view with
+  Blade's use directive first. The enums are generated, not shipped — if `app/Icons/` doesn't exist yet, run
+  `php artisan native-ui:generate-icons` first (safe to run yourself).
+
+### Theme Tokens, Font Aliases, and Layouts — the Design System Trio
+
+Every app's visual identity belongs in `config/native-ui.php` (publish with
+`php artisan vendor:publish --tag=native-ui-config`), not scattered through the markup. When building or
+reviewing screens, enforce all three:
+
+1. **Theme tokens over hardcoded colors.** Define the palette once in the config's `theme` block, then style
+   with `bg-theme-*` / `text-theme-*` / `border-theme-*` classes (`bg-theme-surface`, `text-theme-on-surface`,
+   `border-theme-outline`). Never sprinkle `bg-[#1E2021]`-style arbitrary values for what is really a theme
+   role — they can't be re-skinned and don't get automatic dark-mode pairs. Arbitrary color values are for
+   genuine data-driven color (per-category identity colors, map imagery, chart series), and those belong in
+   one PHP home (an enum or model method), never inline per view. Two capabilities that prevent hex fallbacks:
+   - **The token map is open-ended.** When a design needs a role the shipped set lacks (a success green, an
+     `outline-variant`), add it to both `light` and `dark` blocks — `bg-theme-success` works immediately; no
+     package change required.
+   - **Theme classes take opacity modifiers** just like palette classes: `bg-theme-primary/15` is the correct
+     tonal-fill idiom (applies to the dark companion too) — never approximate with a hardcoded alpha hex.
+2. **Font aliases over file tokens.** Register semantic aliases in the config's `fonts` array
+   (`'headline' => 'ArchivoNarrow-Bold'`, `'mono' => 'JetBrainsMono-Regular'`, `'default' => …` for the
+   app-wide font) and write `font="headline"` in views — never `font="ArchivoNarrow-Bold"`. Swapping a
+   typeface must be a one-line config change.
+3. **Native chrome via composable chrome elements (layouts optional).** Author nav bars, tab bars, fabs, and
+   side navs directly in the screen's Blade — `<native:top-bar>` (+ `top-bar-action`), `<native:bottom-nav>`
+   (+ `bottom-nav-item`), `<native:fab>`, `<native:bottom-bar>`, `<native:side-nav>`. They hoist onto the real
+   NavigationStack/TabView chrome (edge-swipe back, predictive back, large titles, Liquid Glass/Material You),
+   and their attributes are Blade expressions over screen state, so badges/subtitles/icons are reactive. A
+   `NativeLayout` (attached via `Route::native(...)->layout(...)` or `Route::nativeGroup(...)`) is **optional**
+   — reach for one only when many screens share identical chrome (e.g. one tabs layout for a tab section); an
+   inline chrome element on a screen always overrides the layout's bar for that slot. Add the `custom`
+   attribute to a chrome tag only for designs the system bars genuinely can't express — it renders in-tree as
+   an ordinary drawn element. Never hand-roll top bars or bottom navs out of rows and pressables — that
+   forfeits native back gestures, safe-area handling, and Liquid Glass/Material You. Chrome colors take theme
+   tokens (inline: theme classes / `theme()`-fed attributes; builders: `->activeColor(theme('primary'))`) —
+   never pasted hex. Bar icons take the platform enums via `:ios-icon` / `:android-icon` with a plain `icon`
+   string as cross-platform fallback; bar fonts take config aliases (`font="mono"` / `->font('mono')`). Only
+   screens rendered without any chrome (no layout AND no inline bars) may use `safe-area` classes.
+
+### When a Capability Is Missing
+
+If the app needs native functionality or a UI component that core and `native-ui` don't provide:
+
+1. **Look for an existing plugin first.** Check the plugin marketplace (`https://plugins.nativephp.com`) and the
+   official core plugins. (If a marketplace-lookup MCP tool is available in your session, use it.)
+2. **If no plugin exists, build a custom plugin** with `php artisan native:plugin:create` — plugins bundle
+   Swift/Kotlin bridge functions, events, permissions, and can even ship their own native EDGE components.
+3. **Never fall back to the web view to fill a native gap.** A missing capability is a reason to write a plugin,
+   not a reason to build a webview screen.
+
+### Installing Plugins — Always Register and Verify
+
+Requiring a plugin with Composer is NOT enough — an installed-but-unregistered plugin does nothing. Every plugin
+install must follow all three steps:
+
+1. `composer require vendor/plugin-name`
+2. `php artisan vendor:publish --tag=nativephp-plugins-provider` — publishes the app's `NativeServiceProvider`
+   (needed once, before the first plugin registration; harmless to re-run)
+3. `php artisan native:plugin:register vendor/plugin-name` — adds it to the `NativeServiceProvider`
+4. `php artisan native:plugin:list` — verify it shows as registered
+
+Then tell the user to rebuild with `php artisan native:run` (native code only compiles in at build time — do not
+run this yourself). If `native:run` warns "The following plugins are installed but not registered", go back to
+step 3.
+
+### Database Seeding — Always via Migrations
+
+On-device there is no `db:seed` — NativePHP runs **migrations** on app start (once each, tracked, versioned).
+Whenever asked to seed the database, use the migration trick: create a dedicated migration
+(`php artisan make:migration seed_app_settings`) and put the inserts in `up()`. If a Seeder class helps organize
+the data, still create it — but invoke it **from the migration's `up()`** (e.g. `(new CategorySeeder)->run()`),
+never rely on `db:seed` being run. Seed migrations must be safe for both fresh installs and updates of existing
+user databases.
 
 ### Build Commands — Tell the User, Never Run
 
-**CRITICAL: Never execute any of these commands yourself. Always instruct the user to run them manually in their terminal.**
+**CRITICAL: Never execute any of these commands yourself. Always instruct the user to run them manually in their
+terminal.**
 
 | Command | Purpose |
 |---|---|
-| `npm run build -- --mode=ios` | Build frontend assets for iOS |
-| `npm run build -- --mode=android` | Build frontend assets for Android |
 | `php artisan native:run ios` | Compile and run on iOS simulator/device |
 | `php artisan native:run android` | Compile and run on Android emulator/device |
 | `php artisan native:run ios --watch` | Build, deploy, then start hot reload — all in one |
 | `php artisan native:watch` | Hot reload (watch for file changes) |
 | `php artisan native:open` | Open project in Xcode or Android Studio |
+| `php artisan native:install` | Install/upgrade the native shell |
 
-**Always ask which platform before giving any build or run command.** If the user hasn't specified iOS or Android, ask: "Which platform do you want to build/test on — iOS or Android?" Never assume a platform.
+Notes:
+- The `./native` shortcut wraps the `native:` namespace (`./native run`, `./native watch`).
+- The Vite dev server is **opt-in** in v4: add `--vite` to `native:run`/`native:watch` only when the app actually
+  uses JS/CSS HMR. Native UI screens hot-reload without Vite.
+- `npm run build -- --mode=ios|android` is only needed for apps with web-view assets — not for native UI screens.
 
-When the platform is confirmed, give the relevant command(s) above and tell the user to run it in their terminal. Do not run it yourself.
+**Always ask which platform before giving any build or run command.** If the user hasn't specified iOS or Android,
+ask: "Which platform do you want to build/test on — iOS or Android?" Never assume a platform.
+
+When the platform is confirmed, give the relevant command(s) above and tell the user to run it in their terminal.
+Do not run it yourself.
+
+</laravel-boost-guidelines>
+
+</laravel-boost-guidelines>
+
+</laravel-boost-guidelines>
+
 </laravel-boost-guidelines>
 
 </laravel-boost-guidelines>
