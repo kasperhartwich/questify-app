@@ -27,6 +27,8 @@ beforeEach(function () {
     $this->checkpoint = Checkpoint::factory()->create([
         'quest_id' => $this->quest->id,
         'sort_order' => 0,
+        'latitude' => 55.6761,
+        'longitude' => 12.5683,
     ]);
     $this->question = Question::factory()->create([
         'checkpoint_id' => $this->checkpoint->id,
@@ -62,6 +64,48 @@ it('records arrival at checkpoint', function () {
 
     $response->assertOk()
         ->assertJsonStructure(['data' => ['id', 'title', 'order_index', 'questions']]);
+});
+
+it('exposes checkpoint coordinates on an active session (gameplay), not on a waiting one', function () {
+    // Active session (from beforeEach) reveals checkpoint coordinates for gameplay.
+    $active = $this->getJson("/api/v1/sessions/{$this->session->join_code}");
+    $active->assertOk()
+        ->assertJsonPath('data.checkpoints.0.id', $this->checkpoint->id);
+    expect($active->json('data.checkpoints.0.latitude'))->not->toBeNull();
+
+    // A session still in the lobby must NOT leak the route.
+    $waiting = QuestSession::factory()->create([
+        'quest_id' => $this->quest->id,
+        'status' => SessionStatus::Waiting,
+    ]);
+    $this->getJson("/api/v1/sessions/{$waiting->join_code}")
+        ->assertOk()
+        ->assertJsonMissingPath('data.checkpoints');
+});
+
+it('rejects arrival when the player is outside the checkpoint radius', function () {
+    // ~1.3 km north of the checkpoint (55.6761) — well beyond the 50 m default radius.
+    $response = $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
+        'participant_id' => $this->participant->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'latitude' => 55.6880,
+        'longitude' => 12.5683,
+    ]);
+
+    $response->assertStatus(422);
+});
+
+it('accepts arrival just inside the checkpoint radius', function () {
+    // ~11 m east of the checkpoint — inside the 50 m default radius.
+    $response = $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
+        'participant_id' => $this->participant->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'latitude' => 55.6761,
+        'longitude' => 12.56848,
+    ]);
+
+    $response->assertOk()
+        ->assertJsonStructure(['data' => ['id', 'title', 'questions']]);
 });
 
 it('returns questions with admin API field names on arrival', function () {

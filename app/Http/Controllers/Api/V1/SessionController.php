@@ -88,9 +88,10 @@ class SessionController extends Controller
     public function show(string $code): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
-            ->with(['quest.category', 'host', 'participants.user'])
+            ->with(['quest.category', 'quest.checkpoints', 'host', 'participants.user'])
             ->withCount('participants')
             ->firstOrFail();
+        $session->quest?->loadCount('checkpoints');
 
         return response()->json([
             'data' => new SessionResource($session),

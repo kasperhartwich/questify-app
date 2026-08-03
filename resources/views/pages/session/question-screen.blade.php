@@ -57,31 +57,38 @@ class extends Component
         $this->code = $code;
         $this->participantId = session('questify_participant_id', 0);
 
-        // Fetch checkpoint data via arrived endpoint (which returns questions)
+        // Fetch checkpoint questions via the arrived endpoint, proving proximity with the
+        // player's latest GPS fix recorded by the navigation screen. The server rejects the
+        // call (422) if the player is outside the checkpoint radius, so questions can't be
+        // reached without actually arriving — bounce back to navigation in that case.
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->arrived(
             $this->code,
             $this->participantId,
             $checkpoint,
-            0, // latitude placeholder
-            0, // longitude placeholder
+            (float) session('questify_player_lat', 0),
+            (float) session('questify_player_lng', 0),
         ));
 
-        if ($response) {
-            $this->checkpointData = $response['data'] ?? [];
-            $questions = $this->checkpointData['questions'] ?? [];
+        if (! $response) {
+            $this->redirect('/session/' . $this->code . '/play');
 
-            // Shuffle multiple-choice answers ONCE, here at mount, so the order stays
-            // stable across re-renders instead of re-shuffling on every interaction.
-            foreach ($questions as $i => $question) {
-                $type = QuestionType::tryFrom($question['question_type'] ?? '');
-                if ($type !== QuestionType::TrueFalse && ! empty($question['answers'])) {
-                    $questions[$i]['answers'] = collect($question['answers'])->shuffle()->values()->all();
-                }
-            }
-
-            $this->questions = $questions;
-            $this->totalQuestions = count($this->questions);
+            return;
         }
+
+        $this->checkpointData = $response['data'] ?? [];
+        $questions = $this->checkpointData['questions'] ?? [];
+
+        // Shuffle multiple-choice answers ONCE, here at mount, so the order stays
+        // stable across re-renders instead of re-shuffling on every interaction.
+        foreach ($questions as $i => $question) {
+            $type = QuestionType::tryFrom($question['question_type'] ?? '');
+            if ($type !== QuestionType::TrueFalse && ! empty($question['answers'])) {
+                $questions[$i]['answers'] = collect($question['answers'])->shuffle()->values()->all();
+            }
+        }
+
+        $this->questions = $questions;
+        $this->totalQuestions = count($this->questions);
     }
 
     public function getCurrentQuestionProperty(): ?object

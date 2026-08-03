@@ -32,13 +32,19 @@ class extends Component
 
     public bool $showHint = false;
 
-    public bool $showQuestions = false;
-
     public bool $isNative = false;
 
     public int $arrivalRadius = 50;
 
-    public bool $arrivedAtCurrent = false;
+    /** True once the player's latest GPS fix is within the current checkpoint's radius. */
+    public bool $withinRadius = false;
+
+    /** Distance in metres from the player to the current checkpoint (null until first fix). */
+    public ?int $distanceMeters = null;
+
+    public ?float $playerLat = null;
+
+    public ?float $playerLng = null;
 
     public function mount(string $code): void
     {
@@ -61,12 +67,11 @@ class extends Component
             }
         }
 
-        $questResponse = $this->tryApiCall(fn () => $this->api->quests()->show($this->session['quest']['id'] ?? 0));
-        $quest = $questResponse['data'] ?? [];
+        // Checkpoint coordinates come from the session (active-only, participant-scoped) — never
+        // from the public quest detail endpoint, which must not leak the route (business rule 7).
+        $this->arrivalRadius = (int) (data_get($this->session, 'quest.checkpoint_arrival_radius_meters') ?? 50);
 
-        $this->arrivalRadius = (int) ($quest['checkpoint_arrival_radius_meters'] ?? 50);
-
-        $this->checkpoints = collect($quest['checkpoints'] ?? [])
+        $this->checkpoints = collect($this->session['checkpoints'] ?? [])
             ->map(fn ($cp) => [
                 'id' => $cp['id'],
                 'title' => $cp['title'],
@@ -96,62 +101,49 @@ class extends Component
         ?string $provider = null,
         ?string $error = null,
     ): void {
-        if (! $success) {
+        // A successful fix can still arrive with null coordinates (geolocation v2); without
+        // both we can neither update the map nor measure distance (haversine is typed float).
+        if (! $success || $latitude === null || $longitude === null) {
             return;
         }
 
-        // A successful fix can still arrive with null coordinates (geolocation v2); without
-        // both, we can neither update the map nor run arrival detection (haversine is typed float).
-        if ($latitude === null || $longitude === null) {
-            return;
-        }
+        $this->updatePlayerPosition($latitude, $longitude, $accuracy);
+    }
+
+    /**
+     * Record the latest player position and recompute proximity to the current checkpoint.
+     * Shared by the native LocationReceived event and the browser watchPosition fallback.
+     */
+    public function updatePlayerPosition(float $latitude, float $longitude, ?float $accuracy = null): void
+    {
+        $this->playerLat = $latitude;
+        $this->playerLng = $longitude;
+
+        // Remember the latest fix so the question screen can prove proximity to the server.
+        session()->put('questify_player_lat', $latitude);
+        session()->put('questify_player_lng', $longitude);
 
         $this->dispatch('player-moved', latitude: $latitude, longitude: $longitude, accuracy: $accuracy);
 
-        if ($accuracy > 50) {
+        if ($accuracy !== null && $accuracy > 50) {
             $this->dispatch('gps-weak');
-        }
-
-        if ($this->arrivedAtCurrent || $this->showQuestions) {
-            return;
         }
 
         $checkpoint = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
         if (! $checkpoint || ! $checkpoint['latitude'] || ! $checkpoint['longitude']) {
+            $this->withinRadius = false;
+            $this->distanceMeters = null;
+
             return;
         }
 
-        $distanceKm = Quest::haversineDistance(
+        $this->distanceMeters = (int) round(Quest::haversineDistance(
             $latitude, $longitude,
             (float) $checkpoint['latitude'], (float) $checkpoint['longitude'],
-        );
-        $distanceMeters = $distanceKm * 1000;
+        ) * 1000);
 
         $radius = $checkpoint['arrival_radius_override'] ?? $this->arrivalRadius;
-
-        if ($distanceMeters <= $radius) {
-            $this->arriveAtCheckpoint();
-        }
-    }
-
-    public function arriveAtCheckpoint(): void
-    {
-        $checkpoint = $this->checkpoints[$this->currentCheckpointIndex] ?? null;
-        if (! $checkpoint) {
-            return;
-        }
-
-        $this->arrivedAtCurrent = true;
-
-        $this->tryApiCall(fn () => $this->api->gameplay()->arrived(
-            $this->code,
-            $this->participantId,
-            $checkpoint['id'],
-            $checkpoint['latitude'] ?? 0,
-            $checkpoint['longitude'] ?? 0,
-        ));
-
-        $this->showQuestions = true;
+        $this->withinRadius = $this->distanceMeters <= $radius;
     }
 
     public function showHint(): void
@@ -166,37 +158,30 @@ class extends Component
             return;
         }
 
+        // Proximity gate (spec §6): questions are only reachable once the player's GPS fix is
+        // within the checkpoint's arrival radius. The server re-checks this on /arrived.
+        if (! $this->withinRadius) {
+            return;
+        }
+
         $this->redirect('/session/' . $this->code . '/question/' . $checkpoint['id']);
     }
 
     public function loadLeaderboard(): void
     {
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
-        $isTeamMode = ($this->session['play_mode'] ?? '') === 'competitive_teams';
 
-        if ($isTeamMode) {
-            $myDisplayName = session('questify_display_name', '');
-
-            $this->leaderboard = collect($response['data'] ?? [])
-                ->take(5)
-                ->map(fn ($team, $i) => [
-                    'rank' => $i + 1,
-                    'display_name' => $team['team_name'],
-                    'score' => $team['score'],
-                    'is_me' => $team['team_name'] === $myDisplayName,
-                ])
-                ->toArray();
-        } else {
-            $this->leaderboard = collect($response['data'] ?? [])
-                ->take(5)
-                ->map(fn ($p, $i) => [
-                    'rank' => $i + 1,
-                    'display_name' => $p['display_name'],
-                    'score' => $p['total_score'],
-                    'is_me' => $p['id'] === $this->participantId,
-                ])
-                ->toArray();
-        }
+        // The leaderboard endpoint returns a flat, score-ranked participant list for every play
+        // mode, so "me" is always matched by participant id.
+        $this->leaderboard = collect($response['data'] ?? [])
+            ->take(5)
+            ->map(fn ($p, $i) => [
+                'rank' => $i + 1,
+                'display_name' => $p['display_name'],
+                'score' => $p['total_score'],
+                'is_me' => $p['id'] === $this->participantId,
+            ])
+            ->toArray();
     }
 
     #[On('echo-presence:session.{code},LeaderboardUpdated')]
@@ -271,27 +256,14 @@ class extends Component
                     if (isNative) {
                         $wire.requestLocation();
                         this.locationInterval = setInterval(() => {
-                            if (!$wire.showQuestions) $wire.requestLocation();
+                            $wire.requestLocation();
                         }, 4000);
                     } else if (navigator.geolocation) {
+                        // Browser fallback: forward each fix to the component, which recomputes
+                        // distance and proximity server-side (same path as the native event).
                         navigator.geolocation.watchPosition((pos) => {
                             this.updateUserMarker(pos.coords.latitude, pos.coords.longitude);
-
-                            if ($wire.arrivedAtCurrent || $wire.showQuestions) return;
-                            const current = checkpoints[$wire.currentCheckpointIndex];
-                            if (!current || !current.latitude) return;
-
-                            const toRad = (d) => d * Math.PI / 180;
-                            const R = 6371000;
-                            const dLat = toRad(pos.coords.latitude - current.latitude);
-                            const dLng = toRad(pos.coords.longitude - current.longitude);
-                            const a = Math.sin(dLat/2)**2 + Math.cos(toRad(current.latitude)) * Math.cos(toRad(pos.coords.latitude)) * Math.sin(dLng/2)**2;
-                            const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                            const radius = current.arrival_radius_override || @js($arrivalRadius);
-
-                            if (dist <= radius) {
-                                $wire.arriveAtCheckpoint();
-                            }
+                            $wire.updatePlayerPosition(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
                         });
                     }
 
@@ -339,9 +311,21 @@ class extends Component
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $this->currentCheckpoint->description }}</p>
                 @endif
 
-                <button wire:click="goToQuestions" class="mt-3 w-full rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
-                    {{ __('sessions.answer_questions') }}
-                </button>
+                @if ($withinRadius)
+                    <button wire:click="goToQuestions" class="mt-3 w-full rounded-xl bg-amber-400 px-4 py-3 font-heading text-sm font-bold text-bark hover:bg-amber-500">
+                        {{ __('sessions.answer_questions') }}
+                    </button>
+                @else
+                    <div class="mt-3 w-full rounded-xl bg-gray-100 px-4 py-3 text-center dark:bg-gray-700">
+                        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                            @if ($distanceMeters !== null)
+                                {{ $distanceMeters }} m {{ __('sessions.away') }} — {{ __('sessions.get_closer_to_answer') }}
+                            @else
+                                {{ __('sessions.navigating_to_checkpoint') }}
+                            @endif
+                        </p>
+                    </div>
+                @endif
             </div>
         @endif
 

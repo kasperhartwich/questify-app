@@ -14,6 +14,7 @@ use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\ArrivedRequest;
 use App\Models\Checkpoint;
 use App\Models\CheckpointProgress;
+use App\Models\Quest;
 use App\Models\Question;
 use App\Models\QuestSession;
 use App\Models\SessionParticipant;
@@ -60,6 +61,22 @@ class GameplayController extends Controller
         $checkpoint = Checkpoint::where('id', $request->validated('checkpoint_id'))
             ->where('quest_id', $session->quest_id)
             ->firstOrFail();
+
+        // Server-side geofence (spec §6): the player must actually be within the checkpoint's
+        // arrival radius. The per-checkpoint override wins over the quest default (50 m fallback).
+        $radius = $checkpoint->arrival_radius_override ?? $session->quest->checkpoint_arrival_radius_meters ?? 50;
+        $distanceMeters = Quest::haversineDistance(
+            (float) $request->validated('latitude'),
+            (float) $request->validated('longitude'),
+            (float) $checkpoint->latitude,
+            (float) $checkpoint->longitude,
+        ) * 1000;
+
+        if ($distanceMeters > $radius) {
+            return response()->json([
+                'message' => __('sessions.too_far_from_checkpoint'),
+            ], 422);
+        }
 
         broadcast(new CheckpointArrived($session->join_code, $participant, $checkpoint))->toOthers();
 
