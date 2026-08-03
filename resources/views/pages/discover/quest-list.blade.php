@@ -59,6 +59,12 @@ class extends Component
             return;
         }
 
+        // A successful fix can still carry null coordinates (geolocation v2); the $latitude /
+        // $longitude properties are typed float, so assigning null would throw a TypeError.
+        if ($latitude === null || $longitude === null) {
+            return;
+        }
+
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->loadQuests();

@@ -50,6 +50,8 @@ return [
     ],
 
     'checkpoints_need_coordinates' => 'Alle checkpoints skal have en placering. Tryk på kortet for at placere dem.',
+    'checkpoints_min' => 'En quest skal have mindst 2 checkpoints.',
+    'checkpoint_needs_question' => 'Hvert checkpoint skal have mindst ét spørgsmål.',
 
     'access_code_required' => 'Adgangskode påkrævet',
     'access_code_description' => 'Denne quest kræver en adgangskode for at spille.',

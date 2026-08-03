@@ -100,6 +100,12 @@ class extends Component
             return;
         }
 
+        // A successful fix can still arrive with null coordinates (geolocation v2); without
+        // both, we can neither update the map nor run arrival detection (haversine is typed float).
+        if ($latitude === null || $longitude === null) {
+            return;
+        }
+
         $this->dispatch('player-moved', latitude: $latitude, longitude: $longitude, accuracy: $accuracy);
 
         if ($accuracy > 50) {

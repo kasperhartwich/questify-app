@@ -15,7 +15,7 @@
 
     $difficultyClass = match($quest->difficulty ?? '') {
         'hard' => 'bg-[#FCDDD7] text-[#C03A20]',
-        'medium' => 'bg-[#D4EDE4] text-forest-600',
+        'easy' => 'bg-[#D4EDE4] text-forest-600',
         default => 'bg-amber-100 text-amber-700',
     };
 @endphp

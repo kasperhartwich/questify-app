@@ -245,6 +245,7 @@ class SessionController extends Controller
 
         $session->load(['quest.category', 'host'])
             ->loadCount('participants');
+        $session->quest?->loadCount('checkpoints');
 
         $participants = $session->participants()
             ->orderByDesc('score')

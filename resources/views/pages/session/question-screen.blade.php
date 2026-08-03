@@ -34,6 +34,18 @@ class extends Component
 
     public bool $showFeedback = false;
 
+    /** Wrong-answer behaviour returned by the API for the last incorrect attempt. */
+    public ?string $wrongBehaviour = null;
+
+    /** Points deducted on the last incorrect attempt (retry_penalty). */
+    public ?int $penaltyPoints = null;
+
+    /** Hint revealed for the current question (three_strikes_hint). Persists until the question is passed. */
+    public ?string $revealedHint = null;
+
+    /** Seconds remaining on a lockout after an incorrect attempt (lockout). */
+    public int $lockoutRemaining = 0;
+
     public array $answeredQuestionIds = [];
 
     public bool $questComplete = false;
@@ -56,7 +68,18 @@ class extends Component
 
         if ($response) {
             $this->checkpointData = $response['data'] ?? [];
-            $this->questions = $this->checkpointData['questions'] ?? [];
+            $questions = $this->checkpointData['questions'] ?? [];
+
+            // Shuffle multiple-choice answers ONCE, here at mount, so the order stays
+            // stable across re-renders instead of re-shuffling on every interaction.
+            foreach ($questions as $i => $question) {
+                $type = QuestionType::tryFrom($question['question_type'] ?? '');
+                if ($type !== QuestionType::TrueFalse && ! empty($question['answers'])) {
+                    $questions[$i]['answers'] = collect($question['answers'])->shuffle()->values()->all();
+                }
+            }
+
+            $this->questions = $questions;
             $this->totalQuestions = count($this->questions);
         }
     }
@@ -71,11 +94,7 @@ class extends Component
                 $obj->type = QuestionType::tryFrom($question['question_type'] ?? '') ?? QuestionType::MultipleChoice;
                 $obj->body = $question['question_text'] ?? $question['body'] ?? '';
                 $obj->points = $question['points'] ?? 10;
-                $answers = collect($question['answers'] ?? []);
-                if ($obj->type !== QuestionType::TrueFalse) {
-                    $answers = $answers->shuffle();
-                }
-                $obj->answers = $answers->map(fn ($a) => (object) [
+                $obj->answers = collect($question['answers'] ?? [])->map(fn ($a) => (object) [
                     'id' => $a['id'],
                     'body' => $a['answer_text'] ?? $a['body'] ?? '',
                 ]);
@@ -91,6 +110,12 @@ class extends Component
     {
         $currentQuestion = $this->currentQuestion;
         if (! $currentQuestion) {
+            return;
+        }
+
+        // Guard against double submission (spec 8): while feedback is shown the player must
+        // either advance (correct) or tap "Try again" (incorrect) before re-submitting.
+        if ($this->showFeedback) {
             return;
         }
 
@@ -121,12 +146,20 @@ class extends Component
         $data = $response['data'] ?? [];
 
         $this->lastAnswerCorrect = $data['correct'] ?? false;
-        $this->lastPointsEarned = $data['score_earned'] ?? 0;
         $this->showFeedback = true;
 
-        if ($this->lastAnswerCorrect) {
-            $this->answeredQuestionIds[] = $currentQuestion->id;
+        if (! $this->lastAnswerCorrect) {
+            $this->applyWrongAnswer($data);
+
+            return;
         }
+
+        $this->lastPointsEarned = $data['score_earned'] ?? 0;
+        $this->answeredQuestionIds[] = $currentQuestion->id;
+        $this->wrongBehaviour = null;
+        $this->penaltyPoints = null;
+        $this->revealedHint = null;
+        $this->lockoutRemaining = 0;
 
         $next = $data['next'] ?? 'question';
         if ($next === 'quest_complete') {
@@ -137,11 +170,58 @@ class extends Component
         }
     }
 
+    /**
+     * Apply the wrong-answer behaviour returned by the API (spec 5.15).
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function applyWrongAnswer(array $data): void
+    {
+        $this->wrongBehaviour = $data['behaviour'] ?? 'retry_free';
+        $this->penaltyPoints = null;
+        $this->lockoutRemaining = 0;
+
+        match ($this->wrongBehaviour) {
+            'retry_penalty' => $this->penaltyPoints = (int) ($data['penalty'] ?? 0),
+            'lockout' => $this->lockoutRemaining = $this->secondsUntil($data['locked_until'] ?? null),
+            'three_strikes_hint' => filled($data['hint'] ?? null) ? $this->revealedHint = $data['hint'] : null,
+            default => null,
+        };
+    }
+
+    private function secondsUntil(?string $iso): int
+    {
+        if (! $iso) {
+            return 0;
+        }
+
+        return max(0, now()->diffInSeconds(\Illuminate\Support\Carbon::parse($iso), false));
+    }
+
+    /**
+     * Retry the current question after an incorrect attempt (retry_free / retry_penalty /
+     * three_strikes_hint, and lockout once the countdown has elapsed).
+     */
+    public function tryAgain(): void
+    {
+        $this->selectedAnswerId = null;
+        $this->openEndedAnswer = '';
+        $this->showFeedback = false;
+        $this->wrongBehaviour = null;
+        $this->penaltyPoints = null;
+        $this->lockoutRemaining = 0;
+        // $revealedHint is intentionally kept so the hint stays visible while retrying.
+    }
+
     public function nextQuestion(): void
     {
         $this->selectedAnswerId = null;
         $this->openEndedAnswer = '';
         $this->showFeedback = false;
+        $this->wrongBehaviour = null;
+        $this->penaltyPoints = null;
+        $this->revealedHint = null;
+        $this->lockoutRemaining = 0;
 
         if ($this->currentQuestion === null || $this->checkpointComplete) {
             if ($this->questComplete) {
@@ -179,6 +259,14 @@ class extends Component
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $this->currentQuestion->points }} {{ __('quests.points') }}</p>
             </div>
 
+            {{-- Revealed hint (three_strikes_hint) — stays visible while retrying --}}
+            @if ($revealedHint)
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-900/40 dark:bg-amber-900/20">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">{{ __('sessions.hint_label') }}</p>
+                    <p class="mt-1 text-sm text-amber-800 dark:text-amber-300">{{ $revealedHint }}</p>
+                </div>
+            @endif
+
             {{-- Answer Options --}}
             @if (!$showFeedback)
                 @if ($this->currentQuestion->type === \App\Enums\QuestionType::OpenText)
@@ -209,6 +297,8 @@ class extends Component
 
                 <button
                     wire:click="submitAnswer"
+                    wire:loading.attr="disabled"
+                    wire:target="submitAnswer"
                     class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
                     {{ ($this->currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
                 >
@@ -218,22 +308,48 @@ class extends Component
 
             {{-- Feedback --}}
             @if ($showFeedback)
-                <div class="rounded-xl p-4 text-center {{ $lastAnswerCorrect ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20' }}">
-                    <p class="text-3xl">{{ $lastAnswerCorrect ? '✅' : '❌' }}</p>
-                    <p class="mt-2 text-lg font-bold {{ $lastAnswerCorrect ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">
-                        {{ $lastAnswerCorrect ? __('sessions.correct') : __('sessions.wrong') }}
-                    </p>
-                    @if ($lastAnswerCorrect && $lastPointsEarned)
-                        <p class="text-sm text-green-600 dark:text-green-400">+{{ $lastPointsEarned }} {{ __('quests.points') }}</p>
-                    @endif
-                </div>
+                @if ($lastAnswerCorrect)
+                    <div class="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/20">
+                        <p class="text-3xl">✅</p>
+                        <p class="mt-2 text-lg font-bold text-green-700 dark:text-green-400">{{ __('sessions.correct') }}</p>
+                        @if ($lastPointsEarned)
+                            <p class="text-sm text-green-600 dark:text-green-400">+{{ $lastPointsEarned }} {{ __('quests.points') }}</p>
+                        @endif
+                    </div>
 
-                <button
-                    wire:click="nextQuestion"
-                    class="w-full rounded-xl bg-forest-600 px-4 py-3.5 font-heading text-sm font-bold text-white hover:bg-forest-700"
-                >
-                    {{ __('general.next') }}
-                </button>
+                    <button
+                        wire:click="nextQuestion"
+                        class="w-full rounded-xl bg-forest-600 px-4 py-3.5 font-heading text-sm font-bold text-white hover:bg-forest-700"
+                    >
+                        {{ __('general.next') }}
+                    </button>
+                @else
+                    <div class="rounded-xl bg-red-50 p-4 text-center dark:bg-red-900/20">
+                        <p class="text-3xl">❌</p>
+                        <p class="mt-2 text-lg font-bold text-red-700 dark:text-red-400">{{ __('sessions.wrong') }}</p>
+                        @if ($wrongBehaviour === 'retry_penalty' && $penaltyPoints)
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ __('sessions.wrong_penalty', ['points' => $penaltyPoints]) }}</p>
+                        @endif
+                    </div>
+
+                    @if ($wrongBehaviour === 'lockout' && $lockoutRemaining > 0)
+                        {{-- Locked out: input hidden, countdown ticks, auto-retry when it reaches 0 --}}
+                        <div
+                            x-data="{ remaining: @js($lockoutRemaining) }"
+                            x-init="const t = setInterval(() => { if (--remaining <= 0) { clearInterval(t); $wire.tryAgain(); } }, 1000)"
+                            class="w-full rounded-xl bg-gray-200 px-4 py-3.5 text-center font-heading text-sm font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                        >
+                            {{ __('sessions.locked_out') }} <span x-text="remaining"></span>{{ __('sessions.seconds_short') }}
+                        </div>
+                    @else
+                        <button
+                            wire:click="tryAgain"
+                            class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500"
+                        >
+                            {{ __('sessions.try_again') }}
+                        </button>
+                    @endif
+                @endif
             @endif
         </div>
     @endif

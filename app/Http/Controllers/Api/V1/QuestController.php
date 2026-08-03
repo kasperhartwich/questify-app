@@ -202,7 +202,7 @@ class QuestController extends Controller
     {
         $quest->load(['category', 'creator', 'checkpoints.questions.answers'])
             ->loadAvg('ratings', 'rating')
-            ->loadCount('ratings');
+            ->loadCount(['ratings', 'checkpoints']);
 
         return new QuestDetailResource($quest);
     }
@@ -224,7 +224,7 @@ class QuestController extends Controller
         $quest->update($request->validated());
         $quest->load(['category', 'creator', 'checkpoints.questions.answers'])
             ->loadAvg('ratings', 'rating')
-            ->loadCount('ratings');
+            ->loadCount(['ratings', 'checkpoints']);
 
         return new QuestDetailResource($quest);
     }

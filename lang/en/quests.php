@@ -50,6 +50,8 @@ return [
     ],
 
     'checkpoints_need_coordinates' => 'All checkpoints need a location. Tap the map to place them.',
+    'checkpoints_min' => 'A quest needs at least 2 checkpoints.',
+    'checkpoint_needs_question' => 'Every checkpoint needs at least one question.',
 
     'access_code_required' => 'Access Code Required',
     'access_code_description' => 'This quest requires an access code to play.',

@@ -38,7 +38,7 @@ class QuestifyApiClient
     {
         $request = Http::baseUrl($this->baseUrl.'/api/v1')
             ->timeout($this->timeout)
-            ->retry(3, 200, fn (\Exception $e) => $e instanceof ConnectionException, throw: false)
+            ->retry(3, fn (int $attempt): int => 200 * (2 ** ($attempt - 1)), fn (\Exception $e) => $e instanceof ConnectionException, throw: false)
             ->acceptJson()
             ->withHeaders([
                 'Accept-Language' => app()->getLocale(),

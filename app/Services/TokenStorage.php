@@ -12,7 +12,10 @@ class TokenStorage
     public static function get(): ?string
     {
         if (self::isMobile()) {
-            return SecureStorage::get(self::KEY);
+            // Fall back to the session when secure storage yields nothing: set() always
+            // mirrors the token into the session, so this keeps authenticated API calls
+            // working even if the secure-storage bridge returns null on-device.
+            return SecureStorage::get(self::KEY) ?? session(self::KEY);
         }
 
         return session(self::KEY);

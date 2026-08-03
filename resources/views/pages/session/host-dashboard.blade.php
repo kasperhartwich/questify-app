@@ -38,12 +38,16 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->sessions()->dashboard($this->code));
         $data = $response['data'] ?? [];
         $this->sessionData = $data['session'] ?? [];
+
+        $totalCheckpoints = (int) data_get($this->sessionData, 'quest.checkpoint_count', 0);
+
         $this->participants = collect($data['participants'] ?? [])
             ->map(fn ($p) => [
                 'id' => $p['id'],
                 'display_name' => $p['display_name'],
                 'score' => $p['total_score'] ?? 0,
-                'current_checkpoint_index' => $p['current_checkpoint_index'] ?? 0,
+                'checkpoints_completed' => $p['current_checkpoint_index'] ?? 0,
+                'total_checkpoints' => $totalCheckpoints,
                 'status' => $p['quest_completed_at'] ? 'finished' : 'playing',
             ])
             ->toArray();
@@ -88,7 +92,7 @@ class extends Component
     <div class="relative overflow-hidden bg-forest-600 px-4 py-4 text-white">
         <div class="pointer-events-none absolute right-[-20px] top-[-20px] h-[80px] w-[80px] rounded-full border-[14px] border-amber-400/10"></div>
         <h1 class="font-heading text-lg font-bold">{{ __('sessions.host_dashboard') }}</h1>
-        <p class="text-sm opacity-80">{{ $session->quest?->title }} — {{ $session->join_code }}</p>
+        <p class="text-sm opacity-80">{{ data_get($sessionData, 'quest.title') }} — {{ $code }}</p>
         <div class="mt-2 flex gap-4 text-xs">
             <span>{{ count($participants) }} {{ __('sessions.participants') }}</span>
             <span>{{ collect($participants)->where('status', 'finished')->count() }} {{ __('sessions.finished') }}</span>
@@ -111,7 +115,7 @@ class extends Component
                         <div>
                             <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $p['display_name'] }}</p>
                             <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                                <span>{{ $p['checkpoints_completed'] }}/{{ $p['total_checkpoints'] }} {{ __('quests.checkpoints') }}</span>
+                                <span>{{ $p['checkpoints_completed'] }}@if ($p['total_checkpoints'] > 0)/{{ $p['total_checkpoints'] }}@endif {{ __('quests.checkpoints') }}</span>
                                 <span class="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium
                                     {{ $p['status'] === 'finished' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' }}">
                                     {{ $p['status'] === 'finished' ? __('sessions.completed') : __('sessions.in_progress') }}

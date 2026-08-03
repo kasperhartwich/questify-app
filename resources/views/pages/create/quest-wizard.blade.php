@@ -294,11 +294,12 @@ class extends Component
                 'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             2 => $this->validate([
-                'checkpoints' => ['required', 'array', 'min:1'],
+                'checkpoints' => ['required', 'array', 'min:2'],
                 'checkpoints.*.title' => ['nullable', 'string', 'max:255'],
                 'checkpoints.*.latitude' => ['required', 'numeric'],
                 'checkpoints.*.longitude' => ['required', 'numeric'],
             ], [
+                'checkpoints.min' => __('quests.checkpoints_min'),
                 'checkpoints.*.latitude.required' => __('quests.checkpoints_need_coordinates'),
                 'checkpoints.*.longitude.required' => __('quests.checkpoints_need_coordinates'),
             ]),
@@ -318,9 +319,14 @@ class extends Component
 
     private function validateQuestions(): void
     {
-        foreach ($this->questions as $cpIndex => $cpQuestions) {
+        // Spec 5.9 step 3: every checkpoint must have at least one question.
+        foreach ($this->checkpoints as $cpIndex => $checkpoint) {
+            $cpQuestions = $this->questions[$cpIndex] ?? [];
+
             if (empty($cpQuestions)) {
-                continue;
+                $this->dispatch('api-error', message: __('quests.checkpoint_needs_question'));
+
+                throw new \Illuminate\Validation\ValidationException(validator([], []));
             }
 
             $this->validate([

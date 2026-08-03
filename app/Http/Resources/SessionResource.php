@@ -16,6 +16,7 @@ class SessionResource extends JsonResource
                 'id' => $this->quest->id,
                 'title' => $this->quest->title,
                 'cover_image_url' => $this->quest->resolveImageUrl($this->quest->cover_image_path),
+                'checkpoint_count' => $this->quest->checkpoints_count,
             ]),
             'host' => $this->whenLoaded('host', fn () => [
                 'id' => $this->host->id,

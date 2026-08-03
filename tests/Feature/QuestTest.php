@@ -5,6 +5,7 @@ use App\Enums\ModerationStatus;
 use App\Enums\QuestStatus;
 use App\Enums\QuestVisibility;
 use App\Models\Category;
+use App\Models\Checkpoint;
 use App\Models\Quest;
 use App\Models\User;
 
@@ -78,6 +79,22 @@ it('shows a quest without auth', function () {
 
     $response->assertOk()
         ->assertJsonPath('data.title', $quest->title);
+});
+
+it('does not leak the full route on the quest detail (business rule 7)', function () {
+    $quest = Quest::factory()->create();
+    Checkpoint::factory()->create(['quest_id' => $quest->id, 'latitude' => 55.6851, 'longitude' => 12.5683, 'sort_order' => 0]);
+    Checkpoint::factory()->create(['quest_id' => $quest->id, 'latitude' => 55.7000, 'longitude' => 12.6000, 'sort_order' => 1]);
+    Checkpoint::factory()->create(['quest_id' => $quest->id, 'latitude' => 55.7100, 'longitude' => 12.6100, 'sort_order' => 2]);
+
+    $response = $this->getJson("/api/v1/quests/{$quest->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.checkpoint_count', 3);
+
+    // Only the starting checkpoint is exposed; the rest of the route must never be sent.
+    expect($response->json('data.starting_checkpoint.latitude'))->not->toBeNull();
+    expect($response->json('data'))->not->toHaveKey('checkpoints');
 });
 
 it('updates own quest', function () {

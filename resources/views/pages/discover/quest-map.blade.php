@@ -60,6 +60,12 @@ class extends Component
             return;
         }
 
+        // A successful fix can still carry null coordinates (geolocation v2); the $latitude /
+        // $longitude properties are typed float, so assigning null would throw a TypeError.
+        if ($latitude === null || $longitude === null) {
+            return;
+        }
+
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->loadPins();
@@ -297,8 +303,8 @@ class extends Component
             font-weight: 800;
             color: white;
         }
-        .marker-easy { background-color: #E5A117; }
-        .marker-medium { background-color: #0B3D2E; }
+        .marker-easy { background-color: #0B3D2E; }
+        .marker-medium { background-color: #E5A117; }
         .marker-hard { background-color: #E85C3A; }
         .marker-default { background-color: #7C3AED; }
     </style>
@@ -357,7 +363,7 @@ class extends Component
                 {{-- Tags row --}}
                 <div class="flex flex-wrap gap-[6px] px-4 pb-3">
                     <span class="rounded-full px-2.5 py-[3px] text-[11px] font-semibold"
-                          :class="selectedPin.difficulty === 'easy' ? 'bg-amber-100 text-amber-700' : (selectedPin.difficulty === 'hard' ? 'bg-red-50 text-coral' : 'bg-[#D4EDE4] text-forest-600')"
+                          :class="selectedPin.difficulty === 'easy' ? 'bg-[#D4EDE4] text-forest-600' : (selectedPin.difficulty === 'hard' ? 'bg-red-50 text-coral' : 'bg-amber-100 text-amber-700')"
                           x-text="selectedPin.difficulty"></span>
                     <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.checkpoint_count + ' stops'"></span>
                     <span x-show="selectedPin.distance_to_farthest_km" class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.distance_to_farthest_km.toFixed(1) + ' km'"></span>

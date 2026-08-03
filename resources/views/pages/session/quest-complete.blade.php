@@ -56,31 +56,17 @@ class extends Component
     public function loadLeaderboard(int $participantId = 0): void
     {
         $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
-        $isTeamMode = ($this->session['play_mode'] ?? '') === 'competitive_teams';
 
-        if ($isTeamMode) {
-            $myDisplayName = session('questify_display_name', '');
-
-            $this->leaderboard = collect($response['data'] ?? [])
-                ->map(fn ($team, $i) => [
-                    'rank' => $i + 1,
-                    'display_name' => $team['team_name'],
-                    'score' => $team['score'],
-                    'member_count' => $team['member_count'] ?? 1,
-                    'members' => $team['members'] ?? [],
-                    'is_me' => $team['team_name'] === $myDisplayName,
-                ])
-                ->toArray();
-        } else {
-            $this->leaderboard = collect($response['data'] ?? [])
-                ->map(fn ($p, $i) => [
-                    'rank' => $i + 1,
-                    'display_name' => $p['display_name'],
-                    'score' => $p['total_score'],
-                    'is_me' => $p['id'] === $participantId,
-                ])
-                ->toArray();
-        }
+        // The leaderboard endpoint returns a flat, score-ranked participant list for every
+        // play mode, so "me" is always matched by participant id.
+        $this->leaderboard = collect($response['data'] ?? [])
+            ->map(fn ($p, $i) => [
+                'rank' => $i + 1,
+                'display_name' => $p['display_name'],
+                'score' => $p['total_score'],
+                'is_me' => $p['id'] === $participantId,
+            ])
+            ->toArray();
 
         $me = collect($this->leaderboard)->firstWhere('is_me');
         $this->myScore = $me['score'] ?? 0;
@@ -178,7 +164,8 @@ class extends Component
             </div>
         </div>
 
-        {{-- Rate Quest --}}
+        {{-- Rate Quest (registered users only — spec 5.16) --}}
+        @if (auth()->check())
         @if (!$hasRated)
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                 <h2 class="mb-3 font-semibold text-gray-900 dark:text-white">{{ __('sessions.rate_quest') }}</h2>
@@ -193,7 +180,7 @@ class extends Component
                     @endfor
                 </div>
                 <textarea
-                    wire:model="ratingReview"
+                    wire:model="ratingComment"
                     rows="2"
                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     placeholder="{{ __('sessions.review_placeholder') }}"
@@ -210,6 +197,7 @@ class extends Component
             <div class="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/20">
                 <p class="text-sm text-green-700 dark:text-green-400">{{ __('sessions.thanks_rating') }}</p>
             </div>
+        @endif
         @endif
 
         {{-- Share & Home --}}
