@@ -204,7 +204,7 @@ class extends Component
         <div class="flex gap-3 pb-4">
             <button
                 wire:click="shareResult"
-                class="flex-1 rounded-xl border-[1.5px] border-cream-border px-4 py-3.5 text-sm font-semibold text-bark dark:border-gray-600 dark:text-gray-300"
+                class="flex-1 rounded-xl border-[1.5px] border-white/45 px-4 py-3.5 text-center font-heading text-sm font-bold text-white hover:bg-white/10"
                 x-on:share-result.window="
                     if (navigator.share) {
                         navigator.share({ title: $event.detail[0].title, text: $event.detail[0].text });

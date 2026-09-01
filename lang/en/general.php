@@ -6,6 +6,8 @@ return [
     'dashboard' => 'Dashboard',
     'profile' => 'Profile',
     'settings' => 'Settings',
+    'change_photo' => 'Change photo',
+    'away' => 'away',
     'save' => 'Save',
     'cancel' => 'Cancel',
     'delete' => 'Delete',

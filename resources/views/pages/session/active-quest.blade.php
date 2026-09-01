@@ -55,9 +55,18 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
         $this->session = $response['data'] ?? [];
 
+        $participants = $this->session['participants'] ?? [];
+        $participantIds = array_column($participants, 'id');
+
+        // Discard a stale participant id left over from a previous session — otherwise answers
+        // would be misattributed to a participant that isn't part of THIS session.
+        if ($this->participantId && ! in_array($this->participantId, $participantIds)) {
+            $this->participantId = 0;
+            session()->forget('questify_participant_id');
+        }
+
         // Auto-detect participant_id from session data if not in PHP session
         if (! $this->participantId && Auth::check()) {
-            $participants = $this->session['participants'] ?? [];
             foreach ($participants as $p) {
                 if (($p['user_id'] ?? null) === Auth::id()) {
                     $this->participantId = $p['id'];
@@ -184,7 +193,7 @@ class extends Component
             ->toArray();
     }
 
-    #[On('echo-presence:session.{code},LeaderboardUpdated')]
+    #[On('echo:session.{code},LeaderboardUpdated')]
     public function onLeaderboardUpdated(): void
     {
         $this->loadLeaderboard();
@@ -197,7 +206,7 @@ class extends Component
         return $cp ? (object) $cp : null;
     }
 
-    #[On('echo-presence:session.{code},SessionEnded')]
+    #[On('echo:session.{code},SessionEnded')]
     public function onSessionEnded(): void
     {
         $this->redirect('/session/' . $this->code . '/complete');

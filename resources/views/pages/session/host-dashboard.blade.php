@@ -53,25 +53,25 @@ class extends Component
             ->toArray();
     }
 
-    #[On('echo-presence:session.{code},CheckpointCompleted')]
+    #[On('echo:session.{code},CheckpointCompleted')]
     public function onCheckpointCompleted(): void
     {
         $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{code},LeaderboardUpdated')]
+    #[On('echo:session.{code},LeaderboardUpdated')]
     public function onLeaderboardUpdated(): void
     {
         $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{code},QuestCompleted')]
+    #[On('echo:session.{code},QuestCompleted')]
     public function onQuestCompleted(): void
     {
         $this->loadDashboard();
     }
 
-    #[On('echo-presence:session.{code},ParticipantJoined')]
+    #[On('echo:session.{code},ParticipantJoined')]
     public function onParticipantJoined(): void
     {
         $this->loadDashboard();

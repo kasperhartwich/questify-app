@@ -6,6 +6,8 @@ return [
     'dashboard' => 'Kontrolpanel',
     'profile' => 'Profil',
     'settings' => 'Indstillinger',
+    'change_photo' => 'Skift billede',
+    'away' => 'væk',
     'save' => 'Gem',
     'cancel' => 'Annuller',
     'delete' => 'Slet',

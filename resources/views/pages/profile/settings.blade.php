@@ -64,6 +64,31 @@ class extends Component
                 'total_points' => $data['total_points'] ?? 0,
             ];
             $this->recentActivity = $data['recent_activity'] ?? [];
+            $this->notifications_enabled = (bool) ($data['notifications_enabled'] ?? true);
+            $this->email_notifications_enabled = (bool) ($data['email_notifications_enabled'] ?? true);
+        }
+    }
+
+    /** Persist the notification preference toggles to the backend. */
+    private function persistNotificationPreferences(): void
+    {
+        $this->tryApiCall(fn () => $this->api->user()->updateProfile([
+            'notifications_enabled' => $this->notifications_enabled,
+            'email_notifications_enabled' => $this->email_notifications_enabled,
+        ]));
+    }
+
+    public function toggleEmailNotifications(): void
+    {
+        $this->email_notifications_enabled = ! $this->email_notifications_enabled;
+        $this->persistNotificationPreferences();
+    }
+
+    /** Auto-save a newly picked avatar (the file input has no separate save button). */
+    public function updatedAvatar(): void
+    {
+        if ($this->avatar) {
+            $this->updateProfile();
         }
     }
 
@@ -140,6 +165,8 @@ class extends Component
                 session()->forget('questify_fcm_token');
             }
         }
+
+        $this->persistNotificationPreferences();
     }
 
     /**
@@ -273,7 +300,20 @@ class extends Component
 
             <div class="space-y-[20px] px-[16px] pb-8">
 
-                {{-- Avatar Upload (hidden file input) --}}
+                {{-- Avatar with a visible "Change photo" trigger for the hidden file input --}}
+                <div class="flex items-center gap-4">
+                    <div class="h-16 w-16 overflow-hidden rounded-full bg-forest-100">
+                        @if (Auth::user()->avatarUrl)
+                            <img src="{{ Auth::user()->avatarUrl }}" alt="" class="h-full w-full object-cover" />
+                        @else
+                            <div class="flex h-full w-full items-center justify-center font-heading text-[22px] font-bold text-forest-600">{{ strtoupper(substr($name, 0, 1)) }}</div>
+                        @endif
+                    </div>
+                    <label for="avatar-upload" class="cursor-pointer rounded-[10px] bg-cream-dark px-4 py-2 text-[13px] font-semibold text-bark">
+                        {{ __('general.change_photo') }}
+                    </label>
+                    <span wire:loading wire:target="avatar" class="text-[12px] text-muted">…</span>
+                </div>
                 <input type="file" wire:model="avatar" accept="image/*" class="hidden" id="avatar-upload" />
                 @error('avatar') <p class="text-sm text-coral">{{ $message }}</p> @enderror
 
@@ -379,7 +419,7 @@ class extends Component
                             <span class="flex-1 text-[14px] font-semibold text-bark">{{ __('general.email_notifications') }}</span>
                             {{-- Toggle --}}
                             <button
-                                wire:click="$toggle('email_notifications_enabled')"
+                                wire:click="toggleEmailNotifications"
                                 class="relative h-[26px] w-[44px] rounded-[13px] transition-colors duration-200"
                                 style="background-color: {{ $email_notifications_enabled ? '#0B3D2E' : '#E5DDD0' }};"
                                 role="switch"

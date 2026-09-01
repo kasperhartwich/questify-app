@@ -50,13 +50,13 @@ class extends Component
         $this->participants = $this->session['participants'] ?? [];
     }
 
-    #[On('echo-presence:session.{code},ParticipantJoined')]
+    #[On('echo:session.{code},ParticipantJoined')]
     public function onParticipantJoined(): void
     {
         $this->loadSession();
     }
 
-    #[On('echo-presence:session.{code},SessionStarted')]
+    #[On('echo:session.{code},SessionStarted')]
     public function onSessionStarted(): void
     {
         $this->redirect('/session/' . $this->code . '/play');

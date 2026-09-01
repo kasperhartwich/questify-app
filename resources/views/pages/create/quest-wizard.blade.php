@@ -80,10 +80,10 @@ class extends Component
             ->pluck('name', 'id')
             ->toArray();
 
-        $this->checkpoints = [
-            ['title' => '', 'description' => '', 'latitude' => null, 'longitude' => null],
-        ];
-        $this->questions = [[]];
+        // Start empty: each map tap appends exactly one checkpoint with coordinates. Seeding a
+        // blank here left a permanent coordinate-less checkpoint that failed step-2 validation.
+        $this->checkpoints = [];
+        $this->questions = [];
     }
 
     public function nextStep(): void
@@ -291,8 +291,9 @@ class extends Component
         match ($this->step) {
             1 => $this->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
+            // Difficulty is chosen on step 5 (Details) and validated there — requiring it here
+            // would silently block advancing past step 1 (its error has no field to render).
             2 => $this->validate([
                 'checkpoints' => ['required', 'array', 'min:2'],
                 'checkpoints.*.title' => ['nullable', 'string', 'max:255'],

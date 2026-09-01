@@ -360,19 +360,22 @@ class extends Component
             @if (!$this->requiresAccessCode || $accessGranted)
                 {{-- Play mode --}}
                 <h3 class="mb-2.5 font-heading text-[14px] font-bold text-bark">{{ __('general.play_mode') }}</h3>
+                @php
+                    $playModes = [
+                        ['solo', __('general.solo'), __('general.just_you')],
+                        ['competitive_individual', __('general.individual'), __('general.race_friends')],
+                        ['competitive_teams', __('general.teams'), __('general.groups')],
+                    ];
+                @endphp
                 <div class="mb-5 flex gap-2">
-                    <button @click="playMode = 'solo'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'solo' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                        <div class="text-[12px] font-bold" :class="playMode === 'solo' ? 'text-forest-600' : 'text-muted'">{{ __('general.solo') }}</div>
-                        <div class="text-[10px] text-muted">{{ __('general.just_you') }}</div>
-                    </button>
-                    <button @click="playMode = 'individual'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'individual' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                        <div class="text-[12px] font-bold" :class="playMode === 'individual' ? 'text-forest-600' : 'text-muted'">{{ __('general.individual') }}</div>
-                        <div class="text-[10px] text-muted">{{ __('general.race_friends') }}</div>
-                    </button>
-                    <button @click="playMode = 'teams'" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center" :class="playMode === 'teams' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                        <div class="text-[12px] font-bold" :class="playMode === 'teams' ? 'text-forest-600' : 'text-muted'">{{ __('general.teams') }}</div>
-                        <div class="text-[10px] text-muted">{{ __('general.groups') }}</div>
-                    </button>
+                    @foreach ($playModes as [$modeValue, $modeLabel, $modeSub])
+                        {{-- Bind to the Livewire $playMode so startQuest() actually uses the choice
+                             (values must match the PlayMode enum). --}}
+                        <button wire:click="$set('playMode', '{{ $modeValue }}')" class="flex-1 rounded-[12px] border-[1.5px] px-3 py-3 text-center {{ $playMode === $modeValue ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border' }}">
+                            <div class="text-[12px] font-bold {{ $playMode === $modeValue ? 'text-forest-600' : 'text-muted' }}">{{ $modeLabel }}</div>
+                            <div class="text-[10px] text-muted">{{ $modeSub }}</div>
+                        </button>
+                    @endforeach
                 </div>
 
                 {{-- Start Quest CTA --}}
