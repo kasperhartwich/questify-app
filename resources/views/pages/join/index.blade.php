@@ -82,27 +82,44 @@ class extends Component
 };
 ?>
 
-<div class="flex flex-col bg-cream px-4 pt-4">
-    {{-- Header (guest only — logged-in users have the bottom nav) --}}
+<div class="flex flex-col bg-cream px-5 pt-4">
+    {{-- Back button (guest only — logged-in users have the bottom nav) --}}
     @if ($isGuest)
-        <div class="flex items-center gap-3 pb-3">
+        <div class="flex items-center pb-2">
             <a href="/" class="flex h-[36px] w-[36px] items-center justify-center rounded-[11px] bg-cream-dark" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-bark"><path d="M15 18l-6-6 6-6"/></svg>
             </a>
-            <h1 class="font-heading text-[18px] font-bold text-bark">{{ __('general.join_quest') }}</h1>
         </div>
     @endif
+
+    {{-- Hero: headline + intro --}}
+    <div class="mb-7 mt-3">
+        <div class="mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-[16px] bg-amber-400/20">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-bark"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
+        </div>
+        <h1 class="mb-1 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('general.join_quest') }}</h1>
+        <p class="text-[13px] leading-relaxed text-muted">{{ __('general.join_intro') }}</p>
+    </div>
 
     {{-- Session code input --}}
     <div class="mb-4">
         <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted">{{ __('general.enter_session_code') }}</p>
         <x-code-boxes wire-model="joinCode" />
         @error('joinCode') <p class="mt-2 text-center text-[10px] text-coral">{{ $message }}</p> @enderror
-        <p class="mt-3 text-center text-[13px] text-muted">{{ __('general.ask_quest_master_code') }}</p>
     </div>
 
+    {{-- Continue button --}}
+    <button
+        wire:click="joinByCode"
+        class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark transition-opacity"
+        @if (strlen($joinCode) < 6) style="opacity: 0.45" @endif
+        @if (strlen($joinCode) < 6) disabled @endif
+    >
+        {{ __('general.continue') }} &rarr;
+    </button>
+
     {{-- OR divider --}}
-    <div class="flex items-center gap-3 py-4">
+    <div class="flex items-center gap-3 py-5">
         <div class="h-px flex-1 bg-cream-border"></div>
         <span class="text-[11px] font-semibold uppercase tracking-widest text-muted">{{ __('general.or') }}</span>
         <div class="h-px flex-1 bg-cream-border"></div>
@@ -116,23 +133,11 @@ class extends Component
 
     {{-- Log in / Sign up link (guest only) --}}
     @if ($isGuest)
-        <p class="mt-5 text-center text-[13px] text-muted">
+        <p class="mt-6 text-center text-[13px] text-muted">
             {{ __('general.have_an_account') }}
             <a href="/login" class="font-semibold text-forest-400" wire:navigate>{{ __('general.login') }}</a>
             {{ __('general.or_word') }}
             <a href="/register" class="font-semibold text-forest-400" wire:navigate>{{ __('general.register') }}</a>
         </p>
     @endif
-
-    {{-- Continue button --}}
-    <div class="mt-5">
-        <button
-            wire:click="joinByCode"
-            class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark transition-opacity"
-            @if (strlen($joinCode) < 6) style="opacity: 0.45" @endif
-            @if (strlen($joinCode) < 6) disabled @endif
-        >
-            {{ __('general.continue') }} &rarr;
-        </button>
-    </div>
 </div>

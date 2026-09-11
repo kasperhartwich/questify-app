@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\SocialProvider;
 use App\Services\Api\QuestifyApiClient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -31,10 +32,18 @@ class AppInfoService
             return $this->info;
         }
 
-        // Serve from cache instantly — never block a request on a network call.
-        // The cache is populated after login (QuestifyApiGuard::login) and
-        // refreshed by refresh() when needed.
-        $this->info = Cache::get(self::CACHE_KEY, $this->defaults());
+        // Serve from cache when populated (login seeds it, refresh() keeps it
+        // warm). On a cache miss — e.g. the login screen on a fresh install —
+        // fetch once so the UI reflects what the backend actually offers; only
+        // fall back to defaults when the backend is unreachable.
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if ($cached === null) {
+            $this->refresh();
+            $cached = Cache::get(self::CACHE_KEY);
+        }
+
+        $this->info = $cached ?? $this->defaults();
 
         return $this->info;
     }
@@ -62,6 +71,12 @@ class AppInfoService
     /**
      * Get the list of enabled social providers.
      *
+     * The backend is the source of truth: OAuth runs on the backend (the app
+     * opens its /auth/{provider}/redirect and receives the token back via the
+     * questify:// deep link), and its /info already reflects which providers
+     * hold credentials — so a provider is offered exactly when the backend
+     * says it is enabled.
+     *
      * @return array<int, string>
      */
     public function enabledSocialProviders(): array
@@ -69,9 +84,17 @@ class AppInfoService
         $methods = $this->authMethods();
 
         return array_values(array_filter(
-            ['google', 'facebook', 'apple', 'microsoft'],
+            array_map(fn (SocialProvider $provider): string => $provider->value, SocialProvider::cases()),
             fn (string $provider): bool => (bool) ($methods[$provider] ?? false),
         ));
+    }
+
+    /**
+     * Absolute backend URL that starts the OAuth flow for a provider.
+     */
+    public function socialRedirectUrl(string $provider): string
+    {
+        return rtrim(config('services.questify.url'), '/')."/auth/{$provider}/redirect";
     }
 
     /**
@@ -96,15 +119,17 @@ class AppInfoService
      */
     private function defaults(): array
     {
+        // Offline fallback: email/phone always work locally, but social login
+        // needs the backend — never offer providers we can't confirm.
         return [
             'data' => [
                 'auth_methods' => [
                     'email' => true,
                     'phone' => true,
-                    'google' => true,
-                    'facebook' => true,
-                    'apple' => true,
-                    'microsoft' => true,
+                    'google' => false,
+                    'facebook' => false,
+                    'apple' => false,
+                    'microsoft' => false,
                 ],
             ],
         ];

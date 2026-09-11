@@ -166,6 +166,15 @@ class extends Component
                     L.polyline(latLngs, { color: '#0B3D2E', weight: 3, dashArray: '6,4', opacity: 0.6 }).addTo(map);
                     map.fitBounds(L.latLngBounds(latLngs), { padding: [50, 50] });
                 }
+                // Leaflet caches the container size at construction. x-init runs
+                // before the hero box has been laid out (and again after a
+                // wire:navigate transition), so re-measure once the browser has
+                // painted and on every later size change.
+                requestAnimationFrame(() => map.invalidateSize());
+                if (window.ResizeObserver) {
+                    new ResizeObserver(() => map.invalidateSize())
+                        .observe($refs.detailMap);
+                }
             } catch (e) { console.error('Detail map init failed:', e); }
         };
         boot();

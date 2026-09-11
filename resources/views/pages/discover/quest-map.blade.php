@@ -2,6 +2,7 @@
 
 use App\Exceptions\Api\ApiException;
 use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -15,7 +16,7 @@ new
 #[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
-    use HandlesApiErrors, WithApiClient;
+    use HandlesApiErrors, RequestsLocation, WithApiClient;
 
     /**
      * Kept as a constant so the `#[Layout]` attribute contains no inline array —
@@ -40,11 +41,6 @@ class extends Component
         $this->loadPins();
     }
 
-
-    public function requestLocation(): void
-    {
-        Geolocation::getCurrentPosition();
-    }
 
     #[OnNative(LocationReceived::class)]
     public function onLocationReceived(

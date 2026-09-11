@@ -3,6 +3,10 @@
 use App\Enums\SocialProvider;
 use App\Models\SocialAccount;
 use App\Models\User;
+use App\Services\Api\QuestifyApiClient;
+use App\Services\Api\Resources\AuthResource;
+use App\Services\AppInfoService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Laravel\Socialite\Facades\Socialite;
@@ -213,6 +217,8 @@ it('returns 404 when unlinking provider not linked', function () {
 });
 
 it('redirects to social provider', function () {
+    config(['services.google.client_id' => 'test-client-id']);
+
     Socialite::shouldReceive('driver')
         ->with('google')
         ->andReturn(Mockery::mock()->shouldReceive('redirect')
@@ -230,7 +236,131 @@ it('rejects invalid social provider', function () {
     $response->assertStatus(302);
 });
 
+it('returns 404 for a provider without credentials', function (string $provider) {
+    $response = $this->get("/auth/{$provider}/redirect");
+
+    $response->assertNotFound();
+})->with(['google', 'facebook', 'apple', 'microsoft']);
+
+it('returns 404 for a provider without a socialite driver even when credentials are set', function () {
+    config(['services.apple.client_id' => 'com.focusweb.questify']);
+
+    $response = $this->get('/auth/apple/redirect');
+
+    $response->assertNotFound();
+});
+
+it('returns 404 on callback for an unavailable provider', function () {
+    $response = $this->get('/auth/apple/callback');
+
+    $response->assertNotFound();
+});
+
+it('returns 404 for a configured provider disabled by the backend', function () {
+    config(['services.google.client_id' => 'test-client-id']);
+    Cache::put('app_info', [
+        'data' => [
+            'auth_methods' => [
+                'email' => true,
+                'phone' => true,
+                'google' => false,
+                'facebook' => false,
+                'apple' => false,
+                'microsoft' => false,
+            ],
+        ],
+    ]);
+
+    $response = $this->get('/auth/google/redirect');
+
+    $response->assertNotFound();
+});
+
+it('only lists social providers the backend enables', function () {
+    Cache::put('app_info', [
+        'data' => [
+            'auth_methods' => [
+                'email' => true,
+                'phone' => true,
+                'google' => true,
+                'facebook' => false,
+                'apple' => true,
+                'microsoft' => false,
+            ],
+        ],
+    ]);
+
+    expect(app(AppInfoService::class)->enabledSocialProviders())
+        ->toBe(['google', 'apple']);
+});
+
+it('fetches backend info on a cache miss to decide social providers', function () {
+    // No cache seeded — the service must fetch /info (faked in Pest.php with
+    // all providers enabled) instead of guessing.
+    expect(app(AppInfoService::class)->enabledSocialProviders())
+        ->toBe(['google', 'facebook', 'apple', 'microsoft']);
+});
+
+it('builds the backend social redirect url', function () {
+    config(['services.questify.url' => 'https://questifyapp.net']);
+
+    expect(app(AppInfoService::class)->socialRedirectUrl('apple'))
+        ->toBe('https://questifyapp.net/auth/apple/redirect');
+});
+
+it('completes social login via the deep link callback', function () {
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+    mockFullApiClient();
+
+    $response = $this->get('/auth/callback?token=test-token');
+
+    $response->assertRedirect('/discover/list');
+    expect(auth()->check())->toBeTrue();
+});
+
+it('redirects to login when the deep link callback has no token', function () {
+    $this->get('/auth/callback')->assertRedirect('/login');
+});
+
+it('honours an internal redirect target on the deep link callback', function () {
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+    mockFullApiClient();
+
+    $this->get('/auth/callback?token=test-token&redirect=/quests/1')
+        ->assertRedirect('/quests/1');
+});
+
+it('ignores external redirect targets on the deep link callback', function () {
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+    mockFullApiClient();
+
+    $this->get('/auth/callback?token=test-token&redirect=https://evil.example')
+        ->assertRedirect('/discover/list');
+
+    $this->get('/auth/callback?token=test-token&redirect=//evil.example')
+        ->assertRedirect('/discover/list');
+});
+
+it('rejects an invalid deep link token', function () {
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+
+    $mockAuth = Mockery::mock(AuthResource::class);
+    $mockAuth->shouldReceive('me')->andThrow(new RuntimeException('Unauthenticated.'));
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    $this->get('/auth/callback?token=bad-token')->assertRedirect('/login');
+    expect(auth()->check())->toBeFalse();
+});
+
 it('handles social auth callback for new user', function () {
+    config(['services.google.client_id' => 'test-client-id']);
+
     $socialiteUser = Mockery::mock(SocialiteUser::class);
     $socialiteUser->shouldReceive('getId')->andReturn('12345');
     $socialiteUser->shouldReceive('getName')->andReturn('Social User');
@@ -257,6 +387,8 @@ it('handles social auth callback for new user', function () {
 });
 
 it('handles social auth callback for existing user', function () {
+    config(['services.google.client_id' => 'test-client-id']);
+
     $user = User::factory()->create(['email' => 'existing@example.com']);
     SocialAccount::create([
         'user_id' => $user->id,

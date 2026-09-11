@@ -6,6 +6,7 @@ use App\Enums\QuestionType;
 use App\Enums\WrongAnswerBehaviour;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use Livewire\Attributes\Session;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -17,19 +18,24 @@ class extends Component
 {
     use HandlesApiErrors, WithApiClient, WithFileUploads;
 
+    #[Session(key: 'quest_wizard.step')]
     public int $step = 1;
 
     // Step 1: Basics
     #[Validate('required|string|max:255')]
+    #[Session(key: 'quest_wizard.title')]
     public string $title = '';
 
     #[Validate('nullable|string|max:2000')]
+    #[Session(key: 'quest_wizard.description')]
     public string $description = '';
 
     #[Validate('required')]
+    #[Session(key: 'quest_wizard.categoryId')]
     public $categoryId = '';
 
     #[Validate('required')]
+    #[Session(key: 'quest_wizard.difficulty')]
     public string $difficulty = '';
 
     #[Validate('nullable|image|max:2048')]
@@ -37,35 +43,48 @@ class extends Component
 
     // Step 2: Checkpoints
     /** @var array<int, array{title: string, description: string, latitude: ?float, longitude: ?float}> */
+    #[Session(key: 'quest_wizard.checkpoints')]
     public array $checkpoints = [];
 
     // Step 3: Questions (keyed by checkpoint index)
     /** @var array<int, array<int, array{body: string, type: string, hint: string, points: int, answers: array}>> */
+    #[Session(key: 'quest_wizard.questions')]
     public array $questions = [];
 
     // Step 4: Game Rules
+    #[Session(key: 'quest_wizard.playMode')]
     public string $playMode = 'solo';
 
+    #[Session(key: 'quest_wizard.wrongAnswerBehaviour')]
     public string $wrongAnswerBehaviour = 'retry_free';
 
+    #[Session(key: 'quest_wizard.timeLimitPerQuestion')]
     public ?int $timeLimitPerQuestion = 30;
 
+    #[Session(key: 'quest_wizard.shuffleQuestions')]
     public bool $shuffleQuestions = false;
 
+    #[Session(key: 'quest_wizard.shuffleAnswers')]
     public bool $shuffleAnswers = false;
 
+    #[Session(key: 'quest_wizard.maxParticipants')]
     public ?int $maxParticipants = null;
 
     // Step 4 extras
+    #[Session(key: 'quest_wizard.visibility')]
     public string $visibility = 'public';
 
+    #[Session(key: 'quest_wizard.scoringSpeedBonus')]
     public bool $scoringSpeedBonus = false;
 
+    #[Session(key: 'quest_wizard.scoringWrongPenalty')]
     public bool $scoringWrongPenalty = false;
 
+    #[Session(key: 'quest_wizard.scoringCompletionBonus')]
     public bool $scoringCompletionBonus = true;
 
     // Step 3 navigation
+    #[Session(key: 'quest_wizard.activeCheckpointIndex')]
     public int $activeCheckpointIndex = 0;
 
     public int $activeQuestionIndex = 0;
@@ -80,10 +99,9 @@ class extends Component
             ->pluck('name', 'id')
             ->toArray();
 
-        // Start empty: each map tap appends exactly one checkpoint with coordinates. Seeding a
-        // blank here left a permanent coordinate-less checkpoint that failed step-2 validation.
-        $this->checkpoints = [];
-        $this->questions = [];
+        // Both default to [] — each map tap appends exactly one checkpoint with
+        // coordinates. Do NOT reset them here: #[Session] restores an in-progress
+        // draft before mount() runs, and clearing would throw that away.
     }
 
     public function nextStep(): void
@@ -283,7 +301,32 @@ class extends Component
             $this->tryApiCall(fn () => $this->api->quests()->publish($questId));
         }
 
+        $this->clearDraft();
+
         $this->redirect('/quests/' . $questId);
+    }
+
+    /**
+     * Drop the persisted draft and reset the wizard. Called after a successful
+     * save and by the "start over" action.
+     */
+    public function clearDraft(): void
+    {
+        foreach (array_keys(session()->all()) as $key) {
+            if (str_starts_with((string) $key, 'quest_wizard.')) {
+                session()->forget($key);
+            }
+        }
+
+        $this->step = 1;
+        $this->title = '';
+        $this->description = '';
+        $this->categoryId = '';
+        $this->difficulty = '';
+        $this->checkpoints = [];
+        $this->questions = [];
+        $this->activeCheckpointIndex = 0;
+        $this->activeQuestionIndex = 0;
     }
 
     private function validateStep(): void

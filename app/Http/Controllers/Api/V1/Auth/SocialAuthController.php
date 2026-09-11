@@ -6,6 +6,7 @@ use App\Enums\SocialProvider;
 use App\Http\Controllers\Controller;
 use App\Models\SocialAccount;
 use App\Models\User;
+use App\Services\AppInfoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Enum;
@@ -18,6 +19,8 @@ use Laravel\Socialite\Facades\Socialite;
  */
 class SocialAuthController extends Controller
 {
+    public function __construct(private AppInfoService $appInfo) {}
+
     /**
      * Redirect to provider
      *
@@ -32,6 +35,7 @@ class SocialAuthController extends Controller
     public function redirect(string $provider): RedirectResponse
     {
         $this->validateProvider($provider);
+        $this->ensureProviderIsAvailable($provider);
 
         return Socialite::driver($provider)->redirect();
     }
@@ -50,6 +54,7 @@ class SocialAuthController extends Controller
     public function callback(string $provider): RedirectResponse
     {
         $this->validateProvider($provider);
+        $this->ensureProviderIsAvailable($provider);
 
         $socialUser = Socialite::driver($provider)->user();
 
@@ -136,5 +141,23 @@ class SocialAuthController extends Controller
         request()->validate([
             'provider' => ['required', new Enum(SocialProvider::class)],
         ]);
+    }
+
+    /**
+     * Abort with 404 when the provider is not enabled by the backend or not
+     * configured locally. These local OAuth routes are a legacy path — the app
+     * normally opens the backend's redirect URL — so they only respond when
+     * this installation actually holds credentials AND a Socialite driver.
+     * Unlinking is deliberately not gated — users must always be able to
+     * disconnect an already-linked account.
+     */
+    private function ensureProviderIsAvailable(string $provider): void
+    {
+        abort_unless(
+            in_array($provider, $this->appInfo->enabledSocialProviders(), true)
+                && SocialProvider::from($provider)->isConfigured(),
+            404,
+            'Social provider not available.',
+        );
     }
 }

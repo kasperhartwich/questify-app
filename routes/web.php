@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\SocialCallbackController;
 use Illuminate\Support\Facades\Route;
 
 // Welcome (guest landing page)
@@ -25,6 +26,9 @@ Route::livewire('/register', 'pages::auth.register')->name('register');
 Route::livewire('/forgot-password', 'pages::auth.forgot-password')->name('password.request');
 
 // OAuth routes
+// The deep-link consumer: the backend's social callback redirects to
+// questify://auth/callback?token=… which the native shell opens as this route.
+Route::get('auth/callback', SocialCallbackController::class)->name('auth.social.deeplink');
 Route::get('auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 

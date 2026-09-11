@@ -1,4 +1,4 @@
-<div class="flex min-h-screen flex-col bg-cream">
+<div class="flex flex-col bg-cream">
 
     {{-- ============================================================ --}}
     {{-- STEP 1: Quest Info --}}
@@ -6,7 +6,7 @@
     @if ($step === 1)
         <div class="flex flex-1 flex-col px-4">
             {{-- Header --}}
-            <x-step-indicator :current="1" :total="6" back-url="/" />
+            <x-step-indicator :current="1" :total="6" />
 
             <h1 class="font-heading text-[22px] font-extrabold text-bark">{{ __('general.quest_info') }}</h1>
             <p class="mb-5 mt-1 text-[13px] text-muted">{{ __('general.quest_info_subtitle') }}</p>
@@ -41,7 +41,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-[15px]">{{ app()->getLocale() === 'da' ? "\u{1F1E9}\u{1F1F0}" : "\u{1F1EC}\u{1F1E7}" }}</span>
                         <span class="text-[14px] font-semibold text-bark">{{ app()->getLocale() === 'da' ? __('general.danish') : __('general.english') }}</span>
-                        <a href="/settings" class="ml-auto text-[13px] font-semibold text-forest-400" wire:navigate>{{ __('general.change') }}</a>
+                        <a href="/profile?settings=1" class="ml-auto text-[13px] font-semibold text-forest-400" wire:navigate>{{ __('general.change') }}</a>
                     </div>
                 </div>
 
@@ -60,7 +60,8 @@
     {{-- STEP 2: Checkpoints --}}
     {{-- ============================================================ --}}
     @if ($step === 2)
-        <div class="flex flex-1 flex-col"
+        <div class="flex flex-col overflow-hidden"
+            style="height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 96px)"
             x-data="{
                 map: null,
                 markers: [],
@@ -199,9 +200,16 @@
 
             {{-- CTA --}}
             <div class="border-t border-cream-border bg-white px-4 py-3">
-                <button wire:click="nextStep" class="flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark shadow-sm">
+                <button
+                    wire:click="nextStep"
+                    @disabled(count($checkpoints) < 2)
+                    class="flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark shadow-sm transition-opacity disabled:opacity-45"
+                >
                     {{ __('general.next_add_questions') }} &rarr;
                 </button>
+                @if (count($checkpoints) < 2)
+                    <p class="mt-2 text-center text-[11px] text-muted">{{ __('quests.checkpoints_min') }}</p>
+                @endif
             </div>
         </div>
     @endif

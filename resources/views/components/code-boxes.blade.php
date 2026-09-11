@@ -6,7 +6,7 @@
 
 <div
     x-data="{
-        code: @entangle($wireModel),
+        code: @entangle($wireModel).live,
         length: {{ $length }},
         boxes: Array({{ $length }}).fill(''),
         focusIndex: 0,

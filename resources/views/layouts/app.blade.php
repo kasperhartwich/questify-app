@@ -50,7 +50,7 @@
         </div>
 
         {{-- Main Content --}}
-        <main class="{{ ($fullscreen ?? false) ? 'h-screen overflow-hidden' : 'min-h-screen pb-[90px]' }} {{ $bodyClass ?? 'bg-cream' }} {{ ($skipSafeAreaTop ?? false) ? '' : 'pt-[env(safe-area-inset-top,0px)]' }}">
+        <main class="{{ ($fullscreen ?? false) ? 'h-screen overflow-hidden' : 'min-h-screen pb-[calc(env(safe-area-inset-bottom,0px)+96px)]' }} {{ $bodyClass ?? 'bg-cream' }} {{ ($skipSafeAreaTop ?? false) ? '' : 'pt-[env(safe-area-inset-top,0px)]' }}">
             {{ $slot }}
         </main>
 

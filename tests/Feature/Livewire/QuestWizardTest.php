@@ -75,7 +75,19 @@ it('validates step 1 before advancing', function () {
         ->test('pages::create.quest-wizard');
 
     $component->call('nextStep')
-        ->assertHasErrors(['title', 'difficulty']);
+        ->assertHasErrors(['title']);
+});
+
+it('validates category and difficulty on the details step', function () {
+    mockQuestWizardApiClient();
+    Category::factory()->create(['id' => 1]);
+
+    $component = Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 5)
+        ->call('nextStep');
+
+    $component->assertHasErrors(['categoryId', 'difficulty']);
 });
 
 it('advances from step 1 to step 2 with valid data', function () {
@@ -98,8 +110,11 @@ it('adds and removes checkpoints', function () {
     $component = Livewire::actingAs(User::factory()->create())
         ->test('pages::create.quest-wizard');
 
-    // Starts with 1 checkpoint from mount()
-    $component->assertCount('checkpoints', 1);
+    // Starts empty: each map tap appends exactly one checkpoint
+    $component->assertCount('checkpoints', 0);
+
+    $component->call('addCheckpoint')
+        ->assertCount('checkpoints', 1);
 
     $component->call('addCheckpoint')
         ->assertCount('checkpoints', 2);
@@ -114,7 +129,8 @@ it('does not remove the last checkpoint', function () {
     $component = Livewire::actingAs(User::factory()->create())
         ->test('pages::create.quest-wizard');
 
-    $component->call('removeCheckpoint', 0)
+    $component->call('addCheckpoint')
+        ->call('removeCheckpoint', 0)
         ->assertCount('checkpoints', 1);
 });
 
@@ -219,4 +235,64 @@ it('sends the visibility property instead of hardcoded public', function () {
         ->call('saveAsDraft');
 
     expect($capturedData['visibility'])->toBe('private');
+});
+
+it('disables the step 2 CTA until the quest has a route', function () {
+    mockQuestWizardApiClient();
+
+    $component = Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 2);
+
+    // No checkpoints yet: the CTA is disabled and says why.
+    $component->assertSee(__('quests.checkpoints_min'));
+
+    $component->call('addCheckpoint')->call('addCheckpoint');
+
+    $component->assertDontSee(__('quests.checkpoints_min'));
+});
+
+it('resumes a draft after navigating away from the wizard', function () {
+    mockQuestWizardApiClient();
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Half-finished Walk')
+        ->set('step', 2)
+        ->call('addCheckpoint');
+
+    // A fresh component instance is what you get after visiting Profile and
+    // coming back — it must pick the draft up again.
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard')
+        ->assertSet('title', 'Half-finished Walk')
+        ->assertSet('step', 2)
+        ->assertCount('checkpoints', 1);
+});
+
+it('starts clean after the draft is discarded', function () {
+    mockQuestWizardApiClient();
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Abandoned')
+        ->call('clearDraft');
+
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard')
+        ->assertSet('title', '')
+        ->assertSet('step', 1);
+});
+
+it('offers no back link on the first wizard step', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->assertSet('step', 1)
+        // The old back arrow pointed at "/", which renders the logged-out
+        // welcome screen and reads as being signed out.
+        ->assertDontSeeHtml('href="/"');
 });

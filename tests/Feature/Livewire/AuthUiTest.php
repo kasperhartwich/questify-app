@@ -1,8 +1,10 @@
 <?php
 
+use App\Auth\ApiTokenUser;
 use App\Models\User;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\AuthResource;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Livewire;
 
 it('renders the login page', function () {
@@ -194,4 +196,53 @@ it('login back to login resets OTP state', function () {
         ->assertSet('step', 'login')
         ->assertSet('otp_code', '')
         ->assertSet('login_token', '');
+});
+
+it('hides the tester button when the backend does not offer it', function () {
+    Cache::put('app_info', ['data' => ['auth_methods' => [
+        'email' => true, 'phone' => true, 'tester' => false,
+    ]]]);
+
+    Livewire::test('pages::auth.login')
+        ->assertSet('testerEnabled', false)
+        ->assertDontSee('Tester');
+});
+
+it('shows the tester button when the backend offers it', function () {
+    Cache::put('app_info', ['data' => ['auth_methods' => [
+        'email' => true, 'phone' => true, 'tester' => true,
+    ]]]);
+
+    Livewire::test('pages::auth.login')
+        ->assertSet('testerEnabled', true)
+        ->assertSee('Tester');
+});
+
+it('refuses tester login when the backend does not offer it', function () {
+    Cache::put('app_info', ['data' => ['auth_methods' => [
+        'email' => true, 'phone' => true, 'tester' => false,
+    ]]]);
+
+    Livewire::test('pages::auth.login')
+        ->call('loginAsTester')
+        ->assertNoRedirect();
+
+    expect(auth()->check())->toBeFalse();
+});
+
+it('derives linked accounts from the authenticated user', function () {
+    $user = new ApiTokenUser([
+        'id' => 1, 'name' => 'Kasper', 'email' => 'k@example.com',
+        'locale' => 'en', 'linked_providers' => ['apple'],
+    ]);
+
+    expect($user->linkedProviders)->toBe(['apple']);
+});
+
+it('defaults to no linked providers when the API omits them', function () {
+    $user = new ApiTokenUser([
+        'id' => 1, 'name' => 'Kasper', 'email' => 'k@example.com', 'locale' => 'en',
+    ]);
+
+    expect($user->linkedProviders)->toBe([]);
 });

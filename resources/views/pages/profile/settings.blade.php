@@ -1,9 +1,9 @@
 <?php
 
 use App\Auth\QuestifyApiGuard;
-use App\Enums\SocialProvider;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use App\Services\AppInfoService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -50,6 +50,10 @@ class extends Component
 
     public function mount(): void
     {
+        // /profile?settings=1 opens the settings panel directly, so links that
+        // point at a specific setting (e.g. language) land where they promise.
+        $this->showSettings = request()->boolean('settings');
+
         $user = Auth::user();
         $this->name = $user->name ?? '';
         $this->email = $user->email ?? '';
@@ -174,9 +178,17 @@ class extends Component
      */
     public function getLinkedAccountsProperty(): array
     {
+        $linked = Auth::user()->linkedProviders ?? [];
+
         $accounts = [];
-        foreach (SocialProvider::cases() as $provider) {
-            $accounts[$provider->value] = false;
+        foreach (app(AppInfoService::class)->enabledSocialProviders() as $provider) {
+            $accounts[$provider] = in_array($provider, $linked, true);
+        }
+
+        // A provider the backend no longer offers can still be linked — the user
+        // must be able to see and disconnect it.
+        foreach ($linked as $provider) {
+            $accounts[$provider] ??= true;
         }
 
         return $accounts;
@@ -376,7 +388,7 @@ class extends Component
                                 @if ($isLinked)
                                     <span class="rounded-full bg-[#D4EDE4] px-[10px] py-[4px] text-[11px] font-bold text-[#0A5A3A]">{{ __('general.connected') }}</span>
                                 @else
-                                    <a href="/auth/{{ $provider }}/redirect" class="rounded-full px-[10px] py-[4px] text-[11px] font-semibold text-muted" style="border: 1.5px solid #E5DDD0;">{{ __('general.connect') }}</a>
+                                    <a href="{{ app(AppInfoService::class)->socialRedirectUrl($provider) }}" class="rounded-full px-[10px] py-[4px] text-[11px] font-semibold text-muted" style="border: 1.5px solid #E5DDD0;">{{ __('general.connect') }}</a>
                                 @endif
                             </div>
                         @endforeach

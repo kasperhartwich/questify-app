@@ -1,4 +1,4 @@
-<div class="flex flex-col bg-cream">
+<div class="flex flex-col bg-cream" wire:init="requestLocation">
     <style>
         .leaflet-quest-marker {
             background-color: #0B3D2E;
@@ -72,6 +72,14 @@
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             maxZoom: 19,
                         }).addTo(miniMap);
+
+                        // Re-measure once painted: Leaflet caches the container
+                        // size at construction, before the layout has settled.
+                        requestAnimationFrame(() => miniMap.invalidateSize());
+                        if (window.ResizeObserver) {
+                            new ResizeObserver(() => miniMap.invalidateSize())
+                                .observe(this.$refs.miniMap);
+                        }
                         const quests = @js(
                             collect($quests)->filter(fn($q) => !empty($q->starting_checkpoint->latitude ?? ($q->checkpoints[0]->latitude ?? null)))
                             ->map(fn($q) => [

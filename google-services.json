@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:284645309886:android:f69341e37f35d3e3a04def",
         "android_client_info": {
-          "package_name": "focusweb.questify"
+          "package_name": "com.focusweb.questify"
         }
       },
       "oauth_client": [],

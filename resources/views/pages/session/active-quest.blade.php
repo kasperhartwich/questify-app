@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use App\Models\Quest;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ new
 #[Title('Active Quest')]
 class extends Component
 {
-    use HandlesApiErrors, WithApiClient;
+    use HandlesApiErrors, RequestsLocation, WithApiClient;
 
     public string $code = '';
 
@@ -95,9 +96,9 @@ class extends Component
         $this->loadLeaderboard();
     }
 
-    public function requestLocation(): void
+    protected function wantsFineLocation(): bool
     {
-        Geolocation::getCurrentPosition(true);
+        return true;
     }
 
     #[OnNative(LocationReceived::class)]
@@ -248,6 +249,14 @@ class extends Component
                         zoomControl: false,
                     });
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
+
+                    // Re-measure once painted: Leaflet caches the container size
+                    // at construction, before the layout has settled.
+                    requestAnimationFrame(() => this.map.invalidateSize());
+                    if (window.ResizeObserver) {
+                        new ResizeObserver(() => this.map.invalidateSize())
+                            .observe(this.$refs.activeMap);
+                    }
 
                     checkpoints.forEach((cp, i) => {
                         if (!cp.latitude || !cp.longitude) return;

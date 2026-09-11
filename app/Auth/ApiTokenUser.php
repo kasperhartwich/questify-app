@@ -18,6 +18,9 @@ class ApiTokenUser implements Authenticatable
 
     public ?string $createdAt;
 
+    /** @var array<int, string> Social providers this account is linked to. */
+    public array $linkedProviders;
+
     public function __construct(array $data)
     {
         $this->id = $data['id'];
@@ -26,6 +29,7 @@ class ApiTokenUser implements Authenticatable
         $this->avatarUrl = $data['avatar_url'] ?? null;
         $this->locale = $data['locale'] ?? 'en';
         $this->createdAt = $data['created_at'] ?? null;
+        $this->linkedProviders = $data['linked_providers'] ?? [];
     }
 
     public function getAuthIdentifierName(): string

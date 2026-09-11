@@ -256,11 +256,11 @@ return [
 
     'permissions' => [
         'biometric' => false,
-        'camera' => true,
+        'camera' => 'Questify uses the camera to scan the QR code that joins you to a quest session.',
         'microphone' => false,
         'microphone_background' => false,
         'push_notifications' => true,
-        'location' => true,
+        'location' => 'Questify uses your location to show quests near you and to confirm that you have reached a checkpoint while playing.',
         'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,

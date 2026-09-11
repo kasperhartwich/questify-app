@@ -57,3 +57,47 @@ it('applies a successful location fix on the map page', function () {
         ->assertSet('latitude', 40.0)
         ->assertSet('longitude', -74.0);
 });
+
+/**
+ * Geolocation::getCurrentPosition() never surfaces the OS permission dialog on
+ * its own — with an undetermined permission the button silently does nothing.
+ * requestLocation() must go through checkPermissions() → requestPermissions().
+ */
+it('asks for permission when the status is undetermined', function (string $component) {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test($component)
+        ->call('onLocationPermissionStatus', 'not_determined', 'not_determined', 'not_determined')
+        ->assertOk();
+})->with([
+    'map' => 'pages::discover.quest-map',
+    'list' => 'pages::discover.quest-list',
+]);
+
+it('warns the user when location permission is denied', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-map')
+        ->call('onLocationPermissionStatus', 'denied', 'denied', 'denied')
+        ->assertDispatched('api-error');
+});
+
+it('warns with the settings hint when permission is permanently denied', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-map')
+        ->call('onLocationPermissionRequestResult', 'permanently_denied', 'denied', 'denied')
+        ->assertDispatched('api-error', message: __('general.location_permission_blocked'));
+});
+
+it('reads the position once permission is granted', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-map')
+        ->call('onLocationPermissionRequestResult', 'granted', 'granted', 'granted')
+        ->assertNotDispatched('api-error');
+});

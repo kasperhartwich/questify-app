@@ -2,6 +2,7 @@
 
 use App\Enums\Difficulty;
 use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -14,7 +15,7 @@ new
 #[Title('Discover')]
 class extends Component
 {
-    use HandlesApiErrors, WithApiClient;
+    use HandlesApiErrors, RequestsLocation, WithApiClient;
 
     #[Url]
     public string $search = '';
@@ -41,12 +42,6 @@ class extends Component
         $this->categoriesData = $categoryResponse['data'] ?? [];
 
         $this->loadQuests();
-
-        try {
-            Geolocation::getCurrentPosition();
-        } catch (\Throwable) {
-            // Not on native device
-        }
     }
 
     #[OnNative(LocationReceived::class)]
