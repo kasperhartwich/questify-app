@@ -32,13 +32,15 @@ class UserApiResource
      * @param  array{name?: string, locale?: string}  $data
      * @param  string|null  $avatarPath  Local file path for avatar upload
      */
-    public function updateProfile(array $data, ?string $avatarPath = null): array
+    public function updateProfile(array $data, ?string $avatarPath = null, ?string $avatarName = null): array
     {
         $result = $avatarPath
             ? $this->client->postMultipart('/user/profile', array_merge($data, ['_method' => 'PUT']), [
                 'avatar' => [
                     'path' => $avatarPath,
-                    'name' => basename($avatarPath),
+                    // The temporary upload path carries no extension, and the
+                    // API validates the file as an image — send the real name.
+                    'name' => $avatarName ?: basename($avatarPath),
                 ],
             ])
             : $this->client->put('/user/profile', $data);

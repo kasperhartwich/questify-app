@@ -354,11 +354,12 @@ class extends Component
         ];
 
         $coverImagePath = $this->coverImage ? $this->coverImage->getRealPath() : null;
+        $coverImageName = $this->coverImage ? $this->coverImage->getClientOriginalName() : null;
 
         try {
             $response = $this->draftQuestId !== null
-                ? $this->api->quests()->update($this->draftQuestId, $data, $coverImagePath)
-                : $this->api->quests()->store($data, $coverImagePath);
+                ? $this->api->quests()->update($this->draftQuestId, $data, $coverImagePath, $coverImageName)
+                : $this->api->quests()->store($data, $coverImagePath, $coverImageName);
         } catch (\App\Exceptions\Api\ApiValidationException $e) {
             $this->dispatch('api-error', message: collect($e->errors)->flatten()->first());
 

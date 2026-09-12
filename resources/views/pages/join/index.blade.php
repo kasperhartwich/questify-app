@@ -94,9 +94,6 @@ class extends Component
 
     {{-- Hero: headline + intro --}}
     <div class="mb-7 mt-3">
-        <div class="mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-[16px] bg-amber-400/20">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-bark"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="3.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="16.5" y="3.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="2" y="15" width="7" height="7" rx="1"/><rect x="3.5" y="16.5" width="4" height="4" fill="currentColor" stroke="none"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="18" y="14" width="2.5" height="2.5"/><rect x="14" y="18" width="2.5" height="2.5"/><rect x="18" y="18" width="2.5" height="2.5"/></svg>
-        </div>
         <h1 class="mb-1 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('general.join_quest') }}</h1>
         <p class="text-[13px] leading-relaxed text-muted">{{ __('general.join_intro') }}</p>
     </div>

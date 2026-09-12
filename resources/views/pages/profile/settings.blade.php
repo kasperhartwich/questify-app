@@ -2,6 +2,7 @@
 
 use App\Auth\QuestifyApiGuard;
 use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use App\Services\AppInfoService;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,11 @@ class extends Component
 
     public bool $showSettings = false;
 
+    /** 'granted' | 'denied' | 'not_determined' | 'permanently_denied' | 'unknown' */
+    public string $locationPermission = 'unknown';
+
+    public string $pushPermission = 'unknown';
+
     /** @var array<string, mixed> */
     public array $stats = [];
 
@@ -53,6 +59,8 @@ class extends Component
         // /profile?settings=1 opens the settings panel directly, so links that
         // point at a specific setting (e.g. language) land where they promise.
         $this->showSettings = request()->boolean('settings');
+
+        $this->refreshPermissionStates();
 
         $user = Auth::user();
         $this->name = $user->name ?? '';
@@ -105,14 +113,16 @@ class extends Component
         ]);
 
         $avatarPath = null;
+        $avatarName = null;
         if ($this->avatar) {
             $avatarPath = $this->avatar->getRealPath();
+            $avatarName = $this->avatar->getClientOriginalName();
         }
 
         $this->tryApiCall(fn () => $this->api->user()->updateProfile([
             'name' => $validated['name'],
             'locale' => $validated['locale'],
-        ], $avatarPath));
+        ], $avatarPath, $avatarName));
 
         // Update session user data
         $meResponse = $this->tryApiCall(fn () => $this->api->auth()->me());
@@ -150,6 +160,41 @@ class extends Component
         $guard->logout();
 
         $this->redirect('/');
+    }
+
+    /**
+     * Read the OS-level answers so the rows show what the device actually
+     * allows, not just what the account prefers.
+     */
+    public function refreshPermissionStates(): void
+    {
+        try {
+            $this->pushPermission = \Native\Mobile\Facades\PushNotifications::checkPermission() ?: 'unknown';
+        } catch (\Throwable) {
+            $this->pushPermission = 'unknown';
+        }
+
+        try {
+            \Native\Mobile\Facades\Geolocation::checkPermissions()->get();
+        } catch (\Throwable) {
+            // Not on a device — leave it unknown.
+        }
+    }
+
+    /** Ask for location access from the permissions row. */
+    public function requestLocationPermission(): void
+    {
+        $this->requestLocation();
+    }
+
+    /** Ask for push access; enroll() is what surfaces the OS prompt. */
+    public function requestPushPermission(): void
+    {
+        try {
+            \Native\Mobile\Facades\PushNotifications::enroll();
+        } catch (\Throwable) {
+            // Not on a device.
+        }
     }
 
     public function togglePushNotifications(): void
@@ -395,10 +440,26 @@ class extends Component
                     </div>
                 </div>
 
-                {{-- Notifications Section --}}
+                {{-- Permissions Section: what the device actually allows, with a
+                     tap to ask when it does not. --}}
                 <div>
-                    <p class="mb-[8px] px-[16px] text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.notifications') }}</p>
+                    <p class="mb-[8px] px-[16px] text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.permissions') }}</p>
                     <div class="overflow-hidden rounded-[14px] bg-white" style="border: 1.5px solid #E5DDD0;">
+                        {{-- Location --}}
+                        <button
+                            type="button"
+                            wire:click="requestLocationPermission"
+                            @disabled($locationPermission === 'granted')
+                            class="flex w-full items-center gap-3 border-b px-[16px] py-[13px] text-left"
+                            style="border-color: #E5DDD0;"
+                        >
+                            <div class="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] bg-[#E8F5E9]">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#0B3D2E" stroke="none"/></svg>
+                            </div>
+                            <span class="flex-1 text-[14px] font-semibold text-bark">{{ __('general.location') }}</span>
+                            <x-permission-badge :status="$locationPermission" />
+                        </button>
+
                         {{-- Push Notifications --}}
                         <div class="flex items-center gap-3 border-b px-[16px] py-[13px]" style="border-color: #E5DDD0;">
                             <div class="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] bg-amber-100">
@@ -408,6 +469,11 @@ class extends Component
                                 </svg>
                             </div>
                             <span class="flex-1 text-[14px] font-semibold text-bark">{{ __('general.push_notifications') }}</span>
+                            @if ($pushPermission !== 'granted')
+                                <button type="button" wire:click="requestPushPermission" class="mr-2">
+                                    <x-permission-badge :status="$pushPermission" />
+                                </button>
+                            @endif
                             {{-- Toggle --}}
                             <button
                                 wire:click="togglePushNotifications"

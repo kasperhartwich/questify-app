@@ -39,6 +39,8 @@ trait RequestsLocation
     #[OnNative(PermissionStatusReceived::class)]
     public function onLocationPermissionStatus(string $location = '', string $coarseLocation = '', string $fineLocation = ''): void
     {
+        $this->rememberLocationPermission($location);
+
         if ($location === 'granted') {
             $this->fetchCurrentPosition();
 
@@ -57,6 +59,8 @@ trait RequestsLocation
     #[OnNative(PermissionRequestResult::class)]
     public function onLocationPermissionRequestResult(string $location = '', string $coarseLocation = '', string $fineLocation = '', ?string $error = null): void
     {
+        $this->rememberLocationPermission($location);
+
         if ($location === 'granted') {
             $this->fetchCurrentPosition();
 
@@ -64,6 +68,17 @@ trait RequestsLocation
         }
 
         $this->onLocationPermissionDenied($location);
+    }
+
+    /**
+     * Screens that show the permission state (Settings) declare a
+     * $locationPermission property; everyone else ignores this.
+     */
+    protected function rememberLocationPermission(string $status): void
+    {
+        if (property_exists($this, 'locationPermission')) {
+            $this->locationPermission = $status;
+        }
     }
 
     /**

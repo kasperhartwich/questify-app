@@ -46,13 +46,15 @@ class QuestApiResource
      * @param  array<string, mixed>  $data
      * @param  string|null  $coverImagePath  Local path to cover image file
      */
-    public function store(array $data, ?string $coverImagePath = null): array
+    public function store(array $data, ?string $coverImagePath = null, ?string $coverImageName = null): array
     {
         $result = $coverImagePath
             ? $this->client->postMultipart('/quests', $data, [
                 'cover_image' => [
                     'path' => $coverImagePath,
-                    'name' => basename($coverImagePath),
+                    // Temporary upload paths have no extension; the API
+                    // validates the file as an image.
+                    'name' => $coverImageName ?: basename($coverImagePath),
                 ],
             ])
             : $this->client->post('/quests', $data);
@@ -66,13 +68,15 @@ class QuestApiResource
     /**
      * @param  array<string, mixed>  $data
      */
-    public function update(int $id, array $data, ?string $coverImagePath = null): array
+    public function update(int $id, array $data, ?string $coverImagePath = null, ?string $coverImageName = null): array
     {
         $result = $coverImagePath
             ? $this->client->postMultipart("/quests/{$id}", array_merge($data, ['_method' => 'PUT']), [
                 'cover_image' => [
                     'path' => $coverImagePath,
-                    'name' => basename($coverImagePath),
+                    // Temporary upload paths have no extension; the API
+                    // validates the file as an image.
+                    'name' => $coverImageName ?: basename($coverImagePath),
                 ],
             ])
             : $this->client->put("/quests/{$id}", $data);

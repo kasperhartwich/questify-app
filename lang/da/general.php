@@ -244,4 +244,9 @@ return [
     'unexpected_error' => 'Der opstod en uventet fejl. Prøv igen.',
     'delete_account_title' => 'Slet konto?',
     'delete_account_message' => 'Dette vil permanent fjerne din konto og alle dens data. Dette kan ikke fortrydes.',
+    'permissions' => 'Tilladelser',
+    'location' => 'Lokation',
+    'permission_granted' => 'Tilladt',
+    'permission_denied' => 'Blokeret',
+    'permission_ask' => 'Tillad',
 ];

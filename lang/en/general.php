@@ -248,4 +248,9 @@ return [
     'unexpected_error' => 'An unexpected error occurred. Please try again.',
     'delete_account_title' => 'Delete account?',
     'delete_account_message' => 'This will permanently remove your account and all its data. This cannot be undone.',
+    'permissions' => 'Permissions',
+    'location' => 'Location',
+    'permission_granted' => 'Allowed',
+    'permission_denied' => 'Blocked',
+    'permission_ask' => 'Allow',
 ];
