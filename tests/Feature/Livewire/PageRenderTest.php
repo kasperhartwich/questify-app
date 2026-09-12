@@ -88,3 +88,11 @@ it('renders create quest page', function () {
 });
 
 // Session pages require deeper Blade template updates and are tested via the API tests
+
+it('shows the category alongside the difficulty on a quest card', function () {
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/list')
+        ->assertOk()
+        ->assertSee(__('general.medium'))
+        ->assertSee('History');
+});

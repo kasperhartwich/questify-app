@@ -87,7 +87,10 @@
                 </span>
             @endif
             @if ($quest->difficulty ?? null)
-                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $difficultyClass }}">{{ ucfirst($quest->difficulty) }}</span>
+                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $difficultyClass }}">{{ __('general.'.$quest->difficulty) }}</span>
+            @endif
+            @if ($quest->category->name ?? null)
+                <span class="rounded-full bg-cream-dark px-2 py-0.5 text-[10px] font-bold text-muted">{{ $quest->category->name }}</span>
             @endif
         </div>
 
