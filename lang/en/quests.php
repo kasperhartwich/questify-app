@@ -60,7 +60,7 @@ return [
     'invalid_access_code' => 'Invalid access code. Please try again.',
     'answers_need_text' => 'Every answer option needs text, and a question needs at least two options.',
     'answers_need_one_correct' => 'Mark exactly one answer as the correct one.',
-    'discard_quest' => 'Discard this quest',
-    'discard_quest_confirm' => 'Delete this quest and everything you have added? This cannot be undone.',
-    'quest_discarded' => 'Quest discarded. You can start a new one.',
+    'discard_quest' => 'Cancel and start over',
+    'discard_quest_confirm' => 'Clear this quest and start over? Anything you already saved stays in My Quests as a draft.',
+    'quest_discarded' => 'Cleared. Any saved draft is waiting in My Quests.',
 ];

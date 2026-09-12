@@ -317,15 +317,12 @@ class extends Component
     }
 
     /**
-     * Throw the whole quest away: soft-delete anything already stored in the
-     * backend, wipe the local draft and start the wizard over.
+     * Stop working on this quest: clear the wizard and start over. Anything
+     * already saved to the backend stays in My Quests as a draft, so nothing
+     * the author finished is thrown away.
      */
     public function discardQuest(): void
     {
-        if ($this->draftQuestId !== null) {
-            $this->tryApiCall(fn () => $this->api->quests()->destroy($this->draftQuestId));
-        }
-
         $this->clearDraft();
         $this->dispatch('api-error', message: __('quests.quest_discarded'));
     }

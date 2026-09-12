@@ -443,30 +443,16 @@ it('discards the quest and starts over', function () {
         ->assertCount('checkpoints', 0);
 });
 
-it('soft-deletes the backend draft when discarding', function () {
-    $deleted = null;
+it('keeps a saved backend draft when the wizard is cleared', function () {
+    mockQuestWizardApiClient();
 
-    $mockCategories = Mockery::mock(CategoryApiResource::class);
-    $mockCategories->shouldReceive('list')->andReturn(['data' => []]);
-
-    $mockQuests = Mockery::mock(QuestApiResource::class);
-    $mockQuests->shouldReceive('destroy')->once()->andReturnUsing(function (int $id) use (&$deleted) {
-        $deleted = $id;
-
-        return ['message' => 'deleted'];
-    });
-
-    $mockClient = Mockery::mock(QuestifyApiClient::class);
-    $mockClient->shouldReceive('categories')->andReturn($mockCategories);
-    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
-    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
-    app()->instance(QuestifyApiClient::class, $mockClient);
-
+    // The draft belongs in My Quests — clearing the wizard must not delete it.
     Livewire::actingAs(User::factory()->create())
         ->test('pages::create.quest-wizard')
         ->set('draftQuestId', 42)
+        ->set('title', 'Half-written')
         ->call('discardQuest')
+        ->assertSet('step', 1)
+        ->assertSet('title', '')
         ->assertSet('draftQuestId', null);
-
-    expect($deleted)->toBe(42);
 });

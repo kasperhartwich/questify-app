@@ -60,7 +60,7 @@ return [
     'invalid_access_code' => 'Ugyldig adgangskode. Prøv igen.',
     'answers_need_text' => 'Alle svarmuligheder skal have tekst, og et spørgsmål skal have mindst to muligheder.',
     'answers_need_one_correct' => 'Markér præcis ét svar som det rigtige.',
-    'discard_quest' => 'Kassér denne quest',
-    'discard_quest_confirm' => 'Slet denne quest og alt hvad du har tilføjet? Det kan ikke fortrydes.',
-    'quest_discarded' => 'Questen er kasseret. Du kan starte en ny.',
+    'discard_quest' => 'Afbryd og start forfra',
+    'discard_quest_confirm' => 'Ryd denne quest og start forfra? Det du allerede har gemt, bliver liggende som kladde i Mine Quests.',
+    'quest_discarded' => 'Ryddet. En eventuel kladde ligger i Mine Quests.',
 ];
