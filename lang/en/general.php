@@ -107,6 +107,7 @@ return [
     'added' => 'added',
     'create_quest' => 'Create Quest',
     'save_draft' => 'Save Draft',
+    'add_cover_image' => 'Add a cover image',
     'cover_image' => 'Cover Image',
     'visibility' => 'Visibility',
     'mode' => 'Mode',

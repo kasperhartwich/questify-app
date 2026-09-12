@@ -296,3 +296,30 @@ it('offers no back link on the first wizard step', function () {
         // welcome screen and reads as being signed out.
         ->assertDontSeeHtml('href="/"');
 });
+
+it('names the following step on each wizard CTA', function (int $step, string $expected) {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', $step)
+        // Step 4's button said "Review & Publish" while two screens still
+        // followed it.
+        ->assertSee($expected);
+})->with([
+    'info → checkpoints' => [1, 'Next: Add Checkpoints'],
+    'checkpoints → questions' => [2, 'Next: Add Questions'],
+    'settings → details' => [4, 'Next: Details'],
+    'details → review' => [5, 'Next: Review'],
+]);
+
+it('shows a tappable cover image drop zone', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 5)
+        // The bare file input gave no hint that a cover image could be added.
+        ->assertSee(__('general.add_cover_image'))
+        ->assertSeeHtml('type="file"');
+});

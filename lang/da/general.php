@@ -107,6 +107,7 @@ return [
     'added' => 'tilføjet',
     'create_quest' => 'Opret Quest',
     'save_draft' => 'Gem kladde',
+    'add_cover_image' => 'Tilføj et coverbillede',
     'cover_image' => 'Coverbillede',
     'visibility' => 'Synlighed',
     'mode' => 'Tilstand',

@@ -1,3 +1,10 @@
+@php
+    // Height of the area the layout leaves us: viewport minus the safe areas and
+    // the fixed tab bar. Wizard steps use it so the progress bar, headline and
+    // CTA stay put while only the step's body scrolls.
+    $wizardStepHeight = 'height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 96px)';
+@endphp
+
 <div class="flex flex-col bg-cream">
 
     {{-- ============================================================ --}}
@@ -61,7 +68,7 @@
     {{-- ============================================================ --}}
     @if ($step === 2)
         <div class="flex flex-col overflow-hidden"
-            style="height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 96px)"
+            style="{{ $wizardStepHeight }}"
             x-data="{
                 map: null,
                 markers: [],
@@ -218,7 +225,7 @@
     {{-- STEP 3: Questions --}}
     {{-- ============================================================ --}}
     @if ($step === 3)
-        <div class="flex flex-1 flex-col px-4">
+        <div style="{{ $wizardStepHeight }}" class="flex flex-col overflow-hidden px-4">
             {{-- Header --}}
             <x-step-indicator :current="3" :total="6" back-action="previousStep" />
 
@@ -378,7 +385,7 @@
     {{-- STEP 4: Quest Settings --}}
     {{-- ============================================================ --}}
     @if ($step === 4)
-        <div class="flex flex-1 flex-col px-4">
+        <div style="{{ $wizardStepHeight }}" class="flex flex-col overflow-hidden px-4">
             {{-- Header --}}
             <x-step-indicator :current="4" :total="6" back-action="previousStep" />
 
@@ -502,7 +509,7 @@
             {{-- CTA --}}
             <div class="pb-4">
                 <button wire:click="nextStep" class="flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark shadow-sm">
-                    {{ __('general.review_and_publish') }} &rarr;
+                    {{ __('general.next') }}: {{ __('general.details') }} &rarr;
                 </button>
             </div>
         </div>
@@ -562,7 +569,28 @@
                 {{-- Cover Image --}}
                 <div>
                     <label class="mb-[5px] block text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.cover_image') }}</label>
-                    <input type="file" wire:model="coverImage" accept="image/*" class="w-full text-xs text-muted" />
+
+                    {{-- A tappable drop zone: the bare file input gave no hint that
+                         a cover image could be added at all. --}}
+                    <label class="relative block cursor-pointer overflow-hidden rounded-[14px] border-[1.5px] border-dashed border-cream-border bg-white transition-colors hover:border-forest-400">
+                        <input type="file" wire:model="coverImage" accept="image/*" class="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
+
+                        @if ($coverImage)
+                            <img src="{{ $coverImage->temporaryUrl() }}" alt="" class="h-[150px] w-full object-cover" />
+                            <span class="absolute bottom-2 right-2 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-bark">{{ __('general.change_photo') }}</span>
+                        @else
+                            <span class="flex h-[150px] flex-col items-center justify-center gap-2 text-center">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+                                </svg>
+                                <span class="text-[13px] font-semibold text-bark">{{ __('general.add_cover_image') }}</span>
+                                <span class="text-[11px] text-muted">{{ __('general.optional') }}</span>
+                            </span>
+                        @endif
+
+                        <span wire:loading wire:target="coverImage" class="absolute inset-0 flex items-center justify-center bg-white/70 text-[12px] font-semibold text-bark">{{ __('general.loading') }}</span>
+                    </label>
+
                     @error('coverImage') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -580,7 +608,7 @@
     {{-- STEP 6: Review & Publish --}}
     {{-- ============================================================ --}}
     @if ($step === 6)
-        <div class="flex flex-1 flex-col px-4">
+        <div style="{{ $wizardStepHeight }}" class="flex flex-col overflow-hidden px-4">
             <x-step-indicator :current="6" :total="6" back-action="previousStep" />
 
             <h1 class="mb-4 font-heading text-[22px] font-extrabold text-bark">{{ __('sessions.review_publish') }}</h1>
