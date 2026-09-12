@@ -167,6 +167,7 @@ class extends Component
         userLocated: false,
         streetsLayer: null,
         satelliteLayer: null,
+        pendingPosition: null,
         init() {
             // Clear native EDGE bottom nav via JS bridge
             fetch('/_native/api/call', {
@@ -209,7 +210,13 @@ class extends Component
                     this.addMarkers();
                     this.updateVisibleCount();
                     this.map.on('moveend zoomend', () => this.updateVisibleCount());
-                    this.locateUser();
+                    if (this.pendingPosition) {
+                        const { lat, lng } = this.pendingPosition;
+                        this.pendingPosition = null;
+                        this.centreOnUser(lat, lng);
+                    } else {
+                        this.locateUser();
+                    }
                 } catch (e) {
                     console.error('Map init failed:', e);
                     return;
@@ -221,18 +228,26 @@ class extends Component
                 const lng = params[0]?.longitude ?? params.longitude;
                 if (!lat || !lng) return;
 
-                // Two steps closer than the old default: landing at 13 showed
-                // half the city rather than where you are standing.
-                this.map.flyTo([lat, lng], 15);
-                this.showUserPosition(lat, lng);
-
-                if (!this.userLocated) {
-                    this.userLocated = true;
+                // Leaflet loads asynchronously, so a fix can land before the
+                // map exists — hold it and let boot() apply it instead of
+                // throwing on a null map.
+                if (!this.map) {
+                    this.pendingPosition = { lat, lng };
+                    return;
                 }
-                this.pins = $wire.pins;
-                this.addMarkers();
-                this.updateVisibleCount();
+
+                this.centreOnUser(lat, lng);
             });
+        },
+        centreOnUser(lat, lng) {
+            // Two steps closer than the old default: landing at 13 showed
+            // half the city rather than where you are standing.
+            this.map.flyTo([lat, lng], 15);
+            this.showUserPosition(lat, lng);
+            this.userLocated = true;
+            this.pins = $wire.pins;
+            this.addMarkers();
+            this.updateVisibleCount();
         },
         showUserPosition(lat, lng) {
             if (!this.map) return;
