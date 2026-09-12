@@ -128,9 +128,12 @@ class QuestApiResource
     {
         $result = $this->client->post("/quests/{$id}/favourite");
 
-        ApiCache::forget("quests:show:{$id}");
-        ApiCache::forgetPrefix('quests:list:');
+        // A bookmark has to read the same on every screen, so drop every cached
+        // view of quests — the discover map reads "quests:nearby:", which used
+        // to survive a toggle and showed the old state.
+        ApiCache::forgetPrefix('quests:');
         ApiCache::forgetPrefix('user:favourites:');
+        ApiCache::forgetPrefix('user:quests:');
 
         return $result;
     }

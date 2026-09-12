@@ -118,5 +118,8 @@ it('opens the map with a pin already selected', function () {
         ->assertOk()
         ->assertSee('Copenhagen History Hunt')
         ->assertSee(__('general.medium'))
+        // Same facts as the quest page's tag row.
+        ->assertSee('History')
+        ->assertSee(__('general.public'))
         ->assertSeeHtml('href="/quests/1"');
 });

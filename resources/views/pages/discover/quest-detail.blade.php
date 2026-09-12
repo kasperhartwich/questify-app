@@ -212,7 +212,7 @@ class extends Component
         </button>
 
         {{-- Bookmark button --}}
-        <button wire:click="toggleFavourite" class="absolute right-4 z-[1000] flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]" style="top: 12px;">
+        <button wire:click="toggleFavourite" x-on:click="window.questifyFavouriteChanged()" class="absolute right-4 z-[1000] flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]" style="top: 12px;">
             @if ($isFavourited)
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#0B3D2E" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
             @else

@@ -117,6 +117,8 @@ class extends Component
                     'id' => $quest['id'],
                     'title' => $quest['title'] ?? '',
                     'difficulty' => $quest['difficulty'] ?? '',
+                    'category' => $quest['category']['name'] ?? null,
+                    'visibility' => $quest['visibility'] ?? null,
                     'latitude' => (float) $quest['starting_checkpoint']['latitude'],
                     'longitude' => (float) $quest['starting_checkpoint']['longitude'],
                     'distance_to_start_km' => (float) ($quest['distance_to_start_km'] ?? 0),
@@ -137,6 +139,8 @@ class extends Component
                 'id' => $quest['id'],
                 'title' => $quest['title'] ?? '',
                 'difficulty' => $quest['difficulty'] ?? '',
+                'category' => $quest['category']['name'] ?? null,
+                'visibility' => $quest['visibility'] ?? null,
                 'latitude' => (float) $quest['checkpoints'][0]['latitude'],
                 'longitude' => (float) $quest['checkpoints'][0]['longitude'],
                 'distance_to_start_km' => 0,
@@ -153,6 +157,7 @@ class extends Component
         map: null,
         markers: [],
         circleLayer: null,
+        userMarker: null,
         pins: @js($pins),
         visibleCount: 0,
         selectedPin: null,
@@ -215,7 +220,12 @@ class extends Component
                 const lat = params[0]?.latitude ?? params.latitude;
                 const lng = params[0]?.longitude ?? params.longitude;
                 if (!lat || !lng) return;
-                this.map.flyTo([lat, lng], 13);
+
+                // Two steps closer than the old default: landing at 13 showed
+                // half the city rather than where you are standing.
+                this.map.flyTo([lat, lng], 15);
+                this.showUserPosition(lat, lng);
+
                 if (!this.userLocated) {
                     this.userLocated = true;
                 }
@@ -223,6 +233,20 @@ class extends Component
                 this.addMarkers();
                 this.updateVisibleCount();
             });
+        },
+        showUserPosition(lat, lng) {
+            if (!this.map) return;
+
+            if (this.userMarker) {
+                this.userMarker.setLatLng([lat, lng]);
+                return;
+            }
+
+            this.userMarker = L.marker([lat, lng], {
+                icon: L.divIcon({ className: '', html: '<div class=\'leaflet-user-dot\'></div>', iconSize: [18, 18], iconAnchor: [9, 9] }),
+                interactive: false,
+                zIndexOffset: 1000,
+            }).addTo(this.map);
         },
         addMarkers() {
             this.markers.forEach(m => this.map.removeLayer(m));
@@ -316,6 +340,11 @@ class extends Component
             align-items: center;
             justify-content: center;
         }
+        .leaflet-user-dot {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #1565C0; border: 3px solid white;
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.25), 0 2px 6px rgba(0,0,0,0.3);
+        }
         .leaflet-quest-marker-num {
             transform: rotate(45deg);
             font-family: 'Exo 2', sans-serif;
@@ -388,6 +417,12 @@ class extends Component
                             'bg-red-50 text-coral' => $pin['difficulty'] === 'hard',
                             'bg-amber-100 text-amber-700' => ! in_array($pin['difficulty'], ['easy', 'hard'], true),
                         ])">{{ __('general.'.$pin['difficulty']) }}</span>
+                    @if ($pin['category'] ?? null)
+                        <span class="rounded-full bg-amber-100 px-2.5 py-[3px] text-[11px] font-semibold text-amber-700">{{ $pin['category'] }}</span>
+                    @endif
+                    @if ($pin['visibility'] ?? null)
+                        <span class="rounded-full bg-[#EEF2FF] px-2.5 py-[3px] text-[11px] font-semibold text-[#4055A8]">{{ __('general.'.$pin['visibility']) }}</span>
+                    @endif
                     <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted">{{ $pin['checkpoint_count'] }} {{ __('general.stops') }}</span>
                     @if (($pin['distance_to_farthest_km'] ?? 0) > 0)
                         <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted">{{ number_format($pin['distance_to_farthest_km'], 1) }} km</span>

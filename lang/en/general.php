@@ -256,4 +256,5 @@ return [
     'custom_category' => 'Custom / Other',
     'custom_category_placeholder' => 'Name your category',
     'custom_category_hint' => 'We will review it. Until then your quest shows as Other.',
+    'needs_attention' => 'One thing missing',
 ];

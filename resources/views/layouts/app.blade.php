@@ -54,6 +54,20 @@
             {{ $slot }}
         </main>
 
+        {{-- A bookmark must read the same on every screen. wire:navigate serves
+             a cached snapshot when you go back, so a toggle marks the app dirty
+             and the next screen refreshes itself once. --}}
+        <script>
+            window.questifyFavouriteChanged = () => sessionStorage.setItem('questify:favourites-dirty', '1');
+
+            document.addEventListener('livewire:navigated', () => {
+                if (sessionStorage.getItem('questify:favourites-dirty') !== '1') return;
+
+                sessionStorage.removeItem('questify:favourites-dirty');
+                window.Livewire?.all().forEach((component) => component.$refresh());
+            });
+        </script>
+
         {{-- Bottom Tab Bar. This is a web-view app (no native-ui / SuperNative), so the
              HTML tab bar is the real navigation and must render on-device, not just in a
              desktop browser. --}}

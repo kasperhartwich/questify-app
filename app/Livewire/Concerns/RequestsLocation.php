@@ -101,7 +101,7 @@ trait RequestsLocation
      */
     protected function onLocationPermissionDenied(string $status): void
     {
-        $this->dispatch('api-error', message: $status === 'permanently_denied'
+        $this->dispatch('validation-notice', message: $status === 'permanently_denied'
             ? __('general.location_permission_blocked')
             : __('general.location_permission_denied'));
     }

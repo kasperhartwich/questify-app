@@ -394,7 +394,7 @@ it('blocks step 3 when a choice answer has no text', function () {
             'answers' => [['body' => 'Right', 'is_correct' => true], ['body' => '', 'is_correct' => false]],
         ]]])
         ->call('nextStep')
-        ->assertDispatched('api-error', message: __('quests.answers_need_text'))
+        ->assertDispatched('validation-notice', message: __('quests.answers_need_text'))
         ->assertSet('step', 3);
 });
 
@@ -410,7 +410,7 @@ it('blocks step 3 when no answer is marked correct', function () {
             'answers' => [['body' => 'A', 'is_correct' => false], ['body' => 'B', 'is_correct' => false]],
         ]]])
         ->call('nextStep')
-        ->assertDispatched('api-error', message: __('quests.answers_need_one_correct'))
+        ->assertDispatched('validation-notice', message: __('quests.answers_need_one_correct'))
         ->assertSet('step', 3);
 });
 
@@ -552,4 +552,75 @@ it('lets the author move between checkpoints on the questions step', function ()
 
     $component->set('activeCheckpointIndex', 1)
         ->assertSet('activeCheckpointIndex', 1);
+});
+
+it('sends no blank answers for a text-answer question', function () {
+    $captured = null;
+
+    $mockCategories = Mockery::mock(CategoryApiResource::class);
+    $mockCategories->shouldReceive('list')->andReturn(['data' => [['id' => 1, 'name' => 'History', 'slug' => 'history', 'icon' => 'castle', 'color' => '#F59E0B', 'sort_order' => 0]]]);
+
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('store')->once()
+        ->withArgs(function ($data) use (&$captured) {
+            $captured = $data;
+
+            return true;
+        })
+        ->andReturn(['data' => ['id' => 7, 'status' => 'draft']]);
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    // Switching a question to "Text answer" leaves the two blank multiple-choice
+    // rows behind. They used to be sent, and the API rejected the save with
+    // "checkpoints.0.questions.0.answers.0.answer_text field is required".
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Text answer quest')
+        ->set('description', 'A quest with a free-text question')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'What is the name carved above the door?',
+            'type' => 'open_text',
+            'hint' => 'Look up',
+            'points' => 10,
+            'answers' => [['body' => '', 'is_correct' => true], ['body' => '', 'is_correct' => false]],
+        ]]])
+        ->call('saveAsDraft');
+
+    $answers = $captured['checkpoints'][0]['questions'][0]['answers'] ?? null;
+
+    expect($answers)->toBe([]);
+});
+
+it('offers every play mode by default and lets them be toggled', function () {
+    mockQuestWizardApiClient();
+
+    // A quest declares which ways it can be played; the host picks one when
+    // starting a session, so this is a multi-select, not a radio.
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->assertSet('playModes', ['solo', 'competitive_individual', 'competitive_teams'])
+        ->call('togglePlayMode', 'solo')
+        ->assertSet('playModes', ['competitive_individual', 'competitive_teams'])
+        ->call('togglePlayMode', 'solo')
+        ->assertSet('playModes', ['competitive_individual', 'competitive_teams', 'solo']);
+});
+
+it('requires at least one play mode', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 4)
+        ->set('playModes', [])
+        ->call('nextStep')
+        ->assertHasErrors(['playModes'])
+        ->assertSet('step', 4);
 });

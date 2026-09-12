@@ -111,6 +111,13 @@ return [
         '*_SECRET',
         'DB_PASSWORD',
         'DB_USERNAME',
+
+        // Stripped so the shipped app falls back to Laravel's defaults —
+        // env=production, debug=false. Without this the packager copies the
+        // developer's local .env and players get full exception pages with
+        // stack traces instead of our error screens.
+        'APP_ENV',
+        'APP_DEBUG',
     ],
 
     /*

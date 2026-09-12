@@ -468,13 +468,13 @@
                         @foreach (\App\Enums\PlayMode::cases() as $mode)
                             <button
                                 type="button"
-                                wire:click="$set('playMode', '{{ $mode->value }}')"
+                                wire:click="togglePlayMode('{{ $mode->value }}')"
                                 class="flex items-center gap-3 rounded-[12px] border-[1.5px] bg-white px-4 py-3 text-left transition-colors
-                                    {{ $playMode === $mode->value ? 'border-forest-600' : 'border-cream-border' }}"
+                                    {{ in_array($mode->value, $playModes, true) ? 'border-forest-600' : 'border-cream-border' }}"
                             >
                                 {{-- Check icon --}}
-                                <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md {{ $playMode === $mode->value ? 'bg-forest-600' : 'border-[1.5px] border-cream-border' }}">
-                                    @if ($playMode === $mode->value)
+                                <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md {{ in_array($mode->value, $playModes, true) ? 'bg-forest-600' : 'border-[1.5px] border-cream-border' }}">
+                                    @if (in_array($mode->value, $playModes, true))
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                                     @endif
                                 </div>
@@ -578,7 +578,7 @@
                             type="button"
                             wire:click="chooseCustomCategory"
                             class="rounded-full border-[1.5px] px-[14px] py-[7px] text-[13px] font-semibold transition-colors
-                                {{ blank($categoryId)
+                                {{ $usingCustomCategory
                                     ? 'border-forest-600 bg-forest-600 text-white'
                                     : 'border-cream-border bg-white text-muted' }}"
                         >
@@ -586,7 +586,7 @@
                         </button>
                     </div>
 
-                    @if (blank($categoryId))
+                    @if ($usingCustomCategory)
                         <input
                             type="text"
                             wire:model.blur="suggestedCategory"
@@ -731,7 +731,7 @@
                     </div>
                     <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
                         <div class="text-[9px] text-muted">{{ __('general.mode') }}</div>
-                        <div class="font-heading text-xs font-bold text-bark">{{ ucfirst(str_replace('_', ' ', $playMode)) }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ count($playModes) }}</div>
                     </div>
                     <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
                         <div class="text-[9px] text-muted">{{ __('general.scoring') }}</div>

@@ -21,14 +21,36 @@ new class extends Component
 
     public array $confirmParams = [];
 
+    /**
+     * Something broke that the player cannot act on. The raw text is whatever
+     * the API or an exception produced, so it is only shown while debugging.
+     */
     #[On('api-error')]
     public function showError(string $message = ''): void
     {
-        $this->type = 'error';
-        $this->title = __('general.something_went_wrong');
-        $this->message = config('app.debug') && $message
-            ? $message
-            : __('general.unexpected_error');
+        $this->present(
+            'error',
+            __('general.something_went_wrong'),
+            config('app.debug') && $message ? $message : __('general.unexpected_error'),
+        );
+    }
+
+    /**
+     * A rule of ours that the player can fix — a missing question, an empty
+     * answer. The wording is written for them, so it is always shown, and
+     * "Something went wrong" would misdescribe it.
+     */
+    #[On('validation-notice')]
+    public function showValidationNotice(string $message = ''): void
+    {
+        $this->present('notice', __('general.needs_attention'), $message);
+    }
+
+    private function present(string $type, string $title, string $message): void
+    {
+        $this->type = $type;
+        $this->title = $title;
+        $this->message = $message;
         $this->confirmLabel = __('general.ok');
         $this->cancelLabel = '';
         $this->confirmEvent = '';

@@ -17,7 +17,7 @@ new
 #[\Livewire\Attributes\Layout('layouts.app', self::LAYOUT_PARAMS)]
 class extends Component
 {
-    use HandlesApiErrors, WithApiClient, WithFileUploads;
+    use HandlesApiErrors, RequestsLocation, WithApiClient, WithFileUploads;
 
     /**
      * Kept as a constant so the `#[Layout]` attribute contains no inline array —
@@ -59,8 +59,6 @@ class extends Component
         // /profile?settings=1 opens the settings panel directly, so links that
         // point at a specific setting (e.g. language) land where they promise.
         $this->showSettings = request()->boolean('settings');
-
-        $this->refreshPermissionStates();
 
         $user = Auth::user();
         $this->name = $user->name ?? '';
@@ -241,7 +239,7 @@ class extends Component
 };
 ?>
 
-<div class="flex min-h-screen flex-col bg-forest-600">
+<div class="flex min-h-screen flex-col bg-forest-600" wire:init="refreshPermissionStates">
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}

@@ -162,6 +162,7 @@ function mockFullApiClient(): void
     $mockQuests->shouldReceive('nearby')->andReturn(['data' => [array_merge($questListItem, [
         'starting_checkpoint' => ['id' => 1, 'title' => 'Nyhavn', 'latitude' => '55.67980000', 'longitude' => '12.59070000'],
         'checkpoint_count' => 5,
+        'visibility' => 'public',
         'distance_to_start_km' => 1.05,
         'distance_to_farthest_km' => 2.3,
     ])]]);

@@ -17,7 +17,7 @@ new
 #[Title('Create Quest')]
 class extends Component
 {
-    use HandlesApiErrors, WithApiClient, WithFileUploads;
+    use HandlesApiErrors, RequestsLocation, WithApiClient, WithFileUploads;
 
     #[Session(key: 'quest_wizard.step')]
     public int $step = 1;
@@ -43,6 +43,10 @@ class extends Component
     #[Session(key: 'quest_wizard.suggestedCategory')]
     public string $suggestedCategory = '';
 
+    /** True once the author actively chose "Custom / Other". */
+    #[Session(key: 'quest_wizard.usingCustomCategory')]
+    public bool $usingCustomCategory = false;
+
     #[Validate('required')]
     #[Session(key: 'quest_wizard.difficulty')]
     public string $difficulty = '';
@@ -61,8 +65,9 @@ class extends Component
     public array $questions = [];
 
     // Step 4: Game Rules
-    #[Session(key: 'quest_wizard.playMode')]
-    public string $playMode = 'solo';
+    /** @var array<int, string> Modes this quest allows; the host picks one at start. */
+    #[Session(key: 'quest_wizard.playModes')]
+    public array $playModes = ['solo', 'competitive_individual', 'competitive_teams'];
 
     #[Session(key: 'quest_wizard.wrongAnswerBehaviour')]
     public string $wrongAnswerBehaviour = 'retry_free';
@@ -116,6 +121,9 @@ class extends Component
 
         $response = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
         $this->categories = collect($response['data'] ?? [])
+            // The wizard offers its own "Custom / Other" chip with a text field,
+            // so the seeded catch-all category would just be a duplicate.
+            ->reject(fn (array $category): bool => in_array($category['slug'] ?? '', ['custom-other', 'other'], true))
             ->pluck('name', 'id')
             ->toArray();
 
@@ -143,7 +151,7 @@ class extends Component
         $quest = $response['data'];
 
         if (! in_array($quest['status'] ?? '', self::EDITABLE_STATUSES, true)) {
-            $this->dispatch('api-error', message: __('quests.published_not_editable'));
+            $this->dispatch('validation-notice', message: __('quests.published_not_editable'));
             $this->redirect('/quests/' . $questId);
 
             return;
@@ -203,15 +211,24 @@ class extends Component
         }
     }
 
+    public function togglePlayMode(string $mode): void
+    {
+        $this->playModes = in_array($mode, $this->playModes, true)
+            ? array_values(array_diff($this->playModes, [$mode]))
+            : [...$this->playModes, $mode];
+    }
+
     public function chooseCategory(int|string $categoryId): void
     {
         $this->categoryId = $categoryId;
         $this->suggestedCategory = '';
+        $this->usingCustomCategory = false;
     }
 
     public function chooseCustomCategory(): void
     {
         $this->categoryId = '';
+        $this->usingCustomCategory = true;
     }
 
     public function updatedSuggestedCategory(): void
@@ -330,7 +347,7 @@ class extends Component
             ->count();
 
         if ($missingCoords > 0) {
-            $this->dispatch('api-error', message: __('quests.checkpoints_need_coordinates'));
+            $this->dispatch('validation-notice', message: __('quests.checkpoints_need_coordinates'));
             $this->step = 2;
 
             throw new \Illuminate\Validation\ValidationException(validator([], []));
@@ -344,7 +361,17 @@ class extends Component
             $questionsData = [];
             foreach ($this->questions[$cpIndex] ?? [] as $question) {
                 $answersData = [];
+
+                // A question switched to "Text answer" keeps the blank
+                // multiple-choice rows in state. Sending them made the API
+                // reject the whole save on a required answer_text.
+                $isOpenText = ($question['type'] ?? '') === QuestionType::OpenText->value;
+
                 foreach ($question['answers'] ?? [] as $answer) {
+                    if ($isOpenText || trim((string) ($answer['body'] ?? '')) === '') {
+                        continue;
+                    }
+
                     $answersData[] = [
                         'answer_text' => $answer['body'],
                         'is_correct' => $answer['is_correct'],
@@ -373,6 +400,7 @@ class extends Component
             'difficulty' => $this->difficulty,
             'visibility' => $this->visibility,
             'estimated_duration_minutes' => 60,
+            'play_modes' => $this->playModes,
             'wrong_answer_behaviour' => $this->wrongAnswerBehaviour,
             'checkpoints' => $checkpointsData,
         ];
@@ -423,7 +451,7 @@ class extends Component
     public function discardQuest(): void
     {
         $this->clearDraft();
-        $this->dispatch('api-error', message: __('quests.quest_discarded'));
+        $this->dispatch('validation-notice', message: __('quests.quest_discarded'));
     }
 
     /**
@@ -444,6 +472,7 @@ class extends Component
         $this->description = '';
         $this->categoryId = '';
         $this->suggestedCategory = '';
+        $this->usingCustomCategory = false;
         $this->difficulty = '';
         $this->checkpoints = [];
         $this->questions = [];
@@ -472,18 +501,19 @@ class extends Component
             ]),
             3 => $this->validateQuestions(),
             4 => $this->validate([
-                'playMode' => ['required', 'in:' . implode(',', array_column(PlayMode::cases(), 'value'))],
+                'playModes' => ['required', 'array', 'min:1'],
+                'playModes.*' => ['in:' . implode(',', array_column(PlayMode::cases(), 'value'))],
                 'wrongAnswerBehaviour' => ['required', 'in:' . implode(',', array_column(WrongAnswerBehaviour::cases(), 'value'))],
             ]),
             5 => $this->validate([
                 // Either pick one of ours or suggest your own — an admin
                 // approves suggestions later, so this never blocks publishing.
                 'categoryId' => [
-                    filled($this->suggestedCategory) ? 'nullable' : 'required',
+                    $this->usingCustomCategory ? 'nullable' : 'required',
                     'nullable',
                     'in:' . implode(',', array_keys($this->categories)),
                 ],
-                'suggestedCategory' => ['nullable', 'string', 'min:2', 'max:40'],
+                'suggestedCategory' => [$this->usingCustomCategory ? 'required' : 'nullable', 'string', 'min:2', 'max:40'],
                 'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             6 => null,
@@ -498,7 +528,7 @@ class extends Component
             $cpQuestions = $this->questions[$cpIndex] ?? [];
 
             if (empty($cpQuestions)) {
-                $this->dispatch('api-error', message: __('quests.checkpoint_needs_question'));
+                $this->dispatch('validation-notice', message: __('quests.checkpoint_needs_question'));
 
                 throw new \Illuminate\Validation\ValidationException(validator([], []));
             }
@@ -522,13 +552,13 @@ class extends Component
                 $correct = collect($answers)->filter(fn (array $a): bool => (bool) ($a['is_correct'] ?? false))->count();
 
                 if ($blank || count($answers) < 2) {
-                    $this->dispatch('api-error', message: __('quests.answers_need_text'));
+                    $this->dispatch('validation-notice', message: __('quests.answers_need_text'));
 
                     throw new \Illuminate\Validation\ValidationException(validator([], []));
                 }
 
                 if ($correct !== 1) {
-                    $this->dispatch('api-error', message: __('quests.answers_need_one_correct'));
+                    $this->dispatch('validation-notice', message: __('quests.answers_need_one_correct'));
 
                     throw new \Illuminate\Validation\ValidationException(validator([], []));
                 }

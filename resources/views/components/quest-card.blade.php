@@ -30,6 +30,7 @@
                 x-on:click.prevent.stop="
                     favourited = !favourited;
                     @this.toggleCardFavourite({{ $quest->id ?? 0 }});
+                    window.questifyFavouriteChanged();
                 "
                 class="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/90 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
             >

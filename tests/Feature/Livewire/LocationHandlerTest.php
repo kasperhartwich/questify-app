@@ -2,8 +2,10 @@
 
 use App\Models\User;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\Api\Resources\AuthResource;
 use App\Services\Api\Resources\CategoryApiResource;
 use App\Services\Api\Resources\QuestApiResource;
+use App\Services\Api\Resources\UserApiResource;
 use Livewire\Livewire;
 
 function mockLocationApiClient(): void
@@ -18,6 +20,16 @@ function mockLocationApiClient(): void
     $mockClient = Mockery::mock(QuestifyApiClient::class);
     $mockClient->shouldReceive('quests')->andReturn($mockQuests);
     $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockAuth = Mockery::mock(AuthResource::class);
+    $mockAuth->shouldReceive('me')->andReturn(['data' => ['id' => 1, 'name' => 'Test', 'email' => 't@example.com', 'locale' => 'en']]);
+
+    $mockUser = Mockery::mock(UserApiResource::class);
+    $mockUser->shouldReceive('quests')->andReturn(['data' => [], 'meta' => ['next_cursor' => null]]);
+    $mockUser->shouldReceive('sessions')->andReturn(['data' => []]);
+    $mockUser->shouldReceive('favourites')->andReturn(['data' => [], 'meta' => ['next_cursor' => null]]);
+
+    $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    $mockClient->shouldReceive('user')->andReturn($mockUser);
     $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
 
     app()->instance(QuestifyApiClient::class, $mockClient);
@@ -81,7 +93,7 @@ it('warns the user when location permission is denied', function () {
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
         ->call('onLocationPermissionStatus', 'denied', 'denied', 'denied')
-        ->assertDispatched('api-error');
+        ->assertDispatched('validation-notice');
 });
 
 it('warns with the settings hint when permission is permanently denied', function () {
@@ -90,7 +102,7 @@ it('warns with the settings hint when permission is permanently denied', functio
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
         ->call('onLocationPermissionRequestResult', 'permanently_denied', 'denied', 'denied')
-        ->assertDispatched('api-error', message: __('general.location_permission_blocked'));
+        ->assertDispatched('validation-notice', message: __('general.location_permission_blocked'));
 });
 
 it('reads the position once permission is granted', function () {
@@ -100,4 +112,26 @@ it('reads the position once permission is granted', function () {
         ->test('pages::discover.quest-map')
         ->call('onLocationPermissionRequestResult', 'granted', 'granted', 'granted')
         ->assertNotDispatched('api-error');
+});
+
+it('shows the settings permission state only once the screen is live', function () {
+    mockLocationApiClient();
+
+    // The bridge reply is lost when the call happens during mount, which left
+    // the Location row saying "Allow" even after the user had allowed it.
+    $html = $this->actingAs(User::factory()->create())
+        ->get('/profile?settings=1')
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('wire:init="refreshPermissionStates"');
+});
+
+it('records a granted location permission on the settings screen', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::profile.settings')
+        ->call('onLocationPermissionStatus', 'granted', 'granted', 'granted')
+        ->assertSet('locationPermission', 'granted');
 });
