@@ -7,6 +7,25 @@ Before starting any task, read these files in order:
 All backend API calls, data models, and business logic are defined in those files.
 Do not invent endpoints or data structures — use only what is specified.
 
+## User-Facing Language
+
+Questify is an app, not a website. Nothing a player reads may expose the web
+stack underneath.
+
+- Never use "page", "link", "URL", "browser", "site", "web" or "session
+  expired" in user-facing copy. Say what the player sees: "quest", "screen",
+  "that", "it".
+- Never show HTTP status codes or their names ("404", "Not Found", "403",
+  "500", "Server Error") — error screens say that something went wrong and
+  what to do next.
+- Never surface raw framework or API output: validation field paths
+  (`checkpoints.0.questions.0.answers.0.answer_text`), exception class names,
+  stack traces. If a backend error reaches the user unmapped, it means a
+  client-side rule is missing — it is reported to Sentry by
+  `HandlesApiErrors`, and the form should be fixed.
+- All user-facing strings live in `lang/en` and `lang/da`. Never hardcode
+  English in a Blade view.
+
 ## iOS Deployment (App Store / TestFlight)
 
 The app is currently on TestFlight (not publicly released).
