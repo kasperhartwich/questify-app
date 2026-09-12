@@ -58,4 +58,9 @@ return [
     'enter_access_code' => 'Enter code',
     'verify' => 'Verify',
     'invalid_access_code' => 'Invalid access code. Please try again.',
+    'answers_need_text' => 'Every answer option needs text, and a question needs at least two options.',
+    'answers_need_one_correct' => 'Mark exactly one answer as the correct one.',
+    'discard_quest' => 'Discard this quest',
+    'discard_quest_confirm' => 'Delete this quest and everything you have added? This cannot be undone.',
+    'quest_discarded' => 'Quest discarded. You can start a new one.',
 ];

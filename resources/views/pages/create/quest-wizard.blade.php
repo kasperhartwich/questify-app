@@ -21,6 +21,10 @@ class extends Component
     #[Session(key: 'quest_wizard.step')]
     public int $step = 1;
 
+    /** Id of the draft saved to the backend, if the author saved one. */
+    #[Session(key: 'quest_wizard.draftQuestId')]
+    public ?int $draftQuestId = null;
+
     // Step 1: Basics
     #[Validate('nullable|string|max:255')]
     #[Session(key: 'quest_wizard.title')]
@@ -301,6 +305,7 @@ class extends Component
         }
 
         $questId = $response['data']['id'];
+        $this->draftQuestId = $questId;
 
         if ($publish) {
             $this->tryApiCall(fn () => $this->api->quests()->publish($questId));
@@ -309,6 +314,20 @@ class extends Component
         $this->clearDraft();
 
         $this->redirect('/quests/' . $questId);
+    }
+
+    /**
+     * Throw the whole quest away: soft-delete anything already stored in the
+     * backend, wipe the local draft and start the wizard over.
+     */
+    public function discardQuest(): void
+    {
+        if ($this->draftQuestId !== null) {
+            $this->tryApiCall(fn () => $this->api->quests()->destroy($this->draftQuestId));
+        }
+
+        $this->clearDraft();
+        $this->dispatch('api-error', message: __('quests.quest_discarded'));
     }
 
     /**
@@ -324,6 +343,7 @@ class extends Component
         }
 
         $this->step = 1;
+        $this->draftQuestId = null;
         $this->title = '';
         $this->description = '';
         $this->categoryId = '';
@@ -383,6 +403,32 @@ class extends Component
                 "questions.{$cpIndex}.*.body" => ['required', 'string'],
                 "questions.{$cpIndex}.*.points" => ['required', 'integer', 'min:1'],
             ]);
+
+            // Choice answers need text and exactly one correct option. Without
+            // this the backend rejected the save with a raw, untranslated field
+            // path (checkpoints.0.questions.0.answers.0.answer_text).
+            foreach ($cpQuestions as $qIndex => $question) {
+                if (($question['type'] ?? '') === QuestionType::OpenText->value) {
+                    continue;
+                }
+
+                $answers = $question['answers'] ?? [];
+
+                $blank = collect($answers)->filter(fn (array $a): bool => trim((string) ($a['body'] ?? '')) === '')->isNotEmpty();
+                $correct = collect($answers)->filter(fn (array $a): bool => (bool) ($a['is_correct'] ?? false))->count();
+
+                if ($blank || count($answers) < 2) {
+                    $this->dispatch('api-error', message: __('quests.answers_need_text'));
+
+                    throw new \Illuminate\Validation\ValidationException(validator([], []));
+                }
+
+                if ($correct !== 1) {
+                    $this->dispatch('api-error', message: __('quests.answers_need_one_correct'));
+
+                    throw new \Illuminate\Validation\ValidationException(validator([], []));
+                }
+            }
         }
     }
 

@@ -688,6 +688,16 @@
                 <button wire:click="publish" class="mt-1 flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark shadow-sm">
                     {{ __('quests.publish') }} &rarr;
                 </button>
+
+                {{-- Throwing work away is destructive, so it asks first. --}}
+                <button
+                    type="button"
+                    wire:click="discardQuest"
+                    wire:confirm="{{ __('quests.discard_quest_confirm') }}"
+                    class="pb-2 pt-1 text-center text-[13px] font-semibold text-coral"
+                >
+                    {{ __('quests.discard_quest') }}
+                </button>
             </div>
         </div>
     @endif

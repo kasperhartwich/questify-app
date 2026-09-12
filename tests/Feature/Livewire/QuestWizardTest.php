@@ -379,3 +379,94 @@ it('requires a name and description before publishing', function () {
         ->assertHasErrors(['title', 'description'])
         ->assertNoRedirect();
 });
+
+it('blocks step 3 when a choice answer has no text', function () {
+    mockQuestWizardApiClient();
+
+    // Without this the backend rejected the save with a raw field path:
+    // "checkpoints.0.questions.0.answers.0.answer_text field is required".
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => 10,
+            'answers' => [['body' => 'Right', 'is_correct' => true], ['body' => '', 'is_correct' => false]],
+        ]]])
+        ->call('nextStep')
+        ->assertDispatched('api-error', message: __('quests.answers_need_text'))
+        ->assertSet('step', 3);
+});
+
+it('blocks step 3 when no answer is marked correct', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => 10,
+            'answers' => [['body' => 'A', 'is_correct' => false], ['body' => 'B', 'is_correct' => false]],
+        ]]])
+        ->call('nextStep')
+        ->assertDispatched('api-error', message: __('quests.answers_need_one_correct'))
+        ->assertSet('step', 3);
+});
+
+it('lets a complete question through', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => 10,
+            'answers' => [['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false]],
+        ]]])
+        ->call('nextStep')
+        ->assertSet('step', 4);
+});
+
+it('discards the quest and starts over', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 6)
+        ->set('title', 'Abandoned Quest')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->call('discardQuest')
+        ->assertSet('step', 1)
+        ->assertSet('title', '')
+        ->assertCount('checkpoints', 0);
+});
+
+it('soft-deletes the backend draft when discarding', function () {
+    $deleted = null;
+
+    $mockCategories = Mockery::mock(CategoryApiResource::class);
+    $mockCategories->shouldReceive('list')->andReturn(['data' => []]);
+
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('destroy')->once()->andReturnUsing(function (int $id) use (&$deleted) {
+        $deleted = $id;
+
+        return ['message' => 'deleted'];
+    });
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('draftQuestId', 42)
+        ->call('discardQuest')
+        ->assertSet('draftQuestId', null);
+
+    expect($deleted)->toBe(42);
+});
