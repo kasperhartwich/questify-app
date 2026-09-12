@@ -34,6 +34,15 @@ class extends Component
         $this->isFavourited = (bool) ($this->questData->is_favourited ?? false);
     }
 
+    public function getIsOwnQuestProperty(): bool
+    {
+        // Read the id off the user object: the API guard's id() resolves from
+        // the session, which is empty when the guard is set directly.
+        $viewerId = Auth::user()?->id;
+
+        return $viewerId !== null && ($this->questData->user->id ?? null) === $viewerId;
+    }
+
     public function toggleFavourite(): void
     {
         try {
@@ -253,6 +262,7 @@ class extends Component
                         {{ __('quests.by_creator', ['name' => $questData->user->name ?? '']) }}
                     </div>
                 @endif
+
             </div>
             @if(!empty($questData->average_rating))
                 <div class="ml-3 flex flex-shrink-0 flex-col items-center gap-0.5">
@@ -305,6 +315,9 @@ class extends Component
             <button @click="activeTab = 'overview'" class="-mb-[2px] flex-1 border-b-2 py-3 text-center text-[13px] font-semibold" :class="activeTab === 'overview' ? 'border-forest-600 text-forest-600' : 'border-transparent text-muted'">{{ __('general.overview') }}</button>
             <button @click="activeTab = 'checkpoints'" class="-mb-[2px] flex-1 border-b-2 py-3 text-center text-[13px] font-semibold" :class="activeTab === 'checkpoints' ? 'border-forest-600 text-forest-600' : 'border-transparent text-muted'">{{ __('general.checkpoints') }}</button>
             <button @click="activeTab = 'leaderboard'" class="-mb-[2px] flex-1 border-b-2 py-3 text-center text-[13px] font-semibold" :class="activeTab === 'leaderboard' ? 'border-forest-600 text-forest-600' : 'border-transparent text-muted'">{{ __('general.leaderboard') }}</button>
+            @if ($this->isOwnQuest)
+                <button @click="activeTab = 'edit'" class="-mb-[2px] flex-1 border-b-2 py-3 text-center text-[13px] font-semibold" :class="activeTab === 'edit' ? 'border-forest-600 text-forest-600' : 'border-transparent text-muted'">{{ __('general.edit') }}</button>
+            @endif
         </div>
     </div>
 
@@ -492,5 +505,30 @@ class extends Component
                 </button>
             @endif
         </div>
+
+        {{-- Edit tab: creator-only home for quest management. More creator
+             tools will land here, so it is a tab rather than a lone button. --}}
+        @if ($this->isOwnQuest)
+            <div x-show="activeTab === 'edit'" x-cloak>
+                <div class="mb-4 flex items-center justify-between rounded-[14px] border-[1.5px] border-cream-border bg-white px-4 py-3">
+                    <span class="text-[13px] text-muted">{{ __('general.status') }}</span>
+                    <span @class([
+                        'rounded-full px-2.5 py-[3px] text-[11px] font-bold',
+                        'bg-[#D4EDE4] text-forest-600' => ($questData->status ?? '') === 'published',
+                        'bg-amber-100 text-amber-700' => ($questData->status ?? '') === 'pending_review',
+                        'bg-cream-dark text-muted' => ! in_array($questData->status ?? '', ['published', 'pending_review'], true),
+                    ])>{{ __('quests.status_'.($questData->status ?? 'draft')) }}</span>
+                </div>
+
+                @if (in_array($questData->status ?? '', ['draft', 'pending_review'], true))
+                    <a href="/create/{{ $questData->id }}" class="flex w-full items-center justify-center gap-2 rounded-[14px] bg-amber-400 px-4 py-3.5 font-heading text-[15px] font-bold text-bark" wire:navigate>
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+                        {{ __('general.edit') }}
+                    </a>
+                @else
+                    <p class="rounded-[14px] bg-cream-dark px-4 py-3 text-center text-[12px] leading-relaxed text-muted">{{ __('quests.published_not_editable') }}</p>
+                @endif
+            </div>
+        @endif
     </div>
 </div>

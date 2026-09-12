@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     // Quest Creation
     Route::livewire('/create', 'pages::create.quest-wizard')->name('quests.create');
+    Route::livewire('/create/{quest}', 'pages::create.quest-wizard')->name('quests.edit');
 
     // Session / Gameplay
     Route::livewire('/session/{code}', 'pages::session.lobby')->name('session.lobby');

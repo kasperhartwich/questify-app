@@ -63,4 +63,8 @@ return [
     'discard_quest' => 'Cancel and start over',
     'discard_quest_confirm' => 'Clear this quest and start over? Anything you already saved stays in My Quests as a draft.',
     'quest_discarded' => 'Cleared. Any saved draft is waiting in My Quests.',
+    'published_not_editable' => 'A published quest cannot be edited.',
+    'status_draft' => 'Draft',
+    'status_pending_review' => 'Pending review',
+    'status_published' => 'Published',
 ];

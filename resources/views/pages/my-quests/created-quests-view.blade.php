@@ -48,8 +48,8 @@
                                 <span>{{ number_format($quest->average_rating, 1) }} ({{ $quest->sessions_count ?? 0 }})</span>
                             @endif
                         </div>
-                        @if (($quest->status ?? '') === 'draft')
-                            <span class="text-[12px] font-semibold text-forest-400">{{ __('general.edit') }}</span>
+                        @if (in_array($quest->status ?? '', ['draft', 'pending_review'], true))
+                            <a href="/create/{{ $quest->id }}" class="text-[12px] font-semibold text-forest-400" wire:navigate>{{ __('general.edit') }}</a>
                         @endif
                     </div>
                 </a>

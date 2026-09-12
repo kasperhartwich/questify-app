@@ -96,8 +96,19 @@ class extends Component
     // Computed
     public array $categories = [];
 
-    public function mount(): void
+    /**
+     * Statuses whose quest may still be edited. A published quest is live for
+     * players, so it is opened read-only from the detail screen instead.
+     */
+    private const EDITABLE_STATUSES = ['draft', 'pending_review'];
+
+    public function mount(?int $quest = null): void
     {
+        if ($quest !== null && $quest !== $this->draftQuestId) {
+            // Opening a different quest replaces whatever draft was in progress.
+            $this->clearDraft();
+        }
+
         $response = $this->tryApiCall(fn () => $this->api->categories()->list()) ?? ['data' => []];
         $this->categories = collect($response['data'] ?? [])
             ->pluck('name', 'id')
@@ -106,6 +117,67 @@ class extends Component
         // Both default to [] — each map tap appends exactly one checkpoint with
         // coordinates. Do NOT reset them here: #[Session] restores an in-progress
         // draft before mount() runs, and clearing would throw that away.
+
+        if ($quest !== null) {
+            $this->loadQuestForEditing($quest);
+        }
+    }
+
+    /**
+     * Fill the wizard from an existing quest so the author can keep working on
+     * it. Published quests are not editable here.
+     */
+    private function loadQuestForEditing(int $questId): void
+    {
+        $response = $this->tryApiCall(fn () => $this->api->quests()->show($questId));
+
+        if (! $response) {
+            return;
+        }
+
+        $quest = $response['data'];
+
+        if (! in_array($quest['status'] ?? '', self::EDITABLE_STATUSES, true)) {
+            $this->dispatch('api-error', message: __('quests.published_not_editable'));
+            $this->redirect('/quests/' . $questId);
+
+            return;
+        }
+
+        $this->draftQuestId = $questId;
+        $this->title = $quest['title'] ?? '';
+        $this->description = $quest['description'] ?? '';
+        $this->categoryId = $quest['category']['id'] ?? '';
+        $this->difficulty = $quest['difficulty'] ?? '';
+        $this->visibility = $quest['visibility'] ?? 'public';
+        $this->wrongAnswerBehaviour = $quest['wrong_answer_behaviour'] ?? 'retry_free';
+
+        $this->checkpoints = [];
+        $this->questions = [];
+
+        foreach ($quest['checkpoints'] ?? [] as $index => $checkpoint) {
+            $this->checkpoints[] = [
+                'title' => $checkpoint['title'] ?? '',
+                'description' => $checkpoint['description'] ?? '',
+                'latitude' => isset($checkpoint['latitude']) ? (float) $checkpoint['latitude'] : null,
+                'longitude' => isset($checkpoint['longitude']) ? (float) $checkpoint['longitude'] : null,
+            ];
+
+            $this->questions[$index] = collect($checkpoint['questions'] ?? [])
+                ->map(fn (array $question): array => [
+                    'body' => $question['question_text'] ?? '',
+                    'type' => $question['question_type'] ?? QuestionType::MultipleChoice->value,
+                    'hint' => $question['hint'] ?? '',
+                    'points' => $question['points'] ?? 10,
+                    'answers' => collect($question['answers'] ?? [])
+                        ->map(fn (array $answer): array => [
+                            'body' => $answer['answer_text'] ?? '',
+                            'is_correct' => (bool) ($answer['is_correct'] ?? false),
+                        ])->all(),
+                ])->all();
+        }
+
+        $this->step = 1;
     }
 
     public function nextStep(): void
@@ -284,7 +356,9 @@ class extends Component
         $coverImagePath = $this->coverImage ? $this->coverImage->getRealPath() : null;
 
         try {
-            $response = $this->api->quests()->store($data, $coverImagePath);
+            $response = $this->draftQuestId !== null
+                ? $this->api->quests()->update($this->draftQuestId, $data, $coverImagePath)
+                : $this->api->quests()->store($data, $coverImagePath);
         } catch (\App\Exceptions\Api\ApiValidationException $e) {
             $this->dispatch('api-error', message: collect($e->errors)->flatten()->first());
 

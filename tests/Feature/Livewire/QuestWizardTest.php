@@ -456,3 +456,42 @@ it('keeps a saved backend draft when the wizard is cleared', function () {
         ->assertSet('title', '')
         ->assertSet('draftQuestId', null);
 });
+
+it('loads an existing draft into the wizard for editing', function () {
+    mockFullApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard', ['quest' => 7])
+        ->assertSet('draftQuestId', 7)
+        ->assertSet('title', 'Half-written Walk')
+        ->assertCount('checkpoints', 1)
+        ->assertSet('step', 1);
+});
+
+it('refuses to edit a published quest', function () {
+    mockFullApiClient();
+
+    // Quest 1 in the fixture is published — it is live for players.
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard', ['quest' => 1])
+        ->assertRedirect('/quests/1')
+        // Nothing from the published quest may leak into the wizard.
+        ->assertSet('draftQuestId', null)
+        ->assertSet('title', '');
+});
+
+it('switches cleanly between two quests', function () {
+    mockFullApiClient();
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Something half-written')
+        ->set('draftQuestId', 99);
+
+    // Opening a different quest must not inherit the previous draft's copy.
+    Livewire::actingAs($user)
+        ->test('pages::create.quest-wizard', ['quest' => 7])
+        ->assertSet('draftQuestId', 7)
+        ->assertSet('title', 'Half-written Walk');
+});

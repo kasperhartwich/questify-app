@@ -63,4 +63,8 @@ return [
     'discard_quest' => 'Afbryd og start forfra',
     'discard_quest_confirm' => 'Ryd denne quest og start forfra? Det du allerede har gemt, bliver liggende som kladde i Mine Quests.',
     'quest_discarded' => 'Ryddet. En eventuel kladde ligger i Mine Quests.',
+    'published_not_editable' => 'En udgivet quest kan ikke redigeres.',
+    'status_draft' => 'Kladde',
+    'status_pending_review' => 'Afventer godkendelse',
+    'status_published' => 'Udgivet',
 ];

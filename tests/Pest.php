@@ -136,7 +136,26 @@ function mockFullApiClient(): void
         'links' => ['first' => null, 'last' => null, 'prev' => null, 'next' => null],
         'meta' => ['path' => 'https://questify-admin.test/api/v1/quests', 'per_page' => 15, 'next_cursor' => null, 'prev_cursor' => null],
     ]);
-    $mockQuests->shouldReceive('show')->andReturn(['data' => $questDetail]);
+    // Quest 7 is an unpublished draft, so the wizard's edit flow has something
+    // it is allowed to open; every other id is the published quest.
+    $mockQuests->shouldReceive('show')->andReturnUsing(fn (int $id): array => $id === 7
+        ? ['data' => array_merge($questDetail, [
+            'id' => 7,
+            'title' => 'Half-written Walk',
+            'status' => 'draft',
+            'checkpoints' => [[
+                'id' => 1, 'title' => 'Nyhavn', 'description' => '',
+                'latitude' => '55.67980000', 'longitude' => '12.59070000',
+                'questions' => [[
+                    'id' => 3, 'question_text' => 'Which year?', 'question_type' => 'multiple_choice', 'points' => 10,
+                    'answers' => [
+                        ['id' => 1, 'answer_text' => '1673', 'is_correct' => true],
+                        ['id' => 2, 'answer_text' => '1750', 'is_correct' => false],
+                    ],
+                ]],
+            ]],
+        ])]
+        : ['data' => $questDetail]);
     // The nearby endpoint adds the starting checkpoint and distances — the map
     // filters out any quest without starting_checkpoint.latitude, so the list
     // shape alone would render zero pins.
