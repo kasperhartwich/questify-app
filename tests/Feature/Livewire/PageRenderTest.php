@@ -96,3 +96,16 @@ it('shows the category alongside the difficulty on a quest card', function () {
         ->assertSee(__('general.medium'))
         ->assertSee('History');
 });
+
+it('shows quest meta instead of a duplicate status on created quests', function () {
+    $response = $this->actingAs(User::factory()->create())
+        ->get('/my-quests/created')
+        ->assertOk();
+
+    // The badge already carries the status; the line under the title now
+    // shows the quest's own description, and editing lives on the quest page.
+    $response->assertSee('Explore the historical heart of Copenhagen!', false)
+        ->assertSee(__('general.medium'))
+        ->assertSee('History')
+        ->assertDontSeeHtml('href="/create/1"');
+});

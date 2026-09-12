@@ -27,7 +27,11 @@
                         <div class="flex items-start justify-between">
                             <div>
                                 <h3 class="font-heading text-[14px] font-bold leading-tight text-white">{{ $quest->title }}</h3>
-                                <p class="mt-1 text-[11px] text-white/55">{{ ucfirst(str_replace('_', ' ', $quest->status ?? 'draft')) }}</p>
+                                {{-- The badge on the right already says the status; show the
+                                     quest's own copy here instead. --}}
+                                @if (filled($quest->description ?? null))
+                                    <p class="mt-1 text-[11px] leading-relaxed text-white/55">{{ Str::limit($quest->description, 90) }}</p>
+                                @endif
                             </div>
                             @php
                                 $statusClass = match($quest->status ?? '') {
@@ -39,18 +43,35 @@
                             <span class="ml-2 shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold {{ $statusClass }}">{{ ucfirst(str_replace('_', ' ', $quest->status ?? 'draft')) }}</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between px-4 py-3">
-                        <div class="flex items-center gap-3 text-[11px] text-muted">
+                    <div class="px-4 py-3">
+                        {{-- Same meta line as the discover cards. --}}
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted">
+                            @if ($quest->estimated_duration_minutes ?? null)
+                                <span class="flex items-center gap-1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                                    {{ $quest->estimated_duration_minutes }} {{ __('general.minutes') }}
+                                </span>
+                            @endif
+                            @if ($quest->checkpoint_count ?? null)
+                                <span>{{ $quest->checkpoint_count }} {{ __('general.stops') }}</span>
+                            @endif
+                            @if ($quest->difficulty ?? null)
+                                @php
+                                    $difficultyClass = match($quest->difficulty) {
+                                        'easy' => 'bg-[#D4EDE4] text-forest-600',
+                                        'hard' => 'bg-red-50 text-coral',
+                                        default => 'bg-amber-100 text-amber-700',
+                                    };
+                                @endphp
+                                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $difficultyClass }}">{{ __('general.'.$quest->difficulty) }}</span>
+                            @endif
+                            @if ($quest->category->name ?? null)
+                                <span class="rounded-full bg-cream-dark px-2 py-0.5 text-[10px] font-bold text-muted">{{ $quest->category->name }}</span>
+                            @endif
                             @if ($quest->sessions_count ?? null)
                                 <span>{{ $quest->sessions_count }} {{ __('general.plays') }}</span>
                             @endif
-                            @if (!empty($quest->average_rating))
-                                <span>{{ number_format($quest->average_rating, 1) }} ({{ $quest->sessions_count ?? 0 }})</span>
-                            @endif
                         </div>
-                        @if (in_array($quest->status ?? '', ['draft', 'pending_review'], true))
-                            <a href="/create/{{ $quest->id }}" class="text-[12px] font-semibold text-forest-400" wire:navigate>{{ __('general.edit') }}</a>
-                        @endif
                     </div>
                 </a>
             @empty
