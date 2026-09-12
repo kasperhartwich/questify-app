@@ -249,4 +249,7 @@ return [
     'permission_granted' => 'Tilladt',
     'permission_denied' => 'Blokeret',
     'permission_ask' => 'Tillad',
+    'custom_category' => 'Andet / Egen',
+    'custom_category_placeholder' => 'Navngiv din kategori',
+    'custom_category_hint' => 'Vi kigger den igennem. Indtil da vises din quest som Andet.',
 ];

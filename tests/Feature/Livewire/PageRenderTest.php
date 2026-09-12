@@ -109,3 +109,14 @@ it('shows quest meta instead of a duplicate status on created quests', function 
         ->assertSee('History')
         ->assertDontSeeHtml('href="/create/1"');
 });
+
+it('opens the map with a pin already selected', function () {
+    // Server-rendered card: the blank-card bug came from Alpine bindings that
+    // never evaluated, and the View Quest link then had no href.
+    $this->actingAs(User::factory()->create())
+        ->get('/discover/map?pin=1')
+        ->assertOk()
+        ->assertSee('Copenhagen History Hunt')
+        ->assertSee(__('general.medium'))
+        ->assertSeeHtml('href="/quests/1"');
+});

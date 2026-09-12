@@ -406,7 +406,13 @@ class extends Component
                     <p class="mb-[8px] px-[16px] text-[10px] font-bold uppercase tracking-wide text-muted">{{ __('general.connected_accounts') }}</p>
                     <div class="overflow-hidden rounded-[14px] bg-white" style="border: 1.5px solid #E5DDD0;">
                         @foreach ($this->linkedAccounts as $provider => $isLinked)
-                            <div class="flex items-center gap-3 px-[16px] py-[13px] {{ ! $loop->last ? 'border-b' : '' }}" style="{{ ! $loop->last ? 'border-color: #E5DDD0;' : '' }}">
+                            {{-- The whole row is the action: connect when it is not
+                                 linked, re-authenticate when it already is. --}}
+                            <a
+                                href="{{ app(AppInfoService::class)->socialRedirectUrl($provider) }}"
+                                class="flex w-full items-center gap-3 px-[16px] py-[13px] text-left {{ ! $loop->last ? 'border-b' : '' }}"
+                                style="{{ ! $loop->last ? 'border-color: #E5DDD0;' : '' }}"
+                            >
                                 {{-- Provider Icon --}}
                                 <div class="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px]
                                     @if ($provider === 'google') bg-[#F3E8FF]
@@ -433,9 +439,10 @@ class extends Component
                                 @if ($isLinked)
                                     <span class="rounded-full bg-[#D4EDE4] px-[10px] py-[4px] text-[11px] font-bold text-[#0A5A3A]">{{ __('general.connected') }}</span>
                                 @else
-                                    <a href="{{ app(AppInfoService::class)->socialRedirectUrl($provider) }}" class="rounded-full px-[10px] py-[4px] text-[11px] font-semibold text-muted" style="border: 1.5px solid #E5DDD0;">{{ __('general.connect') }}</a>
+                                    <span class="rounded-full px-[10px] py-[4px] text-[11px] font-semibold text-muted" style="border: 1.5px solid #E5DDD0;">{{ __('general.connect') }}</span>
                                 @endif
-                            </div>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="2.5" stroke-linecap="round" class="ml-1 shrink-0"><path d="M9 18l6-6-6-6"/></svg>
+                            </a>
                         @endforeach
                     </div>
                 </div>

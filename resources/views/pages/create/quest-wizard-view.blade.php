@@ -107,11 +107,21 @@
                     });
                     this.markers.push(marker);
                 },
+                mapExpanded: false,
+                toggleMapSize() {
+                    this.mapExpanded = !this.mapExpanded;
+                    setTimeout(() => this.map && this.map.invalidateSize(), 320);
+                },
                 locateUser() {
-                    if (!navigator.geolocation) return;
-                    navigator.geolocation.getCurrentPosition((pos) => {
-                        this.map.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
-                    });
+                    // On device this goes through the native permission flow;
+                    // in a browser it falls back to the web API.
+                    $wire.requestLocation();
+
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((pos) => {
+                            this.map && this.map.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
+                        }, () => {});
+                    }
                 },
                 focusCheckpoint(lat, lng) {
                     if (this.map && lat && lng) {
@@ -150,12 +160,9 @@
                     font-size: 11px; font-weight: 800; color: white;
                 }
             </style>
-            <div class="relative h-[280px] bg-[#E4EDE4]">
+            <div class="relative shrink-0 bg-[#E4EDE4] transition-all duration-300" :class="mapExpanded ? 'h-[70vh]' : 'h-[280px]'">
                 <div x-ref="createMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
-                {{-- Locate me button --}}
-                <button @click="locateUser()" type="button" class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-[11px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="8"/></svg>
-                </button>
+                <x-map-controls expandable />
                 {{-- Overlay hint --}}
                 <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/40 to-transparent px-4 pb-3 pt-6">
                     <p class="text-center text-[13px] font-semibold text-white">{{ __('general.tap_map_to_add') }}</p>
@@ -236,12 +243,33 @@
                 $currentQuestions = $questions[$cpI] ?? [];
             @endphp
 
-            <h1 class="font-heading text-[18px] font-extrabold text-bark">
-                {{ __('general.stop_x_of_y', ['current' => $cpI + 1, 'total' => count($checkpoints)]) }}: {{ $currentCheckpoint['title'] ?: __('quests.checkpoint') . ' ' . ($cpI + 1) }}
-            </h1>
-            @if (!empty($currentQuestions))
-                <p class="mb-3 mt-0.5 text-[13px] text-muted">{{ __('quests.question') }} {{ $qI + 1 }}</p>
-            @endif
+            <h1 class="mb-3 font-heading text-[18px] font-extrabold text-bark">{{ __('general.add_questions') }}</h1>
+
+            {{-- One checkpoint open at a time. Without this only the last stop
+                 was reachable, which made a multi-stop quest uneditable. --}}
+            <div class="mb-3 flex flex-col gap-1.5">
+                @foreach ($checkpoints as $index => $checkpoint)
+                    @php
+                        $count = count($questions[$index] ?? []);
+                        $isOpen = $index === $cpI;
+                    @endphp
+                    <button
+                        type="button"
+                        wire:click="$set('activeCheckpointIndex', {{ $index }})"
+                        wire:key="cp-head-{{ $index }}"
+                        class="flex items-center gap-2.5 rounded-[12px] border-[1.5px] px-3 py-2.5 text-left transition-colors {{ $isOpen ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border bg-white' }}"
+                    >
+                        <span class="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold {{ $isOpen ? 'bg-forest-600 text-white' : 'bg-cream-dark text-muted' }}">{{ $index + 1 }}</span>
+
+                        <span class="min-w-0 flex-1">
+                            <span class="block truncate text-[13px] font-semibold text-bark">{{ $checkpoint['title'] ?: __('quests.checkpoint') . ' ' . ($index + 1) }}</span>
+                            <span class="block text-[11px] {{ $count === 0 ? 'text-coral' : 'text-muted' }}">{{ $count }} {{ $count === 1 ? __('quests.question') : __('quests.questions') }}</span>
+                        </span>
+
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7470" stroke-width="2.5" stroke-linecap="round" class="shrink-0 transition-transform {{ $isOpen ? 'rotate-90' : '' }}"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                @endforeach
+            </div>
 
             {{-- Location confirmed banner --}}
             @if ($currentCheckpoint['latitude'] && $currentCheckpoint['longitude'])
@@ -533,7 +561,7 @@
                         @foreach ($categories as $id => $name)
                             <button
                                 type="button"
-                                wire:click="$set('categoryId', '{{ $id }}')"
+                                wire:click="chooseCategory('{{ $id }}')"
                                 class="rounded-full border-[1.5px] px-[14px] py-[7px] text-[13px] font-semibold transition-colors
                                     {{ $categoryId == $id
                                         ? 'border-forest-600 bg-forest-600 text-white'
@@ -542,8 +570,35 @@
                                 {{ $name }}
                             </button>
                         @endforeach
+
+                        {{-- None of ours fits: the author names their own. It is
+                             saved as a suggestion and shows as "Other" until an
+                             admin approves it. --}}
+                        <button
+                            type="button"
+                            wire:click="chooseCustomCategory"
+                            class="rounded-full border-[1.5px] px-[14px] py-[7px] text-[13px] font-semibold transition-colors
+                                {{ blank($categoryId)
+                                    ? 'border-forest-600 bg-forest-600 text-white'
+                                    : 'border-cream-border bg-white text-muted' }}"
+                        >
+                            {{ __('general.custom_category') }}
+                        </button>
                     </div>
+
+                    @if (blank($categoryId))
+                        <input
+                            type="text"
+                            wire:model.blur="suggestedCategory"
+                            maxlength="40"
+                            placeholder="{{ __('general.custom_category_placeholder') }}"
+                            class="mt-2 w-full rounded-[14px] border-[1.5px] border-cream-border bg-white px-3.5 py-[11px] text-[13px] text-bark placeholder:text-forest-300 focus:border-forest-600 focus:outline-none"
+                        />
+                        <p class="mt-1 text-[11px] leading-relaxed text-muted">{{ __('general.custom_category_hint') }}</p>
+                    @endif
+
                     @error('categoryId') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                    @error('suggestedCategory') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Difficulty (segmented control) --}}

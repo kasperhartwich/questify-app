@@ -56,6 +56,12 @@ class extends Component
     {
         $this->isNative = System::isMobile();
         $this->loadPins();
+
+        // /discover/map?pin=12 opens with that quest's card already showing,
+        // so a shared link lands on the quest rather than a bare map.
+        if ($pin = request()->integer('pin')) {
+            $this->selectedPinId = $pin;
+        }
     }
 
 

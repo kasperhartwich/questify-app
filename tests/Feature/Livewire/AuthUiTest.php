@@ -284,3 +284,22 @@ it('deletes the account through the API and signs the user out', function () {
     expect($deleted)->toBeTrue()
         ->and(auth()->check())->toBeFalse();
 });
+
+it('makes the whole connected-account row an action', function () {
+    mockFullApiClient();
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+    Cache::put('app_info', ['data' => ['auth_methods' => ['email' => true, 'google' => true]]]);
+
+    $user = new ApiTokenUser([
+        'id' => 1, 'name' => 'Kasper', 'email' => 'k@example.com',
+        'locale' => 'en', 'linked_providers' => ['google'],
+    ]);
+
+    // Connected providers stay tappable so the row re-authenticates.
+    Livewire::actingAs($user)
+        ->test('pages::profile.settings')
+        ->set('showSettings', true)
+        ->assertSee(__('general.connected'))
+        ->assertSeeHtml('/auth/google/redirect');
+});

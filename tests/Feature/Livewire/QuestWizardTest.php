@@ -495,3 +495,61 @@ it('switches cleanly between two quests', function () {
         ->assertSet('draftQuestId', 7)
         ->assertSet('title', 'Half-written Walk');
 });
+
+it('lets the author suggest their own category', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 5)
+        ->call('chooseCustomCategory')
+        ->set('suggestedCategory', 'Street Art')
+        ->set('difficulty', 'easy')
+        ->call('nextStep')
+        // A suggestion is enough to move on — an admin approves it later.
+        ->assertHasNoErrors()
+        ->assertSet('step', 6)
+        ->assertSet('categoryId', '');
+});
+
+it('clears a typed category when one of ours is picked', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('suggestedCategory', 'Street Art')
+        ->call('chooseCategory', 1)
+        ->assertSet('suggestedCategory', '')
+        ->assertSet('categoryId', 1);
+});
+
+it('still requires a category of some kind', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 5)
+        ->set('difficulty', 'easy')
+        ->call('nextStep')
+        ->assertHasErrors(['categoryId']);
+});
+
+it('lets the author move between checkpoints on the questions step', function () {
+    mockQuestWizardApiClient();
+
+    // Only the last stop used to be reachable, which made a multi-stop quest
+    // impossible to finish editing.
+    $component = Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [
+            ['title' => 'Nyhavn', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0],
+            ['title' => 'Amalienborg', 'description' => '', 'latitude' => 55.1, 'longitude' => 12.1],
+        ]);
+
+    $component->assertSee('Nyhavn')->assertSee('Amalienborg')
+        ->assertSet('activeCheckpointIndex', 0);
+
+    $component->set('activeCheckpointIndex', 1)
+        ->assertSet('activeCheckpointIndex', 1);
+});

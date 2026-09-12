@@ -5,6 +5,7 @@ use App\Enums\PlayMode;
 use App\Enums\QuestionType;
 use App\Enums\WrongAnswerBehaviour;
 use App\Livewire\Concerns\HandlesApiErrors;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use Livewire\Attributes\Session;
 use Livewire\Attributes\Title;
@@ -37,6 +38,10 @@ class extends Component
     #[Validate('required')]
     #[Session(key: 'quest_wizard.categoryId')]
     public $categoryId = '';
+
+    /** A category the author typed because none of ours fit. */
+    #[Session(key: 'quest_wizard.suggestedCategory')]
+    public string $suggestedCategory = '';
 
     #[Validate('required')]
     #[Session(key: 'quest_wizard.difficulty')]
@@ -198,6 +203,24 @@ class extends Component
         }
     }
 
+    public function chooseCategory(int|string $categoryId): void
+    {
+        $this->categoryId = $categoryId;
+        $this->suggestedCategory = '';
+    }
+
+    public function chooseCustomCategory(): void
+    {
+        $this->categoryId = '';
+    }
+
+    public function updatedSuggestedCategory(): void
+    {
+        if (filled($this->suggestedCategory)) {
+            $this->categoryId = '';
+        }
+    }
+
     public function addCheckpoint(): void
     {
         $index = count($this->checkpoints);
@@ -343,7 +366,8 @@ class extends Component
         }
 
         $data = [
-            'category_id' => $this->categoryId,
+            'category_id' => $this->categoryId ?: null,
+            'suggested_category' => $this->suggestedCategory ?: null,
             'title' => $this->title,
             'description' => $this->description ?: '',
             'difficulty' => $this->difficulty,
@@ -419,6 +443,7 @@ class extends Component
         $this->title = '';
         $this->description = '';
         $this->categoryId = '';
+        $this->suggestedCategory = '';
         $this->difficulty = '';
         $this->checkpoints = [];
         $this->questions = [];
@@ -451,7 +476,14 @@ class extends Component
                 'wrongAnswerBehaviour' => ['required', 'in:' . implode(',', array_column(WrongAnswerBehaviour::cases(), 'value'))],
             ]),
             5 => $this->validate([
-                'categoryId' => ['required', 'in:' . implode(',', array_keys($this->categories))],
+                // Either pick one of ours or suggest your own — an admin
+                // approves suggestions later, so this never blocks publishing.
+                'categoryId' => [
+                    filled($this->suggestedCategory) ? 'nullable' : 'required',
+                    'nullable',
+                    'in:' . implode(',', array_keys($this->categories)),
+                ],
+                'suggestedCategory' => ['nullable', 'string', 'min:2', 'max:40'],
                 'difficulty' => ['required', 'in:' . implode(',', array_column(Difficulty::cases(), 'value'))],
             ]),
             6 => null,
