@@ -256,16 +256,22 @@ return [
 
     'permissions' => [
         'biometric' => false,
-        'camera' => 'Questify uses the camera to scan the QR code that joins you to a quest session.',
+        'camera' => true,
         'microphone' => false,
         'microphone_background' => false,
         'push_notifications' => true,
-        'location' => 'Questify uses your location to show quests near you and to confirm that you have reached a checkpoint while playing.',
+        'location' => true,
         'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
         'scanner' => true,
         'network_state' => true,
+
+        // Info.plist overrides — applied after plugin defaults, so these are the
+        // strings users actually see in the iOS permission dialogs.
+        'NSLocationWhenInUseUsageDescription' => 'Questify uses your location to show quests near you and to confirm that you have reached a checkpoint while playing.',
+        'NSLocationAlwaysAndWhenInUseUsageDescription' => 'Questify follows your route while a quest is running, so checkpoints still register when the screen is off.',
+        'NSCameraUsageDescription' => 'Questify uses the camera to scan the QR code that joins you to a quest session.',
     ],
 
     /*

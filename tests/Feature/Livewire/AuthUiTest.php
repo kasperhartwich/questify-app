@@ -4,6 +4,7 @@ use App\Auth\ApiTokenUser;
 use App\Models\User;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\AuthResource;
+use App\Services\Api\Resources\UserApiResource;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Livewire;
 
@@ -245,4 +246,41 @@ it('defaults to no linked providers when the API omits them', function () {
     ]);
 
     expect($user->linkedProviders)->toBe([]);
+});
+
+it('deletes the account through the API and signs the user out', function () {
+    $deleted = false;
+
+    $mockUserResource = Mockery::mock(UserApiResource::class);
+    $mockUserResource->shouldReceive('deleteAccount')->once()->andReturnUsing(function () use (&$deleted) {
+        $deleted = true;
+
+        return ['message' => 'deleted'];
+    });
+    $mockUserResource->shouldReceive('quests')->andReturn(['data' => [], 'meta' => ['next_cursor' => null]]);
+    $mockUserResource->shouldReceive('sessions')->andReturn(['data' => []]);
+    $mockUserResource->shouldReceive('favourites')->andReturn(['data' => [], 'meta' => ['next_cursor' => null]]);
+
+    $mockAuth = Mockery::mock(AuthResource::class);
+    $mockAuth->shouldReceive('me')->andReturn(['data' => ['id' => 1, 'name' => 'Kasper', 'email' => 'k@example.com', 'locale' => 'en']]);
+    $mockAuth->shouldReceive('logout')->andReturnNull();
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('user')->andReturn($mockUserResource);
+    $mockClient->shouldReceive('auth')->andReturn($mockAuth);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+
+    $user = new ApiTokenUser(['id' => 1, 'name' => 'Kasper', 'email' => 'k@example.com', 'locale' => 'en']);
+
+    Livewire::actingAs($user)
+        ->test('pages::profile.settings')
+        ->call('deleteAccount')
+        ->assertRedirect('/');
+
+    expect($deleted)->toBeTrue()
+        ->and(auth()->check())->toBeFalse();
 });

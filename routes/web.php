@@ -35,8 +35,12 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     // Discover
+    Route::redirect('/discover', '/discover/list');
     Route::livewire('/discover/list', 'pages::discover.quest-list')->name('discover.list');
     Route::livewire('/discover/map', 'pages::discover.quest-map')->name('discover.map');
+
+    // Must precede /quests/{quest} or the wildcard swallows "create".
+    Route::redirect('/quests/create', '/create');
     Route::livewire('/quests/{quest}', 'pages::discover.quest-detail')->name('discover.quest');
 
     // My Quests

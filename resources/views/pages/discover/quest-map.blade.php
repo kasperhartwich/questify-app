@@ -29,6 +29,23 @@ class extends Component
     /** @var array<int, array{id: int, title: string, latitude: float, longitude: float, distance_to_farthest_km: float}> */
     public array $pins = [];
 
+    /** Quest id of the pin the player tapped, or null when nothing is selected. */
+    public ?int $selectedPinId = null;
+
+    /**
+     * The selected pin, straight from $pins.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getSelectedPinProperty(): ?array
+    {
+        if ($this->selectedPinId === null) {
+            return null;
+        }
+
+        return collect($this->pins)->firstWhere('id', $this->selectedPinId);
+    }
+
     public float $latitude = 55.6761;
 
     public float $longitude = 12.5683;
@@ -216,6 +233,7 @@ class extends Component
                 const marker = L.marker([pin.latitude, pin.longitude], { icon: icon }).addTo(this.map);
                 marker.on('click', () => {
                     this.selectedPin = pin;
+                    $wire.set('selectedPinId', pin.id);
                     this.map.flyTo([pin.latitude, pin.longitude], 15);
                 });
                 this.markers.push(marker);
@@ -307,7 +325,7 @@ class extends Component
 
     {{-- Full-screen map --}}
     <div x-ref="mapCanvas" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;"
-         @click="if (!$event.target.closest('.leaflet-quest-marker')) { selectedPin = null; removeCircle(); }"></div>
+         @click="if (!$event.target.closest('.leaflet-quest-marker')) { selectedPin = null; $wire.set('selectedPinId', null); removeCircle(); }"></div>
 
     {{-- Floating search bar --}}
     <div class="absolute left-0 right-0 z-[1000] px-4" style="top: calc(env(safe-area-inset-top, 0px) + 10px);">
@@ -324,13 +342,13 @@ class extends Component
     </div>
 
     {{-- Floating buttons (bottom right) --}}
-    <div class="absolute right-4 z-[1000] flex flex-col gap-2" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);">
+    <div class="absolute right-4 z-[1000] flex flex-col gap-2" style="bottom: calc(env(safe-area-inset-bottom, 0px) + {{ $this->selectedPin ? '250px' : '90px' }});">
         {{-- Expand button (only when quest selected) --}}
-        <template x-if="selectedPin">
-            <a :href="'/quests/' + selectedPin.id" class="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
+        @if ($this->selectedPin)
+            <a href="/quests/{{ $this->selectedPin['id'] }}" class="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)]" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
             </a>
-        </template>
+        @endif
         {{-- My location button --}}
         <button
             @click="locateUser()"
@@ -342,34 +360,39 @@ class extends Component
 
     {{-- Bottom: quest card (only when selected) --}}
     <div class="absolute inset-x-0 z-[1000] px-4 transition-all duration-300" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);">
-        <template x-if="selectedPin">
-            <div class="overflow-hidden rounded-[18px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-                <div class="flex items-start gap-3 px-4 pt-4 pb-3">
-                    {{-- Pin icon --}}
+        @if ($this->selectedPin)
+            @php($pin = $this->selectedPin)
+            <div class="overflow-hidden rounded-[18px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]" wire:key="pin-{{ $pin['id'] }}">
+                <div class="flex items-start gap-3 px-4 pb-3 pt-4">
                     <div class="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#E8F5E9]">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#0B3D2E" stroke="none"/></svg>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <h3 class="font-heading text-[15px] font-bold leading-tight text-bark" x-text="selectedPin.title"></h3>
-                        <p class="mt-0.5 text-[12px] text-muted">
-                            <span x-show="selectedPin.distance_to_start_km"><span x-text="selectedPin.distance_to_start_km.toFixed(1)"></span> km {{ __('general.away') }}</span>
-                        </p>
+                        <h3 class="font-heading text-[15px] font-bold leading-tight text-bark">{{ $pin['title'] }}</h3>
+                        @if (($pin['distance_to_start_km'] ?? 0) > 0)
+                            <p class="mt-0.5 text-[12px] text-muted">{{ number_format($pin['distance_to_start_km'], 1) }} km {{ __('general.away') }}</p>
+                        @endif
                     </div>
                 </div>
-                {{-- Tags row --}}
+
                 <div class="flex flex-wrap gap-[6px] px-4 pb-3">
-                    <span class="rounded-full px-2.5 py-[3px] text-[11px] font-semibold"
-                          :class="selectedPin.difficulty === 'easy' ? 'bg-[#D4EDE4] text-forest-600' : (selectedPin.difficulty === 'hard' ? 'bg-red-50 text-coral' : 'bg-amber-100 text-amber-700')"
-                          x-text="selectedPin.difficulty"></span>
-                    <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.checkpoint_count + ' stops'"></span>
-                    <span x-show="selectedPin.distance_to_farthest_km" class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted" x-text="selectedPin.distance_to_farthest_km.toFixed(1) + ' km'"></span>
+                    <span class="rounded-full px-2.5 py-[3px] text-[11px] font-semibold
+                        @class([
+                            'bg-[#D4EDE4] text-forest-600' => $pin['difficulty'] === 'easy',
+                            'bg-red-50 text-coral' => $pin['difficulty'] === 'hard',
+                            'bg-amber-100 text-amber-700' => ! in_array($pin['difficulty'], ['easy', 'hard'], true),
+                        ])">{{ __('general.'.$pin['difficulty']) }}</span>
+                    <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted">{{ $pin['checkpoint_count'] }} {{ __('general.stops') }}</span>
+                    @if (($pin['distance_to_farthest_km'] ?? 0) > 0)
+                        <span class="rounded-full bg-cream px-2.5 py-[3px] text-[11px] font-semibold text-muted">{{ number_format($pin['distance_to_farthest_km'], 1) }} km</span>
+                    @endif
                 </div>
-                {{-- View Quest button --}}
+
                 <div class="px-4 pb-4">
-                    <a :href="'/quests/' + selectedPin.id" class="block rounded-[12px] bg-forest-600 py-[13px] text-center text-[14px] font-bold text-white" wire:navigate>{{ __('general.view_quest') }} &rarr;</a>
+                    <a href="/quests/{{ $pin['id'] }}" class="block rounded-[12px] bg-forest-600 py-[13px] text-center text-[14px] font-bold text-white" wire:navigate>{{ __('general.view_quest') }} &rarr;</a>
                 </div>
             </div>
-        </template>
+        @endif
     </div>
 </div>
 
