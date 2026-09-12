@@ -614,13 +614,40 @@
             <h1 class="mb-4 font-heading text-[22px] font-extrabold text-bark">{{ __('sessions.review_publish') }}</h1>
 
             <div class="flex flex-1 flex-col gap-2.5 overflow-y-auto pb-4">
-                {{-- Quest Name Card --}}
+                {{-- Cover image --}}
+                @if ($coverImage)
+                    <img src="{{ $coverImage->temporaryUrl() }}" alt="" class="h-[140px] w-full rounded-[14px] object-cover" />
+                @endif
+
+                {{-- Name and description stay editable here: this is the last
+                     chance to fix a typo before the quest goes public. --}}
                 <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-3.5">
-                    <div class="text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('quests.quest') }}</div>
-                    <h3 class="mt-1 font-heading text-sm font-bold text-bark">{{ $title }}</h3>
-                    @if ($description)
-                        <p class="mt-1 text-[11px] text-muted">{{ Str::limit($description, 100) }}</p>
-                    @endif
+                    <label class="block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.quest_name') }}</label>
+                    <input type="text" wire:model.blur="title"
+                           class="mt-1 w-full border-0 border-b border-transparent bg-transparent p-0 font-heading text-sm font-bold text-bark focus:border-forest-600 focus:outline-none focus:ring-0" />
+                    @error('title') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+
+                    <label class="mt-3 block text-[9px] font-bold uppercase tracking-widest text-muted">{{ __('general.description') }}</label>
+                    <textarea wire:model.blur="description" rows="3"
+                              class="mt-1 w-full resize-none border-0 bg-transparent p-0 text-[12px] text-muted focus:outline-none focus:ring-0"
+                              placeholder="{{ __('general.description') }}"></textarea>
+                    @error('description') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Language, category and difficulty --}}
+                <div class="flex gap-2">
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.language') }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ app()->getLocale() === 'da' ? __('general.danish') : __('general.english') }}</div>
+                    </div>
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.category') }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ $categories[$categoryId] ?? '—' }}</div>
+                    </div>
+                    <div class="flex-1 rounded-xl border-[1.5px] border-cream-border bg-white p-2.5 text-center">
+                        <div class="text-[9px] text-muted">{{ __('general.difficulty') }}</div>
+                        <div class="font-heading text-xs font-bold text-bark">{{ $difficulty ? __('general.'.$difficulty) : '—' }}</div>
+                    </div>
                 </div>
 
                 {{-- Checkpoints Card --}}

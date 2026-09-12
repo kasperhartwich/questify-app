@@ -114,6 +114,7 @@ return [
     'scoring' => 'Scoring',
     'publish_quest' => 'Publish Quest',
     'add_checkpoint_on_map' => 'Add checkpoint on map',
+    'description' => 'Description',
     'quest_name' => 'Quest Name',
     'search_quests_near_you' => 'Search quests near you...',
     'quests_in_area' => 'quests in this area',

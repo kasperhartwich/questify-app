@@ -22,7 +22,7 @@ class extends Component
     public int $step = 1;
 
     // Step 1: Basics
-    #[Validate('required|string|max:255')]
+    #[Validate('nullable|string|max:255')]
     #[Session(key: 'quest_wizard.title')]
     public string $title = '';
 
@@ -221,6 +221,11 @@ class extends Component
 
     private function validateBeforeSave(): void
     {
+        $this->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:2000'],
+        ]);
+
         $missingCoords = collect($this->checkpoints)
             ->filter(fn (array $cp): bool => empty($cp['latitude']) || empty($cp['longitude']))
             ->count();
@@ -332,9 +337,10 @@ class extends Component
     private function validateStep(): void
     {
         match ($this->step) {
-            1 => $this->validate([
-                'title' => ['required', 'string', 'max:255'],
-            ]),
+            // Step 1 asks for a name and description but does not insist: authors
+            // often drop pins first and write the copy on the review screen,
+            // where both become required.
+            1 => null,
             // Difficulty is chosen on step 5 (Details) and validated there — requiring it here
             // would silently block advancing past step 1 (its error has no field to render).
             2 => $this->validate([

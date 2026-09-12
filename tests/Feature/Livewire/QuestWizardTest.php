@@ -67,15 +67,17 @@ it('starts on step 1', function () {
     $component->assertSet('step', 1);
 });
 
-it('validates step 1 before advancing', function () {
+it('does not block step 1 on a missing title', function () {
     mockQuestWizardApiClient();
     Category::factory()->create(['id' => 1]);
 
+    // Authors sketch the route first and write the copy on the review screen,
+    // where the title and description become required.
     $component = Livewire::actingAs(User::factory()->create())
         ->test('pages::create.quest-wizard');
 
     $component->call('nextStep')
-        ->assertHasErrors(['title']);
+        ->assertHasNoErrors();
 });
 
 it('validates category and difficulty on the details step', function () {
@@ -230,6 +232,7 @@ it('sends the visibility property instead of hardcoded public', function () {
         ->set('categoryId', 1)
         ->set('difficulty', 'easy')
         ->set('visibility', 'private')
+        ->set('description', 'A short description')
         ->set('checkpoints', [['title' => 'Stop 1', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
         ->set('questions', [[['body' => 'Q?', 'type' => 'open_text', 'hint' => '', 'points' => 5, 'answers' => []]]])
         ->call('saveAsDraft');
@@ -322,4 +325,57 @@ it('shows a tappable cover image drop zone', function () {
         // The bare file input gave no hint that a cover image could be added.
         ->assertSee(__('general.add_cover_image'))
         ->assertSeeHtml('type="file"');
+});
+
+it('lets the author fix the name and description on the review step', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 6)
+        ->set('title', 'Typo Qeust')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'medium')
+        // Editable, so the last screen is not a dead end for a typo.
+        ->assertSeeHtml('wire:model.blur="title"')
+        ->assertSeeHtml('wire:model.blur="description"')
+        ->set('title', 'Fixed Quest')
+        ->assertSet('title', 'Fixed Quest');
+});
+
+it('summarises language, category and difficulty before publishing', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 6)
+        ->set('categoryId', 1)
+        ->set('difficulty', 'hard')
+        ->assertSee(__('general.language'))
+        ->assertSee('History')
+        ->assertSee(__('general.hard'));
+});
+
+it('allows leaving step 1 without a name or description', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->call('nextStep')
+        ->assertHasNoErrors()
+        ->assertSet('step', 2);
+});
+
+it('requires a name and description before publishing', function () {
+    mockQuestWizardApiClient();
+    Category::factory()->create(['id' => 1]);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 6)
+        ->set('title', '')
+        ->set('description', '')
+        ->call('publish')
+        ->assertHasErrors(['title', 'description'])
+        ->assertNoRedirect();
 });

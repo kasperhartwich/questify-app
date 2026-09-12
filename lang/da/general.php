@@ -114,6 +114,7 @@ return [
     'scoring' => 'Scoring',
     'publish_quest' => 'Publicer Quest',
     'add_checkpoint_on_map' => 'Tilføj checkpoint på kort',
+    'description' => 'Beskrivelse',
     'quest_name' => 'Quest-navn',
     'search_quests_near_you' => 'Søg quests i nærheden...',
     'quests_in_area' => 'quests i dette område',
