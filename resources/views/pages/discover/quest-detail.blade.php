@@ -40,7 +40,7 @@ class extends Component
         // the session, which is empty when the guard is set directly.
         $viewerId = Auth::user()?->id;
 
-        return $viewerId !== null && ($this->questData->user->id ?? null) === $viewerId;
+        return $viewerId !== null && ($this->questData->creator->id ?? null) === $viewerId;
     }
 
     public function toggleFavourite(): void
@@ -254,12 +254,12 @@ class extends Component
         <div class="mb-2 flex items-start justify-between">
             <div class="flex-1">
                 <h1 class="mb-1 font-heading text-[22px] font-extrabold leading-tight text-bark">{{ $questData->title }}</h1>
-                @if($questData->user ?? null)
+                @if($questData->creator ?? null)
                     <div class="flex items-center gap-1.5 text-[13px] text-muted">
                         <div class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[#1565C0] font-heading text-[9px] font-extrabold text-white">
-                            {{ strtoupper(substr($questData->user->name ?? '', 0, 1)) }}
+                            {{ strtoupper(substr($questData->creator->name ?? '', 0, 1)) }}
                         </div>
-                        {{ __('quests.by_creator', ['name' => $questData->user->name ?? '']) }}
+                        {{ __('quests.by_creator', ['name' => $questData->creator->name ?? '']) }}
                     </div>
                 @endif
 

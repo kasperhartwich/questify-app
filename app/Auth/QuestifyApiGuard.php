@@ -43,14 +43,45 @@ class QuestifyApiGuard implements Guard
         $userData = $this->session->get('questify_user');
         if ($userData) {
             $this->user = new ApiTokenUser($userData);
+
+            return $this->user;
         }
+
+        // The token outlives the session: it sits in secure storage, while the
+        // session expires after SESSION_LIFETIME and is wiped when an app
+        // update replaces the container. Rebuild the user from the token so a
+        // restart or update does not send the player back to the login screen.
+        if (! TokenStorage::has()) {
+            return null;
+        }
+
+        try {
+            $restored = $this->client->auth()->me()['data'] ?? null;
+        } catch (ApiAuthenticationException) {
+            // The token was revoked or expired server-side. Drop it so the app
+            // stops retrying and shows the login screen instead.
+            TokenStorage::forget();
+
+            return null;
+        } catch (\Throwable) {
+            // Offline or the API is down — keep the token and try again later
+            // rather than signing the player out over a dropped connection.
+            return null;
+        }
+
+        if (! $restored) {
+            return null;
+        }
+
+        $this->session->put('questify_user', $restored);
+        $this->user = new ApiTokenUser($restored);
 
         return $this->user;
     }
 
     public function id(): int|string|null
     {
-        return $this->session->get('questify_user.id');
+        return $this->user()?->id;
     }
 
     public function validate(array $credentials = []): bool

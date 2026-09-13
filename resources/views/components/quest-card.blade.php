@@ -50,8 +50,8 @@
             <div class="flex items-start justify-between">
                 <div class="min-w-0 flex-1">
                     <h3 class="font-heading text-[15px] font-bold leading-snug text-white">{{ $quest->title }}</h3>
-                    @if ($quest->user?->name ?? null)
-                        <p class="mt-1 text-[12px] text-white/55">{{ $quest->user->name }}{{ !empty($quest->distance) ? ' · ' . $quest->distance : '' }}</p>
+                    @if ($quest->creator?->name ?? null)
+                        <p class="mt-1 text-[12px] text-white/55">{{ $quest->creator->name }}{{ !empty($quest->distance) ? ' · ' . $quest->distance : '' }}</p>
                     @endif
                 </div>
                 @if (!empty($quest->average_rating))

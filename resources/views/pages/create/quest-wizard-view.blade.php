@@ -113,9 +113,15 @@
                     setTimeout(() => this.map && this.map.invalidateSize(), 320);
                 },
                 locateUser() {
-                    // On device this goes through the native permission flow;
-                    // in a browser it falls back to the web API.
+                    // On device the OS asks, using our purpose string and the
+                    // app's name. Falling through to navigator.geolocation here
+                    // made WKWebView ask on behalf of the origin instead, so
+                    // players were prompted by "127.0.0.1".
                     $wire.requestLocation();
+
+                    if (@js($isNative)) {
+                        return;
+                    }
 
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition((pos) => {
@@ -129,7 +135,16 @@
                     }
                 }
             }"
-            x-init="initMap()"
+            x-init="
+                initMap();
+                $wire.on('wizard-location', (params) => {
+                    const lat = params[0]?.latitude ?? params.latitude;
+                    const lng = params[0]?.longitude ?? params.longitude;
+                    if (lat && lng && this.map) {
+                        this.map.flyTo([lat, lng], 15);
+                    }
+                });
+            "
         >
             {{-- Forest header --}}
             <div class="bg-forest-600 px-4 pb-4 pt-2">

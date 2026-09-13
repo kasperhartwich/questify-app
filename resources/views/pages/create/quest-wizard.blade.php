@@ -12,6 +12,9 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Facades\System;
 
 new
 #[Title('Create Quest')]
@@ -112,8 +115,33 @@ class extends Component
      */
     private const EDITABLE_STATUSES = ['draft', 'pending_review'];
 
+    /** Whether the OS can be asked for a fix, or we fall back to the browser API. */
+    public bool $isNative = false;
+
+    /**
+     * The wizard had no handler for the native fix, so the locate button fell
+     * through to navigator.geolocation — and WKWebView asks permission on
+     * behalf of the origin, which reads as "127.0.0.1 would like to use your
+     * location". Handling the native event keeps the prompt on the OS, where
+     * it says Questify and uses our purpose string.
+     */
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(
+        bool $success = false,
+        ?float $latitude = null,
+        ?float $longitude = null,
+    ): void {
+        if (! $success || $latitude === null || $longitude === null) {
+            return;
+        }
+
+        $this->dispatch('wizard-location', latitude: $latitude, longitude: $longitude);
+    }
+
     public function mount(?int $quest = null): void
     {
+        $this->isNative = System::isMobile();
+
         if ($quest !== null && $quest !== $this->draftQuestId) {
             // Opening a different quest replaces whatever draft was in progress.
             $this->clearDraft();

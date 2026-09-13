@@ -113,7 +113,10 @@ function mockFullApiClient(): void
         'estimated_duration_minutes' => 45,
         'average_rating' => '5.0',
         'sessions_count' => 2,
-        'user' => ['id' => 2, 'name' => 'Bent Hansen'],
+        // Matches QuestResource: the API has never returned a 'user' key for a
+        // quest, only 'creator'. The old fixture invented one, so every test
+        // that touched the author passed while the app read null on device.
+        'creator' => ['type' => 'user', 'id' => 2, 'name' => 'Bent Hansen'],
         'created_at' => '2026-03-31T07:47:07.000000Z',
     ];
 
