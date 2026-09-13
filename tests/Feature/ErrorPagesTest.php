@@ -8,8 +8,10 @@ it('shows a branded not-found page without HTTP jargon', function () {
     $response->assertNotFound()
         ->assertSee(__('errors.not_found_title'))
         ->assertSee(__('errors.not_found_body'))
-        ->assertDontSee('404')
-        ->assertDontSee('Not Found');
+        // Text, not markup: a Vite asset hash can happen to contain "404",
+        // which failed this test at random depending on the last build.
+        ->assertDontSeeText('404')
+        ->assertDontSeeText('Not Found');
 });
 
 it('keeps the tab bar and a way back on the error page', function () {
