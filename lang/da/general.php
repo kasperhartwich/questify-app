@@ -187,7 +187,7 @@ return [
     'public' => 'Offentlig',
     'public_description' => 'Alle kan finde og spille denne quest',
     'private' => 'Privat',
-    'private_description' => 'Kun folk med linket kan spille',
+    'private_description' => 'Kun dem du inviterer kan spille',
     'play_modes' => 'Spiltilstande',
     'scoring_settings' => 'Scoring',
     'speed_bonus' => 'Hastighedsbonus',

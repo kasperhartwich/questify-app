@@ -290,6 +290,39 @@ class extends Component
         $this->questions = array_values($this->questions);
     }
 
+    /**
+     * Reorder the route. Questions are keyed by checkpoint index, so they move
+     * with their stop — reordering the checkpoints alone would reattach every
+     * question to whichever stop landed on that index.
+     */
+    public function moveCheckpoint(int $from, int $to): void
+    {
+        $last = count($this->checkpoints) - 1;
+
+        if ($from === $to || $from < 0 || $from > $last || $to < 0 || $to > $last) {
+            return;
+        }
+
+        $moved = array_splice($this->checkpoints, $from, 1);
+        array_splice($this->checkpoints, $to, 0, $moved);
+
+        $movedQuestions = array_splice($this->questions, $from, 1);
+        array_splice($this->questions, $to, 0, $movedQuestions);
+
+        $this->checkpoints = array_values($this->checkpoints);
+        $this->questions = array_values($this->questions);
+
+        // Follow the stop the author was working on rather than leaving the
+        // accordion open on whatever slid into its place.
+        if ($this->activeCheckpointIndex === $from) {
+            $this->activeCheckpointIndex = $to;
+        } elseif ($from < $this->activeCheckpointIndex && $to >= $this->activeCheckpointIndex) {
+            $this->activeCheckpointIndex--;
+        } elseif ($from > $this->activeCheckpointIndex && $to <= $this->activeCheckpointIndex) {
+            $this->activeCheckpointIndex++;
+        }
+    }
+
     public function updateCheckpointCoordinates(int $index, float $lat, float $lng): void
     {
         if (isset($this->checkpoints[$index])) {
@@ -392,18 +425,29 @@ class extends Component
 
                 // A question switched to "Text answer" keeps the blank
                 // multiple-choice rows in state. Sending them made the API
-                // reject the whole save on a required answer_text.
+                // reject the whole save on a required answer_text. A text
+                // question still carries exactly one answer — the expected
+                // wording, which the backend compares the player's typing
+                // against — so send that and drop the leftover rows.
                 $isOpenText = ($question['type'] ?? '') === QuestionType::OpenText->value;
 
-                foreach ($question['answers'] ?? [] as $answer) {
-                    if ($isOpenText || trim((string) ($answer['body'] ?? '')) === '') {
-                        continue;
-                    }
+                if ($isOpenText) {
+                    $expected = trim((string) ($question['answers'][0]['body'] ?? ''));
 
-                    $answersData[] = [
-                        'answer_text' => $answer['body'],
-                        'is_correct' => $answer['is_correct'],
-                    ];
+                    if ($expected !== '') {
+                        $answersData[] = ['answer_text' => $expected, 'is_correct' => true];
+                    }
+                } else {
+                    foreach ($question['answers'] ?? [] as $answer) {
+                        if (trim((string) ($answer['body'] ?? '')) === '') {
+                            continue;
+                        }
+
+                        $answersData[] = [
+                            'answer_text' => $answer['body'],
+                            'is_correct' => $answer['is_correct'],
+                        ];
+                    }
                 }
                 $questionsData[] = [
                     'question_text' => $question['body'],
@@ -468,7 +512,10 @@ class extends Component
 
         $this->clearDraft();
 
-        $this->redirect('/quests/' . $questId);
+        // Landing on the quest left the wizard in history, so the back arrow
+        // dropped the author straight back into Create. Tell the quest screen
+        // where back belongs now: the list the quest just joined.
+        $this->redirect('/quests/' . $questId . '?from=created');
     }
 
     /**
@@ -571,6 +618,15 @@ class extends Component
             // path (checkpoints.0.questions.0.answers.0.answer_text).
             foreach ($cpQuestions as $qIndex => $question) {
                 if (($question['type'] ?? '') === QuestionType::OpenText->value) {
+                    // Free text is graded against the wording the author
+                    // expects. Without it the backend marks every attempt
+                    // wrong, so it is required rather than optional.
+                    if (trim((string) ($question['answers'][0]['body'] ?? '')) === '') {
+                        $this->dispatch('validation-notice', message: __('quests.text_answer_needs_expected'));
+
+                        throw new \Illuminate\Validation\ValidationException(validator([], []));
+                    }
+
                     continue;
                 }
 

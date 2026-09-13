@@ -173,7 +173,7 @@ it('saves a quest via the API and redirects', function () {
         ]);
 
     $component->call('saveAsDraft')
-        ->assertRedirect('/quests/42');
+        ->assertRedirect('/quests/42?from=created');
 });
 
 it('publishes a quest via the API', function () {
@@ -200,7 +200,7 @@ it('publishes a quest via the API', function () {
         ]);
 
     $component->call('publish')
-        ->assertRedirect('/quests/42');
+        ->assertRedirect('/quests/42?from=created');
 });
 
 it('sends the visibility property instead of hardcoded public', function () {
@@ -576,8 +576,11 @@ it('sends no blank answers for a text-answer question', function () {
     app()->instance(QuestifyApiClient::class, $mockClient);
 
     // Switching a question to "Text answer" leaves the two blank multiple-choice
-    // rows behind. They used to be sent, and the API rejected the save with
+    // rows behind. Sending them made the API reject the save with
     // "checkpoints.0.questions.0.answers.0.answer_text field is required".
+    // What must survive is the one answer the author typed: the backend grades
+    // free text by comparing it against the answer flagged correct, so a text
+    // question saved with no answers marks every player wrong.
     Livewire::actingAs(User::factory()->create())
         ->test('pages::create.quest-wizard')
         ->set('title', 'Text answer quest')
@@ -590,13 +593,13 @@ it('sends no blank answers for a text-answer question', function () {
             'type' => 'open_text',
             'hint' => 'Look up',
             'points' => 10,
-            'answers' => [['body' => '', 'is_correct' => true], ['body' => '', 'is_correct' => false]],
+            'answers' => [['body' => 'Anno 1743', 'is_correct' => true], ['body' => '', 'is_correct' => false]],
         ]]])
         ->call('saveAsDraft');
 
     $answers = $captured['checkpoints'][0]['questions'][0]['answers'] ?? null;
 
-    expect($answers)->toBe([]);
+    expect($answers)->toBe([['answer_text' => 'Anno 1743', 'is_correct' => true]]);
 });
 
 it('offers every play mode by default and lets them be toggled', function () {
@@ -623,4 +626,162 @@ it('requires at least one play mode', function () {
         ->call('nextStep')
         ->assertHasErrors(['playModes'])
         ->assertSet('step', 4);
+});
+
+/**
+ * Both answer types need a visible way to say what counts as correct. The text
+ * type had none at all: the screen offered only a hint field, so authors had no
+ * place to type the answer and the backend graded every attempt wrong.
+ */
+function wizardAtQuestions(string $type, array $answers)
+{
+    mockQuestWizardApiClient();
+
+    return Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?',
+            'type' => $type,
+            'hint' => '',
+            'points' => 10,
+            'answers' => $answers,
+        ]]]);
+}
+
+it('offers a field for the expected answer on a text question', function () {
+    wizardAtQuestions('open_text', [['body' => 'Anno 1743', 'is_correct' => true]])
+        ->assertSee(__('quests.correct_answer'))
+        ->assertSeeHtml('questions.0.0.answers.0.body');
+});
+
+it('offers the lettered choice rows on a multiple choice question', function () {
+    wizardAtQuestions('multiple_choice', [
+        ['body' => 'First', 'is_correct' => true],
+        ['body' => 'Second', 'is_correct' => false],
+    ])
+        ->assertSeeHtml('questions.0.0.answers.0.body')
+        ->assertSeeHtml('questions.0.0.answers.1.body')
+        ->assertDontSee(__('quests.correct_answer'));
+});
+
+it('keeps the hint field on both answer types', function (string $type, array $answers) {
+    wizardAtQuestions($type, $answers)->assertSeeHtml('questions.0.0.hint');
+})->with([
+    'text' => ['open_text', [['body' => 'Anno 1743', 'is_correct' => true]]],
+    'choice' => ['multiple_choice', [['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false]]],
+]);
+
+it('refuses to save a text question with no expected answer', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Text quest')
+        ->set('description', 'Desc')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'What is carved above the door?',
+            'type' => 'open_text',
+            'hint' => '',
+            'points' => 10,
+            'answers' => [['body' => '  ', 'is_correct' => true]],
+        ]]])
+        ->set('step', 3)
+        ->call('nextStep')
+        ->assertDispatched('validation-notice');
+});
+
+/**
+ * Landing on the new quest left the wizard in history, so the back arrow
+ * dropped the author straight back into Create. After saving, back belongs in
+ * My Quests → Created, where the quest now lives.
+ */
+it('sends the author to their created quests when leaving a quest they just saved', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'A saved quest')
+        ->set('description', 'Description')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?',
+            'type' => 'open_text',
+            'hint' => '',
+            'points' => 10,
+            'answers' => [['body' => 'Answer', 'is_correct' => true]],
+        ]]])
+        ->call('saveAsDraft')
+        ->assertRedirect('/quests/42?from=created');
+});
+
+/**
+ * Questions are keyed by checkpoint index, so moving a stop has to carry its
+ * questions along. Reordering the checkpoint array alone would silently
+ * reattach every question to whichever stop landed on that index.
+ */
+function wizardWithThreeCheckpoints()
+{
+    mockQuestWizardApiClient();
+
+    return Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('checkpoints', [
+            ['title' => 'First', 'description' => '', 'latitude' => 55.1, 'longitude' => 12.1],
+            ['title' => 'Second', 'description' => '', 'latitude' => 55.2, 'longitude' => 12.2],
+            ['title' => 'Third', 'description' => '', 'latitude' => 55.3, 'longitude' => 12.3],
+        ])
+        ->set('questions', [
+            [['body' => 'Q for First', 'type' => 'open_text', 'hint' => '', 'points' => 10, 'answers' => [['body' => 'a', 'is_correct' => true]]]],
+            [['body' => 'Q for Second', 'type' => 'open_text', 'hint' => '', 'points' => 10, 'answers' => [['body' => 'b', 'is_correct' => true]]]],
+            [['body' => 'Q for Third', 'type' => 'open_text', 'hint' => '', 'points' => 10, 'answers' => [['body' => 'c', 'is_correct' => true]]]],
+        ]);
+}
+
+it('moves a checkpoint down the list', function () {
+    $component = wizardWithThreeCheckpoints()->call('moveCheckpoint', 0, 2);
+
+    expect(array_column($component->get('checkpoints'), 'title'))
+        ->toBe(['Second', 'Third', 'First']);
+});
+
+it('moves a checkpoint up the list', function () {
+    $component = wizardWithThreeCheckpoints()->call('moveCheckpoint', 2, 0);
+
+    expect(array_column($component->get('checkpoints'), 'title'))
+        ->toBe(['Third', 'First', 'Second']);
+});
+
+it('carries each checkpoint\'s questions with it when the order changes', function () {
+    $component = wizardWithThreeCheckpoints()->call('moveCheckpoint', 0, 2);
+
+    $bodies = collect($component->get('questions'))->map(fn ($qs) => $qs[0]['body'])->all();
+
+    expect($bodies)->toBe(['Q for Second', 'Q for Third', 'Q for First']);
+});
+
+it('ignores a move that goes nowhere or off the ends', function (int $from, int $to) {
+    $component = wizardWithThreeCheckpoints()->call('moveCheckpoint', $from, $to);
+
+    expect(array_column($component->get('checkpoints'), 'title'))
+        ->toBe(['First', 'Second', 'Third']);
+})->with([
+    'same position' => [1, 1],
+    'below the list' => [0, 9],
+    'above the list' => [1, -1],
+    'source does not exist' => [7, 0],
+]);
+
+it('keeps the active checkpoint pointing at the stop the author was editing', function () {
+    $component = wizardWithThreeCheckpoints()
+        ->set('activeCheckpointIndex', 0)
+        ->call('moveCheckpoint', 0, 2);
+
+    expect($component->get('activeCheckpointIndex'))->toBe(2);
 });

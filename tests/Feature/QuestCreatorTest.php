@@ -62,3 +62,35 @@ it('reads the author from the key the api actually sends', function () {
     fn () => ! is_dir(dirname(base_path()).'/questify-admin'),
     'The backend checkout is not available here'
 );
+
+/**
+ * The badge row showed the visibility setting unconditionally, so a quest still
+ * waiting for an admin read "Public" — which is what it will be, not what it
+ * is. Until it is published, the badge must say where it actually stands.
+ */
+it('says awaiting approval on a quest that is still in review', function () {
+    // Fixture quest 7 is a draft; quest 1 is published.
+    Livewire::actingAs(apiUser(2))
+        ->test('pages::discover.quest-detail', ['quest' => 7])
+        ->assertDontSee(__('general.public'))
+        ->assertSee(__('quests.status_draft'));
+});
+
+it('shows the visibility on a published quest', function () {
+    Livewire::actingAs(apiUser(99))
+        ->test('pages::discover.quest-detail', ['quest' => 1])
+        ->assertSee(__('general.public'));
+});
+
+it('points the back arrow at my created quests when arriving from the wizard', function () {
+    Livewire::actingAs(apiUser(2))
+        ->withQueryParams(['from' => 'created'])
+        ->test('pages::discover.quest-detail', ['quest' => 7])
+        ->assertSeeHtml("'/my-quests/created'");
+});
+
+it('leaves the back arrow on history for a normal visit', function () {
+    Livewire::actingAs(apiUser(99))
+        ->test('pages::discover.quest-detail', ['quest' => 1])
+        ->assertSeeHtml('window.history.back()');
+});

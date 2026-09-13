@@ -191,7 +191,7 @@ return [
     'public' => 'Public',
     'public_description' => 'Anyone can discover and play this quest',
     'private' => 'Private',
-    'private_description' => 'Only people with the link can play',
+    'private_description' => 'Only people you invite can play',
     'play_modes' => 'Play Modes',
     'scoring_settings' => 'Scoring',
     'speed_bonus' => 'Speed bonus',

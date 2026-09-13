@@ -133,6 +133,45 @@
                     if (this.map && lat && lng) {
                         this.map.flyTo([lat, lng], 16);
                     }
+                },
+                checkpointReorder() {
+                    return {
+                        dragIndex: null,
+                        overIndex: null,
+                        holdTimer: null,
+                        // A short hold separates 'I want to move this' from a
+                        // tap on the row or a scroll of the list.
+                        startHold(event, index) {
+                            if (event.target.closest('input, button')) return;
+                            this.holdTimer = setTimeout(() => {
+                                this.dragIndex = index;
+                                this.overIndex = index;
+                                if (navigator.vibrate) navigator.vibrate(12);
+                                event.target.setPointerCapture?.(event.pointerId);
+                            }, 280);
+                        },
+                        onMove(event) {
+                            if (this.dragIndex === null) {
+                                clearTimeout(this.holdTimer);
+                                return;
+                            }
+                            event.preventDefault();
+                            const row = [...this.$refs.cpList.querySelectorAll('[data-cp-index]')]
+                                .find((el) => {
+                                    const box = el.getBoundingClientRect();
+                                    return event.clientY >= box.top && event.clientY <= box.bottom;
+                                });
+                            if (row) this.overIndex = Number(row.dataset.cpIndex);
+                        },
+                        endHold() {
+                            clearTimeout(this.holdTimer);
+                            if (this.dragIndex !== null && this.overIndex !== null && this.dragIndex !== this.overIndex) {
+                                $wire.moveCheckpoint(this.dragIndex, this.overIndex);
+                            }
+                            this.dragIndex = null;
+                            this.overIndex = null;
+                        },
+                    };
                 }
             }"
             x-init="
@@ -191,12 +230,25 @@
                     {{ __('general.checkpoints_added', ['count' => count($checkpoints)]) }}
                 </p>
 
-                <div class="flex flex-col gap-2.5">
+                {{-- Press and hold a stop to drag it up or down. The order is
+                     the route players walk, so it has to be changeable without
+                     deleting and re-adding pins. --}}
+                <div class="flex flex-col gap-2.5" x-ref="cpList" x-data="checkpointReorder()" x-on:pointerleave="endHold()">
                     @foreach ($checkpoints as $cpIndex => $checkpoint)
-                        <div class="flex items-center gap-3 rounded-[12px] bg-white p-3 shadow-sm" wire:key="cp-{{ $cpIndex }}">
+                        <div
+                            class="flex items-center gap-3 rounded-[12px] bg-white p-3 shadow-sm transition-[transform,box-shadow] duration-150"
+                            wire:key="cp-{{ $cpIndex }}"
+                            data-cp-index="{{ $cpIndex }}"
+                            :class="dragIndex === {{ $cpIndex }} ? 'scale-[1.03] shadow-lg ring-2 ring-forest-600' : (overIndex === {{ $cpIndex }} && dragIndex !== null ? 'ring-2 ring-forest-600/30' : '')"
+                            x-on:pointerdown="startHold($event, {{ $cpIndex }})"
+                            x-on:pointermove="onMove($event)"
+                            x-on:pointerup="endHold()"
+                            x-on:pointercancel="endHold()"
+                            x-on:contextmenu.prevent
+                        >
                             <button
                                 type="button"
-                                x-on:click="focusCheckpoint({{ $checkpoint['latitude'] ?? 'null' }}, {{ $checkpoint['longitude'] ?? 'null' }})"
+                                x-on:click="if (dragIndex === null) focusCheckpoint({{ $checkpoint['latitude'] ?? 'null' }}, {{ $checkpoint['longitude'] ?? 'null' }})"
                                 class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-600 text-[11px] font-bold text-white"
                             >{{ $cpIndex + 1 }}</button>
                             <div class="min-w-0 flex-1">
@@ -386,7 +438,23 @@
                                     @endif
                                 </div>
                             @else
+                                {{-- Free text is graded against the wording the
+                                     author expects. The screen used to offer no
+                                     field for it at all, so text questions were
+                                     saved unanswerable. --}}
                                 <p class="text-[12px] text-muted">{{ __('sessions.open_ended_note') }}</p>
+                                <div class="flex items-center gap-2.5 rounded-[12px] border-[1.5px] border-[#22C55E] bg-[#F0FDF4] px-3 py-2.5">
+                                    <span class="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[8px] bg-[#22C55E]">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        wire:model="questions.{{ $cpI }}.{{ $qIndex }}.answers.0.body"
+                                        class="flex-1 border-none bg-transparent p-0 text-[13px] text-bark placeholder-muted/50 focus:outline-none focus:ring-0"
+                                        placeholder="{{ __('quests.correct_answer') }}"
+                                    />
+                                </div>
+                                <p class="-mt-1 text-[11px] leading-relaxed text-muted">{{ __('quests.correct_answer_hint') }}</p>
                             @endif
 
                             {{-- Hint --}}
