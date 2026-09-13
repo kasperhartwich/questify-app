@@ -54,6 +54,12 @@ class ActivityResource extends JsonResource
 
     private function formatPlacement(int $placement): string
     {
+        // English breaks its own rule in the teens: 11th, 12th and 13th, not
+        // 11st, 12nd and 13rd — which is what a bare modulo produced.
+        if (in_array($placement % 100, [11, 12, 13], true)) {
+            return $placement.'th';
+        }
+
         return match ($placement % 10) {
             1 => $placement.'st',
             2 => $placement.'nd',
