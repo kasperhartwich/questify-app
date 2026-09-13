@@ -266,3 +266,35 @@ function mockFullApiClient(): void
 
     app()->instance(QuestifyApiClient::class, $mockClient);
 }
+
+/**
+ * Replace one resource on the mocked API client, keeping the shared fixtures
+ * for everything else. Lets a test script a single endpoint without rebuilding
+ * the whole client.
+ */
+function swapApiResource(string $accessor, object $resource): void
+{
+    $existing = app(QuestifyApiClient::class);
+
+    $client = Mockery::mock(QuestifyApiClient::class);
+
+    foreach (['quests', 'categories', 'user', 'sessions', 'gameplay', 'auth'] as $name) {
+        $client->shouldReceive($name)->andReturn(
+            $name === $accessor ? $resource : $existing->{$name}()
+        );
+    }
+
+    $client->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+
+    app()->instance(QuestifyApiClient::class, $client);
+}
+
+function swapSessions(object $resource): void
+{
+    swapApiResource('sessions', $resource);
+}
+
+function swapGameplayResource(object $resource): void
+{
+    swapApiResource('gameplay', $resource);
+}

@@ -66,8 +66,12 @@ class extends Component
 
     private function extractSessionCode(string $data): ?string
     {
-        // Try to extract 6-char code from a URL path (e.g. https://example.com/join/XK92PL/name)
-        if (preg_match('/([A-Z0-9]{6})/i', basename(parse_url($data, PHP_URL_PATH) ?? ''), $matches)) {
+        // The code sits inside the path, not at the end of it: the address we
+        // share is /join/XK92PL/name, so basename() returned "name" and the
+        // app could not read the very code it had just handed out.
+        $path = parse_url($data, PHP_URL_PATH) ?? '';
+
+        if (preg_match('#/join/([A-Z0-9]{6})(?:/|$)#i', $path, $matches)) {
             return strtoupper($matches[1]);
         }
 
