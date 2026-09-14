@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>focusweb.questify</string>
+	<string>com.focusweb.questify</string>
 	<key>PROJECT_ID</key>
 	<string>focusweb-questify</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:284645309886:ios:a0f400a5c2d44954a04def</string>
+	<string>1:284645309886:ios:496e4a53cb64b9c0a04def</string>
 </dict>
 </plist>

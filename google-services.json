@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:284645309886:android:f69341e37f35d3e3a04def",
+        "mobilesdk_app_id": "1:284645309886:android:299aead8b9bd0276a04def",
         "android_client_info": {
           "package_name": "com.focusweb.questify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOHd_aPCqk1kHqNzNyMgWFLFfM-oThx2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284645309886:android:f69341e37f35d3e3a04def",
+        "android_client_info": {
+          "package_name": "focusweb.questify"
         }
       },
       "oauth_client": [],
