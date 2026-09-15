@@ -32,7 +32,11 @@ return [
     |
     */
 
-    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+    // A phone app is a single-person device: the session is the signed-in
+    // state, and expiring it after two hours meant "log in again" at every
+    // cold start. A year keeps the player signed in; the API token can
+    // still be revoked server-side at any time.
+    'lifetime' => (int) env('SESSION_LIFETIME', 525600),
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 

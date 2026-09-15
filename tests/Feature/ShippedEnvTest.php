@@ -45,3 +45,11 @@ it('keeps the crash reporting dsn out of the stripped key list', function () {
 
     expect($matches)->toBeFalse('The DSN must survive packaging or shipped builds report nothing.');
 });
+
+it('keeps the session alive for a year, not two hours', function () {
+    // The session IS the signed-in state on a phone. With the default 120
+    // minutes, every cold start after a pause was a forced re-login.
+    $config = require config_path('session.php');
+
+    expect($config['lifetime'])->toBeGreaterThanOrEqual(525600);
+})->skip(fn () => env('SESSION_LIFETIME') !== null && (int) env('SESSION_LIFETIME') < 525600, 'Local .env overrides the lifetime');
