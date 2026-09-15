@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\PackageCommand;
 use App\Http\Middleware\FetchAppInfo;
 use App\Http\Middleware\LogActivity;
 use App\Http\Middleware\SetLocale;
@@ -27,6 +28,7 @@ if (! env('NATIVEPHP_RUNNING')) {
 }
 
 return $app
+    ->withCommands([PackageCommand::class])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
         $middleware->api(append: [LogActivity::class]);
