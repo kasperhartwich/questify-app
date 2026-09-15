@@ -116,7 +116,8 @@
                     // On device the OS asks, using our purpose string and the
                     // app's name. Falling through to navigator.geolocation here
                     // made WKWebView ask on behalf of the origin instead, so
-                    // players were prompted by "127.0.0.1".
+                    // players were prompted by the loopback address. NB: never
+                    // put double quotes in here — the attribute uses them.
                     $wire.requestLocation();
 
                     if (@js($isNative)) {

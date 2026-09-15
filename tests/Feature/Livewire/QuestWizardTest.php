@@ -785,3 +785,33 @@ it('keeps the active checkpoint pointing at the stop the author was editing', fu
 
     expect($component->get('activeCheckpointIndex'))->toBe(2);
 });
+
+/**
+ * A double quote inside the step-2 x-data attribute (a code comment quoting
+ * "127.0.0.1") closed the attribute early, and the rest of the component's
+ * JavaScript rendered as page text on top of the checkpoint map. Guard every
+ * step: none of the wizard's own JavaScript may ever be visible as content.
+ */
+it('never leaks its javascript as visible text', function (int $step) {
+    mockQuestWizardApiClient();
+
+    $html = Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Q?', 'type' => 'open_text', 'hint' => '', 'points' => 10,
+            'answers' => [['body' => 'A', 'is_correct' => true]],
+        ]]])
+        ->set('step', $step)
+        ->html();
+
+    // Parse like a browser would: DOMDocument follows the same
+    // attribute-quoting rules, which strip_tags does not.
+    $doc = new DOMDocument;
+    @$doc->loadHTML('<?xml encoding="utf-8"?>'.$html);
+    $visible = $doc->textContent;
+
+    expect($visible)->not->toContain('this.map')
+        ->and($visible)->not->toContain('checkpointReorder')
+        ->and($visible)->not->toContain('$wire');
+})->with([1, 2, 3, 4, 5, 6]);
