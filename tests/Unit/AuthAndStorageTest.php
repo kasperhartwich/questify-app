@@ -4,6 +4,8 @@ use App\Auth\ApiTokenUser;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\MissingTranslationReporter;
 use App\Services\TokenStorage;
+use Native\Mobile\Facades\SecureStorage;
+use Native\Mobile\Facades\System;
 
 // --- ApiTokenUser ---
 
@@ -170,3 +172,38 @@ it('never lets a reporting failure break the screen', function () {
 
     $reporter->flush();
 })->throwsNoExceptions();
+
+/**
+ * NativePHP v4 ships no native handler for the SecureStorage bridge, so every
+ * keychain call is a silent no-op — and the webview's cookies die with the
+ * process. The encrypted file in the app container is what actually keeps a
+ * player signed in across cold starts and updates.
+ */
+it('round-trips the token through the encrypted file on device', function () {
+    // Force the mobile branch: mock System::isMobile and a dead SecureStorage.
+    System::shouldReceive('isMobile')->andReturn(true);
+    SecureStorage::shouldReceive('set')->andReturn(false);
+    SecureStorage::shouldReceive('get')->andReturn(null);
+    SecureStorage::shouldReceive('delete')->andReturn(false);
+
+    TokenStorage::set('device-token');
+    session()->flush();
+
+    expect(TokenStorage::get())->toBe('device-token')
+        ->and(TokenStorage::has())->toBeTrue();
+
+    TokenStorage::forget();
+
+    expect(TokenStorage::get())->toBeNull();
+});
+
+it('treats an unreadable token file as signed out rather than crashing', function () {
+    System::shouldReceive('isMobile')->andReturn(true);
+    SecureStorage::shouldReceive('get')->andReturn(null);
+
+    @mkdir(storage_path('app/private'), 0755, true);
+    file_put_contents(storage_path('app/private/api-token'), 'not-encrypted-garbage');
+
+    expect(TokenStorage::get())->toBeNull()
+        ->and(is_file(storage_path('app/private/api-token')))->toBeFalse();
+});
