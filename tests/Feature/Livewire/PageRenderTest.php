@@ -10,10 +10,11 @@ it('renders welcome page for guests', function () {
     $this->get('/')->assertOk();
 });
 
-it('renders welcome page for authenticated users', function () {
+it('sends authenticated users from welcome into the app', function () {
+    // Stopping on the marketing pitch read as "signed out" at every cold start.
     $this->actingAs(User::factory()->create())
         ->get('/')
-        ->assertOk();
+        ->assertRedirect('/discover/list');
 });
 
 it('renders login page', function () {
