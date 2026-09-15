@@ -46,6 +46,15 @@ class extends Component
 
     public function mount(): void
     {
+        // Same as the welcome screen: an already signed-in player who lands
+        // here (cold start, old history entry) goes into the app, not back
+        // through the credentials form.
+        if (Illuminate\Support\Facades\Auth::check()) {
+            $this->redirect('/discover/list');
+
+            return;
+        }
+
         $appInfo = app(AppInfoService::class);
         $this->socialProviders = $appInfo->enabledSocialProviders();
         $this->emailEnabled = $appInfo->isAuthMethodEnabled('email');

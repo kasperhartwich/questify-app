@@ -21,7 +21,13 @@ class extends Component
 
     public function mount(): void
     {
-        //
+        // The app opens on this screen at every cold start. A player whose
+        // token is still good must land in the app, not on the marketing
+        // pitch — stopping here read as "I was signed out" after every
+        // restart and update, even though the account was fine.
+        if (Auth::check()) {
+            $this->redirect('/discover/list');
+        }
     }
 };
 ?>

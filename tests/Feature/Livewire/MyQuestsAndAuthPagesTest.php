@@ -128,3 +128,25 @@ it('offers both ways in from the welcome screen', function () {
         ->assertSee(__('general.login'))
         ->assertSee(__('general.join_quest'));
 });
+
+/**
+ * The app opens on the welcome screen at every cold start. Until it sent
+ * signed-in players onward, every restart looked like being signed out —
+ * the token was fine, but the player was staring at the marketing pitch
+ * with a Log In button.
+ */
+it('sends a signed-in player from the welcome screen into the app', function () {
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::welcome.index')
+        ->assertRedirect('/discover/list');
+});
+
+it('keeps the welcome screen for guests', function () {
+    Livewire::test('pages::welcome.index')->assertNoRedirect();
+});
+
+it('sends a signed-in player away from the login form', function () {
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::auth.login')
+        ->assertRedirect('/discover/list');
+});
