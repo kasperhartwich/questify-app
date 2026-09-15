@@ -60,6 +60,14 @@ class TokenStorage
     private static function writeFile(string $token): void
     {
         try {
+            // The app container ships without storage/app — create the whole
+            // path or file_put_contents fails silently and nothing persists.
+            $dir = dirname(self::filePath());
+
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
             file_put_contents(self::filePath(), Crypt::encryptString($token));
         } catch (\Throwable) {
             // Storage may be momentarily unavailable during boot; the session

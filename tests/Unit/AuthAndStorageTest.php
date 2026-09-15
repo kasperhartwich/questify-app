@@ -207,3 +207,18 @@ it('treats an unreadable token file as signed out rather than crashing', functio
     expect(TokenStorage::get())->toBeNull()
         ->and(is_file(storage_path('app/private/api-token')))->toBeFalse();
 });
+
+it('creates the storage directory when the container ships without it', function () {
+    // The packaged app has no storage/app at all; the first write must not
+    // depend on the directory existing.
+    System::shouldReceive('isMobile')->andReturn(true);
+    SecureStorage::shouldReceive('set')->andReturn(false);
+    SecureStorage::shouldReceive('get')->andReturn(null);
+
+    File::deleteDirectory(storage_path('app/private'));
+
+    TokenStorage::set('device-token');
+    session()->flush();
+
+    expect(TokenStorage::get())->toBe('device-token');
+});
