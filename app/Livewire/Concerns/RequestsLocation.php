@@ -67,6 +67,14 @@ trait RequestsLocation
             return;
         }
 
+        // iOS fires this event from CLLocationManager's init callback too —
+        // with not_determined, BEFORE the player has answered the prompt.
+        // Treating that as a denial showed "location access is off" in the
+        // happy path, right on top of the OS permission dialog.
+        if ($location === 'not_determined' || $location === '') {
+            return;
+        }
+
         $this->onLocationPermissionDenied($location);
     }
 

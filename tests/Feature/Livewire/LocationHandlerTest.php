@@ -135,3 +135,25 @@ it('records a granted location permission on the settings screen', function () {
         ->call('onLocationPermissionStatus', 'granted', 'granted', 'granted')
         ->assertSet('locationPermission', 'granted');
 });
+
+it('stays quiet when ios reports the prompt is still unanswered', function () {
+    // CLLocationManager fires the request-result event from its init callback
+    // with not_determined — before the player has answered anything. That
+    // must never read as a denial: the "location access is off" dialog was
+    // appearing on top of the OS permission prompt in the happy path.
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-list')
+        ->call('onLocationPermissionRequestResult', 'not_determined', 'not_determined', 'not_determined')
+        ->assertNotDispatched('validation-notice');
+});
+
+it('stays quiet when the request result arrives with no status at all', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-list')
+        ->call('onLocationPermissionRequestResult')
+        ->assertNotDispatched('validation-notice');
+});
