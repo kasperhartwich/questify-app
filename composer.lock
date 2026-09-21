@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ed431a5222c30f34a07ddce9024e5e0",
+    "content-hash": "127787d757eb185f349d2c017cae664a",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4851,6 +4851,61 @@
                 }
             ],
             "description": "QR code and barcode scanner plugin for NativePHP Mobile - supports multiple barcode formats with continuous scanning",
+            "time": "2026-07-15T18:46:27+00:00"
+        },
+        {
+            "name": "nativephp/mobile-secure-storage",
+            "version": "1.0.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://plugins.nativephp.com/dist/nativephp/mobile-secure-storage/nativephp-mobile-secure-storage-6314188fc911615396cecbf25497dd0a608b1521-zip-3ae14b.zip",
+                "reference": "6314188fc911615396cecbf25497dd0a608b1521",
+                "shasum": "1690e0957cafb32ecbfc71ad4707ddb191e5a567"
+            },
+            "require": {
+                "nativephp/mobile": "^3.0 || ^4.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^2.7|^3.0|^4.0"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Native\\Mobile\\Providers\\SecureStorageServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Native\\Mobile\\Providers\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "NativePHP",
+                    "email": "support@nativephp.com"
+                }
+            ],
+            "description": "Secure storage plugin for NativePHP Mobile (Keychain/EncryptedSharedPreferences)",
             "time": "2026-07-15T18:46:27+00:00"
         },
         {

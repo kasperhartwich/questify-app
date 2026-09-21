@@ -37,6 +37,8 @@ class NativeServiceProvider extends ServiceProvider
             \Native\Mobile\Providers\PushNotificationsServiceProvider::class,
             \Native\Mobile\Providers\GeolocationServiceProvider::class,
             \Native\Mobile\Providers\ScannerServiceProvider::class,
+            \Native\Mobile\Providers\SecureStorageServiceProvider::class,
+        
         ];
     }
 }
