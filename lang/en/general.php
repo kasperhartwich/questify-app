@@ -244,6 +244,7 @@ return [
     // Dialog
     'ok' => 'OK',
     'dismiss' => 'Dismiss',
+    'no_connection' => 'No connection. Check your signal and try again.',
     'something_went_wrong' => 'Something went wrong',
     'unexpected_error' => 'An unexpected error occurred. Please try again.',
     'delete_account_title' => 'Delete account?',

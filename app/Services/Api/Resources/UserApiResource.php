@@ -45,7 +45,7 @@ class UserApiResource
             ])
             : $this->client->put('/user/profile', $data);
 
-        ApiCache::forget('auth:me');
+        ApiCache::forgetPrefix('auth:me');
         ApiCache::forgetPrefix('user:');
 
         return $result;

@@ -49,21 +49,28 @@ class extends Component
             $response = $this->api->quests()->toggleFavourite($this->questId);
             $this->isFavourited = $response['data']['is_favourited'] ?? false;
         } catch (\App\Exceptions\Api\ApiAuthenticationException) {
-            session()->flush();
+            \App\Services\TokenStorage::signOut();
             $this->redirect(route('login'));
         } catch (\App\Exceptions\Api\ApiException $e) {
             $this->dispatch('api-error', message: $e->getMessage());
         }
     }
 
+    /**
+     * The API never sends a quest's access code, so it cannot be checked
+     * here: comparing against the missing value rejected every right code.
+     * This only unlocks the start button; the API checks the code when the
+     * session is created.
+     */
     public function verifyAccessCode(): void
     {
-        $questCode = $this->questData->access_code ?? '';
-        if (strtoupper(trim($this->accessCode)) === strtoupper(trim($questCode))) {
-            $this->accessGranted = true;
-        } else {
+        if (trim($this->accessCode) === '') {
             $this->addError('accessCode', __('quests.invalid_access_code'));
+
+            return;
         }
+
+        $this->accessGranted = true;
     }
 
     public function getRequiresAccessCodeProperty(): bool
@@ -73,10 +80,21 @@ class extends Component
 
     public function startQuest(): void
     {
-        $sessionResponse = $this->tryApiCall(fn () => $this->api->sessions()->create(
-            $this->questId,
-            $this->playMode,
-        ));
+        $sessionResponse = $this->tryApiCall(function (): ?array {
+            try {
+                return $this->api->sessions()->create(
+                    $this->questId,
+                    $this->playMode,
+                    $this->requiresAccessCode ? trim($this->accessCode) : null,
+                );
+            } catch (\App\Exceptions\Api\ApiValidationException) {
+                // The only field a player types here is the access code.
+                $this->accessGranted = false;
+                $this->addError('accessCode', __('quests.invalid_access_code'));
+
+                return null;
+            }
+        });
 
         if (! $sessionResponse) {
             return;
@@ -107,10 +125,13 @@ class extends Component
             }
         }
 
-        session()->put('questify_checkpoint_index', 0);
+        session()->put('questify_checkpoint_index.' . $sessionCode, 0);
 
         if ($this->playMode === 'solo') {
-            $this->tryApiCall(fn () => $this->api->sessions()->start($sessionCode));
+            if ($this->tryApiCall(fn () => $this->api->sessions()->start($sessionCode)) === null) {
+                return;
+            }
+
             $this->redirect('/session/' . $sessionCode . '/play');
         } else {
             $this->redirect('/session/' . $sessionCode);

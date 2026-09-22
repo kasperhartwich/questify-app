@@ -4,6 +4,7 @@ namespace App\Services\Api\Resources;
 
 use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\TokenStorage;
 
 class AuthResource
 {
@@ -79,11 +80,19 @@ class AuthResource
     }
 
     /**
+     * The cache key is scoped to the token: a shared "auth:me" let a social
+     * callback carrying account B's token read account A's cached identity.
+     *
      * @return array{data: array}
      */
     public function me(): array
     {
-        return ApiCache::remember('auth:me', fn () => $this->client->get('/auth/me'));
+        return ApiCache::remember(self::meCacheKey(), fn () => $this->client->get('/auth/me'));
+    }
+
+    public static function meCacheKey(): string
+    {
+        return 'auth:me:'.hash('sha256', (string) TokenStorage::get());
     }
 
     /**

@@ -81,17 +81,16 @@
                         zoomControl: false,
                     });
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
-                    @foreach ($checkpoints as $cpIndex => $checkpoint)
-                        @if ($checkpoint['latitude'] && $checkpoint['longitude'])
-                            this.addMarker({{ $cpIndex }}, {{ $checkpoint['latitude'] }}, {{ $checkpoint['longitude'] }});
-                        @endif
-                    @endforeach
+                    this.syncMarkers(@js($this->mapMarkers()));
                     this.map.on('click', (e) => {
-                        const nextIndex = this.markers.length;
-                        @this.addCheckpoint();
-                        @this.updateCheckpointCoordinates(nextIndex, e.latlng.lat, e.latlng.lng);
-                        this.addMarker(nextIndex, e.latlng.lat, e.latlng.lng);
+                        $wire.addCheckpointAt(e.latlng.lat, e.latlng.lng);
                     });
+                },
+                syncMarkers(points) {
+                    if (!this.map) { return; }
+                    this.markers.forEach((marker) => marker.remove());
+                    this.markers = [];
+                    (points || []).forEach((point) => this.addMarker(point.index, point.lat, point.lng));
                 },
                 addMarker(index, lat, lng) {
                     const icon = L.divIcon({
@@ -177,6 +176,9 @@
             }"
             x-init="
                 initMap();
+                $wire.on('wizard-markers', (params) => {
+                    this.syncMarkers(params[0]?.markers ?? params.markers);
+                });
                 $wire.on('wizard-location', (params) => {
                     const lat = params[0]?.latitude ?? params.latitude;
                     const lng = params[0]?.longitude ?? params.longitude;

@@ -117,10 +117,14 @@ class extends Component
             $avatarName = $this->avatar->getClientOriginalName();
         }
 
-        $this->tryApiCall(fn () => $this->api->user()->updateProfile([
+        $updated = $this->tryApiCall(fn () => $this->api->user()->updateProfile([
             'name' => $validated['name'],
             'locale' => $validated['locale'],
         ], $avatarPath, $avatarName));
+
+        if ($updated === null) {
+            return;
+        }
 
         // Update session user data
         $meResponse = $this->tryApiCall(fn () => $this->api->auth()->me());
@@ -151,7 +155,11 @@ class extends Component
     #[On('confirm-delete-account')]
     public function deleteAccount(): void
     {
-        $this->tryApiCall(fn () => $this->api->user()->deleteAccount());
+        // Signing out after a refused deletion would tell the player the
+        // account is gone while it still exists.
+        if ($this->tryApiCall(fn () => $this->api->user()->deleteAccount()) === null) {
+            return;
+        }
 
         /** @var QuestifyApiGuard $guard */
         $guard = Auth::guard();

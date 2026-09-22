@@ -92,7 +92,12 @@ class extends Component
             ])
             ->toArray();
 
-        $this->currentCheckpointIndex = session('questify_checkpoint_index', 0);
+        // Progress is kept per session: one shared index carried a finished
+        // quest's position into the next one, pointing past its last stop.
+        $this->currentCheckpointIndex = min(
+            (int) session('questify_checkpoint_index.' . $this->code, 0),
+            max(count($this->checkpoints) - 1, 0),
+        );
         $this->loadLeaderboard();
     }
 

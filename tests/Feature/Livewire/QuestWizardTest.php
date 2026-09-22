@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Api\ApiException;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\Api\QuestifyApiClient;
@@ -815,3 +816,100 @@ it('never leaks its javascript as visible text', function (int $step) {
         ->and($visible)->not->toContain('checkpointReorder')
         ->and($visible)->not->toContain('$wire');
 })->with([1, 2, 3, 4, 5, 6]);
+
+// --- Review findings: settings, hints, publish failures and map pins ---
+
+it('saves the scoring toggles and the hint the author set', function () {
+    $captured = null;
+
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('store')->once()
+        ->withArgs(function ($data) use (&$captured) {
+            $captured = $data;
+
+            return true;
+        })
+        ->andReturn(['data' => ['id' => 42, 'title' => 'Test', 'status' => 'draft']]);
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('categories')->andReturn(Mockery::mock(CategoryApiResource::class, ['list' => ['data' => []]]));
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Hinted')
+        ->set('description', 'A short description')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('scoringSpeedBonus', true)
+        ->set('scoringWrongPenalty', true)
+        ->set('scoringCompletionBonus', false)
+        ->set('checkpoints', [['title' => 'Stop 1', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[
+            ['body' => 'Q1?', 'type' => 'open_text', 'hint' => '', 'points' => 5, 'answers' => [['body' => 'a', 'is_correct' => true]]],
+            ['body' => 'Q2?', 'type' => 'open_text', 'hint' => 'Look up', 'points' => 5, 'answers' => [['body' => 'b', 'is_correct' => true]]],
+        ]])
+        ->call('saveAsDraft');
+
+    expect($captured['scoring_speed_bonus_enabled'])->toBeTrue()
+        ->and($captured['scoring_wrong_attempt_penalty_enabled'])->toBeTrue()
+        ->and($captured['scoring_quest_completion_time_bonus_enabled'])->toBeFalse()
+        ->and($captured['checkpoints'][0]['hint'])->toBe('Look up');
+});
+
+it('stays in the wizard when publishing is refused', function () {
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('store')->andReturn(['data' => ['id' => 42, 'status' => 'draft']]);
+    $mockQuests->shouldReceive('publish')->andThrow(new ApiException(403, 'Not allowed.'));
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('categories')->andReturn(Mockery::mock(CategoryApiResource::class, ['list' => ['data' => []]]));
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Refused')
+        ->set('description', 'A short description')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('checkpoints', [['title' => 'Stop 1', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[['body' => 'Q?', 'type' => 'open_text', 'hint' => '', 'points' => 5, 'answers' => [['body' => 'a', 'is_correct' => true]]]]])
+        ->call('publish')
+        ->assertNoRedirect()
+        ->assertSet('draftQuestId', 42)
+        ->assertSet('title', 'Refused')
+        ->assertDispatched('api-error');
+});
+
+it('redraws the map pins with fresh numbers after a checkpoint is deleted', function () {
+    $component = wizardWithThreeCheckpoints()->call('removeCheckpoint', 1);
+
+    $component->assertDispatched('wizard-markers', markers: [
+        ['index' => 0, 'lat' => 55.1, 'lng' => 12.1],
+        ['index' => 1, 'lat' => 55.3, 'lng' => 12.3],
+    ]);
+});
+
+it('redraws the map pins in the new order after a reorder', function () {
+    wizardWithThreeCheckpoints()
+        ->call('moveCheckpoint', 2, 0)
+        ->assertDispatched('wizard-markers', markers: [
+            ['index' => 0, 'lat' => 55.3, 'lng' => 12.3],
+            ['index' => 1, 'lat' => 55.1, 'lng' => 12.1],
+            ['index' => 2, 'lat' => 55.2, 'lng' => 12.2],
+        ]);
+});
+
+it('places a tapped checkpoint on the stop it created, even after a delete', function () {
+    $component = wizardWithThreeCheckpoints()
+        ->call('removeCheckpoint', 1)
+        ->call('addCheckpointAt', 55.9, 12.9);
+
+    $checkpoints = $component->get('checkpoints');
+
+    expect($checkpoints)->toHaveCount(3)
+        ->and($checkpoints[2]['latitude'])->toBe(55.9)
+        ->and($checkpoints[2]['longitude'])->toBe(12.9);
+});

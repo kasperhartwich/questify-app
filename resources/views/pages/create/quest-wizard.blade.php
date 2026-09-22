@@ -192,6 +192,9 @@ class extends Component
         $this->difficulty = $quest['difficulty'] ?? '';
         $this->visibility = $quest['visibility'] ?? 'public';
         $this->wrongAnswerBehaviour = $quest['wrong_answer_behaviour'] ?? 'retry_free';
+        $this->scoringSpeedBonus = (bool) ($quest['scoring_speed_bonus_enabled'] ?? false);
+        $this->scoringWrongPenalty = (bool) ($quest['scoring_wrong_attempt_penalty_enabled'] ?? false);
+        $this->scoringCompletionBonus = (bool) ($quest['scoring_quest_completion_time_bonus_enabled'] ?? true);
 
         $this->checkpoints = [];
         $this->questions = [];
@@ -205,10 +208,10 @@ class extends Component
             ];
 
             $this->questions[$index] = collect($checkpoint['questions'] ?? [])
-                ->map(fn (array $question): array => [
+                ->map(fn (array $question, int $questionIndex): array => [
                     'body' => $question['question_text'] ?? '',
                     'type' => $question['question_type'] ?? QuestionType::MultipleChoice->value,
-                    'hint' => $question['hint'] ?? '',
+                    'hint' => $question['hint'] ?? ($questionIndex === 0 ? ($checkpoint['hint'] ?? '') : ''),
                     'points' => $question['points'] ?? 10,
                     'answers' => collect($question['answers'] ?? [])
                         ->map(fn (array $answer): array => [
@@ -278,6 +281,17 @@ class extends Component
         $this->questions[$index] = [];
     }
 
+    /**
+     * A tap on the map: add the stop and place it in one roundtrip, so the
+     * map never has to guess which index the new checkpoint got.
+     */
+    public function addCheckpointAt(float $lat, float $lng): void
+    {
+        $this->addCheckpoint();
+        $this->updateCheckpointCoordinates(count($this->checkpoints) - 1, $lat, $lng);
+        $this->syncMapMarkers();
+    }
+
     public function removeCheckpoint(int $index): void
     {
         if (count($this->checkpoints) <= 1) {
@@ -288,6 +302,31 @@ class extends Component
         array_splice($this->questions, $index, 1);
         $this->checkpoints = array_values($this->checkpoints);
         $this->questions = array_values($this->questions);
+        $this->syncMapMarkers();
+    }
+
+    /**
+     * The map's pins are drawn once in the browser and bound to checkpoint
+     * indexes. After a delete or reorder those indexes move, so a dragged pin
+     * updated the wrong stop and the next tap located nothing. Send the whole
+     * set after every structural change and let the map redraw.
+     *
+     * @return array<int, array{index: int, lat: float, lng: float}>
+     */
+    public function mapMarkers(): array
+    {
+        return collect($this->checkpoints)
+            ->map(fn (array $checkpoint, int $index): ?array => $checkpoint['latitude'] !== null && $checkpoint['longitude'] !== null
+                ? ['index' => $index, 'lat' => (float) $checkpoint['latitude'], 'lng' => (float) $checkpoint['longitude']]
+                : null)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function syncMapMarkers(): void
+    {
+        $this->dispatch('wizard-markers', markers: $this->mapMarkers());
     }
 
     /**
@@ -321,6 +360,8 @@ class extends Component
         } elseif ($from > $this->activeCheckpointIndex && $to <= $this->activeCheckpointIndex) {
             $this->activeCheckpointIndex++;
         }
+
+        $this->syncMapMarkers();
     }
 
     public function updateCheckpointCoordinates(int $index, float $lat, float $lng): void
@@ -455,9 +496,16 @@ class extends Component
                     'answers' => $answersData,
                 ];
             }
+            // The API keeps one hint per checkpoint (revealed after three wrong
+            // tries); the wizard asks per question, so the first one written wins.
+            $hint = collect($this->questions[$cpIndex] ?? [])
+                ->map(fn (array $question): string => trim((string) ($question['hint'] ?? '')))
+                ->first(fn (string $hint): bool => $hint !== '');
+
             $checkpointsData[] = [
                 'title' => $checkpoint['title'] ?: __('general.checkpoint') . ' ' . ($cpIndex + 1),
                 'description' => $checkpoint['description'] ?: null,
+                'hint' => $hint,
                 'latitude' => $checkpoint['latitude'],
                 'longitude' => $checkpoint['longitude'],
                 'questions' => $questionsData,
@@ -474,6 +522,9 @@ class extends Component
             'estimated_duration_minutes' => 60,
             'play_modes' => $this->playModes,
             'wrong_answer_behaviour' => $this->wrongAnswerBehaviour,
+            'scoring_speed_bonus_enabled' => $this->scoringSpeedBonus,
+            'scoring_wrong_attempt_penalty_enabled' => $this->scoringWrongPenalty,
+            'scoring_quest_completion_time_bonus_enabled' => $this->scoringCompletionBonus,
             'checkpoints' => $checkpointsData,
         ];
 
@@ -489,7 +540,7 @@ class extends Component
 
             return;
         } catch (\App\Exceptions\Api\ApiAuthenticationException) {
-            session()->flush();
+            \App\Services\TokenStorage::signOut();
             $this->redirect(route('login'));
 
             return;
@@ -507,7 +558,11 @@ class extends Component
         $this->draftQuestId = $questId;
 
         if ($publish) {
-            $this->tryApiCall(fn () => $this->api->quests()->publish($questId));
+            // The quest is saved as a draft either way. If publishing was
+            // refused, keep the wizard open on it so the error is readable.
+            if ($this->tryApiCall(fn () => $this->api->quests()->publish($questId)) === null) {
+                return;
+            }
         }
 
         $this->clearDraft();

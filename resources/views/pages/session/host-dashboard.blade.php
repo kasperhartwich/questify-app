@@ -80,7 +80,9 @@ class extends Component
     #[On('confirm-end-session')]
     public function endSession(): void
     {
-        $this->tryApiCall(fn () => $this->api->sessions()->end($this->code));
+        if ($this->tryApiCall(fn () => $this->api->sessions()->end($this->code)) === null) {
+            return;
+        }
 
         $this->redirect('/session/' . $this->code . '/complete');
     }

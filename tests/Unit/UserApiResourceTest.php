@@ -2,6 +2,7 @@
 
 use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\Api\Resources\AuthResource;
 use App\Services\Api\Resources\UserApiResource;
 
 /**
@@ -60,11 +61,11 @@ it('refreshes the signed-in account after a profile change', function () {
     $client = Mockery::mock(QuestifyApiClient::class);
     $client->shouldReceive('put')->once()->with('/user/profile', ['name' => 'Kasper'])->andReturn(['data' => []]);
 
-    ApiCache::remember('auth:me', fn () => ['data' => ['name' => 'Old']]);
+    ApiCache::remember(AuthResource::meCacheKey(), fn () => ['data' => ['name' => 'Old']]);
 
     userResource($client)->updateProfile(['name' => 'Kasper']);
 
-    expect(ApiCache::remember('auth:me', fn () => ['data' => ['name' => 'Fresh']]))
+    expect(ApiCache::remember(AuthResource::meCacheKey(), fn () => ['data' => ['name' => 'Fresh']]))
         ->toBe(['data' => ['name' => 'Fresh']]);
 });
 

@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use App\Exceptions\Api\ApiAuthenticationException;
+use App\Exceptions\Api\ApiConnectionException;
 use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiNotFoundException;
 use App\Exceptions\Api\ApiServerException;
@@ -14,6 +15,7 @@ use App\Services\Api\Resources\QuestApiResource;
 use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
 use App\Services\TokenStorage;
+use Closure;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
@@ -81,7 +83,7 @@ class QuestifyApiClient
      */
     public function get(string $url, array $query = []): array
     {
-        return $this->handleResponse($this->request()->get($url, $query));
+        return $this->handleResponse($this->send(fn () => $this->request()->get($url, $query)));
     }
 
     /**
@@ -89,7 +91,7 @@ class QuestifyApiClient
      */
     public function post(string $url, array $data = []): array
     {
-        return $this->handleResponse($this->request()->post($url, $data));
+        return $this->handleResponse($this->send(fn () => $this->request()->post($url, $data)));
     }
 
     /**
@@ -97,7 +99,7 @@ class QuestifyApiClient
      */
     public function put(string $url, array $data = []): array
     {
-        return $this->handleResponse($this->request()->put($url, $data));
+        return $this->handleResponse($this->send(fn () => $this->request()->put($url, $data)));
     }
 
     /**
@@ -105,7 +107,7 @@ class QuestifyApiClient
      */
     public function delete(string $url): array
     {
-        return $this->handleResponse($this->request()->delete($url));
+        return $this->handleResponse($this->send(fn () => $this->request()->delete($url)));
     }
 
     /**
@@ -123,7 +125,24 @@ class QuestifyApiClient
             $request = $request->attach($fieldName, file_get_contents($file['path']), $file['name']);
         }
 
-        return $this->handleResponse($request->post($url, $fields));
+        return $this->handleResponse($this->send(fn () => $request->post($url, $fields)));
+    }
+
+    /**
+     * Run a request, turning a dead connection into an ApiException so the
+     * screens' shared error handling covers it.
+     *
+     * @param  Closure(): Response  $request
+     *
+     * @throws ApiConnectionException
+     */
+    private function send(Closure $request): Response
+    {
+        try {
+            return $request();
+        } catch (ConnectionException $e) {
+            throw new ApiConnectionException;
+        }
     }
 
     public function auth(): AuthResource

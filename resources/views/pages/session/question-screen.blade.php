@@ -234,8 +234,8 @@ class extends Component
             if ($this->questComplete) {
                 $this->redirect('/session/' . $this->code . '/complete');
             } else {
-                $currentIndex = session('questify_checkpoint_index', 0);
-                session()->put('questify_checkpoint_index', $currentIndex + 1);
+                $key = 'questify_checkpoint_index.' . $this->code;
+                session()->put($key, (int) session($key, 0) + 1);
                 $this->redirect('/session/' . $this->code . '/play');
             }
         }

@@ -79,11 +79,16 @@ class extends Component
             return;
         }
 
-        $this->tryApiCall(fn () => $this->api->quests()->rate(
+        $response = $this->tryApiCall(fn () => $this->api->quests()->rate(
             $this->questId,
             $this->ratingValue,
             $this->ratingComment ?: null,
         ));
+
+        // A rejected rating must leave the form up so the player can retry.
+        if ($response === null) {
+            return;
+        }
 
         $this->hasRated = true;
     }

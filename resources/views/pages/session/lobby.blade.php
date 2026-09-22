@@ -69,7 +69,9 @@ class extends Component
             return;
         }
 
-        $this->tryApiCall(fn () => $this->api->sessions()->start($this->code));
+        if ($this->tryApiCall(fn () => $this->api->sessions()->start($this->code)) === null) {
+            return;
+        }
 
         $this->redirect('/session/' . $this->code . '/host');
     }

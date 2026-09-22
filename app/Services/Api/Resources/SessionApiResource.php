@@ -9,12 +9,13 @@ class SessionApiResource
 {
     public function __construct(private QuestifyApiClient $client) {}
 
-    public function create(int $questId, string $playMode): array
+    public function create(int $questId, string $playMode, ?string $accessCode = null): array
     {
-        $result = $this->client->post('/sessions', [
+        $result = $this->client->post('/sessions', array_filter([
             'quest_id' => $questId,
             'play_mode' => $playMode,
-        ]);
+            'access_code' => $accessCode,
+        ], fn ($value) => $value !== null));
 
         ApiCache::forgetPrefix('user:sessions');
 

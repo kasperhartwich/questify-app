@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\SocialCallbackController;
+use App\Http\Middleware\EnsureSessionParticipant;
 use Illuminate\Support\Facades\Route;
 
 // Welcome (guest landing page)
@@ -32,6 +33,14 @@ Route::get('auth/callback', SocialCallbackController::class)->name('auth.social.
 Route::get('auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
+// Lobby and gameplay: an account or a guest's participant id
+Route::middleware(EnsureSessionParticipant::class)->group(function () {
+    Route::livewire('/session/{code}', 'pages::session.lobby')->name('session.lobby');
+    Route::livewire('/session/{code}/play', 'pages::session.active-quest')->name('session.play');
+    Route::livewire('/session/{code}/question/{checkpoint}', 'pages::session.question-screen')->name('session.question');
+    Route::livewire('/session/{code}/complete', 'pages::session.quest-complete')->name('session.complete');
+});
+
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     // Discover
@@ -51,11 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/create', 'pages::create.quest-wizard')->name('quests.create');
     Route::livewire('/create/{quest}', 'pages::create.quest-wizard')->name('quests.edit');
 
-    // Session / Gameplay
-    Route::livewire('/session/{code}', 'pages::session.lobby')->name('session.lobby');
-    Route::livewire('/session/{code}/play', 'pages::session.active-quest')->name('session.play');
-    Route::livewire('/session/{code}/question/{checkpoint}', 'pages::session.question-screen')->name('session.question');
-    Route::livewire('/session/{code}/complete', 'pages::session.quest-complete')->name('session.complete');
+    // Hosting needs an account; playing does not (see below).
     Route::livewire('/session/{code}/host', 'pages::session.host-dashboard')->name('session.host');
 
     // Profile

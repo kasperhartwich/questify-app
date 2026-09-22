@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Api\ApiCache;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Native\Mobile\Facades\SecureStorage;
@@ -12,21 +13,17 @@ class TokenStorage
     private const KEY = 'questify_api_token';
 
     /**
-     * The keychain would be the right home, but NativePHP v4 ships no native
-     * handler for the SecureStorage bridge on either platform — every call is
-     * a silent no-op, which is why signing in never survived a cold start
-     * (cookies die with the process: the shell's webview uses a
-     * non-persistent data store). Until the bridge exists, the token lives
-     * encrypted in the app container, which persists across restarts and
-     * updates; APP_KEY itself is kept in the real keychain by the shell, so
-     * the file is ciphertext at rest.
+     * On device the token lives in the keychain (the secure-storage plugin),
+     * with an encrypted file in the app container as a fallback. It is not
+     * copied into the session there: session files are plain text in the same
+     * container, so a copy would undo the encryption. The webview's session
+     * cookie dies with the process anyway.
      */
     public static function get(): ?string
     {
         if (self::isMobile()) {
             return SecureStorage::get(self::KEY)
-                ?? self::readFile()
-                ?? session(self::KEY);
+                ?? self::readFile();
         }
 
         return session(self::KEY);
@@ -37,9 +34,25 @@ class TokenStorage
         if (self::isMobile()) {
             SecureStorage::set(self::KEY, $token);
             self::writeFile($token);
+            session()->forget(self::KEY);
+
+            return;
         }
 
         session()->put(self::KEY, $token);
+    }
+
+    /**
+     * The API rejected the token: drop every copy of it, the identity cached
+     * for it and the session. Flushing only the session left the keychain and
+     * file copies behind, so the guard kept treating the player as signed in
+     * and the login screen bounced them straight back into the app.
+     */
+    public static function signOut(): void
+    {
+        self::forget();
+        ApiCache::forgetPrefix('auth:me');
+        session()->flush();
     }
 
     public static function forget(): void

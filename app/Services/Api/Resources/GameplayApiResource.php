@@ -30,7 +30,7 @@ class GameplayApiResource
             'question_id' => $questionId,
             'answer_id' => $answerId,
             'answer_text' => $answerText,
-        ]));
+        ], fn ($value) => $value !== null));
     }
 
     public function leaderboard(string $code): array

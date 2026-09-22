@@ -174,10 +174,10 @@ it('never lets a reporting failure break the screen', function () {
 })->throwsNoExceptions();
 
 /**
- * NativePHP v4 ships no native handler for the SecureStorage bridge, so every
- * keychain call is a silent no-op — and the webview's cookies die with the
- * process. The encrypted file in the app container is what actually keeps a
- * player signed in across cold starts and updates.
+ * The keychain can fail (or, before the secure-storage plugin was installed,
+ * silently do nothing), and the webview's cookies die with the process. The
+ * encrypted file in the app container is the fallback that keeps a player
+ * signed in across cold starts and updates.
  */
 it('round-trips the token through the encrypted file on device', function () {
     // Force the mobile branch: mock System::isMobile and a dead SecureStorage.

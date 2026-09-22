@@ -19,8 +19,7 @@ trait HandlesApiErrors
         try {
             return $callback();
         } catch (ApiAuthenticationException) {
-            TokenStorage::forget();
-            session()->flush();
+            TokenStorage::signOut();
 
             return $this->redirect(route('login'));
         } catch (ApiValidationException $e) {

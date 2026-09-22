@@ -5,6 +5,7 @@ namespace App\Livewire\Concerns;
 use App\Exceptions\Api\ApiAuthenticationException;
 use App\Exceptions\Api\ApiException;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\TokenStorage;
 use Illuminate\Support\Collection;
 
 trait WithApiClient
@@ -50,7 +51,7 @@ trait WithApiClient
 
             return $response['data'] ?? null;
         } catch (ApiAuthenticationException) {
-            session()->flush();
+            TokenStorage::signOut();
             $this->redirect(route('login'));
 
             return null;

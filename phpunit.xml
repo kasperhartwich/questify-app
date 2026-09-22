@@ -21,6 +21,8 @@
         </include>
     </source>
     <php>
+        <!-- 700+ Livewire tests outgrow the CLI default of 128M in one process. -->
+        <ini name="memory_limit" value="512M"/>
         <env name="APP_ENV" value="testing"/>
         <!-- Never ship test-run exceptions to the live crash reporting project. -->
         <env name="SENTRY_LARAVEL_DSN" value=""/>

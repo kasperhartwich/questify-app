@@ -239,7 +239,7 @@ it('sends the player to the results when the quest is finished', function () {
 it('sends the player back to navigation and advances the stop when a checkpoint is done', function () {
     fakeGameplay(['data' => ['correct' => true, 'score_earned' => 100, 'next' => 'checkpoint_complete']]);
 
-    session()->put('questify_checkpoint_index', 0);
+    session()->put('questify_checkpoint_index.XYZ789', 0);
 
     questionScreen()
         ->set('selectedAnswerId', 1)
@@ -248,7 +248,7 @@ it('sends the player back to navigation and advances the stop when a checkpoint 
         ->call('nextQuestion')
         ->assertRedirect('/session/XYZ789/play');
 
-    expect(session('questify_checkpoint_index'))->toBe(1);
+    expect(session('questify_checkpoint_index.XYZ789'))->toBe(1);
 });
 
 it('clears the previous answer before the next question', function () {

@@ -240,6 +240,7 @@ return [
     // Dialog
     'ok' => 'OK',
     'dismiss' => 'Afvis',
+    'no_connection' => 'Ingen forbindelse. Tjek din dækning og prøv igen.',
     'something_went_wrong' => 'Noget gik galt',
     'unexpected_error' => 'Der opstod en uventet fejl. Prøv igen.',
     'delete_account_title' => 'Slet konto?',
