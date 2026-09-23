@@ -36,11 +36,12 @@ it('joins a session by code through the display name step to the lobby', functio
         ->click('button:has-text("Continue")')
         ->assertPathIs('/join/ABC123/name')
         ->assertSee('Copenhagen History Hunt')
-        ->fill('input[type="text"]', 'Kasper Test')
-        // Give Livewire the roundtrip that carries the typed name, or the
-        // submit posts an empty name and validation keeps us on this screen.
+        // Let the screen's own first roundtrip land before typing. On a slow
+        // runner it arrived after the fill and morphed the field back to the
+        // empty server value, so the submit posted nothing.
         ->wait(1)
-        ->assertEnabled('button[type="submit"]')
+        ->fill('input[type="text"]', 'Kasper Test')
+        ->assertValue('input[type="text"]', 'Kasper Test')
         ->click('button[type="submit"]')
         ->assertPathIs('/session/ABC123')
         ->assertNoJavaScriptErrors();
