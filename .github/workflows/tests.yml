@@ -25,7 +25,11 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      # The paid NativePHP plugins come from plugins.nativephp.com, which
+      # needs the licence credentials from auth.json.
       - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - uses: actions/setup-node@v4
@@ -65,7 +69,11 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      # The paid NativePHP plugins come from plugins.nativephp.com, which
+      # needs the licence credentials from auth.json.
       - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - uses: actions/setup-node@v4
