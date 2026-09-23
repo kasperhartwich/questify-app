@@ -34,7 +34,10 @@ it('has a crash reporting dsn so php exceptions reach sentry', function () {
     $env = file_get_contents(base_path('.env'));
 
     expect($env)->toMatch('/^SENTRY_LARAVEL_DSN=https:\/\/\S+/m');
-})->skip(fn () => ! file_exists(base_path('.env')), 'No .env in this checkout (CI)');
+})->skip(
+    fn () => ! file_exists(base_path('.env')) || getenv('GITHUB_ACTIONS') !== false,
+    'CI builds its .env from .env.example, which carries no DSN'
+);
 
 it('keeps the crash reporting dsn out of the stripped key list', function () {
     $patterns = config('nativephp.cleanup_env_keys');

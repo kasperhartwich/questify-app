@@ -37,6 +37,10 @@ it('joins a session by code through the display name step to the lobby', functio
         ->assertPathIs('/join/ABC123/name')
         ->assertSee('Copenhagen History Hunt')
         ->fill('input[type="text"]', 'Kasper Test')
+        // Give Livewire the roundtrip that carries the typed name, or the
+        // submit posts an empty name and validation keeps us on this screen.
+        ->wait(1)
+        ->assertEnabled('button[type="submit"]')
         ->click('button[type="submit"]')
         ->assertPathIs('/session/ABC123')
         ->assertNoJavaScriptErrors();
