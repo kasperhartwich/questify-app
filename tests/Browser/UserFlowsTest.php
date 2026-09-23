@@ -36,12 +36,16 @@ it('joins a session by code through the display name step to the lobby', functio
         ->click('button:has-text("Continue")')
         ->assertPathIs('/join/ABC123/name')
         ->assertSee('Copenhagen History Hunt')
-        // Let the screen's own first roundtrip land before typing. On a slow
-        // runner it arrived after the fill and morphed the field back to the
-        // empty server value, so the submit posted nothing.
+        // Type only once Livewire's JS has booted and attached its listener to
+        // the deferred wire:model. Filling before that left the field empty at
+        // submit time on a cold CI runner, and the screen kept asking for a
+        // name. A fixed second is the blunt version of that wait: if this goes
+        // flaky again, the cause is here, not in the join code.
         ->wait(1)
         ->fill('input[type="text"]', 'Kasper Test')
-        ->assertValue('input[type="text"]', 'Kasper Test')
+        // Awaitable, per the note at the top of this file: it pumps the event
+        // loop before the click, which assertValue does not.
+        ->assertVisible('button[type="submit"]')
         ->click('button[type="submit"]')
         ->assertPathIs('/session/ABC123')
         ->assertNoJavaScriptErrors();
