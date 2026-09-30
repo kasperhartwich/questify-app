@@ -27,7 +27,16 @@ it('shows the quest a lobby is waiting to play', function () {
 });
 
 it('offers a join address other players can use', function () {
-    lobby()->assertSet('joinUrl', url('/join/ABC123/name'));
+    lobby()->assertSet('joinUrl', config('questify.join.url').'/join/ABC123/name');
+});
+
+it('shares an address on the public join site, not the phone the host holds', function () {
+    // On a phone url() is php://127.0.0.1, which no other player can open.
+    config(['questify.join.url' => 'https://join.getquestify.app/']);
+
+    lobby()
+        ->assertSet('joinUrl', 'https://join.getquestify.app/join/ABC123/name')
+        ->assertSet('shareUrl', 'https://join.getquestify.app/join/ABC123/name');
 });
 
 it('treats a guest as not the host', function () {

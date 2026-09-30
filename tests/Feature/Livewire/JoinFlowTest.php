@@ -52,11 +52,14 @@ it('reads a bare code out of a scan', function () {
         ->assertRedirect('/join/XK92PL/name');
 });
 
-it('reads a code out of a scanned address', function () {
+it('reads a code out of a scanned address', function (string $address) {
     Livewire::test('pages::join.index')
-        ->call('onCodeScanned', 'https://questifyapp.net/join/XK92PL/name', 'qr', 'join-scan')
+        ->call('onCodeScanned', $address, 'qr', 'join-scan')
         ->assertRedirect('/join/XK92PL/name');
-});
+})->with([
+    'current join site' => 'https://join.getquestify.app/join/XK92PL/name',
+    'QR code printed before the move' => 'https://join.questifyapp.net/join/XK92PL/name',
+]);
 
 it('upper-cases a lowercase scan', function () {
     Livewire::test('pages::join.index')

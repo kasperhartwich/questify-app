@@ -45,7 +45,7 @@ class extends Component
         $response = $this->tryApiCall(fn () => $this->api->sessions()->show($this->code));
         $this->session = $response['data'] ?? [];
         $this->isHost = Auth::id() === ($this->session['host']['id'] ?? null);
-        $this->joinUrl = url('/join/' . $this->code . '/name');
+        $this->joinUrl = rtrim(config('questify.join.url'), '/') . '/join/' . $this->code . '/name';
         $this->shareUrl = $this->joinUrl;
         $this->participants = $this->session['participants'] ?? [];
     }
