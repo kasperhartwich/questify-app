@@ -10,7 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
  * The join site moved from join.questifyapp.net to join.getquestify.app.
  * Links and QR codes already shared, printed or saved still carry the old
  * host, so a page view under it is sent permanently to the same address on
- * the current site. Only reads are redirected: a POST would lose its body.
+ * the current site, including paths that no longer exist. It runs before
+ * routing for that reason. Only reads are redirected: a POST would lose its
+ * body.
  */
 class RedirectLegacyJoinHost
 {

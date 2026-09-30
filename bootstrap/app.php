@@ -33,7 +33,8 @@ return $app
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
         $middleware->api(append: [LogActivity::class]);
-        $middleware->web(prepend: [RedirectLegacyJoinHost::class], append: [FetchAppInfo::class, SetLocale::class]);
+        $middleware->prepend(RedirectLegacyJoinHost::class);
+        $middleware->web(append: [FetchAppInfo::class, SetLocale::class]);
         $middleware->redirectGuestsTo('/');
     })
     ->withExceptions(function (Exceptions $exceptions): void {

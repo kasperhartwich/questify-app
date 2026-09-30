@@ -21,7 +21,7 @@ return [
 
     'join' => [
         'url' => env('NATIVEPHP_RUNNING') ? 'https://join.getquestify.app' : env('QUESTIFY_JOIN_URL', 'https://join.getquestify.app'),
-        'legacy_hosts' => array_filter(explode(',', (string) env('QUESTIFY_LEGACY_JOIN_HOSTS', 'join.questifyapp.net'))),
+        'legacy_hosts' => array_filter(array_map('trim', explode(',', (string) env('QUESTIFY_LEGACY_JOIN_HOSTS', 'join.questifyapp.net')))),
     ],
 
     /*
