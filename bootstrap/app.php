@@ -3,6 +3,7 @@
 use App\Console\Commands\PackageCommand;
 use App\Http\Middleware\FetchAppInfo;
 use App\Http\Middleware\LogActivity;
+use App\Http\Middleware\RedirectLegacyJoinHost;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -32,7 +33,7 @@ return $app
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
         $middleware->api(append: [LogActivity::class]);
-        $middleware->web(append: [FetchAppInfo::class, SetLocale::class]);
+        $middleware->web(prepend: [RedirectLegacyJoinHost::class], append: [FetchAppInfo::class, SetLocale::class]);
         $middleware->redirectGuestsTo('/');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
