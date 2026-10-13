@@ -117,6 +117,44 @@ it('shows the backend\'s own complaint against the field it belongs to', functio
         ->assertSet('linkSent', false);
 });
 
+/**
+ * The link used to sit under the password field, which only appears once an
+ * email is typed, so a player who had forgotten their password never saw it.
+ */
+it('offers the forgotten password reset on a fresh login screen', function () {
+    Livewire::test('pages::auth.login')
+        ->assertSet('email', '')
+        ->assertSee(__('auth.forgot_password'))
+        ->assertSeeHtml('href="/forgot-password"');
+});
+
+it('carries the typed email over to the reset screen', function () {
+    Livewire::test('pages::auth.login')
+        ->set('email', 'kasper+quest@example.com')
+        ->assertSeeHtml('href="/forgot-password?email=kasper%2Bquest%40example.com"');
+});
+
+it('starts the reset screen with the email from the login screen', function () {
+    Livewire::withQueryParams(['email' => 'kasper@example.com'])
+        ->test('pages::auth.forgot-password')
+        ->assertSet('email', 'kasper@example.com');
+});
+
+it('ignores an email that is not a plain string', function () {
+    Livewire::withQueryParams(['email' => ['kasper@example.com']])
+        ->test('pages::auth.forgot-password')
+        ->assertSet('email', '');
+});
+
+it('words the reset without web terms', function (string $locale) {
+    app()->setLocale($locale);
+
+    foreach (['forgot_password', 'forgot_password_title', 'forgot_password_subtitle', 'send_reset_link', 'reset_link_sent'] as $key) {
+        expect(mb_strtolower(__("auth.{$key}")))
+            ->not->toMatch('/page|link|url|browser|site|web/');
+    }
+})->with(['en', 'da']);
+
 // --- Welcome ---
 
 it('renders the welcome screen for a visitor', function () {

@@ -19,6 +19,15 @@ class extends Component
 
     public bool $linkSent = false;
 
+    public function mount(): void
+    {
+        $email = request()->query('email');
+
+        if (is_string($email)) {
+            $this->email = $email;
+        }
+    }
+
     public function sendResetLink(): void
     {
         $this->validate([

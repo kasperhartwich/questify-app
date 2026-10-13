@@ -264,14 +264,14 @@ class extends Component
                         @error('password') <p class="mt-1 text-[10px] text-coral">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="mt-2 mb-3 text-right">
-                        <a href="/forgot-password" class="text-[11px] font-semibold text-forest-400" wire:navigate>{{ __('auth.forgot_password') }}</a>
-                    </div>
-
-                    <button type="submit" class="w-full rounded-[14px] bg-amber-400 px-4 py-[13px] text-center font-heading text-sm font-bold text-bark">
+                    <button type="submit" class="mt-3 w-full rounded-[14px] bg-amber-400 px-4 py-[13px] text-center font-heading text-sm font-bold text-bark">
                         {{ __('general.login') }}
                     </button>
                 @endif
+
+                <div class="mt-2 mb-3 text-right">
+                    <a href="/forgot-password{{ $email !== '' ? '?'.http_build_query(['email' => $email]) : '' }}" class="text-[11px] font-semibold text-forest-400" wire:navigate>{{ __('auth.forgot_password') }}</a>
+                </div>
             </form>
         @endif
 
