@@ -26,6 +26,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Universal Links
+    |--------------------------------------------------------------------------
+    |
+    | A join link on the join site opens the installed app instead of the
+    | browser. The site lists the app (team ID and bundle ID) and the paths it
+    | takes in /.well-known/apple-app-site-association; the app claims the
+    | host with its associated-domains entitlement (nativephp.deeplink_host).
+    | The shell opens the link's path as the same screen inside the app.
+    |
+    */
+
+    'universal_links' => [
+        'app_ids' => ['2KF539NBBF.com.focusweb.questify'],
+        'paths' => ['/join', '/join/*'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Scoring Defaults
     |--------------------------------------------------------------------------
     */

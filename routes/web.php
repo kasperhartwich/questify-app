@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\AppleAppSiteAssociationController;
 use App\Http\Controllers\Auth\SocialCallbackController;
 use App\Http\Middleware\EnsureSessionParticipant;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,11 @@ Route::get('/locale/{locale}', function (string $locale) {
 
     return redirect('/');
 })->name('locale.switch');
+
+// Universal links: no session, cookies or API call, just the file
+Route::get('/.well-known/apple-app-site-association', AppleAppSiteAssociationController::class)
+    ->withoutMiddleware('web')
+    ->name('apple-app-site-association');
 
 // Join (guest-accessible)
 Route::livewire('/join', 'pages::join.index')->name('join');

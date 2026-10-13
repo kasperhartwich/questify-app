@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'deeplink_host' => env('NATIVEPHP_DEEPLINK_HOST'),
+    'deeplink_host' => env('NATIVEPHP_DEEPLINK_HOST', 'join.getquestify.app'),
 
     /*
     |--------------------------------------------------------------------------
