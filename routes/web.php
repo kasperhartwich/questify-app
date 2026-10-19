@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AndroidAssetLinksController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\AppleAppSiteAssociationController;
 use App\Http\Controllers\Auth\SocialCallbackController;
@@ -18,10 +19,13 @@ Route::get('/locale/{locale}', function (string $locale) {
     return redirect('/');
 })->name('locale.switch');
 
-// Universal links: no session, cookies or API call, just the file
+// Universal links and Android app links: no session, cookies or API call, just the file
 Route::get('/.well-known/apple-app-site-association', AppleAppSiteAssociationController::class)
     ->withoutMiddleware('web')
     ->name('apple-app-site-association');
+Route::get('/.well-known/assetlinks.json', AndroidAssetLinksController::class)
+    ->withoutMiddleware('web')
+    ->name('android-asset-links');
 
 // Join (guest-accessible)
 Route::livewire('/join', 'pages::join.index')->name('join');

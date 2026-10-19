@@ -44,6 +44,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Android App Links
+    |--------------------------------------------------------------------------
+    |
+    | The Android counterpart of universal links. The join site lists the app
+    | (package name) and the SHA-256 fingerprints of the certificates it is
+    | signed with in /.well-known/assetlinks.json. NativePHP gives the app a
+    | verified https intent filter for nativephp.deeplink_host, which claims
+    | every path on that host, not only the join screens. With Play App
+    | Signing, list the app signing key from the Play Console, plus the upload
+    | key for builds installed outside Play. Without a fingerprint the file is
+    | not served and the links stay in the browser.
+    |
+    */
+
+    'app_links' => [
+        'package_name' => 'com.focusweb.questify',
+        'sha256_cert_fingerprints' => array_values(array_filter(array_map(
+            fn (string $fingerprint): string => strtoupper(trim($fingerprint)),
+            explode(',', (string) env('QUESTIFY_ANDROID_CERT_SHA256', '')),
+        ))),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Scoring Defaults
     |--------------------------------------------------------------------------
     */
