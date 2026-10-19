@@ -135,10 +135,12 @@ Three sign-up methods are available. The user picks one on the first screen.
 ---
 
 ### 5.5 Password Reset Screen
-- Email field
-- "Send Reset Link" button
-- Calls `POST /api/v1/auth/forgot-password`
-- Shows confirmation message after submission
+Three steps on one screen, all inside the app:
+1. Email field, "Send" button: calls `POST /api/v1/auth/forgot-password`, which emails a 6-digit code
+2. Code boxes (6 digits), "Resend" and a tap on the address to change it
+3. New password and confirmation: calls `POST /api/v1/auth/reset-password/code` with email, code and
+   password; a wrong or expired code returns to step 2. On success the player goes to the Login screen
+   with the email filled in and a confirmation, and logs in with the new password
 
 ---
 

@@ -130,6 +130,19 @@ class AuthResource
         ]);
     }
 
+    /**
+     * Set a new password with the six-digit code from the forgot-password email.
+     */
+    public function resetPasswordWithCode(string $email, string $code, string $password, string $passwordConfirmation): array
+    {
+        return $this->client->post('/auth/reset-password/code', [
+            'email' => $email,
+            'code' => $code,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+        ]);
+    }
+
     public function unlinkSocial(string $provider): array
     {
         return $this->client->delete("/auth/social/{$provider}");

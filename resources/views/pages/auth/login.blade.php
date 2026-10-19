@@ -55,6 +55,13 @@ class extends Component
             return;
         }
 
+        // The reset screen comes back here with the address it just reset.
+        $email = request()->query('email');
+
+        if (is_string($email)) {
+            $this->email = $email;
+        }
+
         $appInfo = app(AppInfoService::class);
         $this->socialProviders = $appInfo->enabledSocialProviders();
         $this->emailEnabled = $appInfo->isAuthMethodEnabled('email');
@@ -202,6 +209,10 @@ class extends Component
         {{-- Heading --}}
         <h1 class="mb-1 mt-4 font-heading text-[24px] font-[800] leading-tight text-bark">{{ __('auth.welcome_back') }}</h1>
         <p class="mb-[22px] text-[13px] text-muted">{{ __('auth.login_subtitle') }}</p>
+
+        @if (session('status'))
+            <div class="mb-4 rounded-[14px] bg-[#D4EDE4] p-4 text-[13px] font-medium text-forest-600">{{ session('status') }}</div>
+        @endif
 
         {{-- Social auth grid (OAuth providers only, 2x2) --}}
         @if (count($socialProviders) > 0)

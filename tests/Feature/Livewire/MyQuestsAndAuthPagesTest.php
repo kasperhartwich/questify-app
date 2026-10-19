@@ -79,18 +79,18 @@ it('renders the created quests screen', function () {
 
 it('requires an email address', function () {
     Livewire::test('pages::auth.forgot-password')
-        ->call('sendResetLink')
+        ->call('sendCode')
         ->assertHasErrors('email');
 });
 
 it('rejects something that is not an email address', function () {
     Livewire::test('pages::auth.forgot-password')
         ->set('email', 'not-an-email')
-        ->call('sendResetLink')
+        ->call('sendCode')
         ->assertHasErrors('email');
 });
 
-it('confirms once the reset has been sent', function () {
+it('asks for the code once it has been sent', function () {
     $auth = Mockery::mock(AuthResource::class);
     $auth->shouldReceive('forgotPassword')->once()->with('kasper@example.com')->andReturn(['data' => []]);
     $auth->shouldReceive('me')->andReturn(['data' => ['id' => 1, 'name' => 'Test', 'locale' => 'en']]);
@@ -98,8 +98,8 @@ it('confirms once the reset has been sent', function () {
 
     Livewire::test('pages::auth.forgot-password')
         ->set('email', 'kasper@example.com')
-        ->call('sendResetLink')
-        ->assertSet('linkSent', true);
+        ->call('sendCode')
+        ->assertSet('step', 'code');
 });
 
 it('shows the backend\'s own complaint against the field it belongs to', function () {
@@ -112,9 +112,138 @@ it('shows the backend\'s own complaint against the field it belongs to', functio
 
     Livewire::test('pages::auth.forgot-password')
         ->set('email', 'nobody@example.com')
-        ->call('sendResetLink')
+        ->call('sendCode')
         ->assertHasErrors('email')
-        ->assertSet('linkSent', false);
+        ->assertSet('step', 'email');
+});
+
+// --- Reset with the emailed code ---
+
+function resetScreenAtCode(AuthResource $auth)
+{
+    $auth->shouldReceive('forgotPassword')->andReturn(['message' => 'sent']);
+    $auth->shouldReceive('me')->andReturn(['data' => ['id' => 1, 'name' => 'Test', 'locale' => 'en']]);
+    swapApiResource('auth', $auth);
+
+    return Livewire::test('pages::auth.forgot-password')
+        ->set('email', 'kasper@example.com')
+        ->call('sendCode')
+        ->assertSet('step', 'code');
+}
+
+it('wants all six digits before it asks for the new password', function (string $code) {
+    resetScreenAtCode(Mockery::mock(AuthResource::class))
+        ->set('code', $code)
+        ->call('confirmCode')
+        ->assertHasErrors('code')
+        ->assertSee(__('auth.reset_code_wrong'))
+        ->assertSet('step', 'code');
+})->with(['', '12345', 'ABC123']);
+
+it('moves on to the new password with six digits', function () {
+    resetScreenAtCode(Mockery::mock(AuthResource::class))
+        ->set('code', '123456')
+        ->call('confirmCode')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'password')
+        ->assertSee(__('auth.new_password_title'));
+});
+
+it('checks the new password before sending it', function () {
+    $auth = Mockery::mock(AuthResource::class);
+    $auth->shouldNotReceive('resetPasswordWithCode');
+
+    resetScreenAtCode($auth)
+        ->set('code', '123456')
+        ->call('confirmCode')
+        ->set('password', 'short')
+        ->set('password_confirmation', 'short')
+        ->call('savePassword')
+        ->assertHasErrors('password');
+});
+
+it('saves the new password and sends the player to log in with it', function () {
+    $auth = Mockery::mock(AuthResource::class);
+    $auth->shouldReceive('resetPasswordWithCode')->once()
+        ->with('kasper@example.com', '123456', 'a-new-secret', 'a-new-secret')
+        ->andReturn(['message' => 'ok']);
+
+    resetScreenAtCode($auth)
+        ->set('code', '123456')
+        ->call('confirmCode')
+        ->set('password', 'a-new-secret')
+        ->set('password_confirmation', 'a-new-secret')
+        ->call('savePassword')
+        ->assertHasNoErrors()
+        ->assertRedirect('/login?email=kasper%40example.com');
+
+    expect(session('status'))->toBe(__('auth.password_reset_done'));
+});
+
+it('goes back to the code in its own words when the backend refuses it', function () {
+    $auth = Mockery::mock(AuthResource::class);
+    $auth->shouldReceive('resetPasswordWithCode')->andThrow(
+        new ApiValidationException('That code is wrong or has expired.', ['code' => ['That code is wrong or has expired.']])
+    );
+
+    resetScreenAtCode($auth)
+        ->set('code', '123456')
+        ->call('confirmCode')
+        ->set('password', 'a-new-secret')
+        ->set('password_confirmation', 'a-new-secret')
+        ->call('savePassword')
+        ->assertSet('step', 'code')
+        ->assertSet('code', '')
+        ->assertSet('password', '')
+        ->assertHasErrors('code')
+        ->assertSee(__('auth.reset_code_wrong'));
+});
+
+it('says to wait instead of passing on the backend\'s rate limit', function () {
+    $auth = Mockery::mock(AuthResource::class);
+    $auth->shouldReceive('resetPasswordWithCode')->andThrow(new ApiException(429, 'Too Many Attempts.'));
+
+    resetScreenAtCode($auth)
+        ->set('code', '123456')
+        ->call('confirmCode')
+        ->set('password', 'a-new-secret')
+        ->set('password_confirmation', 'a-new-secret')
+        ->call('savePassword')
+        ->assertHasErrors('password')
+        ->assertSee(__('auth.reset_too_many'))
+        ->assertDontSee('Too Many Attempts.')
+        ->assertNotDispatched('api-error');
+});
+
+it('sends a new code from the code step', function () {
+    $auth = Mockery::mock(AuthResource::class);
+    $auth->shouldReceive('forgotPassword')->twice()->with('kasper@example.com')->andReturn(['message' => 'sent']);
+    $auth->shouldReceive('me')->andReturn(['data' => ['id' => 1, 'name' => 'Test', 'locale' => 'en']]);
+    swapApiResource('auth', $auth);
+
+    Livewire::test('pages::auth.forgot-password')
+        ->set('email', 'kasper@example.com')
+        ->call('sendCode')
+        ->set('code', '12')
+        ->call('sendCode')
+        ->assertSet('step', 'code')
+        ->assertSet('code', '');
+});
+
+it('lets the player fix the address from the code step', function () {
+    resetScreenAtCode(Mockery::mock(AuthResource::class))
+        ->call('changeEmail')
+        ->assertSet('step', 'email')
+        ->assertSet('email', 'kasper@example.com');
+});
+
+it('opens the login screen with the reset address and the confirmation', function () {
+    session()->flash('status', __('auth.password_reset_done'));
+
+    Livewire::withQueryParams(['email' => 'kasper@example.com'])
+        ->test('pages::auth.login')
+        ->assertSet('email', 'kasper@example.com')
+        ->assertSee(__('auth.password_reset_done'));
 });
 
 /**
@@ -149,7 +278,13 @@ it('ignores an email that is not a plain string', function () {
 it('words the reset without web terms', function (string $locale) {
     app()->setLocale($locale);
 
-    foreach (['forgot_password', 'forgot_password_title', 'forgot_password_subtitle', 'send_reset_link', 'reset_link_sent'] as $key) {
+    $keys = [
+        'forgot_password', 'forgot_password_title', 'forgot_password_subtitle', 'send_reset_code', 'reset_code_sent',
+        'reset_code_wrong', 'reset_code_next', 'reset_too_many', 'new_password_title', 'new_password_subtitle',
+        'new_password', 'save_new_password', 'password_reset_done',
+    ];
+
+    foreach ($keys as $key) {
         expect(mb_strtolower(__("auth.{$key}")))
             ->not->toMatch('/page|link|url|browser|site|web/');
     }

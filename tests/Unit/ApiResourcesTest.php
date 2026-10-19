@@ -79,6 +79,18 @@ it('sends both password fields on a reset', function () {
     (new AuthResource($client))->resetPassword('reset-token', 'k@example.com', 'new-secret', 'new-secret');
 });
 
+it('sends the emailed code with both password fields on a code reset', function () {
+    $client = stubClient();
+    $client->shouldReceive('post')->once()->with('/auth/reset-password/code', [
+        'email' => 'k@example.com',
+        'code' => '123456',
+        'password' => 'new-secret',
+        'password_confirmation' => 'new-secret',
+    ])->andReturn(['message' => 'ok']);
+
+    (new AuthResource($client))->resetPasswordWithCode('k@example.com', '123456', 'new-secret', 'new-secret');
+});
+
 it('signs out', function () {
     $client = stubClient();
     $client->shouldReceive('post')->once()->with('/auth/logout')->andReturn([]);
