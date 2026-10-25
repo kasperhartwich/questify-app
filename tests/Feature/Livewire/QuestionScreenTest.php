@@ -89,7 +89,8 @@ it('sends the player back to navigation when the server rejects the arrival', fu
     $gameplay->shouldReceive('leaderboard')->andReturn(['data' => []]);
     swapGameplayResource($gameplay);
 
-    questionScreen()->assertRedirect('/session/XYZ789/play');
+    Livewire::test('pages::session.question-screen', ['code' => 'XYZ789', 'checkpoint' => 1])
+        ->assertRedirect('/session/XYZ789/play');
 });
 
 // --- Submitting ---
@@ -270,7 +271,8 @@ it('sends a player without a participant back to the play screen without calling
     $gameplay->shouldNotReceive('arrived');
     swapGameplayResource($gameplay);
 
-    questionScreen()->assertRedirect('/session/XYZ789/play');
+    Livewire::test('pages::session.question-screen', ['code' => 'XYZ789', 'checkpoint' => 1])
+        ->assertRedirect('/session/XYZ789/play');
 });
 
 it('tells the player in plain words when the API no longer knows the participant', function () {
@@ -289,4 +291,13 @@ it('tells the player in plain words when the API no longer knows the participant
         ->assertHasNoErrors();
 
     expect(session('questify_participant_id'))->toBeNull();
+});
+
+it('finds a signed-in player again when the participant id was lost', function () {
+    session()->forget('questify_participant_id');
+    fakeGameplay();
+
+    questionScreen()->assertNoRedirect();
+
+    expect(session('questify_participant_id'))->toBe(55);
 });

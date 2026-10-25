@@ -3,6 +3,7 @@
 use App\Enums\QuestionType;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -57,8 +58,20 @@ class extends Component
         $this->code = $code;
         $this->participantId = session('questify_participant_id', 0);
 
-        // Without a participant the questions cannot be fetched; the play screen
-        // works the participant out again from the session.
+        // A signed-in player whose participant id was lost is found again in the session's
+        // participant list. Without one the questions cannot be fetched at all.
+        if (! $this->participantId && Auth::check()) {
+            $session = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
+
+            foreach ($session['data']['participants'] ?? [] as $participant) {
+                if (($participant['user_id'] ?? null) === Auth::id()) {
+                    $this->participantId = $participant['id'];
+                    session()->put('questify_participant_id', $participant['id']);
+                    break;
+                }
+            }
+        }
+
         if (! $this->participantId) {
             $this->redirect('/session/' . $code . '/play');
 
