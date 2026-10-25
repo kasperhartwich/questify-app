@@ -13,6 +13,7 @@ return [
     'session_full' => 'Denne session er fuld.',
     'already_joined' => 'Du har allerede deltaget i denne session.',
     'invalid_code' => 'Tilmeldingskoden er ugyldig.',
+    'participant_unknown' => 'Vi mistede dig i denne quest. Gå tilbage og deltag igen.',
 
     // Full-screen error pages (no HTTP jargon shown to players)
     'not_found_title' => 'Noget gik galt',

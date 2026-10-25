@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Api\ApiException;
+use App\Exceptions\Api\ApiValidationException;
 use App\Models\User;
 use App\Services\Api\Resources\GameplayApiResource;
 use Livewire\Livewire;
@@ -261,4 +262,31 @@ it('clears the previous answer before the next question', function () {
         ->assertSet('selectedAnswerId', null)
         ->assertSet('openEndedAnswer', '')
         ->assertSet('showFeedback', false);
+});
+
+it('sends a player without a participant back to the play screen without calling the API', function () {
+    session()->forget('questify_participant_id');
+    $gameplay = Mockery::mock(GameplayApiResource::class);
+    $gameplay->shouldNotReceive('arrived');
+    swapGameplayResource($gameplay);
+
+    questionScreen()->assertRedirect('/session/XYZ789/play');
+});
+
+it('tells the player in plain words when the API no longer knows the participant', function () {
+    fakeGameplay();
+    $component = questionScreen();
+
+    swapGameplayResource(tap(Mockery::mock(GameplayApiResource::class), function ($gameplay) {
+        $gameplay->shouldReceive('answer')->andThrow(
+            new ApiValidationException('Invalid.', ['participant_id' => ['The selected participant id is invalid.']]),
+        );
+    }));
+
+    $component->set('selectedAnswerId', 1)
+        ->call('submitAnswer')
+        ->assertDispatched('api-error', message: __('errors.participant_unknown'))
+        ->assertHasNoErrors();
+
+    expect(session('questify_participant_id'))->toBeNull();
 });

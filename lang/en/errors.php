@@ -13,6 +13,7 @@ return [
     'session_full' => 'This session is full.',
     'already_joined' => 'You have already joined this session.',
     'invalid_code' => 'The join code is invalid.',
+    'participant_unknown' => 'We lost track of you in this quest. Go back and rejoin it.',
 
     // Full-screen error pages (no HTTP jargon shown to players)
     'not_found_title' => 'Something went wrong',

@@ -23,6 +23,10 @@ trait HandlesApiErrors
 
             return $this->redirect(route('login'));
         } catch (ApiValidationException $e) {
+            if (array_key_exists('participant_id', $e->errors)) {
+                return $this->handleUnknownParticipant();
+            }
+
             foreach ($e->errors as $field => $messages) {
                 $this->reportUnmappedValidationError($field, $messages[0] ?? '');
                 $this->addError($field, $messages[0]);
@@ -36,6 +40,19 @@ trait HandlesApiErrors
 
             return null;
         }
+    }
+
+    /**
+     * The API no longer knows this player's participant id (the session was
+     * cleared, or it belongs to a session that is gone). Drop the stale id so
+     * the next screen resolves it again, and tell the player in plain words.
+     */
+    private function handleUnknownParticipant(): null
+    {
+        session()->forget('questify_participant_id');
+        $this->dispatch('api-error', message: __('errors.participant_unknown'));
+
+        return null;
     }
 
     /**

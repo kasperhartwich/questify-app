@@ -57,6 +57,14 @@ class extends Component
         $this->code = $code;
         $this->participantId = session('questify_participant_id', 0);
 
+        // Without a participant the questions cannot be fetched; the play screen
+        // works the participant out again from the session.
+        if (! $this->participantId) {
+            $this->redirect('/session/' . $code . '/play');
+
+            return;
+        }
+
         // Fetch checkpoint questions via the arrived endpoint, proving proximity with the
         // player's latest GPS fix recorded by the navigation screen. The server rejects the
         // call (422) if the player is outside the checkpoint radius, so questions can't be
