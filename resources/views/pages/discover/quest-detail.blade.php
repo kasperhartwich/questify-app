@@ -116,13 +116,17 @@ class extends Component
             $user->id ?? null,
         ));
 
-        if ($joinResponse) {
-            $participantId = $joinResponse['data']['id']
-                ?? $joinResponse['data']['participant_id']
-                ?? null;
-            if ($participantId) {
-                session()->put('questify_participant_id', $participantId);
-            }
+        // A refused join (already in another active session, say) must stop here: starting
+        // the session without a participant leaves the player unable to answer anything.
+        if (! $joinResponse) {
+            return;
+        }
+
+        $participantId = $joinResponse['data']['id']
+            ?? $joinResponse['data']['participant_id']
+            ?? null;
+        if ($participantId) {
+            session()->put('questify_participant_id', $participantId);
         }
 
         session()->put('questify_checkpoint_index.' . $sessionCode, 0);

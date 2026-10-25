@@ -23,6 +23,12 @@ trait HandlesApiErrors
 
             return $this->redirect(route('login'));
         } catch (ApiValidationException $e) {
+            if ($e->errors === []) {
+                $this->dispatch('api-error', message: $e->getMessage());
+
+                return null;
+            }
+
             if (array_key_exists('participant_id', $e->errors)) {
                 return $this->handleUnknownParticipant();
             }

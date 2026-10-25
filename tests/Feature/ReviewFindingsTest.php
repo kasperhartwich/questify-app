@@ -264,6 +264,28 @@ it('sends the typed code when starting a private quest', function () {
     expect($sent)->toBe('spark1');
 });
 
+it('does not start the session when the join is refused', function () {
+    $started = false;
+
+    privateQuestDetail([
+        'create' => fn () => ['data' => ['session_code' => 'XYZ789']],
+        'join' => fn () => throw new ApiValidationException('You are already in an active session.', []),
+        'start' => function () use (&$started) {
+            $started = true;
+
+            return ['data' => []];
+        },
+    ])
+        ->set('accessCode', 'spark1')
+        ->call('verifyAccessCode')
+        ->set('playMode', 'solo')
+        ->call('startQuest')
+        ->assertDispatched('api-error', message: 'You are already in an active session.')
+        ->assertNoRedirect();
+
+    expect($started)->toBeFalse();
+});
+
 it('shows the code as wrong when the api refuses it', function () {
     privateQuestDetail([
         'create' => fn () => throw new ApiValidationException('Invalid.', ['access_code' => ['Wrong.']]),

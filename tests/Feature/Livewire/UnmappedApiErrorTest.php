@@ -168,3 +168,9 @@ it('passes a successful call straight through', function () {
     expect(Livewire::test(PassthroughProbeComponent::class)->call('run')->get('result'))
         ->toBe('the value');
 });
+
+it('shows the backend message when a refused request names no field', function () {
+    Livewire::test(ErrorProbeComponent::class)
+        ->call('boom', [])
+        ->assertDispatched('api-error', message: 'failed');
+});
