@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "127787d757eb185f349d2c017cae664a",
+    "content-hash": "ab0c7dcc135e09747bbc3ab395f26f9e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4615,29 +4615,31 @@
         },
         {
             "name": "nativephp/mobile",
-            "version": "4.0.0",
+            "version": "4.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NativePHP/mobile-air.git",
-                "reference": "7a9041ac3e9b095b91315377e421abf8543998c7"
+                "reference": "fd8ebf9d93ef59718267434bcb731bb381dc5e31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NativePHP/mobile-air/zipball/7a9041ac3e9b095b91315377e421abf8543998c7",
-                "reference": "7a9041ac3e9b095b91315377e421abf8543998c7",
+                "url": "https://api.github.com/repos/NativePHP/mobile-air/zipball/fd8ebf9d93ef59718267434bcb731bb381dc5e31",
+                "reference": "fd8ebf9d93ef59718267434bcb731bb381dc5e31",
                 "shasum": ""
             },
             "require": {
                 "endroid/qr-code": "^6.0.9",
                 "ext-dom": "*",
                 "ext-simplexml": "*",
-                "guzzlehttp/guzzle": "^7.9",
+                "guzzlehttp/guzzle": "^7.9 || ^8.0",
                 "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
                 "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
                 "laravel/prompts": "^0.1.1|^0.2|^0.3",
-                "php": "^8.4",
+                "laravel/serializable-closure": "^1.3|^2.0",
+                "php": "^8.3",
                 "react/datagram": "^1.10",
                 "spatie/laravel-package-tools": "^1.14.0",
+                "symfony/process": "^6.2|^7.0|^8.0",
                 "workerman/workerman": "^4.1"
             },
             "conflict": {
@@ -4704,9 +4706,9 @@
             ],
             "support": {
                 "issues": "https://github.com/NativePHP/mobile-air/issues",
-                "source": "https://github.com/NativePHP/mobile-air/tree/4.0.0"
+                "source": "https://github.com/NativePHP/mobile-air/tree/4.6.1"
             },
-            "time": "2026-07-30T02:45:28+00:00"
+            "time": "2026-10-25T15:51:00+00:00"
         },
         {
             "name": "nativephp/mobile-firebase",
