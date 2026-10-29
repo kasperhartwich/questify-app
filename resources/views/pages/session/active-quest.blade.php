@@ -51,7 +51,7 @@ class extends Component
         $this->isNative = System::isMobile();
         $this->participantId = session('questify_participant_id', 0);
 
-        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code));
+        $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code, $this->participantId));
         $this->session = $response['data'] ?? [];
 
         $participants = $this->session['participants'] ?? [];
@@ -72,6 +72,12 @@ class extends Component
                     session()->put('questify_participant_id', $p['id']);
                     break;
                 }
+            }
+
+            // The first response was for an unknown player, so it holds no coordinates.
+            if ($this->participantId) {
+                $response = $this->tryApiCall(fn () => $this->api->sessions()->show($code, $this->participantId));
+                $this->session = $response['data'] ?? $this->session;
             }
         }
 

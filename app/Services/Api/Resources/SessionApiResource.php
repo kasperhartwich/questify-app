@@ -22,9 +22,14 @@ class SessionApiResource
         return $result;
     }
 
-    public function show(string $code): array
+    /**
+     * The server only hands out checkpoint coordinates up to the given participant's current stop.
+     */
+    public function show(string $code, ?int $participantId = null): array
     {
-        return $this->client->get("/sessions/{$code}");
+        return $this->client->get("/sessions/{$code}", array_filter([
+            'participant_id' => $participantId ?: null,
+        ]));
     }
 
     public function join(string $code, string $displayName, ?int $userId = null): array

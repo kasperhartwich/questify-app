@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Services\Api\Resources\SessionApiResource;
 use Livewire\Livewire;
 
 /**
@@ -153,6 +154,34 @@ it('keeps the completed checkpoints on the map once the player has moved on', fu
 
     expect($component->get('checkpoints.0.latitude'))->not->toBeNull()
         ->and($component->get('checkpoints.1.latitude'))->not->toBeNull();
+});
+
+function playSessionPayload(): array
+{
+    return ['data' => [
+        'id' => 1, 'session_code' => 'XYZ789', 'status' => 'active', 'play_mode' => 'competitive_individual',
+        'quest' => ['id' => 1, 'title' => 'Hunt', 'checkpoint_arrival_radius_meters' => 50],
+        'participants' => [['id' => 55, 'user_id' => 1, 'display_name' => 'Kasper Test']],
+        'checkpoints' => [['id' => 1, 'title' => 'Nyhavn', 'latitude' => '55.6798', 'longitude' => '12.5907']],
+    ]];
+}
+
+it('asks the server for the checkpoints as the known participant', function () {
+    session()->put('questify_participant_id', 55);
+    $sessions = Mockery::mock(SessionApiResource::class);
+    $sessions->shouldReceive('show')->once()->with('XYZ789', 55)->andReturn(playSessionPayload());
+    swapSessions($sessions);
+
+    activeQuest()->assertSet('participantId', 55);
+});
+
+it('asks again as the participant once a signed-in player has been recognised', function () {
+    $sessions = Mockery::mock(SessionApiResource::class);
+    $sessions->shouldReceive('show')->once()->with('XYZ789', 0)->andReturn(playSessionPayload());
+    $sessions->shouldReceive('show')->once()->with('XYZ789', 55)->andReturn(playSessionPayload());
+    swapSessions($sessions);
+
+    activeQuest()->assertSet('participantId', 55);
 });
 
 it('shows no leaderboard on the play screen', function () {
