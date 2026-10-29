@@ -81,7 +81,8 @@ it('keeps the profile header fixed and scrolls only the content area', function 
         ->assertOk()
         ->assertSee('h-dvh overflow-hidden', false)
         ->assertDontSee('min-h-screen pb-[calc(env(safe-area-inset-bottom,0px)+96px)]', false)
-        ->assertSee('overflow-y-auto overscroll-y-contain bg-cream', false);
+        ->assertSee('overflow-y-auto overscroll-y-contain bg-cream', false)
+        ->assertSee('h-[18px] bg-forest-600', false);
 });
 
 it('renders my played quests page', function () {

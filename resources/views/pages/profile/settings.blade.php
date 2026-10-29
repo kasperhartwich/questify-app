@@ -251,7 +251,7 @@ class extends Component
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}
-        <div class="relative shrink-0 overflow-hidden bg-forest-600 px-[16px] pb-[34px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
+        <div class="relative shrink-0 overflow-hidden bg-forest-600 px-[16px] pb-[16px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
             {{-- Decorative amber circle --}}
             <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[120px] w-[120px] rounded-full border-[22px]" style="border-color: rgba(245,166,35,0.1);"></div>
 
@@ -283,7 +283,9 @@ class extends Component
 
         {{-- Content area with cream background --}}
         <div class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain bg-cream pb-[calc(env(safe-area-inset-bottom,0px)+96px)]">
-        {{-- Stats Row (overlapping header) --}}
+        {{-- Stats Row (overlapping header): the green strip lives inside the
+             scroller so the overlap is not clipped at its top edge. --}}
+        <div class="h-[18px] bg-forest-600"></div>
         <div class="-mt-[18px] relative z-10">
             <x-stat-row :stats="[
                 ['value' => $stats['quests_played'] ?? 0, 'label' => __('general.played')],
