@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    AutoZoom, FALLBACK_ZOOM, MAX_ZOOM, PAUSE_MS, haversineMeters, tableZoom, zoomForDistance,
+    AutoZoom, FALLBACK_ZOOM, NEAR_METERS, MAX_ZOOM, PAUSE_MS, haversineMeters, tableZoom, zoomForDistance,
 } from '../../resources/js/map-zoom.js';
 
 const VIEWPORT = 1000;
@@ -91,4 +91,21 @@ test('a manual pan pauses auto-zoom for 15 s, recenter resumes at once', () => {
 
 test('without a fix the map stays at the fallback zoom', () => {
     assert.equal(new AutoZoom().zoom, FALLBACK_ZOOM);
+});
+
+test('the player stays on screen while walking in and back out (map 256 px, zoomSnap 0)', () => {
+    const lat = 55.68;
+    const metersPerPixel = (zoom) => 156543.03392 * Math.cos(lat * Math.PI / 180) / 2 ** zoom;
+    const az = new AutoZoom(16);
+    let now = 0;
+    const walk = [];
+    for (let d = 100; d >= 0; d -= 2) walk.push(d);
+    for (let d = 0; d <= 65; d += 2) walk.push(d);
+
+    for (const d of walk) {
+        now += 4000;
+        az.update({ distance: d, accuracy: 5, viewportPx: 256, radius: 50, lat, now });
+        const fromCentre = d <= NEAR_METERS ? d : d / 2;
+        assert.ok(fromCentre / metersPerPixel(az.zoom) <= 128, `${d} m at zoom ${az.zoom}`);
+    }
 });

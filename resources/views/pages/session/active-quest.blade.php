@@ -238,6 +238,7 @@ class extends Component
             paused: false,
             pauseTimer: null,
             programmatic: false,
+            radiusCircle: null,
             init() {
                 if (typeof L === 'undefined') return;
                 try {
@@ -250,6 +251,7 @@ class extends Component
                         zoom: MapZoom.FALLBACK_ZOOM,
                         attributionControl: false,
                         zoomControl: false,
+                        zoomSnap: 0,
                     });
                     this.checkpointLatLng = [parseFloat(current.latitude), parseFloat(current.longitude)];
                     this.arrivalRadius = current.arrival_radius_override ?? this.arrivalRadius;
@@ -323,6 +325,18 @@ class extends Component
                 const center = distance <= MapZoom.NEAR_METERS
                     ? [cpLat, cpLng]
                     : [(lat + cpLat) / 2, (lng + cpLng) / 2];
+                // Inside 30 m, show where the arrival radius ends.
+                if (distance <= MapZoom.NEAR_METERS && !this.radiusCircle) {
+                    this.radiusCircle = L.circle(this.checkpointLatLng, {
+                        radius: this.arrivalRadius,
+                        color: '#0B3D2E',
+                        weight: 2,
+                        fillOpacity: 0.1,
+                    }).addTo(this.map);
+                } else if (distance > MapZoom.NEAR_RELEASE_METERS && this.radiusCircle) {
+                    this.radiusCircle.remove();
+                    this.radiusCircle = null;
+                }
                 this.programmatic = true;
                 setTimeout(() => { this.programmatic = false; }, 1500);
                 if (zoom !== null) {

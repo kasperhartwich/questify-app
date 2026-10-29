@@ -69,13 +69,33 @@ export function tableZoom(distance) {
 }
 
 /**
+ * The highest zoom at which the player (and the accuracy circle, when it is
+ * larger than the distance) is still on screen with padding. Close in the map
+ * is centred on the checkpoint, so the player is `distance` from the centre and
+ * needs twice the span; further out it is centred on the midpoint.
+ */
+export function maxZoomThatFits(distance, accuracy, viewportPx, lat = 0) {
+    const room = Math.max(viewportPx - 2 * PADDING_PX, 1);
+    const span = distance <= NEAR_METERS ? 2 * distance : distance;
+
+    let zoom = zoomToFit(span, room, lat);
+
+    if (accuracy && accuracy > distance) {
+        zoom = Math.min(zoom, zoomToFit(accuracy * 2, room, lat));
+    }
+
+    return zoom;
+}
+
+/**
  * Target zoom for a player `distance` metres from the checkpoint.
  *
  * Inside the arrival radius + 5 m, or within 30 m, it is the maximum. Otherwise
- * it is the table zoom, lowered so that the checkpoint stays on screen with
- * padding, and (when the GPS accuracy circle is larger than the distance) so
- * that the accuracy circle still fits: an uncertain 25 m fix must not look like
- * a precise 5 m one.
+ * it is the table zoom. Either way it is lowered so that the checkpoint stays on
+ * screen with padding, and (when the GPS accuracy circle is larger than the
+ * distance) so that the accuracy circle still fits: an uncertain 25 m fix must
+ * not look like a precise 5 m one. The map runs with zoomSnap 0, so the value is
+ * shown as is.
  *
  * @param {number} distance metres to the checkpoint
  * @param {number|null} accuracy GPS accuracy in metres, if known
@@ -84,18 +104,10 @@ export function tableZoom(distance) {
  * @param {number} lat latitude, for the metres-per-pixel scale
  */
 export function zoomForDistance(distance, accuracy, viewportPx, radius = 10, lat = 0) {
-    const room = Math.max(viewportPx - 2 * PADDING_PX, 1);
-
-    let zoom = (distance <= NEAR_METERS || distance <= radius + 5)
+    const wanted = (distance <= NEAR_METERS || distance <= radius + 5)
         ? MAX_ZOOM
         : tableZoom(distance);
-
-    // Player and checkpoint both stay in view.
-    zoom = Math.min(zoom, zoomToFit(distance, room, lat));
-
-    if (accuracy && accuracy > distance) {
-        zoom = Math.min(zoom, zoomToFit(accuracy * 2, room, lat));
-    }
+    const zoom = Math.min(wanted, maxZoomThatFits(distance, accuracy, viewportPx, lat));
 
     return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
 }
@@ -144,8 +156,12 @@ export class AutoZoom {
 
         let target = zoomForDistance(distance, accuracy, viewportPx, radius, lat);
 
+        // The lock only stops zooming out; it never zooms past what still fits.
         if (this.nearLocked) {
-            target = Math.max(target, this.zoom);
+            target = Math.min(
+                Math.max(target, this.zoom),
+                Math.max(MIN_ZOOM, maxZoomThatFits(distance, accuracy, viewportPx, lat)),
+            );
         }
 
         if (Math.abs(target - this.zoom) < HYSTERESIS_LEVELS) {
