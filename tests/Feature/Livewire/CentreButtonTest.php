@@ -128,3 +128,18 @@ it('forgets the cached session list when the player joins or answers', function 
 
     expect($fresh['data'])->toHaveCount(1);
 })->with(['join', 'answer']);
+
+it('draws a round logo inside a round button in both modes', function () {
+    playerSessions([]);
+
+    Livewire::test('centre-button')
+        ->assertSeeHtml('rounded-full bg-forest-600')
+        ->assertSeeHtml('rounded-full bg-amber-400')
+        ->assertDontSeeHtml('rounded-[10px]');
+
+    playerSessions([participation('active')]);
+
+    Livewire::test('centre-button')
+        ->assertSeeHtml('rounded-full bg-amber-400')
+        ->assertDontSeeHtml('rounded-[8px]');
+});
