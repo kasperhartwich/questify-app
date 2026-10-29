@@ -85,7 +85,7 @@ new class extends Component
             <svg class="shrink-0 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,6 15,12 9,18"/></svg>
         </div>
     @else
-        <div class="flex h-[48px] w-full min-w-0 items-center gap-2.5 rounded-full bg-forest-600 px-[5px] shadow-[0_3px_12px_rgba(11,61,46,0.35)]">
+        <div class="flex h-[48px] w-full min-w-0 items-center gap-2.5 rounded-full bg-forest-600 px-[6px] shadow-[0_3px_12px_rgba(11,61,46,0.35)]">
             <div class="relative flex h-[36px] w-[36px] shrink-0 items-center justify-center">
                 <svg class="absolute inset-0 text-amber-400" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
                     <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.25" stroke-width="3"/>
