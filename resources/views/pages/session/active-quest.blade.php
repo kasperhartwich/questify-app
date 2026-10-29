@@ -227,7 +227,7 @@ class extends Component
 
     {{-- Map View --}}
     <div
-        class="relative h-64 w-full bg-gray-200 dark:bg-gray-700"
+        class="relative h-64 w-full bg-gray-200"
         x-data="{
             map: null,
             userMarker: null,
@@ -315,15 +315,15 @@ class extends Component
     <div class="flex-1 space-y-3 p-4">
         {{-- Current Checkpoint Info --}}
         @if ($this->currentCheckpoint)
-            <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+            <div class="rounded-[14px] border-[1.5px] border-cream-border bg-white p-4">
                 <div class="mb-2 flex items-center justify-between">
-                    <span class="text-xs font-medium uppercase tracking-wider text-forest-600 dark:text-forest-400">
+                    <span class="text-xs font-medium uppercase tracking-wider text-forest-600">
                         {{ __('quests.checkpoint') }} {{ $currentCheckpointIndex + 1 }}/{{ count($checkpoints) }}
                     </span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $this->currentCheckpoint->title }}</h2>
+                <h2 class="font-heading text-[18px] font-extrabold text-bark">{{ $this->currentCheckpoint->title }}</h2>
                 @if ($this->currentCheckpoint->description)
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $this->currentCheckpoint->description }}</p>
+                    <p class="mt-1 text-sm text-muted">{{ $this->currentCheckpoint->description }}</p>
                 @endif
 
                 @if ($withinRadius)
@@ -331,8 +331,8 @@ class extends Component
                         {{ __('sessions.answer_questions') }}
                     </button>
                 @else
-                    <div class="mt-3 w-full rounded-xl bg-gray-100 px-4 py-3 text-center dark:bg-gray-700">
-                        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                    <div class="mt-3 w-full rounded-xl bg-cream-dark px-4 py-3 text-center">
+                        <p class="text-sm font-semibold text-muted">
                             @if ($distanceMeters !== null)
                                 {{ $distanceMeters }} m {{ __('sessions.away') }} — {{ __('sessions.get_closer_to_answer') }}
                             @else

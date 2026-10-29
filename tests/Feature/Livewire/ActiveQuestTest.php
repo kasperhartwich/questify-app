@@ -202,3 +202,12 @@ it('keeps the hint hidden until the player asks for it', function () {
         ->call('showHint')
         ->assertSet('showHint', true);
 });
+
+// --- Design ---
+
+it('styles the checkpoint card like the quest detail cards, never dark', function () {
+    activeQuest()
+        ->assertSeeHtml('border-cream-border bg-white')
+        ->assertDontSeeHtml('dark:bg-gray-800')
+        ->assertDontSeeHtml('dark:bg-gray-700');
+});
