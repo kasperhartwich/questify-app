@@ -129,21 +129,36 @@ it('applies a native fix that does carry coordinates', function () {
         ->assertSet('withinRadius', true);
 });
 
-// --- Leaderboard ---
+// --- Play screen reveals nothing ahead (QU-23) ---
 
-it('ranks the leaderboard and marks the player as themselves', function () {
+it('keeps the current checkpoint on the map', function () {
     $component = activeQuest();
 
-    expect($component->get('leaderboard'))->toBe([[
-        'rank' => 1,
-        'display_name' => 'Kasper Test',
-        'score' => 100,
-        'is_me' => true,
-    ]]);
+    expect($component->get('checkpoints.0.latitude'))->not->toBeNull()
+        ->and($component->get('checkpoints.0.longitude'))->not->toBeNull();
 });
 
-it('reloads the leaderboard when the server broadcasts a change', function () {
-    activeQuest()->call('onLeaderboardUpdated')->assertSet('leaderboard.0.rank', 1);
+it('hides where the later checkpoints are', function () {
+    $component = activeQuest();
+
+    expect($component->get('checkpoints.1.latitude'))->toBeNull()
+        ->and($component->get('checkpoints.1.longitude'))->toBeNull()
+        ->and(json_encode($component->get('checkpoints')))->not->toContain('55.6841');
+});
+
+it('keeps the completed checkpoints on the map once the player has moved on', function () {
+    session()->put('questify_checkpoint_index.XYZ789', 1);
+
+    $component = activeQuest();
+
+    expect($component->get('checkpoints.0.latitude'))->not->toBeNull()
+        ->and($component->get('checkpoints.1.latitude'))->not->toBeNull();
+});
+
+it('shows no leaderboard on the play screen', function () {
+    activeQuest()
+        ->assertDontSee(__('sessions.leaderboard'))
+        ->assertDontSee('Kasper Test');
 });
 
 it('sends the player to the results when the host ends the session', function () {

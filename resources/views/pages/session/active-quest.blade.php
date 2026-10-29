@@ -29,8 +29,6 @@ class extends Component
 
     public array $checkpoints = [];
 
-    public array $leaderboard = [];
-
     public bool $showHint = false;
 
     public bool $isNative = false;
@@ -98,7 +96,15 @@ class extends Component
             (int) session('questify_checkpoint_index.' . $this->code, 0),
             max(count($this->checkpoints) - 1, 0),
         );
-        $this->loadLeaderboard();
+
+        // Livewire ships public properties to the browser, so a later stop's position is blanked
+        // out of the data itself, not just left off the map: the player must not see where it is.
+        foreach ($this->checkpoints as $i => $checkpoint) {
+            if ($i > $this->currentCheckpointIndex) {
+                $this->checkpoints[$i]['latitude'] = null;
+                $this->checkpoints[$i]['longitude'] = null;
+            }
+        }
     }
 
     protected function wantsFineLocation(): bool
@@ -180,29 +186,6 @@ class extends Component
         }
 
         $this->redirect('/session/' . $this->code . '/question/' . $checkpoint['id']);
-    }
-
-    public function loadLeaderboard(): void
-    {
-        $response = $this->tryApiCall(fn () => $this->api->gameplay()->leaderboard($this->code));
-
-        // The leaderboard endpoint returns a flat, score-ranked participant list for every play
-        // mode, so "me" is always matched by participant id.
-        $this->leaderboard = collect($response['data'] ?? [])
-            ->take(5)
-            ->map(fn ($p, $i) => [
-                'rank' => $i + 1,
-                'display_name' => $p['display_name'],
-                'score' => $p['total_score'],
-                'is_me' => $p['id'] === $this->participantId,
-            ])
-            ->toArray();
-    }
-
-    #[On('echo:session.{code},LeaderboardUpdated')]
-    public function onLeaderboardUpdated(): void
-    {
-        $this->loadLeaderboard();
     }
 
     public function getCurrentCheckpointProperty(): ?object
@@ -351,24 +334,5 @@ class extends Component
                 @endif
             </div>
         @endif
-
-        {{-- Leaderboard Strip --}}
-        <div class="rounded-xl bg-white p-3 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-            <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('sessions.leaderboard') }}</h3>
-            <div class="space-y-1">
-                @foreach ($leaderboard as $entry)
-                    <div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm {{ $entry['is_me'] ? 'bg-forest-50 font-semibold dark:bg-forest-900/20' : '' }}">
-                        <span class="flex items-center gap-2">
-                            <span class="w-5 text-center text-xs font-bold {{ $entry['rank'] <= 3 ? 'text-amber-500' : 'text-gray-400' }}">{{ $entry['rank'] }}</span>
-                            <span class="text-gray-900 dark:text-white">{{ $entry['display_name'] }}</span>
-                            @if ($entry['is_me'])
-                                <span class="text-xs text-forest-600 dark:text-forest-400">({{ __('sessions.you') }})</span>
-                            @endif
-                        </span>
-                        <span class="font-mono text-xs text-gray-600 dark:text-gray-400">{{ number_format($entry['score']) }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
     </div>
 </div>
