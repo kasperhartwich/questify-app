@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* The app is cream-only: dark: utilities only apply under a .dark ancestor, which is never set. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

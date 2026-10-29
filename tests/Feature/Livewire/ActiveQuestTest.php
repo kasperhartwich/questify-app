@@ -211,3 +211,8 @@ it('styles the checkpoint card like the quest detail cards, never dark', functio
         ->assertDontSeeHtml('dark:bg-gray-800')
         ->assertDontSeeHtml('dark:bg-gray-700');
 });
+
+it('keeps the app cream-only by tying dark utilities to a class nothing sets', function () {
+    expect(file_get_contents(resource_path('css/app.css')))
+        ->toContain('@custom-variant dark (&:where(.dark, .dark *));');
+});
