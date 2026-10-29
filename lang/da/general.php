@@ -46,7 +46,7 @@ return [
     'or' => 'eller',
     'join_quest' => 'Deltag i Quest',
     'centre_join' => 'Deltag i quest',
-    'centre_continue' => 'Fortsæt',
+    'centre_continue' => 'Quest',
     'enter_code' => 'Indtast quest-kode',
     'scan_qr' => 'Scan QR-kode',
     'dont_have_account' => 'Har du ikke en konto?',

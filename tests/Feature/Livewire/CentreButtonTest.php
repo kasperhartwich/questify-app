@@ -57,16 +57,16 @@ it('offers to join a quest when the only sessions are finished or over', functio
     Livewire::test('centre-button')->assertSet('mode', 'join');
 });
 
-it('continues the quest in play, with its title and progress', function () {
+it('continues the quest in play, with its progress and just the word Quest', function () {
     playerSessions([participation('completed'), participation('active')]);
 
     Livewire::test('centre-button')
         ->assertSet('mode', 'continue')
         ->assertSet('href', route('session.play', 'ABC123', false))
-        ->assertSet('title', 'Copenhagen History Hunt')
         ->assertSet('progress', 0.25)
-        ->assertSee('Continue')
-        ->assertSee('Copenhagen History Hunt')
+        ->assertSee('Quest')
+        ->assertDontSee('Continue')
+        ->assertDontSee('Copenhagen History Hunt')
         ->assertDontSee('Join quest');
 });
 
@@ -96,7 +96,7 @@ it('shows a plain ring when the quest size is unknown', function () {
         ->assertSet('progress', null);
 });
 
-it('says Join quest and Continue in Danish', function () {
+it('says Join quest and Quest in Danish', function () {
     app()->setLocale('da');
     playerSessions([]);
 
@@ -104,7 +104,7 @@ it('says Join quest and Continue in Danish', function () {
 
     playerSessions([participation('active')]);
 
-    Livewire::test('centre-button')->assertSee('Fortsæt');
+    Livewire::test('centre-button')->assertSee('Quest')->assertDontSee('Fortsæt');
 });
 
 it('stays on join when the player is signed out', function () {

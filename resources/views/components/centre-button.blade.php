@@ -11,8 +11,6 @@ new class extends Component
 
     public string $mode = 'join';
 
-    public string $title = '';
-
     public string $href = '/join';
 
     public ?float $progress = null;
@@ -55,7 +53,6 @@ new class extends Component
             $total = (int) ($quest['checkpoints_count'] ?? $quest['checkpoint_count'] ?? 0);
 
             $this->mode = 'continue';
-            $this->title = (string) ($quest['title'] ?? '');
             $this->href = $status === 'active' ? route('session.play', $code, false) : route('session.lobby', $code, false);
             $this->progress = $total > 0
                 ? min(1, max(0, (int) ($participation['current_checkpoint_index'] ?? 0) / $total))
@@ -82,12 +79,9 @@ new class extends Component
                         <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="3" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ round($progress * 100) }} 100"/>
                     @endif
                 </svg>
-                <span class="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-amber-400 font-heading text-[15px] font-[800] text-forest-600">Q</span>
+                <span class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-amber-400 font-heading text-[13px] font-[800] text-forest-600">Q</span>
             </div>
-            <div class="min-w-0 flex-1 leading-tight">
-                <p class="text-[10px] font-medium text-muted">{{ __('general.centre_continue') }}</p>
-                <p class="truncate text-[13px] font-bold text-bark">{{ $title }}</p>
-            </div>
+            <span class="min-w-0 flex-1 truncate text-[14px] font-bold text-bark">{{ __('general.centre_continue') }}</span>
             <svg class="shrink-0 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,6 15,12 9,18"/></svg>
         </div>
     @else
@@ -96,7 +90,7 @@ new class extends Component
                 <svg class="absolute inset-0 text-amber-400" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
                     <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.25" stroke-width="3"/>
                 </svg>
-                <span class="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-amber-400 font-heading text-[15px] font-[800] text-forest-600">Q</span>
+                <span class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-amber-400 font-heading text-[13px] font-[800] text-forest-600">Q</span>
             </div>
             <span class="min-w-0 flex-1 truncate text-[14px] font-bold text-white">{{ __('general.centre_join') }}</span>
             <svg class="shrink-0 text-white" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,6 15,12 9,18"/></svg>

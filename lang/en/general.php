@@ -46,7 +46,7 @@ return [
     'or' => 'or',
     'join_quest' => 'Join Quest',
     'centre_join' => 'Join quest',
-    'centre_continue' => 'Continue',
+    'centre_continue' => 'Quest',
     'enter_code' => 'Enter quest code',
     'scan_qr' => 'Scan QR Code',
     'dont_have_account' => "Don't have an account?",
