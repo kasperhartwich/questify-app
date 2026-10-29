@@ -25,12 +25,16 @@ class GameplayApiResource
 
     public function answer(string $code, int $participantId, int $questionId, ?int $answerId = null, ?string $answerText = null): array
     {
-        return $this->client->post("/sessions/{$code}/answer", array_filter([
+        $result = $this->client->post("/sessions/{$code}/answer", array_filter([
             'participant_id' => $participantId,
             'question_id' => $questionId,
             'answer_id' => $answerId,
             'answer_text' => $answerText,
         ], fn ($value) => $value !== null));
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function leaderboard(string $code): array

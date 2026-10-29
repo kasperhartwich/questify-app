@@ -29,10 +29,14 @@ class SessionApiResource
 
     public function join(string $code, string $displayName, ?int $userId = null): array
     {
-        return $this->client->post("/sessions/{$code}/join", array_filter([
+        $result = $this->client->post("/sessions/{$code}/join", array_filter([
             'display_name' => $displayName,
             'user_id' => $userId,
         ]));
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
     }
 
     public function start(string $code): array

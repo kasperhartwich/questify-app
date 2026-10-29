@@ -1,5 +1,9 @@
 <?php
 
+use App\Services\Api\ApiCache;
+use App\Services\Api\QuestifyApiClient;
+use App\Services\Api\Resources\GameplayApiResource;
+use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
 use App\Services\TokenStorage;
 use Livewire\Livewire;
@@ -108,3 +112,19 @@ it('stays on join when the player is signed out', function () {
 
     Livewire::test('centre-button')->assertSet('mode', 'join');
 });
+
+it('forgets the cached session list when the player joins or answers', function (string $action) {
+    $client = Mockery::mock(QuestifyApiClient::class);
+    $client->shouldReceive('post')->andReturn(['data' => []]);
+
+    ApiCache::remember('user:sessions', fn () => ['data' => []]);
+
+    match ($action) {
+        'join' => (new SessionApiResource($client))->join('ABC123', 'Kasper'),
+        'answer' => (new GameplayApiResource($client))->answer('ABC123', 1, 2, 3),
+    };
+
+    $fresh = ApiCache::remember('user:sessions', fn () => ['data' => [participation('active')]]);
+
+    expect($fresh['data'])->toHaveCount(1);
+})->with(['join', 'answer']);
