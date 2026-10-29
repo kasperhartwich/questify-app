@@ -80,62 +80,29 @@ Add `--upload-to-app-store` to the package command, plus API key credentials:
 
 ## iOS Simulator Testing
 
-You CAN and SHOULD run `php artisan native:run ios` yourself. After completing a UI task, always rebuild and verify it in the simulator before reporting it as done.
+You CAN and SHOULD run `php artisan native:run ios` yourself. After completing a UI task, rebuild and verify it in the simulator before reporting it as done.
 
-Use `xcrun simctl` to take screenshots and `cliclick` to tap UI elements. Ghost OS cannot interact with the Simulator's internal webview.
+Simulators are shared on this machine, so borrow one and give it back:
+
+```bash
+~/claudecraft/bin/claim take simulator <your-session>
+~/claudecraft/bin/claim take native-build <your-session>   # also needed for a build
+```
+
+Release both claims when done and never leave a simulator booted. Herd's bin dir (`~/Library/Application Support/Herd/bin`) must be on `PATH` in crafter shells.
 
 ### Device
 
-- **iPhone 17 Pro UDID**: `D82C54BB-96D7-4277-A154-D22AA8ABFED2`
+- **std-iphone17pro**: `66A39655-150D-4A89-9AB4-FB05727485A5` (`std-iphone-large` and `std-iphone-small` also exist)
 
 ### Commands
 
 ```bash
-# Boot simulator and open window
-xcrun simctl boot D82C54BB-96D7-4277-A154-D22AA8ABFED2
-open -a Simulator
-
-# Run app on simulator (skips device selection prompt)
-php artisan native:run ios D82C54BB-96D7-4277-A154-D22AA8ABFED2 --no-tty
-
-# Take screenshot (read with Read tool to view)
-xcrun simctl io D82C54BB-96D7-4277-A154-D22AA8ABFED2 screenshot /tmp/sim.png
-
-# Uninstall app (clears cached views/sessions)
-xcrun simctl uninstall D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
-
-# Terminate app
-xcrun simctl terminate D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
-
-# Launch app (without rebuilding)
-xcrun simctl launch D82C54BB-96D7-4277-A154-D22AA8ABFED2 com.focusweb.questify
+php artisan native:run ios 66A39655-150D-4A89-9AB4-FB05727485A5 --no-tty
+xcrun simctl io 66A39655-150D-4A89-9AB4-FB05727485A5 screenshot /tmp/sim.png   # view with Read
+xcrun simctl terminate 66A39655-150D-4A89-9AB4-FB05727485A5 com.focusweb.questify
+xcrun simctl launch 66A39655-150D-4A89-9AB4-FB05727485A5 com.focusweb.questify
 ```
-
-### Clicking UI Elements
-
-The Simulator window's content area starts at macOS coordinates that can be found via AppleScript:
-
-```bash
-osascript -e '
-tell application "System Events"
-    tell process "Simulator"
-        set p to position of window 1
-        set s to size of window 1
-        -- Find the content group (the actual phone screen render area)
-        set elems to entire contents of window 1
-    end tell
-end tell
-'
-```
-
-The content group position and size (e.g. `pos:1347,126 size:402,874`) maps to the simulator screenshot (1206x2622 at 3x retina). To convert screenshot pixel coordinates to macOS click coordinates:
-
-```
-mac_x = content_x + (screenshot_x / 3)
-mac_y = content_y + (screenshot_y / 3)
-```
-
-Then click with: `cliclick c:{mac_x},{mac_y}`
 
 ### Public Pages (no auth required)
 
