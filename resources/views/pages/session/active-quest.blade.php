@@ -90,6 +90,9 @@ class extends Component
             ])
             ->toArray();
 
+        // The raw response is public state too: drop its copy of every stop's position.
+        unset($this->session['checkpoints']);
+
         // Progress is kept per session: one shared index carried a finished
         // quest's position into the next one, pointing past its last stop.
         $this->currentCheckpointIndex = min(

@@ -143,7 +143,7 @@ it('hides where the later checkpoints are', function () {
 
     expect($component->get('checkpoints.1.latitude'))->toBeNull()
         ->and($component->get('checkpoints.1.longitude'))->toBeNull()
-        ->and(json_encode($component->get('checkpoints')))->not->toContain('55.6841');
+        ->and($component->html())->not->toContain('55.6841');
 });
 
 it('keeps the completed checkpoints on the map once the player has moved on', function () {
