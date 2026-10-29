@@ -80,7 +80,7 @@ class extends Component
     #[On('echo:session.{code},SessionEnded')]
     public function onSessionEnded(): void
     {
-        $this->handleEndedSession();
+        $this->redirect('/session/' . $this->code . '/complete');
     }
 
     protected function endsWithSession(): bool

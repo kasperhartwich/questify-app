@@ -23,7 +23,7 @@ trait HandlesApiErrors
 
             return $this->redirect(route('login'));
         } catch (ApiValidationException $e) {
-            if ($e->errors === [] && $this->endsWithSession()) {
+            if ($e->errors === [] && $this->endsWithSession() && $this->sessionIsOver()) {
                 return $this->handleEndedSession();
             }
 
@@ -44,7 +44,7 @@ trait HandlesApiErrors
 
             return null;
         } catch (ApiNotFoundException) {
-            if ($this->endsWithSession()) {
+            if ($this->endsWithSession() && $this->sessionIsOver()) {
                 return $this->handleEndedSession();
             }
 
@@ -64,6 +64,23 @@ trait HandlesApiErrors
     protected function endsWithSession(): bool
     {
         return false;
+    }
+
+    /**
+     * A 422 without field errors or a 404 has other causes too (a player too far
+     * from the checkpoint, a missing checkpoint), so ask the session itself.
+     */
+    private function sessionIsOver(): bool
+    {
+        try {
+            $status = data_get($this->api->sessions()->show($this->code), 'data.status');
+        } catch (ApiNotFoundException) {
+            return true;
+        } catch (ApiException) {
+            return false;
+        }
+
+        return ! in_array($status, ['waiting', 'active'], true);
     }
 
     /**
