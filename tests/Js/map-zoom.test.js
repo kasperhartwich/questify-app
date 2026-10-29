@@ -106,6 +106,6 @@ test('the player stays on screen while walking in and back out (map 256 px, zoom
         now += 4000;
         az.update({ distance: d, accuracy: 5, viewportPx: 256, radius: 50, lat, now });
         const fromCentre = d <= NEAR_METERS ? d : d / 2;
-        assert.ok(fromCentre / metersPerPixel(az.zoom) <= 128, `${d} m at zoom ${az.zoom}`);
+        assert.ok(fromCentre / metersPerPixel(az.zoom) <= 120, `${d} m at zoom ${az.zoom}`);
     }
 });
