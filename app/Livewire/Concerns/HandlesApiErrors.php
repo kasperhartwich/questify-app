@@ -8,6 +8,7 @@ use App\Exceptions\Api\ApiNotFoundException;
 use App\Exceptions\Api\ApiValidationException;
 use App\Services\TokenStorage;
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Sentry\Severity;
 use Sentry\State\Scope;
@@ -91,7 +92,8 @@ trait HandlesApiErrors
     {
         session()->forget('questify_participant_id');
         session()->flash('session_ended', __('sessions.ended_under_you'));
-        $this->redirect('/');
+        // The welcome screen would bounce a signed-in player on and use up the flash.
+        $this->redirect(Auth::check() ? '/discover/list' : '/');
 
         return null;
     }

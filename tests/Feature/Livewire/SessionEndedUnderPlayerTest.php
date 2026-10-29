@@ -52,7 +52,7 @@ it('sends the lobby home with a plain message when the session ends', function (
     Livewire::actingAs(User::factory()->create())
         ->test('pages::session.lobby', ['code' => 'ABC123'])
         ->call('onSessionEnded')
-        ->assertRedirect('/');
+        ->assertRedirect('/discover/list');
 
     expect(session('session_ended'))->toBe(__('sessions.ended_under_you'))
         ->and(session()->has('questify_participant_id'))->toBeFalse();
@@ -79,7 +79,7 @@ it('maps a not-active answer to the message and home once the session is confirm
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::session.question-screen', ['code' => 'XYZ789', 'checkpoint' => 1])
-        ->assertRedirect('/');
+        ->assertRedirect('/discover/list');
 
     expect(session('session_ended'))->toBe(__('sessions.ended_under_you'));
 });
@@ -106,7 +106,7 @@ it('maps a missing session to the message instead of a Not Found page', function
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::session.lobby', ['code' => 'ABC123'])
-        ->assertRedirect('/');
+        ->assertRedirect('/discover/list');
 
     expect(session('session_ended'))->not->toBeNull();
 });
@@ -131,7 +131,7 @@ it('maps not-active when the host ends from a session that is over', function ()
     Livewire::actingAs(User::factory()->create())
         ->test('pages::session.host-dashboard', ['code' => 'ABC123'])
         ->call('endSession')
-        ->assertRedirect('/');
+        ->assertRedirect('/discover/list');
 });
 
 it('keeps a validation error with fields on a session screen', function () {
@@ -164,4 +164,23 @@ it('has the message in both languages', function () {
         expect(__('sessions.ended_under_you', [], $locale))->not->toBe('sessions.ended_under_you')
             ->and(__('sessions.ended_title', [], $locale))->not->toBe('sessions.ended_title');
     }
+});
+
+it('sends a guest to the welcome screen with the message', function () {
+    Livewire::test('pages::session.lobby', ['code' => 'ABC123'])
+        ->call('onSessionEnded')
+        ->assertRedirect('/');
+
+    expect(session('session_ended'))->toBe(__('sessions.ended_under_you'));
+});
+
+it('shows a signed-in player the message on the screen they land on', function () {
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::session.lobby', ['code' => 'ABC123'])
+        ->call('onSessionEnded')
+        ->assertRedirect('/discover/list');
+
+    $this->get('/discover/list')
+        ->assertOk()
+        ->assertSee(__('sessions.ended_under_you'));
 });

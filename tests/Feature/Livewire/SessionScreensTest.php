@@ -123,7 +123,7 @@ it('keeps a player in the lobby when leaving fails', function () {
 });
 
 it('sends the lobby home when the host ends the session', function () {
-    lobby()->call('onSessionEnded')->assertRedirect('/');
+    lobby()->call('onSessionEnded')->assertRedirect('/discover/list');
 });
 
 it('moves everyone into play when the host starts', function () {
