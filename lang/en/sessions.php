@@ -106,6 +106,7 @@ return [
     'no_account_just_session' => 'No account needed · Just for this session',
     'enter_the_quest' => 'Enter the Quest',
     'gps_weak' => 'GPS signal weak — move to an open area for better accuracy',
+    'recenter_map' => 'Recenter',
     'reconnecting' => 'Reconnecting...',
     'teams' => 'Teams',
     'what_team_name' => 'What is your team name?',

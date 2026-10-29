@@ -216,3 +216,18 @@ it('keeps the app cream-only by tying dark utilities to a class nothing sets', f
     expect(file_get_contents(resource_path('css/app.css')))
         ->toContain('@custom-variant dark (&:where(.dark, .dark *));');
 });
+
+// --- Map auto-zoom (QU-37) ---
+
+it('renders the map auto-zoom hooks and the recenter button', function () {
+    activeQuest()
+        ->assertSee('MapZoom.AutoZoom', false)
+        ->assertSee('followPlayer', false)
+        ->assertSee(__('sessions.recenter_map'));
+});
+
+it('forwards the GPS accuracy with each player move', function () {
+    activeQuest()
+        ->call('updatePlayerPosition', 55.7000, 12.6000, 12.5)
+        ->assertDispatched('player-moved', latitude: 55.7, longitude: 12.6, accuracy: 12.5);
+});

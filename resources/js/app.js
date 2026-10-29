@@ -3,8 +3,10 @@ import './bootstrap';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import QRCode from 'qrcode';
+import * as MapZoom from './map-zoom.js';
 
 window.L = L;
+window.MapZoom = MapZoom;
 window.QRCode = QRCode;
 
 // A failed Livewire roundtrip rejects an internal promise with a bare response

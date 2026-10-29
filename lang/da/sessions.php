@@ -106,6 +106,7 @@ return [
     'no_account_just_session' => 'Ingen konto nødvendig · Kun for denne session',
     'enter_the_quest' => 'Gå ind i questen',
     'gps_weak' => 'Svagt GPS-signal — flyt til et åbent område for bedre nøjagtighed',
+    'recenter_map' => 'Centrér',
     'reconnecting' => 'Genopretter forbindelse...',
     'teams' => 'Hold',
     'what_team_name' => 'Hvad hedder jeres hold?',

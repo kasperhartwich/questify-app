@@ -232,6 +232,12 @@ class extends Component
             map: null,
             userMarker: null,
             locationInterval: null,
+            autoZoom: null,
+            checkpointLatLng: null,
+            arrivalRadius: @js($arrivalRadius),
+            paused: false,
+            pauseTimer: null,
+            programmatic: false,
             init() {
                 if (typeof L === 'undefined') return;
                 try {
@@ -241,10 +247,17 @@ class extends Component
 
                     this.map = L.map(this.$refs.activeMap, {
                         center: [parseFloat(current.latitude), parseFloat(current.longitude)],
-                        zoom: 15,
+                        zoom: MapZoom.FALLBACK_ZOOM,
                         attributionControl: false,
                         zoomControl: false,
                     });
+                    this.checkpointLatLng = [parseFloat(current.latitude), parseFloat(current.longitude)];
+                    this.arrivalRadius = current.arrival_radius_override ?? this.arrivalRadius;
+                    this.autoZoom = new MapZoom.AutoZoom(MapZoom.FALLBACK_ZOOM);
+                    // A drag or pinch by the player pauses auto-zoom; our own flyTo/panTo must not.
+                    this.map.on('dragstart', () => this.pauseAutoZoom());
+                    this.map.on('zoomstart', () => { if (!this.programmatic) this.pauseAutoZoom(); });
+                    this.map.on('moveend', () => { this.programmatic = false; });
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
 
                     // Re-measure once painted: Leaflet caches the container size
@@ -285,9 +298,57 @@ class extends Component
                     $wire.on('player-moved', (params) => {
                         const lat = params[0]?.latitude ?? params.latitude;
                         const lng = params[0]?.longitude ?? params.longitude;
-                        if (lat && lng) this.updateUserMarker(lat, lng);
+                        const accuracy = params[0]?.accuracy ?? params.accuracy ?? null;
+                        if (lat && lng) {
+                            this.updateUserMarker(lat, lng);
+                            this.followPlayer(parseFloat(lat), parseFloat(lng), accuracy);
+                        }
                     });
                 } catch (e) { console.error('Active quest map init failed:', e); }
+            },
+            followPlayer(lat, lng, accuracy) {
+                if (!this.map || !this.autoZoom || this.autoZoom.isPaused(Date.now())) return;
+                const size = this.map.getSize();
+                const [cpLat, cpLng] = this.checkpointLatLng;
+                const distance = MapZoom.haversineMeters(lat, lng, cpLat, cpLng);
+                const zoom = this.autoZoom.update({
+                    distance,
+                    accuracy: accuracy === null ? null : parseFloat(accuracy),
+                    viewportPx: Math.min(size.x, size.y),
+                    radius: this.arrivalRadius,
+                    lat: cpLat,
+                    now: Date.now(),
+                });
+                // Close in, the checkpoint is the centre; otherwise frame both points.
+                const center = distance <= MapZoom.NEAR_METERS
+                    ? [cpLat, cpLng]
+                    : [(lat + cpLat) / 2, (lng + cpLng) / 2];
+                this.programmatic = true;
+                setTimeout(() => { this.programmatic = false; }, 1500);
+                if (zoom !== null) {
+                    this.map.flyTo(center, zoom, { duration: MapZoom.ANIMATION_SECONDS });
+                } else {
+                    this.map.panTo(center, { animate: true, duration: MapZoom.ANIMATION_SECONDS });
+                }
+            },
+            pauseAutoZoom() {
+                if (!this.autoZoom) return;
+                this.autoZoom.pause(Date.now());
+                this.paused = true;
+                clearTimeout(this.pauseTimer);
+                this.pauseTimer = setTimeout(() => { this.paused = false; }, MapZoom.PAUSE_MS);
+            },
+            recenter() {
+                if (!this.autoZoom) return;
+                clearTimeout(this.pauseTimer);
+                this.paused = false;
+                this.autoZoom.resume();
+                if (this.userMarker) {
+                    const p = this.userMarker.getLatLng();
+                    this.followPlayer(p.lat, p.lng, null);
+                } else {
+                    this.map.flyTo(this.checkpointLatLng, MapZoom.FALLBACK_ZOOM, { duration: MapZoom.ANIMATION_SECONDS });
+                }
             },
             updateUserMarker(lat, lng) {
                 const latLng = [parseFloat(lat), parseFloat(lng)];
@@ -305,11 +366,19 @@ class extends Component
             },
             destroy() {
                 if (this.locationInterval) clearInterval(this.locationInterval);
+                clearTimeout(this.pauseTimer);
                 if (this.map) this.map.remove();
             }
         }"
     >
         <div x-ref="activeMap" wire:ignore style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+        <button
+            type="button"
+            x-show="paused"
+            x-cloak
+            x-on:click="recenter()"
+            class="absolute bottom-3 right-3 z-[1000] rounded-full bg-white px-4 py-2 text-sm font-semibold text-bark shadow-md"
+        >{{ __('sessions.recenter_map') }}</button>
     </div>
 
     <div class="flex-1 space-y-3 p-4">
