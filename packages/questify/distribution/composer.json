@@ -1,0 +1,25 @@
+{
+    "name": "questify/distribution",
+    "description": "Tells the app whether it was installed from TestFlight or the App Store",
+    "type": "nativephp-plugin",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "nativephp/mobile": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Questify\\Distribution\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Questify\\Distribution\\DistributionServiceProvider"
+            ]
+        },
+        "nativephp": {
+            "manifest": "nativephp.json"
+        }
+    }
+}

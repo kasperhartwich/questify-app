@@ -7,6 +7,7 @@ use Native\Mobile\Providers\GeolocationServiceProvider;
 use Native\Mobile\Providers\PushNotificationsServiceProvider;
 use Native\Mobile\Providers\ScannerServiceProvider;
 use Native\Mobile\Providers\SecureStorageServiceProvider;
+use Questify\Distribution\DistributionServiceProvider;
 
 class NativeServiceProvider extends ServiceProvider
 {
@@ -42,7 +43,7 @@ class NativeServiceProvider extends ServiceProvider
             GeolocationServiceProvider::class,
             ScannerServiceProvider::class,
             SecureStorageServiceProvider::class,
-
+            DistributionServiceProvider::class,
         ];
     }
 }

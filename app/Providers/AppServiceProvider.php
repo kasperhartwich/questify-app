@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Auth\QuestifyApiGuard;
+use App\Contracts\ReadsInstallChannel;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\AppInfoService;
+use App\Services\InstallChannel;
 use App\Services\MissingTranslationReporter;
+use App\Services\NativeInstallChannelReader;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
@@ -19,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(QuestifyApiClient::class);
         $this->app->singleton(AppInfoService::class);
+        $this->app->bind(ReadsInstallChannel::class, NativeInstallChannelReader::class);
+        $this->app->singleton(InstallChannel::class);
         $this->app->singleton(MissingTranslationReporter::class);
     }
 

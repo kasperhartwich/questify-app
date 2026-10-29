@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab0c7dcc135e09747bbc3ab395f26f9e",
+    "content-hash": "73881b85bde6b3d4961c1c3b4f312f03",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6693,6 +6693,43 @@
                 "source": "https://github.com/pusher/pusher-http-php/tree/7.2.8"
             },
             "time": "2026-05-18T13:11:36+00:00"
+        },
+        {
+            "name": "questify/distribution",
+            "version": "dev-task/qu-34-update-prompt",
+            "dist": {
+                "type": "path",
+                "url": "packages/questify/distribution",
+                "reference": "f6db997443c97199ae744bbfe3d4b233b3d91424"
+            },
+            "require": {
+                "nativephp/mobile": "^4.0",
+                "php": "^8.2"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Questify\\Distribution\\DistributionServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Questify\\Distribution\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Tells the app whether it was installed from TestFlight or the App Store",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "ralouphie/getallheaders",
@@ -16542,7 +16579,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "questify/distribution": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

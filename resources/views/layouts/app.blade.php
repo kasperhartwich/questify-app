@@ -117,6 +117,12 @@
         <livewire:dialog />
         <livewire:push-notification-manager />
 
+        {{-- Persisted so the check runs once per start and per return to the app,
+             not on every screen change. --}}
+        @persist('update-prompt')
+            <livewire:update-prompt />
+        @endpersist
+
         @livewireScripts
     </body>
 </html>

@@ -25,6 +25,7 @@
         "nativephp/mobile-geolocation": "^2.0",
         "nativephp/mobile-scanner": "^1.0",
         "nativephp/mobile-secure-storage": "^1.0",
+        "questify/distribution": "@dev",
         "sentry/sentry-laravel": "^4.24"
     },
     "require-dev": {
@@ -114,6 +115,14 @@
             "name": "nativephp-plugins",
             "type": "composer",
             "url": "https://plugins.nativephp.com"
+        },
+        {
+            "name": "questify-distribution",
+            "type": "path",
+            "url": "packages/questify/distribution",
+            "options": {
+                "symlink": true
+            }
         }
     ]
 }

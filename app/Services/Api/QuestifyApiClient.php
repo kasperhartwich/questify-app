@@ -14,6 +14,7 @@ use App\Services\Api\Resources\GameplayApiResource;
 use App\Services\Api\Resources\QuestApiResource;
 use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
+use App\Services\InstallChannel;
 use App\Services\TokenStorage;
 use Closure;
 use Illuminate\Http\Client\ConnectionException;
@@ -45,6 +46,9 @@ class QuestifyApiClient
             ->withHeaders([
                 'Accept-Language' => app()->getLocale(),
                 'User-Agent' => 'Questify/'.config('nativephp.version', '1.0.0'),
+                'X-App-Version' => (string) config('nativephp.version', '1.0.0'),
+                'X-App-Build' => (string) config('nativephp.version_code', 1),
+                'X-App-Channel' => app(InstallChannel::class)->current(),
             ]);
 
         $token = TokenStorage::get();
