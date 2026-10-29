@@ -3,6 +3,7 @@
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -78,6 +79,42 @@ class extends Component
         return in_array($this->questData->visibility ?? 'public', ['private', 'school']);
     }
 
+    /**
+     * The session was created before the join was refused. Close it so it does
+     * not sit in a lobby nobody can enter.
+     */
+    private function discardUnjoinedSession(string $sessionCode): void
+    {
+        try {
+            $this->api->sessions()->end($sessionCode);
+        } catch (\App\Exceptions\Api\ApiException) {
+            // Nothing more to do: the player is told about the real refusal.
+        }
+    }
+
+    private function offerToLeave(string $blockingCode): void
+    {
+        $this->dispatch('show-dialog',
+            type: 'warning',
+            title: __('sessions.blocked_title'),
+            message: __('sessions.blocked_message'),
+            confirmLabel: __('sessions.blocked_leave'),
+            cancelLabel: __('general.dismiss'),
+            confirmEvent: 'leave-blocking-session',
+            confirmParams: ['code' => $blockingCode],
+        );
+    }
+
+    #[On('leave-blocking-session')]
+    public function leaveBlockingSession(string $code): void
+    {
+        if ($this->tryApiCall(fn () => $this->api->sessions()->leave($code)) === null) {
+            return;
+        }
+
+        $this->startQuest();
+    }
+
     public function startQuest(): void
     {
         $sessionResponse = $this->tryApiCall(function (): ?array {
@@ -110,11 +147,23 @@ class extends Component
         }
 
         $user = Auth::user();
-        $joinResponse = $this->tryApiCall(fn () => $this->api->sessions()->join(
-            $sessionCode,
-            $user->name ?? 'Player',
-            $user->id ?? null,
-        ));
+        $joinResponse = $this->tryApiCall(function () use ($sessionCode, $user): ?array {
+            try {
+                return $this->api->sessions()->join($sessionCode, $user->name ?? 'Player', $user->id ?? null);
+            } catch (\App\Exceptions\Api\ApiException $e) {
+                $this->discardUnjoinedSession($sessionCode);
+
+                $blockingCode = $e->body['active_session_code'] ?? null;
+
+                if (! $blockingCode) {
+                    throw $e;
+                }
+
+                $this->offerToLeave($blockingCode);
+
+                return null;
+            }
+        });
 
         // A refused join (already in another active session, say) must stop here: starting
         // the session without a participant leaves the player unable to answer anything.

@@ -158,6 +158,7 @@ it('builds the host controls for a session', function (string $method, string $u
 })->with([
     'start' => ['start', '/sessions/ABC123/start'],
     'end' => ['end', '/sessions/ABC123/end'],
+    'leave' => ['leave', '/sessions/ABC123/leave'],
 ]);
 
 it('reads the host dashboard', function () {

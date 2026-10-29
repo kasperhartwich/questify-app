@@ -187,6 +187,8 @@ function mockFullApiClient(): void
     $mockSessions = Mockery::mock(SessionApiResource::class);
     $mockSessions->shouldReceive('create')->andReturn(['data' => ['id' => 2, 'session_code' => 'XYZ789']]);
     $mockSessions->shouldReceive('start')->andReturn(['data' => ['status' => 'active']]);
+    $mockSessions->shouldReceive('end')->andReturn(['data' => ['status' => 'completed']]);
+    $mockSessions->shouldReceive('leave')->andReturn(['message' => 'You left the session.']);
     // 'XYZ789' is an active in-play session (participant 55 belongs to user 1, the
     // first factory user of a test); any other code is a waiting lobby.
     $mockSessions->shouldReceive('show')->andReturnUsing(fn (string $code): array => $code === 'XYZ789'

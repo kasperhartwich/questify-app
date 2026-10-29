@@ -1,7 +1,9 @@
 <?php
 
 use App\Auth\ApiTokenUser;
+use App\Exceptions\Api\ApiException;
 use App\Models\User;
+use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\SessionApiResource;
 use Livewire\Livewire;
 
@@ -18,6 +20,23 @@ function lobby(string $code = 'ABC123', ?User $as = null)
 {
     return Livewire::actingAs($as ?? User::factory()->create())
         ->test('pages::session.lobby', ['code' => $code]);
+}
+
+/**
+ * The shared sessions fixture, with the calls a test overrides.
+ *
+ * @param  array<string, Closure>  $overrides
+ */
+function sessionsWith(array $overrides): SessionApiResource
+{
+    $fixture = app(QuestifyApiClient::class)->sessions();
+    $mock = Mockery::mock(SessionApiResource::class);
+
+    foreach (['show', 'start', 'end', 'leave', 'dashboard', 'join', 'create'] as $call) {
+        $mock->shouldReceive($call)->andReturnUsing($overrides[$call] ?? fn (...$args) => $fixture->{$call}(...$args));
+    }
+
+    return $mock;
 }
 
 it('shows the quest a lobby is waiting to play', function () {
@@ -57,6 +76,54 @@ it('lets the host start the session and takes them to the dashboard', function (
         ->assertSet('isHost', true)
         ->call('startSession')
         ->assertRedirect('/session/ABC123/host');
+});
+
+it('lets a player leave the lobby and sends them home', function () {
+    $left = null;
+    swapSessions(sessionsWith([
+        'leave' => function (string $code) use (&$left) {
+            $left = $code;
+
+            return ['message' => 'ok'];
+        },
+    ]));
+
+    lobby()->call('leaveSession')->assertRedirect('/');
+
+    expect($left)->toBe('ABC123');
+});
+
+it('lets the host cancel the lobby instead of leaving it', function () {
+    config(['auth.guards.web.driver' => 'questify-api']);
+    app('auth')->forgetGuards();
+
+    $ended = null;
+    swapSessions(sessionsWith([
+        'end' => function (string $code) use (&$ended) {
+            $ended = $code;
+
+            return ['data' => []];
+        },
+    ]));
+
+    Livewire::actingAs(new ApiTokenUser(['id' => 2, 'name' => 'Bent Hansen', 'locale' => 'en']))
+        ->test('pages::session.lobby', ['code' => 'ABC123'])
+        ->call('leaveSession')
+        ->assertRedirect('/');
+
+    expect($ended)->toBe('ABC123');
+});
+
+it('keeps a player in the lobby when leaving fails', function () {
+    swapSessions(sessionsWith([
+        'leave' => fn () => throw new ApiException(500, 'Server error.'),
+    ]));
+
+    lobby()->call('leaveSession')->assertNoRedirect();
+});
+
+it('sends the lobby home when the host ends the session', function () {
+    lobby()->call('onSessionEnded')->assertRedirect('/');
 });
 
 it('moves everyone into play when the host starts', function () {

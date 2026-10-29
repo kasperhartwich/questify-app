@@ -53,6 +53,15 @@ class SessionApiResource
         return $result;
     }
 
+    public function leave(string $code): array
+    {
+        $result = $this->client->post("/sessions/{$code}/leave");
+
+        ApiCache::forgetPrefix('user:sessions');
+
+        return $result;
+    }
+
     public function dashboard(string $code): array
     {
         return $this->client->get("/sessions/{$code}/dashboard");

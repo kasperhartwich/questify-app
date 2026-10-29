@@ -76,6 +76,28 @@ class extends Component
         $this->redirect('/session/' . $this->code . '/host');
     }
 
+    #[On('echo:session.{code},SessionEnded')]
+    public function onSessionEnded(): void
+    {
+        $this->redirect('/');
+    }
+
+    #[On('confirm-leave-session')]
+    #[On('confirm-cancel-session')]
+    public function leaveSession(): void
+    {
+        $call = $this->isHost
+            ? fn () => $this->api->sessions()->end($this->code)
+            : fn () => $this->api->sessions()->leave($this->code);
+
+        if ($this->tryApiCall($call) === null) {
+            return;
+        }
+
+        session()->forget('questify_participant_id');
+        $this->redirect('/');
+    }
+
     public function shareSession(): void
     {
         $this->dispatch('share-session', url: $this->shareUrl, code: $this->code);
@@ -177,6 +199,21 @@ class extends Component
                 <p class="py-6 text-center text-[13px] text-muted">{{ ($session['play_mode'] ?? '') === 'competitive_teams' ? __('sessions.waiting_for_teams') : __('sessions.waiting_for_players') }}</p>
             @endif
         </div>
+
+        {{-- Leave (non-host) or cancel (host) --}}
+        <button
+            wire:click="$dispatch('show-dialog', {
+                type: 'warning',
+                title: '{{ $isHost ? __('sessions.cancel_confirm_title') : __('sessions.leave_confirm_title') }}',
+                message: '{{ $isHost ? __('sessions.cancel_confirm_message') : __('sessions.leave_confirm_message') }}',
+                confirmLabel: '{{ $isHost ? __('sessions.cancel_session') : __('sessions.leave') }}',
+                cancelLabel: '{{ __('general.dismiss') }}',
+                confirmEvent: '{{ $isHost ? 'confirm-cancel-session' : 'confirm-leave-session' }}'
+            })"
+            class="mt-4 w-full rounded-xl border border-cream-border px-4 py-3 text-[14px] font-semibold text-muted"
+        >
+            {{ $isHost ? __('sessions.cancel_session') : __('sessions.leave') }}
+        </button>
 
         {{-- Waiting Indicator (non-host) --}}
         @unless ($isHost)

@@ -286,6 +286,77 @@ it('does not start the session when the join is refused', function () {
     expect($started)->toBeFalse();
 });
 
+it('ends the session it created when the join is refused', function () {
+    $ended = null;
+
+    privateQuestDetail([
+        'create' => fn () => ['data' => ['session_code' => 'XYZ789']],
+        'join' => fn () => throw new ApiValidationException('You are already in an active session.', []),
+        'end' => function (string $code) use (&$ended) {
+            $ended = $code;
+
+            return ['data' => []];
+        },
+    ])
+        ->set('accessCode', 'spark1')
+        ->call('verifyAccessCode')
+        ->call('startQuest');
+
+    expect($ended)->toBe('XYZ789');
+});
+
+it('offers to leave the session that blocks the join', function () {
+    privateQuestDetail([
+        'create' => fn () => ['data' => ['session_code' => 'XYZ789']],
+        'join' => fn () => throw new ApiValidationException('You are already in an active session.', [], ['active_session_code' => 'OLD111']),
+    ])
+        ->set('accessCode', 'spark1')
+        ->call('verifyAccessCode')
+        ->call('startQuest')
+        ->assertDispatched('show-dialog',
+            confirmLabel: __('sessions.blocked_leave'),
+            confirmEvent: 'leave-blocking-session',
+            confirmParams: ['code' => 'OLD111'],
+        )
+        ->assertNotDispatched('api-error')
+        ->assertNoRedirect();
+});
+
+it('leaves the blocking session and starts the quest again', function () {
+    $left = null;
+    $joins = 0;
+
+    privateQuestDetail([
+        'create' => fn () => ['data' => ['session_code' => 'XYZ789']],
+        'join' => function () use (&$joins) {
+            return ++$joins === 1
+                ? throw new ApiValidationException('Busy.', [], ['active_session_code' => 'OLD111'])
+                : ['data' => ['participant_id' => 5]];
+        },
+        'leave' => function (string $code) use (&$left) {
+            $left = $code;
+
+            return ['message' => 'ok'];
+        },
+    ])
+        ->set('accessCode', 'spark1')
+        ->call('verifyAccessCode')
+        ->set('playMode', 'solo')
+        ->call('startQuest')
+        ->call('leaveBlockingSession', 'OLD111')
+        ->assertRedirect('/session/XYZ789/play');
+
+    expect($left)->toBe('OLD111')->and($joins)->toBe(2);
+});
+
+it('stays put when leaving the blocking session fails', function () {
+    privateQuestDetail([
+        'leave' => fn () => throw new ApiException(500, 'Server error.'),
+    ])
+        ->call('leaveBlockingSession', 'OLD111')
+        ->assertNoRedirect();
+});
+
 it('shows the code as wrong when the api refuses it', function () {
     privateQuestDetail([
         'create' => fn () => throw new ApiValidationException('Invalid.', ['access_code' => ['Wrong.']]),
