@@ -93,20 +93,8 @@
                 <span class="whitespace-nowrap text-[9px] font-semibold tracking-[0.02em] {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.my_quests') }}</span>
             </a>
 
-            {{-- Join (center pill) --}}
-            <a href="/join" class="flex flex-1 items-center justify-center" wire:navigate.hover>
-                <div class="flex h-[40px] w-[55px] items-center justify-center rounded-[13px] bg-forest-600 shadow-[0_3px_12px_rgba(11,61,46,0.35)]">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-                        <rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="3.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
-                        <rect x="15" y="2" width="7" height="7" rx="1.5"/><rect x="16.5" y="3.5" width="4" height="4" fill="white" stroke="none"/>
-                        <rect x="2" y="15" width="7" height="7" rx="1.5"/><rect x="3.5" y="16.5" width="4" height="4" fill="white" stroke="none"/>
-                        <rect x="14" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
-                        <rect x="18" y="14" width="2.5" height="2.5" fill="white" stroke="none"/>
-                        <rect x="14" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
-                        <rect x="18" y="18" width="2.5" height="2.5" fill="white" stroke="none"/>
-                    </svg>
-                </div>
-            </a>
+            {{-- Join quest, or Continue the quest the player is in --}}
+            <livewire:centre-button />
 
             {{-- Create --}}
             <a href="/create" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
