@@ -25,7 +25,7 @@ class extends Component
      *
      * @var array<string, string|bool>
      */
-    public const LAYOUT_PARAMS = ['bodyClass' => 'bg-forest-600', 'skipSafeAreaTop' => true];
+    public const LAYOUT_PARAMS = ['bodyClass' => 'bg-forest-600', 'skipSafeAreaTop' => true, 'fixedFrame' => true];
 
     public string $name = '';
 
@@ -247,11 +247,11 @@ class extends Component
 };
 ?>
 
-<div class="flex min-h-screen flex-col bg-forest-600" wire:init="refreshPermissionStates">
+<div class="flex h-full flex-col bg-forest-600" wire:init="refreshPermissionStates">
     {{-- Profile View --}}
     @if (! $showSettings)
         {{-- Profile Header --}}
-        <div class="relative overflow-hidden bg-forest-600 px-[16px] pb-[34px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
+        <div class="relative shrink-0 overflow-hidden bg-forest-600 px-[16px] pb-[34px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
             {{-- Decorative amber circle --}}
             <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[120px] w-[120px] rounded-full border-[22px]" style="border-color: rgba(245,166,35,0.1);"></div>
 
@@ -282,7 +282,7 @@ class extends Component
         </div>
 
         {{-- Content area with cream background --}}
-        <div class="flex-1 bg-cream">
+        <div class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain bg-cream pb-[calc(env(safe-area-inset-bottom,0px)+96px)]">
         {{-- Stats Row (overlapping header) --}}
         <div class="-mt-[18px] relative z-10">
             <x-stat-row :stats="[
@@ -350,7 +350,7 @@ class extends Component
 
     @else
         {{-- Settings Screen --}}
-        <div class="flex flex-1 flex-col bg-cream">
+        <div class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain bg-cream pb-[calc(env(safe-area-inset-bottom,0px)+96px)]">
             {{-- Settings Header --}}
             <div class="flex items-center gap-3 px-[16px] pb-[12px]" style="padding-top: calc(env(safe-area-inset-top, 0px) + 16px);">
                 <button wire:click="$toggle('showSettings')" class="flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-cream-dark">

@@ -76,6 +76,14 @@ it('renders profile page', function () {
     $this->actingAs(User::factory()->create())->get('/profile')->assertOk();
 });
 
+it('keeps the profile header fixed and scrolls only the content area', function () {
+    $this->actingAs(User::factory()->create())->get('/profile')
+        ->assertOk()
+        ->assertSee('h-dvh overflow-hidden', false)
+        ->assertDontSee('min-h-screen pb-[calc(env(safe-area-inset-bottom,0px)+96px)]', false)
+        ->assertSee('overflow-y-auto overscroll-y-contain bg-cream', false);
+});
+
 it('renders my played quests page', function () {
     $this->actingAs(User::factory()->create())->get('/my-quests')->assertOk();
 });
