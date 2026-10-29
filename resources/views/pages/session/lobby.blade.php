@@ -79,7 +79,12 @@ class extends Component
     #[On('echo:session.{code},SessionEnded')]
     public function onSessionEnded(): void
     {
-        $this->redirect('/');
+        $this->handleEndedSession();
+    }
+
+    protected function endsWithSession(): bool
+    {
+        return true;
     }
 
     #[On('confirm-leave-session')]

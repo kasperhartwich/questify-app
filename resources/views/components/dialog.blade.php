@@ -21,6 +21,13 @@ new class extends Component
 
     public array $confirmParams = [];
 
+    public function mount(): void
+    {
+        if ($ended = session('session_ended')) {
+            $this->present('notice', __('sessions.ended_title'), $ended);
+        }
+    }
+
     /**
      * Something broke that the player cannot act on. The raw text is whatever
      * the API or an exception produced, so it is only shown while debugging.

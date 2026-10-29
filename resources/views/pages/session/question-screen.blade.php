@@ -4,6 +4,7 @@ use App\Enums\QuestionType;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -53,6 +54,17 @@ class extends Component
 
     public bool $checkpointComplete = false;
 
+    #[On('echo:session.{code},SessionEnded')]
+    public function onSessionEnded(): void
+    {
+        $this->handleEndedSession();
+    }
+
+    protected function endsWithSession(): bool
+    {
+        return true;
+    }
+
     public function mount(string $code, int $checkpoint): void
     {
         $this->code = $code;
@@ -91,7 +103,10 @@ class extends Component
         ));
 
         if (! $response) {
-            $this->redirect('/session/' . $this->code . '/play');
+            // An ended session has already sent the player home with its message.
+            if (! session()->has('session_ended')) {
+                $this->redirect('/session/' . $this->code . '/play');
+            }
 
             return;
         }

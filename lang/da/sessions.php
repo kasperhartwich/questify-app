@@ -29,6 +29,8 @@ return [
     'joined' => 'deltaget',
     'started' => 'Sessionen er startet.',
     'ended' => 'Sessionen er afsluttet.',
+    'ended_under_you' => 'Sessionen er afsluttet. Du er tilbage ved start.',
+    'ended_title' => 'Sessionen er slut',
     'already_in_session' => 'Du er allerede i en aktiv session.',
     'session_full' => 'Denne session er fuld.',
     'host_only' => 'Kun værten kan udføre denne handling.',

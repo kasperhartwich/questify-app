@@ -23,6 +23,10 @@ trait HandlesApiErrors
 
             return $this->redirect(route('login'));
         } catch (ApiValidationException $e) {
+            if ($e->errors === [] && $this->endsWithSession()) {
+                return $this->handleEndedSession();
+            }
+
             if ($e->errors === []) {
                 $this->dispatch('api-error', message: $e->getMessage());
 
@@ -40,12 +44,39 @@ trait HandlesApiErrors
 
             return null;
         } catch (ApiNotFoundException) {
+            if ($this->endsWithSession()) {
+                return $this->handleEndedSession();
+            }
+
             abort(404);
         } catch (ApiException $e) {
             $this->dispatch('api-error', message: $e->getMessage());
 
             return null;
         }
+    }
+
+    /**
+     * Whether this screen belongs to a session that can end under the player.
+     * There a 422 without field errors ("session is not active") or a 404 means
+     * the session is over, not that something broke.
+     */
+    protected function endsWithSession(): bool
+    {
+        return false;
+    }
+
+    /**
+     * The session ended under the player (host ended it, everyone left, or it
+     * sat idle past the timeout): forget it, go home and say so in plain words.
+     */
+    protected function handleEndedSession(): null
+    {
+        session()->forget('questify_participant_id');
+        session()->flash('session_ended', __('sessions.ended_under_you'));
+        $this->redirect('/');
+
+        return null;
     }
 
     /**

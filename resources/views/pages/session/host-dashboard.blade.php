@@ -77,6 +77,17 @@ class extends Component
         $this->loadDashboard();
     }
 
+    #[On('echo:session.{code},SessionEnded')]
+    public function onSessionEnded(): void
+    {
+        $this->handleEndedSession();
+    }
+
+    protected function endsWithSession(): bool
+    {
+        return true;
+    }
+
     #[On('confirm-end-session')]
     public function endSession(): void
     {

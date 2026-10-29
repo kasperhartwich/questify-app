@@ -29,6 +29,8 @@ return [
     'joined' => 'joined',
     'started' => 'Session has been started.',
     'ended' => 'Session has been ended.',
+    'ended_under_you' => 'This session has ended. You are back at the start.',
+    'ended_title' => 'Session over',
     'already_in_session' => 'You are already in an active session.',
     'session_full' => 'This session is full.',
     'host_only' => 'Only the host can perform this action.',
