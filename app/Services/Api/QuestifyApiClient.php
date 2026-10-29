@@ -37,19 +37,29 @@ class QuestifyApiClient
         $this->timeout = config('services.questify.timeout', 15);
     }
 
+    private function platform(): ?string
+    {
+        return match (true) {
+            System::isIos() => 'ios',
+            System::isAndroid() => 'android',
+            default => null,
+        };
+    }
+
     public function request(): PendingRequest
     {
         $request = Http::baseUrl($this->baseUrl.'/api/v1')
             ->timeout($this->timeout)
             ->retry(3, fn (int $attempt): int => 200 * (2 ** ($attempt - 1)), fn (\Exception $e) => $e instanceof ConnectionException, throw: false)
             ->acceptJson()
-            ->withHeaders([
+            ->withHeaders(array_filter([
                 'Accept-Language' => app()->getLocale(),
                 'User-Agent' => 'Questify/'.config('nativephp.version', '1.0.0'),
                 'X-App-Version' => (string) config('nativephp.version', '1.0.0'),
                 'X-App-Build' => (string) config('nativephp.version_code', 1),
                 'X-App-Channel' => app(InstallChannel::class)->current(),
-            ]);
+                'X-Platform' => $this->platform(),
+            ]));
 
         $token = TokenStorage::get();
         if ($token) {

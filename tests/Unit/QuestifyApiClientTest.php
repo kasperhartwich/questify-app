@@ -14,6 +14,7 @@ use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
 use App\Services\TokenStorage;
 use Illuminate\Support\Facades\Http;
+use Native\Mobile\Facades\System;
 
 /**
  * Every screen reaches the backend through this client, and how it turns an
@@ -181,4 +182,21 @@ it('hands out each api resource', function (string $accessor, string $class) {
     ['sessions', SessionApiResource::class],
     ['gameplay', GameplayApiResource::class],
     ['user', UserApiResource::class],
+]);
+
+it('tells the backend which platform the app runs on', function (bool $ios, bool $android, ?string $expected) {
+    System::shouldReceive('isMobile')->andReturn(false);
+    System::shouldReceive('isIos')->andReturn($ios);
+    System::shouldReceive('isAndroid')->andReturn($android);
+    Http::fake(['*' => Http::response(['data' => []], 200)]);
+
+    apiClient()->get('/quests');
+
+    Http::assertSent(fn ($request) => $expected === null
+        ? ! $request->hasHeader('X-Platform')
+        : $request->hasHeader('X-Platform', $expected));
+})->with([
+    'ios' => [true, false, 'ios'],
+    'android' => [false, true, 'android'],
+    'neither' => [false, false, null],
 ]);
