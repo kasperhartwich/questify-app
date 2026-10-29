@@ -127,9 +127,18 @@ it('starts a session for a quest in a chosen mode', function () {
 
 it('reads a session by its join code', function () {
     $client = stubClient();
-    $client->shouldReceive('get')->once()->with('/sessions/ABC123')->andReturn(['data' => []]);
+    $client->shouldReceive('get')->once()->with('/sessions/ABC123', [])->andReturn(['data' => []]);
 
     (new SessionApiResource($client))->show('ABC123');
+});
+
+it('reads a session as a participant so the server can scope the checkpoints', function () {
+    $client = stubClient();
+    $client->shouldReceive('get')->once()
+        ->with('/sessions/ABC123', ['participant_id' => 55])
+        ->andReturn(['data' => []]);
+
+    (new SessionApiResource($client))->show('ABC123', 55);
 });
 
 it('joins a session as a guest without a user id', function () {
