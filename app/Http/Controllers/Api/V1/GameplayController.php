@@ -93,6 +93,7 @@ class GameplayController extends Controller
                     'id' => $question->id,
                     'question_text' => $question->body,
                     'question_type' => $question->type->value,
+                    'points' => $session->quest->scoring_points_per_correct ?? 100,
                     'image_url' => $question->resolveImageUrl($question->image_path),
                     'answers' => $question->answers->map(fn ($answer) => [
                         'id' => $answer->id,
@@ -121,7 +122,9 @@ class GameplayController extends Controller
     public function answer(AnswerQuestionRequest $request, string $code): JsonResponse
     {
         return DB::transaction(function () use ($request, $code): JsonResponse {
-            $session = $this->getActiveSession($code);
+            $session = QuestSession::where('join_code', $code)
+                ->whereIn('status', [SessionStatus::Active, SessionStatus::Completed])
+                ->firstOrFail();
             $quest = $session->quest;
 
             $participant = SessionParticipant::lockForUpdate()
@@ -143,6 +146,10 @@ class GameplayController extends Controller
             if ($existingProgress?->is_correct) {
                 return $this->replayedCorrectAnswer($participant, $checkpoint);
             }
+
+            // A finished session still answers a replay of a recorded answer (a retried request
+            // after the last answer completed it), but takes no new answers.
+            abort_unless($session->status === SessionStatus::Active, 404);
 
             // Determine correctness
             $isCorrect = $this->evaluateAnswer($question, $request);

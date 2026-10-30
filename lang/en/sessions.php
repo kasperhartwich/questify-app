@@ -60,6 +60,7 @@ return [
     'wrong' => 'Wrong!',
     'try_again' => 'Try again',
     'wrong_penalty' => 'Incorrect. −:points pts.',
+    'speed_bonus_included' => 'incl. :points speed bonus',
     'locked_out' => 'Locked. Try again in',
     'seconds_short' => 's',
     'hint_label' => 'Hint',

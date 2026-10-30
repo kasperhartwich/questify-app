@@ -211,6 +211,17 @@ it('retrieves leaderboard without auth', function () {
     expect($data[0])->toHaveKeys(['id', 'display_name', 'total_score', 'current_checkpoint_index', 'quest_completed_at']);
 });
 
+it('sends the quest base points with each question on arrival', function () {
+    $this->quest->update(['scoring_points_per_correct' => 80]);
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
+        'participant_id' => $this->participant->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'latitude' => 55.6761,
+        'longitude' => 12.5683,
+    ])->assertOk()->assertJsonPath('data.questions.0.points', 80);
+});
+
 it('detects quest completion', function () {
     $response = $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", [
         'participant_id' => $this->participant->id,
@@ -248,6 +259,18 @@ it('keeps a group session active until every participant has finished', function
     ])->assertOk();
 
     expect($this->session->fresh()->status)->toBe(SessionStatus::Active);
+});
+
+it('takes no new answers once the session is completed', function () {
+    $otherQuestion = Question::factory()->create(['checkpoint_id' => $this->checkpoint->id]);
+    $otherAnswer = Answer::factory()->correct()->create(['question_id' => $otherQuestion->id]);
+    $this->session->update(['status' => SessionStatus::Completed]);
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", [
+        'participant_id' => $this->participant->id,
+        'question_id' => $otherQuestion->id,
+        'answer_id' => $otherAnswer->id,
+    ])->assertNotFound();
 });
 
 it('handles three_strikes_hint wrong answer behaviour', function () {

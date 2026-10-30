@@ -114,6 +114,23 @@ it('awards points for a correct answer', function () {
         ->assertSet('showFeedback', true);
 });
 
+it('names the speed bonus inside the points earned', function () {
+    fakeGameplay(['data' => ['correct' => true, 'score_earned' => 105, 'speed_bonus' => 5, 'next' => 'question']]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 1)
+        ->call('submitAnswer')
+        ->assertSet('lastSpeedBonus', 5)
+        ->assertSee('+105')
+        ->assertSee(__('sessions.speed_bonus_included', ['points' => 5]));
+});
+
+it('shows the base points the server sent on the question', function () {
+    fakeGameplay();
+
+    questionScreen()->assertSee('100 '.__('quests.points'));
+});
+
 it('refuses a second submission while feedback is on screen', function () {
     fakeGameplay();
 

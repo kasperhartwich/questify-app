@@ -34,6 +34,8 @@ class extends Component
 
     public ?int $lastPointsEarned = null;
 
+    public int $lastSpeedBonus = 0;
+
     public bool $showFeedback = false;
 
     /** Wrong-answer behaviour returned by the API for the last incorrect attempt. */
@@ -136,7 +138,7 @@ class extends Component
                 $obj = (object) $question;
                 $obj->type = QuestionType::tryFrom($question['question_type'] ?? '') ?? QuestionType::MultipleChoice;
                 $obj->body = $question['question_text'] ?? $question['body'] ?? '';
-                $obj->points = $question['points'] ?? 10;
+                $obj->points = $question['points'] ?? null;
                 $obj->answers = collect($question['answers'] ?? [])->map(fn ($a) => (object) [
                     'id' => $a['id'],
                     'body' => $a['answer_text'] ?? $a['body'] ?? '',
@@ -198,6 +200,7 @@ class extends Component
         }
 
         $this->lastPointsEarned = $data['score_earned'] ?? 0;
+        $this->lastSpeedBonus = (int) ($data['speed_bonus'] ?? 0);
         $this->answeredQuestionIds[] = $currentQuestion->id;
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
@@ -299,7 +302,9 @@ class extends Component
                     {{ str_replace('_', ' ', ucfirst($this->currentQuestion->type->value)) }}
                 </span>
                 <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $this->currentQuestion->body }}</h2>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $this->currentQuestion->points }} {{ __('quests.points') }}</p>
+                @if ($this->currentQuestion->points)
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $this->currentQuestion->points }} {{ __('quests.points') }}</p>
+                @endif
             </div>
 
             {{-- Revealed hint (three_strikes_hint) — stays visible while retrying --}}
@@ -357,6 +362,9 @@ class extends Component
                         <p class="mt-2 text-lg font-bold text-green-700 dark:text-green-400">{{ __('sessions.correct') }}</p>
                         @if ($lastPointsEarned)
                             <p class="text-sm text-green-600 dark:text-green-400">+{{ $lastPointsEarned }} {{ __('quests.points') }}</p>
+                            @if ($lastSpeedBonus > 0)
+                                <p class="text-xs text-green-600 dark:text-green-400">{{ __('sessions.speed_bonus_included', ['points' => $lastSpeedBonus]) }}</p>
+                            @endif
                         @endif
                     </div>
 

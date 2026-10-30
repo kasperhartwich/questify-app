@@ -60,6 +60,7 @@ return [
     'wrong' => 'Forkert!',
     'try_again' => 'Prøv igen',
     'wrong_penalty' => 'Forkert. −:points point.',
+    'speed_bonus_included' => 'heraf :points i hurtigbonus',
     'locked_out' => 'Låst. Prøv igen om',
     'seconds_short' => 's',
     'hint_label' => 'Hint',
