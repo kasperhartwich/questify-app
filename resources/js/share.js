@@ -103,6 +103,10 @@ export const resultImage = async ({ quest, score, rank, scoreLabel, url }) => {
 };
 
 export const result = async (detail) => {
+    if (!navigator.share) {
+        return;
+    }
+
     const data = { title: detail.title, text: detail.text, url: detail.url };
 
     try {
