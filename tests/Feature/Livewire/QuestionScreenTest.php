@@ -347,8 +347,7 @@ it('labels the answers A and B and the question type in a pill', function () {
     questionScreen()
         ->assertSeeHtml('data-testid="question-type-pill"')
         ->assertSee(__('sessions.type_multiple_choice'))
-        ->assertSee('A')
-        ->assertSee('B');
+        ->assertSeeHtmlInOrder(['data-testid="answer-badge"', 'A', 'data-testid="answer-badge"', 'B']);
 });
 
 it('shows check and cross rows for a true or false question', function () {
@@ -368,7 +367,8 @@ it('shows check and cross rows for a true or false question', function () {
         ->assertSee(__('sessions.type_true_false'))
         ->assertSee('True')
         ->assertSee('False')
-        ->assertDontSeeHtml('>A<');
+        ->assertDontSeeHtml('>A<')
+        ->assertDontSeeHtml('>\n                                    A');
 });
 
 it('shows Not quite and +0 points after a free wrong answer', function () {
