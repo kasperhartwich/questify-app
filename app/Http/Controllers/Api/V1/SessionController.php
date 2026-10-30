@@ -120,7 +120,7 @@ class SessionController extends Controller
             ->firstOrFail();
 
         $participant = $session->participants()->create([
-            'user_id' => $request->validated('user_id'),
+            'user_id' => $request->user('sanctum')?->id,
             'display_name' => $request->validated('display_name'),
         ]);
 

@@ -70,20 +70,35 @@ it('joins a waiting session without auth', function () {
     });
 });
 
-it('joins with optional user_id', function () {
+it('joins as the signed-in user', function () {
     Event::fake();
     $user = User::factory()->create();
     $session = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
 
-    $response = $this->postJson("/api/v1/sessions/{$session->join_code}/join", [
+    $this->actingAs($user, 'sanctum')->postJson("/api/v1/sessions/{$session->join_code}/join", [
         'display_name' => 'Player One',
-        'user_id' => $user->id,
-    ]);
+    ])->assertOk();
 
-    $response->assertOk();
     $this->assertDatabaseHas('session_participants', [
         'quest_session_id' => $session->id,
         'user_id' => $user->id,
+    ]);
+});
+
+it('ignores a user_id sent in the body', function () {
+    Event::fake();
+    $user = User::factory()->create();
+    $session = QuestSession::factory()->create(['status' => SessionStatus::Waiting]);
+
+    $this->postJson("/api/v1/sessions/{$session->join_code}/join", [
+        'display_name' => 'Player One',
+        'user_id' => $user->id,
+    ])->assertOk();
+
+    $this->assertDatabaseHas('session_participants', [
+        'quest_session_id' => $session->id,
+        'display_name' => 'Player One',
+        'user_id' => null,
     ]);
 });
 
