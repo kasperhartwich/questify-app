@@ -68,6 +68,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Participant Tokens
+    |--------------------------------------------------------------------------
+    |
+    | Join hands a token to builds from participant_token_min_build on (the
+    | X-App-Build header); they send it back as X-Participant-Token on gameplay
+    | calls. A participant who has one always needs it, and a wrong token is
+    | always refused. Older builds get none: while require_participant_token is
+    | off they still play on the participant id alone and the session's player
+    | list stays public; on, such requests are refused (QU-40). The
+    | live API is questify-admin's; this copy follows it.
+    |
+    */
+
+    'require_participant_token' => (bool) env('REQUIRE_PARTICIPANT_TOKEN', false),
+
+    'participant_token_min_build' => (int) env('PARTICIPANT_TOKEN_MIN_BUILD', 47),
+
+    /*
+    |--------------------------------------------------------------------------
     | Scoring Defaults
     |--------------------------------------------------------------------------
     */

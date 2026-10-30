@@ -3,6 +3,7 @@
 namespace App\Services\Api\Resources;
 
 use App\Services\Api\ApiCache;
+use App\Services\Api\ParticipantToken;
 use App\Services\Api\QuestifyApiClient;
 
 class GameplayApiResource
@@ -16,7 +17,7 @@ class GameplayApiResource
             'checkpoint_id' => $checkpointId,
             'latitude' => $latitude,
             'longitude' => $longitude,
-        ]);
+        ], ParticipantToken::headers($code));
 
         ApiCache::forgetPrefix('user:sessions');
 
@@ -30,7 +31,7 @@ class GameplayApiResource
             'question_id' => $questionId,
             'answer_id' => $answerId,
             'answer_text' => $answerText,
-        ], fn ($value) => $value !== null));
+        ], fn ($value) => $value !== null), ParticipantToken::headers($code));
 
         ApiCache::forgetPrefix('user:sessions');
 
@@ -39,6 +40,6 @@ class GameplayApiResource
 
     public function leaderboard(string $code): array
     {
-        return $this->client->get("/sessions/{$code}/leaderboard");
+        return $this->client->get("/sessions/{$code}/leaderboard", [], ParticipantToken::headers($code));
     }
 }

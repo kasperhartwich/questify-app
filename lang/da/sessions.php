@@ -67,6 +67,7 @@ return [
     'away' => 'væk',
     'get_closer_to_answer' => 'Kom tættere på for at svare',
     'navigating_to_checkpoint' => 'Finder din placering…',
+    'not_your_participant' => 'Du kan kun spille som dig selv i denne session.',
     'too_far_from_checkpoint' => 'Du er for langt fra checkpointet til at svare. Kom tættere på og prøv igen.',
     'you' => 'Dig',
     'quest_complete' => 'Quest fuldført!',

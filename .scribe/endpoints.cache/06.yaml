@@ -3,7 +3,9 @@
 name: Gameplay
 description: |-
 
-  Real-time gameplay endpoints for active quest sessions.
+  Real-time gameplay endpoints for active quest sessions. A participant proves
+  itself with the participant token from the join response (header
+  X-Participant-Token) or by being the signed-in account it joined with.
 endpoints:
   -
     custom: []
@@ -15,7 +17,9 @@ endpoints:
       groupName: Gameplay
       groupDescription: |-
 
-        Real-time gameplay endpoints for active quest sessions.
+        Real-time gameplay endpoints for active quest sessions. A participant proves
+        itself with the participant token from the join response (header
+        X-Participant-Token) or by being the signed-in account it joined with.
       subgroup: ''
       subgroupDescription: ''
       title: 'Arrive at checkpoint'
@@ -23,6 +27,7 @@ endpoints:
       authenticated: true
       deprecated: false
     headers:
+      X-Participant-Token: 3vQm8xY2kP0aT6wL...
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
@@ -100,6 +105,12 @@ endpoints:
         content: '{"data": {"id": 3, "title": "Norreport Station", "description": "...", "order_index": 2, "questions": [{"id": 11, "question_text": "What year?", "question_type": "multiple_choice", "answers": [{"id": 41, "answer_text": "1917"}]}]}}'
         headers: []
         description: ''
+      -
+        custom: []
+        status: 403
+        content: '{"message": "You can only play as yourself in this session."}'
+        headers: []
+        description: ''
     responseFields: []
     auth:
       - headers
@@ -118,7 +129,9 @@ endpoints:
       groupName: Gameplay
       groupDescription: |-
 
-        Real-time gameplay endpoints for active quest sessions.
+        Real-time gameplay endpoints for active quest sessions. A participant proves
+        itself with the participant token from the join response (header
+        X-Participant-Token) or by being the signed-in account it joined with.
       subgroup: ''
       subgroupDescription: ''
       title: 'Answer question'
@@ -126,6 +139,7 @@ endpoints:
       authenticated: true
       deprecated: false
     headers:
+      X-Participant-Token: 3vQm8xY2kP0aT6wL...
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
@@ -209,6 +223,12 @@ endpoints:
         content: '{"data": {"correct": false, "behaviour": "retry_free", "attempts": 2}}'
         headers: []
         description: Incorrect
+      -
+        custom: []
+        status: 403
+        content: '{"message": "You can only play as yourself in this session."}'
+        headers: []
+        description: ''
     responseFields: []
     auth:
       - headers
@@ -227,14 +247,17 @@ endpoints:
       groupName: Gameplay
       groupDescription: |-
 
-        Real-time gameplay endpoints for active quest sessions.
+        Real-time gameplay endpoints for active quest sessions. A participant proves
+        itself with the participant token from the join response (header
+        X-Participant-Token) or by being the signed-in account it joined with.
       subgroup: ''
       subgroupDescription: ''
       title: 'Get leaderboard'
-      description: 'Get the current session leaderboard sorted by score descending. No auth required.'
+      description: "Get the current session leaderboard sorted by score descending. For the host and the session's own players (participant token or signed-in account); while participant tokens are not required, anyone with the code may read it."
       authenticated: true
       deprecated: false
     headers:
+      X-Participant-Token: 3vQm8xY2kP0aT6wL...
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json

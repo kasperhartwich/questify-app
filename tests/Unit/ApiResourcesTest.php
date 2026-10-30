@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Api\ApiCache;
+use App\Services\Api\ParticipantToken;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\AuthResource;
 use App\Services\Api\Resources\CategoryApiResource;
@@ -127,7 +128,7 @@ it('starts a session for a quest in a chosen mode', function () {
 
 it('reads a session by its join code', function () {
     $client = stubClient();
-    $client->shouldReceive('get')->once()->with('/sessions/ABC123', [])->andReturn(['data' => []]);
+    $client->shouldReceive('get')->once()->with('/sessions/ABC123', [], [])->andReturn(['data' => []]);
 
     (new SessionApiResource($client))->show('ABC123');
 });
@@ -135,7 +136,7 @@ it('reads a session by its join code', function () {
 it('reads a session as a participant so the server can scope the checkpoints', function () {
     $client = stubClient();
     $client->shouldReceive('get')->once()
-        ->with('/sessions/ABC123', ['participant_id' => 55])
+        ->with('/sessions/ABC123', ['participant_id' => 55], [])
         ->andReturn(['data' => []]);
 
     (new SessionApiResource($client))->show('ABC123', 55);
@@ -161,7 +162,7 @@ it('joins a session as a signed-in player', function () {
 
 it('builds the host controls for a session', function (string $method, string $url) {
     $client = stubClient();
-    $client->shouldReceive('post')->once()->with($url)->andReturn(['data' => []]);
+    $client->shouldReceive('post')->once()->withArgs(fn ($u) => $u === $url)->andReturn(['data' => []]);
 
     (new SessionApiResource($client))->{$method}('ABC123');
 })->with([
@@ -206,7 +207,7 @@ it('proves where the player is standing on arrival', function () {
         'checkpoint_id' => 1,
         'latitude' => 55.6798,
         'longitude' => 12.5907,
-    ])->andReturn(['data' => []]);
+    ], [])->andReturn(['data' => []]);
 
     (new GameplayApiResource($client))->arrived('ABC123', 55, 1, 55.6798, 12.5907);
 });
@@ -217,7 +218,7 @@ it('submits a chosen answer by id', function () {
         'participant_id' => 55,
         'question_id' => 10,
         'answer_id' => 2,
-    ])->andReturn(['data' => []]);
+    ], [])->andReturn(['data' => []]);
 
     (new GameplayApiResource($client))->answer('ABC123', 55, 10, 2);
 });
@@ -228,16 +229,66 @@ it('submits a typed answer as text', function () {
         'participant_id' => 55,
         'question_id' => 11,
         'answer_text' => 'Anno 1743',
-    ])->andReturn(['data' => []]);
+    ], [])->andReturn(['data' => []]);
 
     (new GameplayApiResource($client))->answer('ABC123', 55, 11, null, 'Anno 1743');
 });
 
 it('reads the leaderboard for a session', function () {
     $client = stubClient();
-    $client->shouldReceive('get')->once()->with('/sessions/ABC123/leaderboard')->andReturn(['data' => []]);
+    $client->shouldReceive('get')->once()->with('/sessions/ABC123/leaderboard', [], [])->andReturn(['data' => []]);
 
     (new GameplayApiResource($client))->leaderboard('ABC123');
+});
+
+// --- Participant token (QU-40) ---
+
+it('keeps the participant token a join hands out, per session code', function () {
+    $client = stubClient();
+    $client->shouldReceive('post')->once()
+        ->andReturn(['data' => ['participant_id' => 55, 'participant_token' => 'secret-token']]);
+
+    (new SessionApiResource($client))->join('ABC123', 'Kasper');
+
+    expect(ParticipantToken::get('ABC123'))->toBe('secret-token')
+        ->and(ParticipantToken::get('XYZ789'))->toBeNull();
+});
+
+it('drops a held token when a join hands out none', function () {
+    ParticipantToken::remember('ABC123', 'old-token');
+    $client = stubClient();
+    $client->shouldReceive('post')->once()->andReturn(['data' => ['participant_id' => 55]]);
+
+    (new SessionApiResource($client))->join('ABC123', 'Kasper');
+
+    expect(ParticipantToken::get('ABC123'))->toBeNull();
+});
+
+it('sends the session\'s participant token on every call that acts as the player', function (Closure $call, string $method, string $url) {
+    ParticipantToken::remember('ABC123', 'secret-token');
+    ParticipantToken::remember('XYZ789', 'other-token');
+    $client = stubClient();
+    $client->shouldReceive($method)->once()
+        ->withArgs(fn ($u, $data, $headers) => $u === $url && $headers === ['X-Participant-Token' => 'secret-token'])
+        ->andReturn(['data' => []]);
+
+    $call($client);
+})->with([
+    'arrived' => [fn ($c) => (new GameplayApiResource($c))->arrived('ABC123', 55, 1, 55.0, 12.0), 'post', '/sessions/ABC123/arrived'],
+    'answer' => [fn ($c) => (new GameplayApiResource($c))->answer('ABC123', 55, 10, 2), 'post', '/sessions/ABC123/answer'],
+    'leaderboard' => [fn ($c) => (new GameplayApiResource($c))->leaderboard('ABC123'), 'get', '/sessions/ABC123/leaderboard'],
+    'show' => [fn ($c) => (new SessionApiResource($c))->show('ABC123', 55), 'get', '/sessions/ABC123'],
+    'leave' => [fn ($c) => (new SessionApiResource($c))->leave('ABC123'), 'post', '/sessions/ABC123/leave'],
+]);
+
+it('forgets every participant token at once', function () {
+    ParticipantToken::remember('ABC123', 'a');
+    ParticipantToken::remember('XYZ789', 'b');
+
+    ParticipantToken::forgetAll();
+
+    expect(ParticipantToken::get('ABC123'))->toBeNull()
+        ->and(ParticipantToken::get('XYZ789'))->toBeNull();
 });
 
 // --- CategoryApiResource ---

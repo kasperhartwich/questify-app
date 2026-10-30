@@ -93,19 +93,21 @@ class QuestifyApiClient
     }
 
     /**
+     * @param  array<string, string>  $headers
      * @return array<string, mixed>
      */
-    public function get(string $url, array $query = []): array
+    public function get(string $url, array $query = [], array $headers = []): array
     {
-        return $this->handleResponse($this->send(fn () => $this->request()->get($url, $query)));
+        return $this->handleResponse($this->send(fn () => $this->request()->withHeaders($headers)->get($url, $query)));
     }
 
     /**
+     * @param  array<string, string>  $headers
      * @return array<string, mixed>
      */
-    public function post(string $url, array $data = []): array
+    public function post(string $url, array $data = [], array $headers = []): array
     {
-        return $this->handleResponse($this->send(fn () => $this->request()->post($url, $data)));
+        return $this->handleResponse($this->send(fn () => $this->request()->withHeaders($headers)->post($url, $data)));
     }
 
     /**

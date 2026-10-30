@@ -6,6 +6,7 @@ use App\Exceptions\Api\ApiAuthenticationException;
 use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiNotFoundException;
 use App\Exceptions\Api\ApiValidationException;
+use App\Services\Api\ParticipantToken;
 use App\Services\TokenStorage;
 use Closure;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,7 @@ trait HandlesApiErrors
     protected function handleEndedSession(): null
     {
         session()->forget('questify_participant_id');
+        ParticipantToken::forgetAll();
         session()->flash('session_ended', __('sessions.ended_under_you'));
         // The welcome screen would bounce a signed-in player on and use up the flash.
         $this->redirect(Auth::check() ? '/discover/list' : '/');
@@ -106,6 +108,7 @@ trait HandlesApiErrors
     private function handleUnknownParticipant(): null
     {
         session()->forget('questify_participant_id');
+        ParticipantToken::forgetAll();
         $this->dispatch('api-error', message: __('errors.participant_unknown'));
 
         return null;

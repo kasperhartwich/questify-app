@@ -20,27 +20,34 @@ use App\Models\Question;
 use App\Models\QuestSession;
 use App\Models\SessionParticipant;
 use App\Services\ActivityLogService;
+use App\Services\ParticipantAccess;
 use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
  * @group Gameplay
  *
- * Real-time gameplay endpoints for active quest sessions.
+ * Real-time gameplay endpoints for active quest sessions. A participant proves
+ * itself with the participant token from the join response (header
+ * X-Participant-Token) or by being the signed-in account it joined with.
  */
 class GameplayController extends Controller
 {
     public function __construct(
         private ScoringService $scoringService,
         private ActivityLogService $activityLogService,
+        private ParticipantAccess $access,
     ) {}
 
     /**
      * Arrive at checkpoint
      *
      * Record arrival at a checkpoint and receive its questions. Broadcasts CheckpointArrived event.
+     *
+     * @header X-Participant-Token 3vQm8xY2kP0aT6wL...
      *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
@@ -50,6 +57,7 @@ class GameplayController extends Controller
      * @bodyParam longitude numeric required The arrival longitude. Example: 12.5681
      *
      * @response 200 {"data": {"id": 3, "title": "Norreport Station", "description": "...", "order_index": 2, "questions": [{"id": 11, "question_text": "What year?", "question_type": "multiple_choice", "answers": [{"id": 41, "answer_text": "1917"}]}]}}
+     * @response 403 {"message": "You can only play as yourself in this session."}
      */
     public function arrived(ArrivedRequest $request, string $code): JsonResponse
     {
@@ -58,6 +66,8 @@ class GameplayController extends Controller
         $participant = SessionParticipant::where('id', $request->validated('participant_id'))
             ->where('quest_session_id', $session->id)
             ->firstOrFail();
+
+        $this->authorizeParticipant($request, $participant);
 
         $checkpoint = Checkpoint::where('id', $request->validated('checkpoint_id'))
             ->where('quest_id', $session->quest_id)
@@ -109,6 +119,8 @@ class GameplayController extends Controller
      *
      * Submit an answer to a question. Returns correctness and score.
      *
+     * @header X-Participant-Token 3vQm8xY2kP0aT6wL...
+     *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
      * @bodyParam participant_id integer required The participant ID. Example: 7
@@ -118,6 +130,7 @@ class GameplayController extends Controller
      *
      * @response 200 scenario="Correct" {"data": {"correct": true, "score_earned": 115, "speed_bonus": 15, "total_score": 315, "next": "question"}}
      * @response 200 scenario="Incorrect" {"data": {"correct": false, "behaviour": "retry_free", "attempts": 2}}
+     * @response 403 {"message": "You can only play as yourself in this session."}
      */
     public function answer(AnswerQuestionRequest $request, string $code): JsonResponse
     {
@@ -131,6 +144,8 @@ class GameplayController extends Controller
                 ->where('id', $request->validated('participant_id'))
                 ->where('quest_session_id', $session->id)
                 ->firstOrFail();
+
+            $this->authorizeParticipant($request, $participant);
 
             $question = Question::query()
                 ->whereHas('checkpoint', fn ($query) => $query->where('quest_id', $session->quest_id))
@@ -297,15 +312,21 @@ class GameplayController extends Controller
     /**
      * Get leaderboard
      *
-     * Get the current session leaderboard sorted by score descending. No auth required.
+     * Get the current session leaderboard sorted by score descending. For the host and the session's own players (participant token or signed-in account); while participant tokens are not required, anyone with the code may read it.
+     *
+     * @header X-Participant-Token 3vQm8xY2kP0aT6wL...
      *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
      * @response 200 {"data": [{"id": 1, "display_name": "Player1", "total_score": 250, "current_checkpoint_index": 2, "quest_completed_at": null}]}
      */
-    public function leaderboard(string $code): JsonResponse
+    public function leaderboard(Request $request, string $code): JsonResponse
     {
-        $session = QuestSession::where('join_code', $code)->firstOrFail();
+        $session = QuestSession::where('join_code', $code)->with('participants')->firstOrFail();
+
+        if (! $this->access->maySeePlayers($request, $session)) {
+            abort(403, __('sessions.not_your_participant'));
+        }
 
         $participants = $session->participants()
             ->orderByDesc('score')
@@ -356,6 +377,13 @@ class GameplayController extends Controller
         ]);
 
         broadcast(new SessionEnded($session))->toOthers();
+    }
+
+    private function authorizeParticipant(Request $request, SessionParticipant $participant): void
+    {
+        if (! $this->access->mayActAs($request, $participant)) {
+            abort(403, __('sessions.not_your_participant'));
+        }
     }
 
     private function getActiveSession(string $code): QuestSession

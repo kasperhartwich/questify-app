@@ -67,6 +67,7 @@ return [
     'away' => 'away',
     'get_closer_to_answer' => 'Get closer to answer',
     'navigating_to_checkpoint' => 'Locating you…',
+    'not_your_participant' => 'You can only play as yourself in this session.',
     'too_far_from_checkpoint' => 'You are too far from the checkpoint to answer. Get closer and try again.',
     'you' => 'You',
     'quest_complete' => 'Quest Complete!',

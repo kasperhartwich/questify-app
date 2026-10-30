@@ -1851,7 +1851,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="gameplay">Gameplay</h1>
 
-    <p>Real-time gameplay endpoints for active quest sessions.</p>
+    <p>Real-time gameplay endpoints for active quest sessions. A participant proves
+itself with the participant token from the join response (header
+X-Participant-Token) or by being the signed-in account it joined with.</p>
 
                                 <h2 id="gameplay-POSTapi-v1-sessions--code--arrived">Arrive at checkpoint</h2>
 
@@ -1868,6 +1870,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
     "http://questify-app.test:8000/api/v1/sessions/ABC123/arrived" \
+    --header "X-Participant-Token: 3vQm8xY2kP0aT6wL..." \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1886,6 +1889,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "X-Participant-Token": "3vQm8xY2kP0aT6wL...",
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -1932,6 +1936,15 @@ fetch(url, {
             }
         ]
     }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;You can only play as yourself in this session.&quot;
 }</code>
  </pre>
     </span>
@@ -1982,6 +1995,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b><code>api/v1/sessions/{code}/arrived</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>X-Participant-Token</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="X-Participant-Token"                data-endpoint="POSTapi-v1-sessions--code--arrived"
+               value="3vQm8xY2kP0aT6wL..."
+               data-component="header">
+    <br>
+<p>Example: <code>3vQm8xY2kP0aT6wL...</code></p>
+            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
@@ -2097,6 +2122,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
     "http://questify-app.test:8000/api/v1/sessions/ABC123/answer" \
+    --header "X-Participant-Token: 3vQm8xY2kP0aT6wL..." \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2115,6 +2141,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "X-Participant-Token": "3vQm8xY2kP0aT6wL...",
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -2162,6 +2189,15 @@ fetch(url, {
         &quot;behaviour&quot;: &quot;retry_free&quot;,
         &quot;attempts&quot;: 2
     }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;You can only play as yourself in this session.&quot;
 }</code>
  </pre>
     </span>
@@ -2212,6 +2248,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b><code>api/v1/sessions/{code}/answer</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>X-Participant-Token</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="X-Participant-Token"                data-endpoint="POSTapi-v1-sessions--code--answer"
+               value="3vQm8xY2kP0aT6wL..."
+               data-component="header">
+    <br>
+<p>Example: <code>3vQm8xY2kP0aT6wL...</code></p>
+            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
@@ -2318,7 +2366,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Get the current session leaderboard sorted by score descending. No auth required.</p>
+<p>Get the current session leaderboard sorted by score descending. For the host and the session's own players (participant token or signed-in account); while participant tokens are not required, anyone with the code may read it.</p>
 
 <span id="example-requests-GETapi-v1-sessions--code--leaderboard">
 <blockquote>Example request:</blockquote>
@@ -2327,6 +2375,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
     --get "http://questify-app.test:8000/api/v1/sessions/ABC123/leaderboard" \
+    --header "X-Participant-Token: 3vQm8xY2kP0aT6wL..." \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2338,6 +2387,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "X-Participant-Token": "3vQm8xY2kP0aT6wL...",
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -2417,6 +2467,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b><code>api/v1/sessions/{code}/leaderboard</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>X-Participant-Token</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="X-Participant-Token"                data-endpoint="GETapi-v1-sessions--code--leaderboard"
+               value="3vQm8xY2kP0aT6wL..."
+               data-component="header">
+    <br>
+<p>Example: <code>3vQm8xY2kP0aT6wL...</code></p>
+            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
@@ -5087,7 +5149,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Get session details by session code. Publicly accessible.</p>
+<p>Get session details by session code. Publicly accessible. The player list (<code>participants</code>) is returned to the host and to the session's own players (participant token or signed-in account); a player's <code>user_id</code> only for the host's and the caller's own entry. While participant tokens are not required, anyone with the code still gets the list.</p>
 
 <span id="example-requests-GETapi-v1-sessions--code-">
 <blockquote>Example request:</blockquote>
@@ -5096,6 +5158,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
     --get "http://questify-app.test:8000/api/v1/sessions/ABC123" \
+    --header "X-Participant-Token: 3vQm8xY2kP0aT6wL..." \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
@@ -5106,6 +5169,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "X-Participant-Token": "3vQm8xY2kP0aT6wL...",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
@@ -5185,6 +5249,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>X-Participant-Token</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="X-Participant-Token"                data-endpoint="GETapi-v1-sessions--code-"
+               value="3vQm8xY2kP0aT6wL..."
+               data-component="header">
+    <br>
+<p>Example: <code>3vQm8xY2kP0aT6wL...</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -5237,6 +5313,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
     "http://questify-app.test:8000/api/v1/sessions/ABC123/join" \
+    --header "X-App-Build: 47" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5251,6 +5328,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "X-App-Build": "47",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
@@ -5276,6 +5354,7 @@ fetch(url, {
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
         &quot;participant_id&quot;: 7,
+        &quot;participant_token&quot;: &quot;3vQm8xY2kP0aT6wL...&quot;,
         &quot;display_name&quot;: &quot;Lars&quot;,
         &quot;session_code&quot;: &quot;XK92PL&quot;,
         &quot;quest&quot;: {
@@ -5335,6 +5414,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b><code>api/v1/sessions/{code}/join</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>X-App-Build</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="X-App-Build"                data-endpoint="POSTapi-v1-sessions--code--join"
+               value="47"
+               data-component="header">
+    <br>
+<p>Example: <code>47</code></p>
+            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;

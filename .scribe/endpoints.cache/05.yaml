@@ -19,10 +19,11 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Show session'
-      description: 'Get session details by session code. Publicly accessible.'
+      description: "Get session details by session code. Publicly accessible. The player list (`participants`) is returned to the host and to the session's own players (participant token or signed-in account); a player's `user_id` only for the host's and the caller's own entry. While participant tokens are not required, anyone with the code still gets the list."
       authenticated: false
       deprecated: false
     headers:
+      X-Participant-Token: 3vQm8xY2kP0aT6wL...
       Content-Type: application/json
       Accept: application/json
     urlParameters:
@@ -74,6 +75,7 @@ endpoints:
       authenticated: false
       deprecated: false
     headers:
+      X-App-Build: '47'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
@@ -111,10 +113,21 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data": {"participant_id": 7, "display_name": "Lars", "session_code": "XK92PL", "quest": {"title": "Copenhagen History Hunt", "cover_image_url": "..."}, "status": "waiting"}, "message": "Joined session successfully."}'
+        content: '{"data": {"participant_id": 7, "participant_token": "3vQm8xY2kP0aT6wL...", "display_name": "Lars", "session_code": "XK92PL", "quest": {"title": "Copenhagen History Hunt", "cover_image_url": "..."}, "status": "waiting"}, "message": "Joined session successfully."}'
         headers: []
         description: ''
-    responseFields: []
+    responseFields:
+      participant_token:
+        custom: []
+        name: participant_token
+        description: "The participant's credential, returned only here and never again. Send it as the X-Participant-Token header on arrived, answer, leaderboard and show. Null for a client whose X-App-Build is below the first build that sends it back."
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
     auth: []
     controller: null
     method: null

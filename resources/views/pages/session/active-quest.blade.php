@@ -4,6 +4,7 @@ use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use App\Models\Quest;
+use App\Services\Api\ParticipantToken;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -62,6 +63,7 @@ class extends Component
         if ($this->participantId && ! in_array($this->participantId, $participantIds)) {
             $this->participantId = 0;
             session()->forget('questify_participant_id');
+            ParticipantToken::forgetAll();
         }
 
         // Auto-detect participant_id from session data if not in PHP session

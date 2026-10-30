@@ -3,6 +3,7 @@
 namespace App\Services\Api\Resources;
 
 use App\Services\Api\ApiCache;
+use App\Services\Api\ParticipantToken;
 use App\Services\Api\QuestifyApiClient;
 
 class SessionApiResource
@@ -23,13 +24,14 @@ class SessionApiResource
     }
 
     /**
-     * The server only hands out checkpoint coordinates up to the given participant's current stop.
+     * The server only hands out checkpoint coordinates up to the given participant's current stop,
+     * and the player list only to the session's own players: the participant token proves which.
      */
     public function show(string $code, ?int $participantId = null): array
     {
         return $this->client->get("/sessions/{$code}", array_filter([
             'participant_id' => $participantId ?: null,
-        ]));
+        ]), ParticipantToken::headers($code));
     }
 
     public function join(string $code, string $displayName, ?int $userId = null): array
@@ -39,6 +41,7 @@ class SessionApiResource
             'user_id' => $userId,
         ]));
 
+        ParticipantToken::remember($code, $result['data']['participant_token'] ?? null);
         ApiCache::forgetPrefix('user:sessions');
 
         return $result;
@@ -64,7 +67,7 @@ class SessionApiResource
 
     public function leave(string $code): array
     {
-        $result = $this->client->post("/sessions/{$code}/leave");
+        $result = $this->client->post("/sessions/{$code}/leave", [], ParticipantToken::headers($code));
 
         ApiCache::forgetPrefix('user:sessions');
 

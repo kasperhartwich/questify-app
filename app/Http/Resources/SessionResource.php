@@ -8,6 +8,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class SessionResource extends JsonResource
 {
+    /**
+     * Whether the player list is included at all. Callers that are not the
+     * host or one of the session's players get counts only.
+     */
+    public bool $showsPlayers = true;
+
+    public function showPlayers(bool $shows): static
+    {
+        $this->showsPlayers = $shows;
+
+        return $this;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -42,7 +55,10 @@ class SessionResource extends JsonResource
             'session_code' => $this->join_code,
             'play_mode' => $this->play_mode,
             'participants_count' => $this->whenCounted('participants'),
-            'participants' => SessionParticipantResource::collection($this->whenLoaded('participants')),
+            'participants' => $this->when(
+                $this->showsPlayers && $this->relationLoaded('participants'),
+                fn () => SessionParticipantResource::collection($this->participants->each->setRelation('questSession', $this->resource)),
+            ),
             'started_at' => $this->started_at,
             'completed_at' => $this->completed_at,
             'created_at' => $this->created_at,

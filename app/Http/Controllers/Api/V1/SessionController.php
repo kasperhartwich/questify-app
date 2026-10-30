@@ -13,6 +13,7 @@ use App\Http\Resources\SessionResource;
 use App\Models\Quest;
 use App\Models\QuestSession;
 use App\Services\ActivityLogService;
+use App\Services\ParticipantAccess;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -77,24 +78,26 @@ class SessionController extends Controller
     /**
      * Show session
      *
-     * Get session details by session code. Publicly accessible.
+     * Get session details by session code. Publicly accessible. The player list (`participants`) is returned to the host and to the session's own players (participant token or signed-in account); a player's `user_id` only for the host's and the caller's own entry. While participant tokens are not required, anyone with the code still gets the list.
      *
      * @unauthenticated
+     *
+     * @header X-Participant-Token 3vQm8xY2kP0aT6wL...
      *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
      * @response 200 {"data": {"id": 1, "session_code": "ABC123", "status": "waiting", "quest": {"id": 1, "title": "City Walk"}}}
      */
-    public function show(string $code): JsonResponse
+    public function show(Request $request, string $code, ParticipantAccess $access): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
-            ->with(['quest.category', 'quest.checkpoints', 'host', 'participants.user'])
+            ->with(['quest.category', 'quest.checkpoints', 'host', 'participants'])
             ->withCount('participants')
             ->firstOrFail();
         $session->quest?->loadCount('checkpoints');
 
         return response()->json([
-            'data' => new SessionResource($session),
+            'data' => (new SessionResource($session))->showPlayers($access->maySeePlayers($request, $session)),
         ]);
     }
 
@@ -107,27 +110,34 @@ class SessionController extends Controller
      *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
+     * @header X-App-Build 47
+     *
      * @bodyParam display_name string required The player display name. Example: Lars
      *
-     * @response 200 {"data": {"participant_id": 7, "display_name": "Lars", "session_code": "XK92PL", "quest": {"title": "Copenhagen History Hunt", "cover_image_url": "..."}, "status": "waiting"}, "message": "Joined session successfully."}
+     * @responseField participant_token string The participant's credential, returned only here and never again. Send it as the X-Participant-Token header on arrived, answer, leaderboard and show. Null for a client whose X-App-Build is below the first build that sends it back.
+     *
+     * @response 200 {"data": {"participant_id": 7, "participant_token": "3vQm8xY2kP0aT6wL...", "display_name": "Lars", "session_code": "XK92PL", "quest": {"title": "Copenhagen History Hunt", "cover_image_url": "..."}, "status": "waiting"}, "message": "Joined session successfully."}
      */
-    public function join(JoinSessionRequest $request, string $code): JsonResponse
+    public function join(JoinSessionRequest $request, string $code, ParticipantAccess $access): JsonResponse
     {
         $session = QuestSession::where('join_code', $code)
             ->where('status', SessionStatus::Waiting)
             ->with('quest')
             ->firstOrFail();
 
-        $participant = $session->participants()->create([
+        $participant = $session->participants()->make([
             'user_id' => $request->user('sanctum')?->id,
             'display_name' => $request->validated('display_name'),
         ]);
+        $token = $access->issuesTokenTo($request) ? $participant->issueToken() : null;
+        $participant->save();
 
         broadcast(new ParticipantJoined($session->join_code, $participant))->toOthers();
 
         return response()->json([
             'data' => [
                 'participant_id' => $participant->id,
+                'participant_token' => $token,
                 'display_name' => $participant->display_name,
                 'session_code' => $session->join_code,
                 'quest' => [

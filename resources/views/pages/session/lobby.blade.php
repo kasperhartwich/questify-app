@@ -2,6 +2,7 @@
 
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
+use App\Services\Api\ParticipantToken;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -100,6 +101,7 @@ class extends Component
         }
 
         session()->forget('questify_participant_id');
+        ParticipantToken::forgetAll();
         $this->redirect('/');
     }
 
