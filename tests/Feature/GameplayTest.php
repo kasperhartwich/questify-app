@@ -6,6 +6,7 @@ use App\Enums\WrongAnswerBehaviour;
 use App\Events\CheckpointArrived;
 use App\Events\LeaderboardUpdated;
 use App\Events\QuestCompleted;
+use App\Events\SessionEnded;
 use App\Models\Answer;
 use App\Models\Checkpoint;
 use App\Models\CheckpointProgress;
@@ -222,6 +223,31 @@ it('detects quest completion', function () {
 
     $this->participant->refresh();
     expect($this->participant->finished_at)->not->toBeNull();
+});
+
+it('completes the session when the only participant finishes the quest', function () {
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", [
+        'participant_id' => $this->participant->id,
+        'question_id' => $this->question->id,
+        'answer_id' => $this->correctAnswer->id,
+    ])->assertOk();
+
+    $this->session->refresh();
+    expect($this->session->status)->toBe(SessionStatus::Completed)
+        ->and($this->session->completed_at)->not->toBeNull();
+    Event::assertDispatched(SessionEnded::class);
+});
+
+it('keeps a group session active until every participant has finished', function () {
+    SessionParticipant::factory()->create(['quest_session_id' => $this->session->id]);
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", [
+        'participant_id' => $this->participant->id,
+        'question_id' => $this->question->id,
+        'answer_id' => $this->correctAnswer->id,
+    ])->assertOk();
+
+    expect($this->session->fresh()->status)->toBe(SessionStatus::Active);
 });
 
 it('handles three_strikes_hint wrong answer behaviour', function () {

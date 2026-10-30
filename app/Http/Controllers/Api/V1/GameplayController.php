@@ -9,6 +9,7 @@ use App\Events\CheckpointArrived;
 use App\Events\CheckpointCompleted;
 use App\Events\LeaderboardUpdated;
 use App\Events\QuestCompleted;
+use App\Events\SessionEnded;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\ArrivedRequest;
@@ -266,6 +267,8 @@ class GameplayController extends Controller
                         ],
                     );
                 }
+
+                $this->completeSessionWhenAllFinished($session);
             }
 
             // Broadcast leaderboard update
@@ -332,6 +335,20 @@ class GameplayController extends Controller
                 'next' => $next,
             ],
         ]);
+    }
+
+    private function completeSessionWhenAllFinished(QuestSession $session): void
+    {
+        if ($session->participants()->whereNull('finished_at')->exists()) {
+            return;
+        }
+
+        $session->update([
+            'status' => SessionStatus::Completed,
+            'completed_at' => now(),
+        ]);
+
+        broadcast(new SessionEnded($session))->toOthers();
     }
 
     private function getActiveSession(string $code): QuestSession
