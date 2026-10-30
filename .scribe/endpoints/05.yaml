@@ -68,7 +68,7 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Join session'
-      description: 'Join a waiting session as a participant. No auth required.'
+      description: 'Join a waiting session as a participant. No auth required; a bearer token makes the participant the signed-in user.'
       authenticated: false
       deprecated: false
     headers:
@@ -102,20 +102,8 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-      user_id:
-        custom: []
-        name: user_id
-        description: 'optional The user ID if authenticated.'
-        required: false
-        example: null
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        deprecated: false
     cleanBodyParameters:
       display_name: Lars
-      user_id: null
     fileParameters: []
     responses:
       -

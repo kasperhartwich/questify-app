@@ -5228,7 +5228,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Join a waiting session as a participant. No auth required.</p>
+<p>Join a waiting session as a participant. No auth required; a bearer token makes the participant the signed-in user.</p>
 
 <span id="example-requests-POSTapi-v1-sessions--code--join">
 <blockquote>Example request:</blockquote>
@@ -5240,8 +5240,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"display_name\": \"Lars\",
-    \"user_id\": null
+    \"display_name\": \"Lars\"
 }"
 </code></pre></div>
 
@@ -5257,8 +5256,7 @@ const headers = {
 };
 
 let body = {
-    "display_name": "Lars",
-    "user_id": null
+    "display_name": "Lars"
 };
 
 fetch(url, {
@@ -5386,18 +5384,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The player display name. Example: <code>Lars</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="user_id"                data-endpoint="POSTapi-v1-sessions--code--join"
-               value=""
-               data-component="body">
-    <br>
-<p>optional The user ID if authenticated.</p>
         </div>
         </form>
 

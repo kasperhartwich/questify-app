@@ -101,14 +101,13 @@ class SessionController extends Controller
     /**
      * Join session
      *
-     * Join a waiting session as a participant. No auth required.
+     * Join a waiting session as a participant. No auth required; a bearer token makes the participant the signed-in user.
      *
      * @unauthenticated
      *
      * @urlParam code string required The 6-character session code. Example: ABC123
      *
      * @bodyParam display_name string required The player display name. Example: Lars
-     * @bodyParam user_id integer optional The user ID if authenticated. Example: null
      *
      * @response 200 {"data": {"participant_id": 7, "display_name": "Lars", "session_code": "XK92PL", "quest": {"title": "Copenhagen History Hunt", "cover_image_url": "..."}, "status": "waiting"}, "message": "Joined session successfully."}
      */
