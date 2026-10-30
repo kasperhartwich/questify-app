@@ -39,6 +39,7 @@ php artisan native:release minor   # 0.0.2 → 0.1.0
 php artisan native:release major   # 0.1.0 → 1.0.0
 ```
 Also increment `NATIVEPHP_APP_VERSION_CODE` in `.env` (integer build number).
+The packager adds one: pass N-1 as `NATIVEPHP_APP_VERSION_CODE` and the IPA's `CFBundleVersion` is N. The app reads the real number from the phone (`Questify.AppBuild`), so it reports N in `X-App-Build`. Check `CFBundleVersion` in the IPA before uploading.
 
 ### Building the IPA
 
