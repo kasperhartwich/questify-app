@@ -77,6 +77,7 @@ Add `--upload-to-app-store` to the package command, plus API key credentials:
 - **Provisioning Profile**: `9c30f5b6-6ec3-46c6-bbdb-aa08397b5d6a` (name: "Questify")
 - **Distribution Certificate**: `Apple Distribution: Kasper Hartwich (2KF539NBBF)` — SHA1: `DE528B8FE19D28D892A3841320051175E9414C94`
 - Always run `npm run build` before packaging
+- The app icon lives in `public/icon.png` (1024x1024 PNG, no alpha) and must be committed: NativePHP installs the iOS and Android icons from it, and without it the build ships the default "N".
 
 ## iOS Simulator Testing
 
