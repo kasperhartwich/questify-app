@@ -338,3 +338,66 @@ it('finds a signed-in player again when the participant id was lost', function (
 
     expect(session('questify_participant_id'))->toBe(55);
 });
+
+// --- The question screen design (QU-50) ---
+
+it('labels the answers A and B and the question type in a pill', function () {
+    fakeGameplay();
+
+    questionScreen()
+        ->assertSeeHtml('data-testid="question-type-pill"')
+        ->assertSee(__('sessions.type_multiple_choice'))
+        ->assertSee('A')
+        ->assertSee('B');
+});
+
+it('shows check and cross rows for a true or false question', function () {
+    fakeGameplay(arrived: ['data' => [
+        'id' => 1,
+        'title' => 'Nyhavn',
+        'questions' => [[
+            'id' => 12,
+            'question_type' => 'true_false',
+            'question_text' => 'Bees make honey.',
+            'points' => 100,
+            'answers' => [['id' => 5, 'answer_text' => 'True'], ['id' => 6, 'answer_text' => 'False']],
+        ]],
+    ]]);
+
+    questionScreen()
+        ->assertSee(__('sessions.type_true_false'))
+        ->assertSee('True')
+        ->assertSee('False')
+        ->assertDontSeeHtml('>A<');
+});
+
+it('shows Not quite and +0 points after a free wrong answer', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="answer-result-wrong"')
+        ->assertSee(__('sessions.not_quite'))
+        ->assertSee('+0 '.__('quests.points'));
+});
+
+it('shows the penalty instead of +0 points when a wrong answer costs points', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_penalty', 'penalty' => 25]]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertSee(__('sessions.wrong_penalty', ['points' => 25]))
+        ->assertDontSee('+0 '.__('quests.points'));
+});
+
+it('shows the correct result block with the points earned', function () {
+    fakeGameplay();
+
+    questionScreen()
+        ->set('selectedAnswerId', 1)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="answer-result-correct"')
+        ->assertSee('+100 '.__('quests.points'));
+});

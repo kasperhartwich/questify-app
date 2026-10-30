@@ -282,125 +282,153 @@ class extends Component
 };
 ?>
 
+@php
+    $question = $this->currentQuestion;
+    $isTrueFalse = $question?->type === \App\Enums\QuestionType::TrueFalse;
+    $isOpenText = $question?->type === \App\Enums\QuestionType::OpenText;
+    $progress = $totalQuestions > 0 ? (($currentQuestionIndex + ($showFeedback && $lastAnswerCorrect ? 1 : 0)) / $totalQuestions) * 100 : 0;
+    $typeLabel = $isTrueFalse ? __('sessions.type_true_false') : ($isOpenText ? __('sessions.type_open_text') : __('sessions.type_multiple_choice'));
+@endphp
+
 <div class="flex flex-col">
-    {{-- Progress Bar --}}
-    <div class="bg-white px-4 py-3 dark:bg-gray-800">
-        <div class="mb-1 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>{{ $checkpointData['title'] ?? '' }}</span>
-            <span>{{ $currentQuestionIndex + 1 }}/{{ $totalQuestions }}</span>
-        </div>
-        <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-            <div class="h-full rounded-full bg-forest-600 transition-all" style="width: {{ $totalQuestions > 0 ? (($currentQuestionIndex + ($showFeedback && $lastAnswerCorrect ? 1 : 0)) / $totalQuestions) * 100 : 0 }}%"></div>
+    {{-- Progress --}}
+    <div class="px-4 pt-3">
+        <p class="mb-1 text-right text-xs text-muted">{{ $currentQuestionIndex + 1 }}/{{ $totalQuestions }}</p>
+        <div class="h-1 overflow-hidden rounded-full bg-cream-border">
+            <div class="h-full rounded-full bg-forest-600 transition-all" style="width: {{ $progress }}%"></div>
         </div>
     </div>
 
-    @if ($this->currentQuestion)
-        <div class="flex-1 space-y-4 p-4">
-            {{-- Question Body --}}
-            <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <span class="mb-2 inline-block rounded-full bg-forest-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-900/30 dark:text-forest-400">
-                    {{ str_replace('_', ' ', ucfirst($this->currentQuestion->type->value)) }}
-                </span>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $this->currentQuestion->body }}</h2>
-                @if ($this->currentQuestion->points)
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $this->currentQuestion->points }} {{ __('quests.points') }}</p>
+    @if ($question)
+        <div class="flex-1 space-y-3 p-4">
+            {{-- Question card --}}
+            <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-cream-border">
+                <span class="mb-2 inline-block rounded-full bg-success px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-forest-600" data-testid="question-type-pill">{{ $typeLabel }}</span>
+                <h2 class="font-heading text-base font-bold text-bark">{{ $question->body }}</h2>
+                @if ($question->points)
+                    <p class="mt-2 flex items-center gap-1.5 text-xs text-muted">
+                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>{{ $question->points }} {{ __('quests.points') }}
+                    </p>
                 @endif
             </div>
 
-            {{-- Revealed hint (three_strikes_hint) — stays visible while retrying --}}
+            {{-- Result block --}}
+            @if ($showFeedback)
+                @if ($lastAnswerCorrect)
+                    <div class="rounded-xl bg-success px-4 py-6 text-center ring-1 ring-forest-100" data-testid="answer-result-correct">
+                        <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-forest-600 text-white">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-correct-icon"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                        </span>
+                        <p class="mt-3 font-heading text-lg font-bold text-forest-600">{{ __('sessions.correct') }}</p>
+                        <p class="text-xs font-medium text-forest-400">+{{ (int) $lastPointsEarned }} {{ __('quests.points') }}</p>
+                        @if ($lastSpeedBonus > 0)
+                            <p class="text-xs text-forest-400">{{ __('sessions.speed_bonus_included', ['points' => $lastSpeedBonus]) }}</p>
+                        @endif
+                    </div>
+                @else
+                    <div class="rounded-xl bg-coral-light px-4 py-6 text-center ring-1 ring-coral/30" data-testid="answer-result-wrong">
+                        <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-coral text-white">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-wrong-icon"><path d="M7 7l10 10M17 7L7 17"/></svg>
+                        </span>
+                        <p class="mt-3 font-heading text-lg font-bold text-coral">{{ __('sessions.not_quite') }}</p>
+                        @if ($wrongBehaviour === 'retry_penalty' && $penaltyPoints)
+                            <p class="text-xs font-medium text-coral">{{ __('sessions.wrong_penalty', ['points' => $penaltyPoints]) }}</p>
+                        @else
+                            <p class="text-xs font-medium text-coral">+0 {{ __('quests.points') }}</p>
+                        @endif
+                    </div>
+                @endif
+            @endif
+
+            {{-- Revealed hint (three_strikes_hint): stays visible while retrying --}}
             @if ($revealedHint)
-                <div class="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-900/40 dark:bg-amber-900/20">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">{{ __('sessions.hint_label') }}</p>
-                    <p class="mt-1 text-sm text-amber-800 dark:text-amber-300">{{ $revealedHint }}</p>
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">{{ __('sessions.hint_label') }}</p>
+                    <p class="mt-1 text-sm text-amber-800">{{ $revealedHint }}</p>
                 </div>
             @endif
 
-            {{-- Answer Options --}}
-            @if (!$showFeedback)
-                @if ($this->currentQuestion->type === \App\Enums\QuestionType::OpenText)
-                    <div>
-                        <textarea
-                            wire:model="openEndedAnswer"
-                            rows="4"
-                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            placeholder="{{ __('sessions.type_answer') }}"
-                        ></textarea>
-                    </div>
-                @else
-                    <div class="space-y-2">
-                        @foreach ($this->currentQuestion->answers as $answer)
-                            <button
-                                wire:click="$set('selectedAnswerId', {{ $answer->id }})"
-                                class="w-full rounded-xl border-2 px-4 py-3 text-left text-sm font-medium transition-colors
-                                    {{ $selectedAnswerId === $answer->id
-                                        ? 'border-forest-600 bg-forest-50 text-forest-900 dark:border-forest-400 dark:bg-forest-900/30 dark:text-forest-300'
-                                        : 'border-gray-200 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-white' }}"
-                                wire:key="answer-{{ $answer->id }}"
-                            >
-                                {{ $answer->body }}
-                            </button>
-                        @endforeach
-                    </div>
+            {{-- Answers --}}
+            @if ($isOpenText)
+                @if (! $showFeedback)
+                    <textarea
+                        wire:model="openEndedAnswer"
+                        rows="4"
+                        class="w-full rounded-xl border border-cream-border bg-white px-3 py-2 text-sm text-bark"
+                        placeholder="{{ __('sessions.type_answer') }}"
+                    ></textarea>
                 @endif
+            @else
+                <div class="space-y-2">
+                    @foreach ($question->answers as $index => $answer)
+                        @php
+                            $picked = $selectedAnswerId === $answer->id;
+                            $isCorrectPick = $showFeedback && $lastAnswerCorrect && $picked;
+                            $isWrongPick = $showFeedback && ! $lastAnswerCorrect && $picked;
+                            $faded = ($selectedAnswerId !== null || $showFeedback) && ! $picked;
+                            $rowClass = $isWrongPick
+                                ? 'border-coral bg-coral-light text-coral'
+                                : ($picked ? 'border-bark bg-success text-bark' : 'border-cream-border bg-white text-bark');
+                            $badgeClass = $isWrongPick
+                                ? 'bg-coral text-white'
+                                : ($picked ? 'bg-forest-600 text-white' : 'bg-cream-dark text-muted');
+                        @endphp
+                        <button
+                            type="button"
+                            @if (! $showFeedback) wire:click="$set('selectedAnswerId', {{ $answer->id }})" @else disabled @endif
+                            class="flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left text-sm font-semibold transition-colors {{ $rowClass }} {{ $faded ? 'opacity-50' : '' }}"
+                            wire:key="answer-{{ $answer->id }}"
+                            data-testid="answer-row"
+                        >
+                            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold {{ $badgeClass }}">
+                                @if ($isTrueFalse)
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        @if ($index === 0)<path d="M5 12.5l4.5 4.5L19 7.5"/>@else<path d="M7 7l10 10M17 7L7 17"/>@endif
+                                    </svg>
+                                @else
+                                    {{ chr(65 + $index) }}
+                                @endif
+                            </span>
+                            <span class="flex-1">{{ $answer->body }}</span>
+                        </button>
+                    @endforeach
+                </div>
+            @endif
 
+            {{-- Actions --}}
+            @if (! $showFeedback)
                 <button
                     wire:click="submitAnswer"
                     wire:loading.attr="disabled"
                     wire:target="submitAnswer"
-                    class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:opacity-50"
-                    {{ ($this->currentQuestion->type !== \App\Enums\QuestionType::OpenText && !$selectedAnswerId) ? 'disabled' : '' }}
+                    class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500 disabled:bg-cream-border disabled:text-muted"
+                    {{ (! $isOpenText && ! $selectedAnswerId) ? 'disabled' : '' }}
                 >
                     {{ __('sessions.submit_answer') }}
                 </button>
-            @endif
-
-            {{-- Feedback --}}
-            @if ($showFeedback)
-                @if ($lastAnswerCorrect)
-                    <div class="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/20">
-                        <svg class="mx-auto h-10 w-10 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-correct-icon"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>
-                        <p class="mt-2 text-lg font-bold text-green-700 dark:text-green-400">{{ __('sessions.correct') }}</p>
-                        @if ($lastPointsEarned)
-                            <p class="text-sm text-green-600 dark:text-green-400">+{{ $lastPointsEarned }} {{ __('quests.points') }}</p>
-                            @if ($lastSpeedBonus > 0)
-                                <p class="text-xs text-green-600 dark:text-green-400">{{ __('sessions.speed_bonus_included', ['points' => $lastSpeedBonus]) }}</p>
-                            @endif
-                        @endif
-                    </div>
-
-                    <button
-                        wire:click="nextQuestion"
-                        class="w-full rounded-xl bg-forest-600 px-4 py-3.5 font-heading text-sm font-bold text-white hover:bg-forest-700"
-                    >
-                        {{ __('general.next') }}
-                    </button>
-                @else
-                    <div class="rounded-xl bg-red-50 p-4 text-center dark:bg-red-900/20">
-                        <svg class="mx-auto h-10 w-10 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-wrong-icon"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
-                        <p class="mt-2 text-lg font-bold text-red-700 dark:text-red-400">{{ __('sessions.wrong') }}</p>
-                        @if ($wrongBehaviour === 'retry_penalty' && $penaltyPoints)
-                            <p class="text-sm text-red-600 dark:text-red-400">{{ __('sessions.wrong_penalty', ['points' => $penaltyPoints]) }}</p>
-                        @endif
-                    </div>
-
-                    @if ($wrongBehaviour === 'lockout' && $lockoutRemaining > 0)
-                        {{-- Locked out: input hidden, countdown ticks, auto-retry when it reaches 0 --}}
-                        <div
-                            x-data="{ remaining: @js($lockoutRemaining) }"
-                            x-init="const t = setInterval(() => { if (--remaining <= 0) { clearInterval(t); $wire.tryAgain(); } }, 1000)"
-                            class="w-full rounded-xl bg-gray-200 px-4 py-3.5 text-center font-heading text-sm font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-400"
-                        >
-                            {{ __('sessions.locked_out') }} <span x-text="remaining"></span>{{ __('sessions.seconds_short') }}
-                        </div>
-                    @else
-                        <button
-                            wire:click="tryAgain"
-                            class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500"
-                        >
-                            {{ __('sessions.try_again') }}
-                        </button>
-                    @endif
-                @endif
+            @elseif ($lastAnswerCorrect)
+                <button
+                    wire:click="nextQuestion"
+                    class="w-full rounded-xl bg-forest-600 px-4 py-3.5 font-heading text-sm font-bold text-white hover:bg-forest-700"
+                >
+                    {{ __('general.next') }}
+                </button>
+            @elseif ($wrongBehaviour === 'lockout' && $lockoutRemaining > 0)
+                {{-- Locked out: countdown ticks, auto-retry when it reaches 0 --}}
+                <div
+                    x-data="{ remaining: @js($lockoutRemaining) }"
+                    x-init="const t = setInterval(() => { if (--remaining <= 0) { clearInterval(t); $wire.tryAgain(); } }, 1000)"
+                    class="w-full rounded-xl bg-cream-border px-4 py-3.5 text-center font-heading text-sm font-bold text-muted"
+                >
+                    {{ __('sessions.locked_out') }} <span x-text="remaining"></span>{{ __('sessions.seconds_short') }}
+                </div>
+            @else
+                <button
+                    wire:click="tryAgain"
+                    class="w-full rounded-xl bg-amber-400 px-4 py-3.5 font-heading text-sm font-bold text-bark hover:bg-amber-500"
+                >
+                    {{ __('sessions.try_again') }}
+                </button>
             @endif
         </div>
     @endif
