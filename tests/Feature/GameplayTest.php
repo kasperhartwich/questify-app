@@ -8,10 +8,12 @@ use App\Events\LeaderboardUpdated;
 use App\Events\QuestCompleted;
 use App\Models\Answer;
 use App\Models\Checkpoint;
+use App\Models\CheckpointProgress;
 use App\Models\Quest;
 use App\Models\Question;
 use App\Models\QuestSession;
 use App\Models\SessionParticipant;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
@@ -84,7 +86,7 @@ it('exposes checkpoint coordinates on an active session (gameplay), not on a wai
 });
 
 it('rejects arrival when the player is outside the checkpoint radius', function () {
-    // ~1.3 km north of the checkpoint (55.6761) — well beyond the 50 m default radius.
+    // ~1.3 km north of the checkpoint (55.6761) — well beyond the 30 m default radius.
     $response = $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
         'participant_id' => $this->participant->id,
         'checkpoint_id' => $this->checkpoint->id,
@@ -96,7 +98,7 @@ it('rejects arrival when the player is outside the checkpoint radius', function 
 });
 
 it('accepts arrival just inside the checkpoint radius', function () {
-    // ~11 m east of the checkpoint — inside the 50 m default radius.
+    // ~11 m east of the checkpoint — inside the 30 m default radius.
     $response = $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
         'participant_id' => $this->participant->id,
         'checkpoint_id' => $this->checkpoint->id,
@@ -347,4 +349,85 @@ it('gameplay endpoints are public', function () {
     ]);
 
     $response->assertOk();
+});
+
+it('scores a replayed correct answer only once and fires its events once', function () {
+    $payload = [
+        'participant_id' => $this->participant->id,
+        'question_id' => $this->question->id,
+        'answer_id' => $this->correctAnswer->id,
+    ];
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", $payload)
+        ->assertOk()->assertJsonPath('data.score_earned', 100);
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", $payload)
+        ->assertOk()->assertJsonPath('data.score_earned', 0)->assertJsonPath('data.total_score', 100)
+        ->assertJsonPath('data.next', 'checkpoint_complete');
+
+    $this->participant->refresh();
+    expect($this->participant->score)->toBe(100)
+        ->and($this->participant->current_checkpoint_index)->toBe(1);
+    Event::assertDispatchedTimes(QuestCompleted::class, 1);
+});
+
+it('keeps one progress row per participant and question', function () {
+    $payload = [
+        'participant_id' => $this->participant->id,
+        'question_id' => $this->question->id,
+        'answer_id' => $this->correctAnswer->id,
+    ];
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", $payload);
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", $payload);
+
+    expect(CheckpointProgress::where('session_participant_id', $this->participant->id)->count())->toBe(1);
+
+    expect(fn () => CheckpointProgress::create([
+        'session_participant_id' => $this->participant->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'question_id' => $this->question->id,
+    ]))->toThrow(QueryException::class);
+});
+
+it('rejects an answer for a question from another quest', function () {
+    $foreign = Question::factory()->create(['type' => QuestionType::MultipleChoice]);
+    $foreignCorrect = Answer::factory()->correct()->create(['question_id' => $foreign->id]);
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/answer", [
+        'participant_id' => $this->participant->id,
+        'question_id' => $foreign->id,
+        'answer_id' => $foreignCorrect->id,
+    ])->assertNotFound();
+
+    expect($this->participant->refresh()->score)->toBe(0);
+});
+
+it('rejects arrival with a participant from another session', function () {
+    $otherSession = QuestSession::factory()->create([
+        'quest_id' => $this->quest->id,
+        'status' => SessionStatus::Active,
+        'started_at' => now(),
+    ]);
+    $outsider = SessionParticipant::factory()->create(['quest_session_id' => $otherSession->id]);
+
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", [
+        'participant_id' => $outsider->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'latitude' => 55.6761,
+        'longitude' => 12.5683,
+    ])->assertNotFound();
+});
+
+it('falls back to a 30 m arrival radius when the quest has none', function () {
+    $this->quest->update(['checkpoint_arrival_radius_meters' => null]);
+    $body = fn (float $latitude) => [
+        'participant_id' => $this->participant->id,
+        'checkpoint_id' => $this->checkpoint->id,
+        'latitude' => $latitude,
+        'longitude' => 12.5683,
+    ];
+
+    // 0.0002 deg is ~22 m, 0.0004 deg is ~44 m.
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", $body(55.6763))->assertOk();
+    $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", $body(55.6765))->assertStatus(422);
 });

@@ -63,8 +63,8 @@ class GameplayController extends Controller
             ->firstOrFail();
 
         // Server-side geofence (spec §6): the player must actually be within the checkpoint's
-        // arrival radius. The per-checkpoint override wins over the quest default (50 m fallback).
-        $radius = $checkpoint->arrival_radius_override ?? $session->quest->checkpoint_arrival_radius_meters ?? 50;
+        // arrival radius. The per-checkpoint override wins over the quest default (30 m fallback, as in questify-admin and the spec).
+        $radius = $checkpoint->arrival_radius_override ?? $session->quest->checkpoint_arrival_radius_meters ?? 30;
         $distanceMeters = Quest::haversineDistance(
             (float) $request->validated('latitude'),
             (float) $request->validated('longitude'),
@@ -128,7 +128,9 @@ class GameplayController extends Controller
                 ->where('quest_session_id', $session->id)
                 ->firstOrFail();
 
-            $question = Question::findOrFail($request->validated('question_id'));
+            $question = Question::query()
+                ->whereHas('checkpoint', fn ($query) => $query->where('quest_id', $session->quest_id))
+                ->findOrFail($request->validated('question_id'));
             $checkpoint = $question->checkpoint;
 
             // Get existing progress for this question
@@ -136,6 +138,10 @@ class GameplayController extends Controller
                 ->where('session_participant_id', $participant->id)
                 ->where('question_id', $question->id)
                 ->first();
+
+            if ($existingProgress?->is_correct) {
+                return $this->replayedCorrectAnswer($participant, $checkpoint);
+            }
 
             // Determine correctness
             $isCorrect = $this->evaluateAnswer($question, $request);
@@ -303,6 +309,29 @@ class GameplayController extends Controller
             ]);
 
         return response()->json(['data' => $participants]);
+    }
+
+    /**
+     * A question already answered correctly scores nothing more and fires no events again.
+     */
+    private function replayedCorrectAnswer(SessionParticipant $participant, Checkpoint $checkpoint): JsonResponse
+    {
+        $answeredCorrectly = CheckpointProgress::where('session_participant_id', $participant->id)
+            ->where('checkpoint_id', $checkpoint->id)
+            ->where('is_correct', true)
+            ->count();
+
+        $next = $answeredCorrectly < $checkpoint->questions()->count() ? 'question' : 'checkpoint_complete';
+
+        return response()->json([
+            'data' => [
+                'correct' => true,
+                'score_earned' => 0,
+                'speed_bonus' => 0,
+                'total_score' => $participant->score,
+                'next' => $next,
+            ],
+        ]);
     }
 
     private function getActiveSession(string $code): QuestSession
