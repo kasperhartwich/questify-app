@@ -258,6 +258,7 @@ it('keeps the centre button behind the access code gate', function () {
     ])
         ->dispatch('centre-start-quest')
         ->assertHasErrors('accessCode')
+        ->assertDispatched('show-overview-tab')
         ->assertNoRedirect();
 
     expect($created)->toBeFalse();

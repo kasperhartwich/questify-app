@@ -124,6 +124,7 @@ class extends Component
     {
         if ($this->requiresAccessCode && ! $this->accessGranted) {
             $this->addError('accessCode', __('quests.access_code_required'));
+            $this->dispatch('show-overview-tab');
 
             return;
         }
@@ -228,6 +229,7 @@ class extends Component
 @endphp
 
 <div class="flex flex-col"
+    x-on:show-overview-tab.window="activeTab = 'overview'"
     x-data="{
         activeTab: 'overview',
         playMode: 'solo',

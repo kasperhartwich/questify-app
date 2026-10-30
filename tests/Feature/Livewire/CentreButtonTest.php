@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\GameplayApiResource;
@@ -192,4 +193,13 @@ it('starts the quest with the chosen play mode when the centre button asks', fun
         ->assertRedirect('/session/XYZ789');
 
     expect($sent)->toBe('competitive_individual');
+});
+
+it('shows the amber start button on the quest page and Join quest on Discover, through the layout', function () {
+    playerSessions([]);
+
+    $this->actingAs(User::factory()->make(['id' => 1]));
+
+    $this->get('/quests/7')->assertOk()->assertSee('data-centre-mode="start"', false);
+    $this->get('/discover/list')->assertOk()->assertSee('data-centre-mode="join"', false);
 });
