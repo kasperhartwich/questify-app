@@ -401,3 +401,27 @@ it('shows the correct result block with the points earned', function () {
         ->assertSeeHtml('data-testid="answer-result-correct"')
         ->assertSee('+100 '.__('quests.points'));
 });
+
+it('picks the true or false icon from the answer text, not its position', function () {
+    fakeGameplay(arrived: ['data' => [
+        'id' => 1,
+        'title' => 'Nyhavn',
+        'questions' => [[
+            'id' => 12,
+            'question_type' => 'true_false',
+            'question_text' => 'Bees make honey.',
+            'points' => 100,
+            'answers' => [['id' => 6, 'answer_text' => 'False'], ['id' => 5, 'answer_text' => 'True']],
+        ]],
+    ]]);
+
+    $html = questionScreen()->html();
+
+    // The check mark path belongs to the True row, whichever order the rows arrive in.
+    preg_match_all('/<button.*?<\/button>/s', $html, $rows);
+    $falseRow = collect($rows[0])->first(fn ($row) => str_contains($row, 'False'));
+    $trueRow = collect($rows[0])->first(fn ($row) => str_contains($row, 'True'));
+
+    expect($trueRow)->toContain('M5 12.5l4.5 4.5L19 7.5')
+        ->and($falseRow)->toContain('M7 7l10 10M17 7L7 17');
+});

@@ -366,6 +366,9 @@ class extends Component
                     @foreach ($answers as $index => $answer)
                         @php
                             $picked = $selectedAnswerId === $answer->id;
+                            $answerText = mb_strtolower(trim($answer->body));
+                            $isTrueRow = in_array($answerText, ['true', 'sandt'], true)
+                                || (! in_array($answerText, ['false', 'falsk'], true) && $index === 0);
                             $isWrongPick = $showFeedback && ! $lastAnswerCorrect && $picked;
                             $faded = ($selectedAnswerId !== null || $showFeedback) && ! $picked;
                             $rowClass = $isWrongPick
@@ -385,7 +388,7 @@ class extends Component
                             <span data-testid="answer-badge" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold {{ $badgeClass }}">
                                 @if ($isTrueFalse)
                                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        @if ($index === 0)<path d="M5 12.5l4.5 4.5L19 7.5"/>@else<path d="M7 7l10 10M17 7L7 17"/>@endif
+                                        @if ($isTrueRow)<path d="M5 12.5l4.5 4.5L19 7.5"/>@else<path d="M7 7l10 10M17 7L7 17"/>@endif
                                     </svg>
                                 @else
                                     {{ chr(65 + $index) }}
