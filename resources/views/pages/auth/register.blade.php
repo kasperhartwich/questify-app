@@ -312,7 +312,7 @@ class extends Component
                 <form wire:submit="sendPhoneCode" class="flex gap-2">
                     {{-- Country code selector with flag --}}
                     <div class="relative">
-                        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px]">🇩🇰</span>
+                        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"><x-flag code="da" class="h-3.5 w-5" /></span>
                         <select
                             wire:model="country_code"
                             class="h-full appearance-none rounded-[14px] border-[1.5px] border-cream-border bg-white py-[13px] pl-8 pr-7 text-[13px] font-semibold text-bark focus:border-forest-600 focus:outline-none"

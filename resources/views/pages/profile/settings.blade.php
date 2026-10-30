@@ -388,7 +388,7 @@ class extends Component
                     <div class="overflow-hidden rounded-[14px] bg-white" style="border: 1.5px solid #E5DDD0;">
                         {{-- Danish --}}
                         <button wire:click="setLocale('da')" class="flex w-full items-center gap-3 px-[16px] py-[13px] text-left border-b" style="border-color: #E5DDD0;">
-                            <span class="text-[20px]">🇩🇰</span>
+                            <x-flag code="da" class="h-5 w-7" />
                             <span class="flex-1 text-[14px] font-semibold {{ $locale === 'da' ? 'text-bark' : 'text-muted' }}">Dansk</span>
                             @if ($locale === 'da')
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -398,7 +398,7 @@ class extends Component
                         </button>
                         {{-- English --}}
                         <button wire:click="setLocale('en')" class="flex w-full items-center gap-3 px-[16px] py-[13px] text-left">
-                            <span class="text-[20px]">🇬🇧</span>
+                            <x-flag code="en" class="h-5 w-7" />
                             <span class="flex-1 text-[14px] font-semibold {{ $locale === 'en' ? 'text-bark' : 'text-muted' }}">English</span>
                             @if ($locale === 'en')
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>

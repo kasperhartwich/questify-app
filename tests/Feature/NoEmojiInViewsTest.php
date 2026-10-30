@@ -8,7 +8,7 @@ it('keeps emoji out of the views and the strings', function () {
         ->merge(File::allFiles(lang_path()));
 
     foreach ($files as $file) {
-        expect(preg_match('/[\x{1F300}-\x{1FAFF}\x{2705}\x{274C}\x{2B50}\x{FE0F}]/u', File::get($file->getPathname())))
+        expect(preg_match('/[\x{1F000}-\x{1FAFF}\x{2600}-\x{2604}\x{2607}-\x{27BF}\x{2B50}\x{FE0F}]/u', File::get($file->getPathname())))
             ->toBe(0, $file->getRelativePathname().' holds an emoji, use an icon');
     }
 });

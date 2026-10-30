@@ -41,7 +41,7 @@ class extends Component
     <div x-data="{ open: false, selected: @js(app()->getLocale()) }" class="absolute left-4 top-[60px] z-20">
         {{-- Trigger button --}}
         <button @click="open = true" class="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-2 text-[13px] font-semibold text-white">
-            <span class="text-[16px]">{{ app()->getLocale() === 'da' ? '🇩🇰' : '🇬🇧' }}</span>
+            <x-flag :code="app()->getLocale()" class="h-4 w-6" />
             <span>{{ strtoupper(app()->getLocale()) }}</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
@@ -63,7 +63,7 @@ class extends Component
                     <div class="flex flex-col gap-2.5">
                         {{-- Danish --}}
                         <button @click="selected = 'da'" class="flex items-center gap-3 rounded-[14px] border-[1.5px] px-4 py-3.5" :class="selected === 'da' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                            <span class="text-[22px]">🇩🇰</span>
+                            <x-flag code="da" class="h-[22px] w-8" />
                             <div class="flex-1 text-left">
                                 <div class="text-[14px] font-bold text-bark">Dansk</div>
                                 <div class="text-[12px] text-muted">Danish</div>
@@ -75,7 +75,7 @@ class extends Component
 
                         {{-- English --}}
                         <button @click="selected = 'en'" class="flex items-center gap-3 rounded-[14px] border-[1.5px] px-4 py-3.5" :class="selected === 'en' ? 'border-forest-600 bg-[#F4FBF7]' : 'border-cream-border'">
-                            <span class="text-[22px]">🇬🇧</span>
+                            <x-flag code="en" class="h-[22px] w-8" />
                             <div class="flex-1 text-left">
                                 <div class="text-[14px] font-bold text-bark">English</div>
                                 <div class="text-[12px] text-muted">English</div>
