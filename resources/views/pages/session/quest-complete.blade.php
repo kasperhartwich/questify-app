@@ -97,6 +97,13 @@ class extends Component
     {
         $this->dispatch('share-result', [
             'title' => __('sessions.share_result_title'),
+            'url' => config('questify.app_url'),
+            'quest' => $this->questTitle,
+            'score' => number_format($this->myScore),
+            'rank' => $this->myRank > 0
+                ? __('sessions.rank_of', ['rank' => $this->myRank, 'total' => count($this->leaderboard)])
+                : '',
+            'scoreLabel' => __('sessions.your_score'),
             'text' => __('sessions.share_result_text', [
                 'quest' => $this->questTitle,
                 'score' => $this->myScore,
@@ -211,9 +218,7 @@ class extends Component
                 wire:click="shareResult"
                 class="flex-1 rounded-xl border-[1.5px] border-white/45 px-4 py-3.5 text-center font-heading text-sm font-bold text-white hover:bg-white/10"
                 x-on:share-result.window="
-                    if (navigator.share) {
-                        navigator.share({ title: $event.detail[0].title, text: $event.detail[0].text });
-                    }
+                    window.QuestifyShare.result($event.detail[0])
                 "
             >
                 {{ __('sessions.share_result') }}

@@ -229,6 +229,24 @@ it('hands the result to the share sheet', function () {
     questComplete()->call('shareResult')->assertDispatched('share-result');
 });
 
+it('shares the result with the app link and the figures for the image', function () {
+    session()->put('questify_participant_id', 55);
+
+    questComplete()->call('shareResult')->assertDispatched(
+        'share-result',
+        fn (string $event, array $params) => $params[0]['url'] === 'https://getquestify.app'
+            && $params[0]['quest'] === 'Copenhagen History Hunt'
+            && $params[0]['score'] === '100'
+            && $params[0]['rank'] !== ''
+    );
+});
+
+it('ignores a closed share sheet instead of reporting it', function () {
+    $share = File::get(resource_path('js/share.js'));
+
+    expect($share)->toContain("error?.name !== 'AbortError'");
+});
+
 it('lists the host once when the host also plays', function () {
     $show = fn () => ['data' => [
         'id' => 1, 'session_code' => 'ABC123', 'status' => 'waiting', 'play_mode' => 'competitive_individual',

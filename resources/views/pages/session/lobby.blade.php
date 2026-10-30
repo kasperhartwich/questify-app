@@ -139,11 +139,7 @@ class extends Component
                     wire:click="shareSession"
                     class="rounded-[10px] bg-white/15 px-[14px] py-[8px] text-[13px] font-semibold text-white/70"
                     x-on:share-session.window="
-                        if (navigator.share) {
-                            navigator.share({ title: 'Join Quest', url: $event.detail.url });
-                        } else {
-                            navigator.clipboard.writeText($event.detail.url);
-                        }
+                        window.QuestifyShare.link($event.detail.url)
                     "
                 >
                     {{ __('sessions.share') }}
