@@ -296,6 +296,23 @@ function swapSessions(object $resource): void
     swapApiResource('sessions', $resource);
 }
 
+/**
+ * The shared sessions fixture, with the calls a test overrides.
+ *
+ * @param  array<string, Closure>  $overrides
+ */
+function sessionsWith(array $overrides): SessionApiResource
+{
+    $fixture = app(QuestifyApiClient::class)->sessions();
+    $mock = Mockery::mock(SessionApiResource::class);
+
+    foreach (['show', 'start', 'end', 'leave', 'dashboard', 'join', 'create'] as $call) {
+        $mock->shouldReceive($call)->andReturnUsing($overrides[$call] ?? fn (...$args) => $fixture->{$call}(...$args));
+    }
+
+    return $mock;
+}
+
 function swapGameplayResource(object $resource): void
 {
     swapApiResource('gameplay', $resource);

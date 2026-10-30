@@ -123,4 +123,6 @@ return [
         'answer_required' => 'An answer is required.',
         'time_required' => 'Time taken is required.',
     ],
+    'code_not_found' => "We couldn't find a game with that code. Check it with the person who invited you.",
+    'already_started' => 'That game has already started.',
 ];

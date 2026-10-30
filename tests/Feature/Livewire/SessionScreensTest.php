@@ -3,7 +3,6 @@
 use App\Auth\ApiTokenUser;
 use App\Exceptions\Api\ApiException;
 use App\Models\User;
-use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\SessionApiResource;
 use Livewire\Livewire;
 
@@ -20,23 +19,6 @@ function lobby(string $code = 'ABC123', ?User $as = null)
 {
     return Livewire::actingAs($as ?? User::factory()->create())
         ->test('pages::session.lobby', ['code' => $code]);
-}
-
-/**
- * The shared sessions fixture, with the calls a test overrides.
- *
- * @param  array<string, Closure>  $overrides
- */
-function sessionsWith(array $overrides): SessionApiResource
-{
-    $fixture = app(QuestifyApiClient::class)->sessions();
-    $mock = Mockery::mock(SessionApiResource::class);
-
-    foreach (['show', 'start', 'end', 'leave', 'dashboard', 'join', 'create'] as $call) {
-        $mock->shouldReceive($call)->andReturnUsing($overrides[$call] ?? fn (...$args) => $fixture->{$call}(...$args));
-    }
-
-    return $mock;
 }
 
 it('shows the quest a lobby is waiting to play', function () {

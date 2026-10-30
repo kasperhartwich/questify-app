@@ -1,5 +1,8 @@
 <?php
 
+use App\Exceptions\Api\ApiException;
+use App\Exceptions\Api\ApiNotFoundException;
+use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -14,6 +17,8 @@ new
 #[Title('Join a Quest')]
 class extends Component
 {
+    use WithApiClient;
+
     public string $joinCode = '';
 
     public bool $isNative = false;
@@ -32,7 +37,36 @@ class extends Component
             'joinCode' => ['required', 'string', 'size:6'],
         ]);
 
-        $this->redirect('/join/' . strtoupper($this->joinCode) . '/name');
+        $code = strtoupper($this->joinCode);
+
+        if ($this->canJoin($code)) {
+            $this->redirect('/join/' . $code . '/name');
+        }
+    }
+
+    /**
+     * Ask the session before leaving this screen, so a mistyped code is
+     * answered here with what the player typed still in place.
+     */
+    private function canJoin(string $code): bool
+    {
+        try {
+            $status = data_get($this->api->sessions()->show($code), 'data.status');
+        } catch (ApiNotFoundException) {
+            $this->addError('joinCode', __('sessions.code_not_found'));
+
+            return false;
+        } catch (ApiException) {
+            return true;
+        }
+
+        if ($status !== null && $status !== 'waiting') {
+            $this->addError('joinCode', __('sessions.already_started'));
+
+            return false;
+        }
+
+        return true;
     }
 
     public function scanQr(): void
@@ -61,7 +95,9 @@ class extends Component
             return;
         }
 
-        $this->redirect('/join/' . $code . '/name');
+        if ($this->canJoin($code)) {
+            $this->redirect('/join/' . $code . '/name');
+        }
     }
 
     private function extractSessionCode(string $data): ?string

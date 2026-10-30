@@ -123,4 +123,6 @@ return [
         'answer_required' => 'Et svar er påkrævet.',
         'time_required' => 'Tid brugt er påkrævet.',
     ],
+    'code_not_found' => 'Vi kunne ikke finde et spil med den kode. Spørg den, der inviterede dig.',
+    'already_started' => 'Det spil er allerede startet.',
 ];

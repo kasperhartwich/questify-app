@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Api\ApiException;
+use App\Exceptions\Api\ApiNotFoundException;
 use App\Models\User;
 use App\Services\Api\Resources\SessionApiResource;
 use Livewire\Livewire;
@@ -32,6 +33,28 @@ it('accepts a six character code and asks for a name next', function () {
         ->set('joinCode', 'abc123')
         ->call('joinByCode')
         ->assertRedirect('/join/ABC123/name');
+});
+
+it('keeps the player on the code screen when no game has that code', function () {
+    swapSessions(sessionsWith(['show' => fn () => throw new ApiNotFoundException('Not found')]));
+
+    Livewire::test('pages::join.index')
+        ->set('joinCode', 'ZZZZZZ')
+        ->call('joinByCode')
+        ->assertNoRedirect()
+        ->assertSet('joinCode', 'ZZZZZZ')
+        ->assertHasErrors('joinCode')
+        ->assertSee("We couldn't find a game with that code");
+});
+
+it('says so when the game has already started', function () {
+    swapSessions(sessionsWith(['show' => fn () => ['data' => ['status' => 'active']]]));
+
+    Livewire::test('pages::join.index')
+        ->set('joinCode', 'ABC123')
+        ->call('joinByCode')
+        ->assertNoRedirect()
+        ->assertSee('That game has already started.');
 });
 
 it('treats a signed-in player as no longer a guest', function () {
