@@ -2,8 +2,8 @@
 
 use App\Services\AppUpdateService;
 use App\Services\InstallChannel;
+use App\Services\StoreLink;
 use Livewire\Component;
-use Native\Mobile\Facades\Browser;
 
 new class extends Component
 {
@@ -31,10 +31,10 @@ new class extends Component
         $this->url = $prompt['url'] ?? null;
     }
 
-    public function open(): void
+    public function open(StoreLink $links): void
     {
         if ($this->url !== null) {
-            Browser::open($this->url);
+            $links->open($this->url);
         }
     }
 

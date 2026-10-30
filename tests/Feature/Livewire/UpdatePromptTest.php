@@ -1,12 +1,16 @@
 <?php
 
+use App\Contracts\ReadsAppBuild;
 use App\Contracts\ReadsInstallChannel;
 use App\Services\Api\QuestifyApiClient;
+use App\Services\AppBuild;
 use App\Services\AppUpdateService;
 use App\Services\InstallChannel;
+use App\Services\StoreLink;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
+use Native\Mobile\Facades\Browser;
 
 function fakeAppUpdate(array $data, int $status = 200): void
 {
@@ -166,4 +170,41 @@ it('words every string for a player, not for a web page', function () {
 
 it('has the same update strings in English and Danish', function () {
     expect(array_keys(trans('update', [], 'da')))->toEqual(array_keys(trans('update', [], 'en')));
+});
+
+it('reports the build number the phone has, not the one baked into the config', function () {
+    config(['nativephp.version_code' => 46]);
+    app()->instance(ReadsAppBuild::class, new class implements ReadsAppBuild
+    {
+        public function read(): ?int
+        {
+            return 47;
+        }
+    });
+    Http::fake(['*' => Http::response(['data' => []], 200)]);
+
+    app(QuestifyApiClient::class)->get('/categories');
+
+    Http::assertSent(fn ($request): bool => $request->hasHeader('X-App-Build', '47'));
+});
+
+it('falls back to the configured build number when the phone cannot say', function () {
+    config(['nativephp.version_code' => 46]);
+
+    expect(app(AppBuild::class)->number())->toBe(46);
+});
+
+it('opens a TestFlight address in the TestFlight app', function (string $url) {
+    expect((new StoreLink)->target($url))->toBe('itms-beta://beta.itunes.apple.com/v1/app/6762279177');
+})->with([
+    'https://testflight.apple.com/v1/app/6762279177',
+    'https://beta.itunes.apple.com/v1/app/6762279177',
+]);
+
+it('leaves other addresses as they are and opens them in the browser here', function () {
+    expect((new StoreLink)->target('https://apps.apple.com/app/id1'))->toBe('https://apps.apple.com/app/id1');
+
+    Browser::shouldReceive('open')->once()->with('https://apps.apple.com/app/id1');
+
+    (new StoreLink)->open('https://apps.apple.com/app/id1');
 });

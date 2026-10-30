@@ -8,6 +8,16 @@
             "name": "Questify.InstallChannel",
             "ios": "QuestifyFunctions.InstallChannel",
             "description": "Whether this copy came from TestFlight, the App Store or Xcode"
+        },
+        {
+            "name": "Questify.AppBuild",
+            "ios": "QuestifyFunctions.AppBuild",
+            "description": "The build number of the installed binary (CFBundleVersion)"
+        },
+        {
+            "name": "Questify.OpenUrl",
+            "ios": "QuestifyFunctions.OpenUrl",
+            "description": "Open an address with iOS, including custom schemes such as itms-beta"
         }
     ],
     "ios": {
