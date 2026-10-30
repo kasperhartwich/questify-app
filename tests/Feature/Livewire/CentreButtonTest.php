@@ -130,19 +130,24 @@ it('forgets the cached session list when the player joins or answers', function 
     expect($fresh['data'])->toHaveCount(1);
 })->with(['join', 'answer']);
 
-it('draws a round logo inside a round button in both modes', function () {
+it('draws only a big round logo, raised above the bar, with the mode text as its label', function () {
     playerSessions([]);
 
     Livewire::test('centre-button')
         ->assertSeeHtml('rounded-full bg-forest-600')
-        ->assertSeeHtml('rounded-full bg-amber-400')
-        ->assertDontSeeHtml('rounded-[10px]');
+        ->assertSeeHtml('bg-amber-400 text-forest-600')
+        ->assertSeeHtml('aria-label="Join quest"')
+        ->assertSeeHtml('h-[84px] w-[84px]')
+        ->assertSeeHtml('-mt-9')
+        ->assertDontSeeHtml('truncate')
+        ->assertDontSeeHtml('<polyline');
 
     playerSessions([participation('active')]);
 
     Livewire::test('centre-button')
-        ->assertSeeHtml('rounded-full bg-amber-400')
-        ->assertDontSeeHtml('rounded-[8px]');
+        ->assertSeeHtml('aria-label="Quest"')
+        ->assertSeeHtml('bg-cream')
+        ->assertDontSeeHtml('truncate');
 });
 
 it('says Start Quest in amber on a quest screen', function () {
@@ -153,8 +158,9 @@ it('says Start Quest in amber on a quest screen', function () {
         ->assertSee('Start Quest')
         ->assertDontSee('Join quest')
         ->assertSeeHtml('data-centre-mode="start"')
+        ->assertSeeHtml('aria-label="Start Quest"')
         ->assertSeeHtml('rounded-full bg-amber-400')
-        ->assertSeeHtml('text-bark');
+        ->assertSeeHtml('bg-forest-600 text-amber-400');
 });
 
 it('says Start Quest in Danish on a quest screen', function () {
