@@ -246,3 +246,22 @@ it('refuses to rate the same quest twice', function () {
 it('hands the result to the share sheet', function () {
     questComplete()->call('shareResult')->assertDispatched('share-result');
 });
+
+it('lists the host once when the host also plays', function () {
+    $show = fn () => ['data' => [
+        'id' => 1, 'session_code' => 'ABC123', 'status' => 'waiting', 'play_mode' => 'competitive_individual',
+        'quest' => ['id' => 1, 'title' => 'Copenhagen History Hunt'],
+        'host' => ['id' => 2, 'name' => 'Bent Hansen'],
+        'participants' => [
+            ['id' => 55, 'user_id' => 2, 'display_name' => 'Bent Hansen'],
+            ['id' => 56, 'user_id' => 9, 'display_name' => 'Maja Friend'],
+        ],
+        'participants_count' => 2, 'started_at' => null, 'completed_at' => null,
+    ]];
+    swapSessions(sessionsWith(['show' => $show]));
+
+    $html = lobby()->html();
+
+    expect(preg_match_all('/<p[^>]*>\s*Bent Hansen\s*<\/p>/', $html))->toBe(1)
+        ->and(preg_match_all('/<p[^>]*>\s*Maja Friend\s*<\/p>/', $html))->toBe(1);
+});

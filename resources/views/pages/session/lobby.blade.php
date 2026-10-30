@@ -180,7 +180,13 @@ class extends Component
 
         {{-- Player Rows --}}
         <div>
-            @php $avatarColors = ['#0B3D2E', '#7C4DFF', '#E85C3A', '#0EA5E9', '#F5A623', '#7C3AED']; @endphp
+            @php
+                $avatarColors = ['#0B3D2E', '#7C4DFF', '#E85C3A', '#0EA5E9', '#F5A623', '#7C3AED'];
+                $otherPlayers = array_values(array_filter(
+                    $participants,
+                    fn ($participant) => ($participant['user_id'] ?? null) === null || $participant['user_id'] !== ($session['host']['id'] ?? null),
+                ));
+            @endphp
 
             {{-- Host --}}
             <div class="flex items-center gap-3 border-b border-cream-border py-3">
@@ -191,7 +197,7 @@ class extends Component
                 <span class="rounded-full bg-[#D4EDE4] px-[8px] py-[2px] text-[10px] font-bold text-[#0A5A3A]">{{ __('sessions.quest_master') }}</span>
             </div>
 
-            @foreach ($participants as $pIndex => $participant)
+            @foreach ($otherPlayers as $pIndex => $participant)
                 <div class="flex items-center gap-3 border-b border-cream-border py-3 last:border-b-0" wire:key="participant-{{ $participant['id'] }}">
                     <div class="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white" style="background: {{ $avatarColors[$pIndex % count($avatarColors)] }}">
                         {{ strtoupper(substr($participant['display_name'], 0, 1)) }}
