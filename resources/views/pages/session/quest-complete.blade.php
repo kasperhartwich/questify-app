@@ -111,7 +111,7 @@ class extends Component
     {{-- Celebration Header --}}
     <div class="relative overflow-hidden bg-forest-600 px-4 py-8 text-center text-white">
         <div class="pointer-events-none absolute right-[-40px] top-[-40px] h-[160px] w-[160px] rounded-full border-[28px] border-amber-400/10"></div>
-        <p class="text-5xl">🏆</p>
+        <svg class="mx-auto h-14 w-14 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/></svg>
         <h1 class="mt-2 font-heading text-2xl font-extrabold">{{ __('sessions.quest_complete') }}</h1>
         <p class="mt-1 text-lg text-white/80">{{ $questTitle }}</p>
     </div>

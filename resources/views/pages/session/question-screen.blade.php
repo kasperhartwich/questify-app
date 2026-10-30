@@ -358,7 +358,7 @@ class extends Component
             @if ($showFeedback)
                 @if ($lastAnswerCorrect)
                     <div class="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/20">
-                        <p class="text-3xl">✅</p>
+                        <svg class="mx-auto h-10 w-10 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-correct-icon"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>
                         <p class="mt-2 text-lg font-bold text-green-700 dark:text-green-400">{{ __('sessions.correct') }}</p>
                         @if ($lastPointsEarned)
                             <p class="text-sm text-green-600 dark:text-green-400">+{{ $lastPointsEarned }} {{ __('quests.points') }}</p>
@@ -376,7 +376,7 @@ class extends Component
                     </button>
                 @else
                     <div class="rounded-xl bg-red-50 p-4 text-center dark:bg-red-900/20">
-                        <p class="text-3xl">❌</p>
+                        <svg class="mx-auto h-10 w-10 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="answer-wrong-icon"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
                         <p class="mt-2 text-lg font-bold text-red-700 dark:text-red-400">{{ __('sessions.wrong') }}</p>
                         @if ($wrongBehaviour === 'retry_penalty' && $penaltyPoints)
                             <p class="text-sm text-red-600 dark:text-red-400">{{ __('sessions.wrong_penalty', ['points' => $penaltyPoints]) }}</p>

@@ -156,6 +156,26 @@ it('moves a correctly answered question out of the queue', function () {
 
 // --- Wrong-answer behaviours (spec 5.15) ---
 
+it('shows an icon, not an emoji, on a correct answer', function () {
+    fakeGameplay();
+
+    questionScreen()
+        ->set('selectedAnswerId', 1)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="answer-correct-icon"')
+        ->assertDontSee('✅');
+});
+
+it('shows an icon, not an emoji, on a wrong answer', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="answer-wrong-icon"')
+        ->assertDontSee('❌');
+});
+
 it('lets the player retry for free', function () {
     fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
 

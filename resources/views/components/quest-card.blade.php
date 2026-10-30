@@ -55,7 +55,7 @@
                     @endif
                 </div>
                 @if (!empty($quest->average_rating))
-                    <span class="ml-2 shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-600">⭐ {{ $quest->average_rating }}</span>
+                    <span class="ml-2 shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-600"><svg class="mr-0.5 inline-block h-2.5 w-2.5 align-[-1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{{ $quest->average_rating }}</span>
                 @endif
             </div>
             {{-- Progress bar --}}
