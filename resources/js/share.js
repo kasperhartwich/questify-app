@@ -56,7 +56,11 @@ const drawLogo = (ctx, x, y, size) => {
 };
 
 export const resultImage = async ({ quest, score, rank, scoreLabel, url }) => {
-    await document.fonts?.ready;
+    // Faces load lazily, so ask for the ones the image draws with.
+    await Promise.all([
+        document.fonts?.load(`600 34px ${FONT}`),
+        document.fonts?.load(`800 64px ${FONT}`),
+    ]);
 
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
