@@ -46,6 +46,7 @@ return [
     'or' => 'eller',
     'join_quest' => 'Deltag i Quest',
     'centre_join' => 'Deltag i quest',
+    'centre_start' => 'Start Quest',
     'centre_continue' => 'Quest',
     'enter_code' => 'Indtast quest-kode',
     'scan_qr' => 'Scan QR-kode',

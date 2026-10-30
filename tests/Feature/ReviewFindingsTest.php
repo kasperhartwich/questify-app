@@ -246,6 +246,23 @@ it('asks for a code before unlocking a private quest', function () {
         ->assertHasErrors('accessCode');
 });
 
+it('keeps the centre button behind the access code gate', function () {
+    $created = false;
+
+    privateQuestDetail([
+        'create' => function () use (&$created) {
+            $created = true;
+
+            return ['data' => ['session_code' => 'XYZ789']];
+        },
+    ])
+        ->dispatch('centre-start-quest')
+        ->assertHasErrors('accessCode')
+        ->assertNoRedirect();
+
+    expect($created)->toBeFalse();
+});
+
 it('sends the typed code when starting a private quest', function () {
     $sent = null;
 

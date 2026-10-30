@@ -115,6 +115,22 @@ class extends Component
         $this->startQuest();
     }
 
+    /**
+     * The centre button of the bottom bar starts the quest from here. A quest
+     * behind an access code stays behind it: the button cannot skip the gate.
+     */
+    #[On('centre-start-quest')]
+    public function startFromCentreButton(): void
+    {
+        if ($this->requiresAccessCode && ! $this->accessGranted) {
+            $this->addError('accessCode', __('quests.access_code_required'));
+
+            return;
+        }
+
+        $this->startQuest();
+    }
+
     public function startQuest(): void
     {
         $sessionResponse = $this->tryApiCall(function (): ?array {

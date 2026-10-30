@@ -93,8 +93,8 @@
                 <span class="whitespace-nowrap text-[9px] font-semibold tracking-[0.02em] {{ request()->is('my-quests*') ? 'text-forest-600' : 'text-[#C0B8B0]' }}">{{ __('general.my_quests') }}</span>
             </a>
 
-            {{-- Join quest, or Continue the quest the player is in --}}
-            <livewire:centre-button />
+            {{-- Join quest, Start Quest on a quest screen, or Continue the quest the player is in --}}
+            <livewire:centre-button :on-quest-screen="request()->routeIs('discover.quest')" />
 
             {{-- Create --}}
             <a href="/create" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>

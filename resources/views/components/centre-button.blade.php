@@ -15,7 +15,24 @@ new class extends Component
 
     public ?float $progress = null;
 
-    public function mount(): void
+    public function mount(bool $onQuestScreen = false): void
+    {
+        $this->useActiveParticipationIfSignedIn();
+
+        if ($this->mode === 'join' && $onQuestScreen) {
+            $this->mode = 'start';
+        }
+    }
+
+    /**
+     * Asks the quest screen to start its quest, with the play mode chosen there.
+     */
+    public function startQuest(): void
+    {
+        $this->dispatch('centre-start-quest');
+    }
+
+    private function useActiveParticipationIfSignedIn(): void
     {
         if (! TokenStorage::has()) {
             return;
@@ -64,6 +81,25 @@ new class extends Component
 };
 ?>
 
+@if ($mode === 'start')
+    <button
+        type="button"
+        wire:click="startQuest"
+        data-centre-mode="start"
+        class="flex flex-[2.6] items-center justify-center px-1"
+    >
+        <div class="flex h-[48px] w-full min-w-0 items-center gap-2.5 rounded-full bg-amber-400 px-[6px] shadow-[0_3px_12px_rgba(245,166,35,0.45)]">
+            <div class="relative flex h-[36px] w-[36px] shrink-0 items-center justify-center">
+                <svg class="absolute inset-0 text-forest-600" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                    <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.35" stroke-width="3"/>
+                </svg>
+                <span class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-forest-600 font-heading text-[13px] font-[800] text-amber-400">Q</span>
+            </div>
+            <span class="min-w-0 flex-1 truncate text-left text-[14px] font-bold text-bark">{{ __('general.centre_start') }}</span>
+            <svg class="shrink-0 text-bark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+    </button>
+@else
 <a
     href="{{ $href }}"
     wire:navigate.hover
@@ -97,3 +133,4 @@ new class extends Component
         </div>
     @endif
 </a>
+@endif

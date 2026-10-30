@@ -143,3 +143,53 @@ it('draws a round logo inside a round button in both modes', function () {
         ->assertSeeHtml('rounded-full bg-amber-400')
         ->assertDontSeeHtml('rounded-[8px]');
 });
+
+it('says Start Quest in amber on a quest screen', function () {
+    playerSessions([]);
+
+    Livewire::test('centre-button', ['onQuestScreen' => true])
+        ->assertSet('mode', 'start')
+        ->assertSee('Start Quest')
+        ->assertDontSee('Join quest')
+        ->assertSeeHtml('data-centre-mode="start"')
+        ->assertSeeHtml('rounded-full bg-amber-400')
+        ->assertSeeHtml('text-bark');
+});
+
+it('says Start Quest in Danish on a quest screen', function () {
+    app()->setLocale('da');
+    playerSessions([]);
+
+    Livewire::test('centre-button', ['onQuestScreen' => true])->assertSee('Start Quest')->assertDontSee('Deltag i quest');
+});
+
+it('keeps Continue on a quest screen when the player is in a session', function () {
+    playerSessions([participation('active')]);
+
+    Livewire::test('centre-button', ['onQuestScreen' => true])->assertSet('mode', 'continue');
+});
+
+it('asks the quest screen to start when tapped', function () {
+    playerSessions([]);
+
+    Livewire::test('centre-button', ['onQuestScreen' => true])->call('startQuest')->assertDispatched('centre-start-quest');
+});
+
+it('starts the quest with the chosen play mode when the centre button asks', function () {
+    $sent = null;
+    $sessions = Mockery::mock(SessionApiResource::class);
+    $sessions->shouldReceive('create')->andReturnUsing(function ($questId, $mode) use (&$sent) {
+        $sent = $mode;
+
+        return ['data' => ['session_code' => 'XYZ789']];
+    });
+    $sessions->shouldReceive('join')->andReturn(['data' => ['id' => 5]]);
+    swapApiResource('sessions', $sessions);
+
+    Livewire::test('pages::discover.quest-detail', ['quest' => 7])
+        ->set('playMode', 'competitive_individual')
+        ->dispatch('centre-start-quest')
+        ->assertRedirect('/session/XYZ789');
+
+    expect($sent)->toBe('competitive_individual');
+});
