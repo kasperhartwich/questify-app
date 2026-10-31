@@ -90,10 +90,14 @@ new class extends Component
     $disc = match ($mode) {
         'start' => 'bg-amber-400 shadow-[0_6px_18px_rgba(245,166,35,0.55)]',
         'continue' => 'border border-cream-border bg-cream shadow-[0_6px_18px_rgba(11,61,46,0.28)]',
-        default => 'bg-forest-600 shadow-[0_6px_18px_rgba(11,61,46,0.45)]',
+        default => 'bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6),0_6px_18px_rgba(245,166,35,0.4)]',
     };
     $ring = $mode === 'start' ? 'text-forest-600' : 'text-amber-400';
-    $logo = $mode === 'start' ? 'bg-forest-600 text-amber-400' : 'bg-amber-400 text-forest-600';
+    $logo = match ($mode) {
+        'start' => 'bg-forest-600 text-amber-400',
+        'continue' => 'bg-amber-400 text-forest-600',
+        default => 'text-forest-600',
+    };
 @endphp
 
 @if ($mode === 'start')
@@ -115,7 +119,7 @@ new class extends Component
 @endif
         <div class="-mt-9 flex h-[84px] w-[84px] shrink-0 items-center justify-center rounded-full {{ $disc }}">
             <div class="relative flex h-[68px] w-[68px] items-center justify-center">
-                <svg class="absolute inset-0 {{ $mode === 'continue' ? '-rotate-90' : '' }} {{ $ring }}" width="68" height="68" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <svg class="absolute inset-0 {{ $mode === 'join' ? 'hidden' : '' }} {{ $mode === 'continue' ? '-rotate-90' : '' }} {{ $ring }}" width="68" height="68" viewBox="0 0 36 36" fill="none" aria-hidden="true">
                     <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="{{ $mode === 'continue' && $progress === null ? 1 : 0.3 }}" stroke-width="2"/>
                     @if ($mode === 'continue' && $progress !== null)
                         <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ round($progress * 100) }} 100"/>

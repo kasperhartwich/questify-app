@@ -134,8 +134,10 @@ it('draws only a big round logo, raised above the bar, with the mode text as its
     playerSessions([]);
 
     Livewire::test('centre-button')
-        ->assertSeeHtml('rounded-full bg-forest-600')
-        ->assertSeeHtml('bg-amber-400 text-forest-600')
+        ->assertSeeHtml('data-centre-mode="join"')
+        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6)')
+        ->assertSeeHtml('text-[26px] font-[800] text-forest-600')
+        ->assertDontSeeHtml('bg-forest-600 shadow')
         ->assertSeeHtml('aria-label="Join quest"')
         ->assertSeeHtml('h-[84px] w-[84px]')
         ->assertSeeHtml('-mt-9')
