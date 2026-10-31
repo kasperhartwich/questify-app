@@ -315,6 +315,7 @@ class extends Component
     $isTrueFalse = $question?->type === \App\Enums\QuestionType::TrueFalse;
     $isOpenText = $question?->type === \App\Enums\QuestionType::OpenText;
     $progress = $totalQuestions > 0 ? (($currentQuestionIndex + ($showFeedback && $lastAnswerCorrect ? 1 : 0)) / $totalQuestions) * 100 : 0;
+    $progress = max($progress, 5);
     $answers = $showFeedback && $lastAnswerCorrect
         ? $question->answers->sortBy(fn ($a) => $a->id === $selectedAnswerId ? 0 : 1)
         : $question->answers;

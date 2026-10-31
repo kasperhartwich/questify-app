@@ -81,6 +81,12 @@ it('loads the checkpoint questions on arrival', function () {
         ->assertSee('In which year was Nyhavn completed?');
 });
 
+it('shows a little progress on the first question instead of an empty bar', function () {
+    fakeGameplay();
+
+    questionScreen()->assertSeeHtml('style="width: 5%"');
+});
+
 it('sends the player back to navigation when the server rejects the arrival', function () {
     // The server re-checks proximity, so a player who is not actually there
     // must not reach the questions.
