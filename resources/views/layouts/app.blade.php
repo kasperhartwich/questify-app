@@ -64,7 +64,7 @@
                 if (sessionStorage.getItem('questify:favourites-dirty') !== '1') return;
 
                 sessionStorage.removeItem('questify:favourites-dirty');
-                window.Livewire?.all().forEach((component) => component.$refresh());
+                window.questifyRefreshAll?.();
             });
         </script>
 

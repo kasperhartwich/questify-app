@@ -177,13 +177,13 @@
             x-init="
                 initMap();
                 $wire.on('wizard-markers', (params) => {
-                    this.syncMarkers(params[0]?.markers ?? params.markers);
+                    syncMarkers(params[0]?.markers ?? params.markers);
                 });
                 $wire.on('wizard-location', (params) => {
                     const lat = params[0]?.latitude ?? params.latitude;
                     const lng = params[0]?.longitude ?? params.longitude;
-                    if (lat && lng && this.map) {
-                        this.map.flyTo([lat, lng], 15);
+                    if (lat && lng && map) {
+                        map.flyTo([lat, lng], 15);
                     }
                 });
             "

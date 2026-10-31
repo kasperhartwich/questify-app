@@ -926,3 +926,10 @@ it('switches the wait after a wrong answer on and off', function () {
         ->call('toggleWrongAnswerLockout')
         ->assertSet('wrongAnswerBehaviour', 'retry_free');
 });
+
+it('never reaches the map helpers through this in x-init (QUESTIFY-APP-M)', function () {
+    $view = file_get_contents(resource_path('views/pages/create/quest-wizard-view.blade.php'));
+
+    expect($view)->not->toContain('this.syncMarkers(params')
+        ->and($view)->toContain('syncMarkers(params[0]?.markers');
+});

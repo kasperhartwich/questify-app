@@ -49,3 +49,10 @@ it('refreshes every component once the app is marked dirty', function () {
     expect($content)->toContain('livewire:navigated')
         ->and($content)->toContain('questify:favourites-dirty');
 });
+
+it('refreshes through the $wire proxy, not the component object (QUESTIFY-APP-F)', function () {
+    $layout = file_get_contents(resource_path('views/layouts/app.blade.php'));
+
+    expect($layout)->not->toContain('component.$refresh')
+        ->and($layout)->toContain('questifyRefreshAll');
+});

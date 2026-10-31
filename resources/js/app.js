@@ -5,11 +5,13 @@ import 'leaflet/dist/leaflet.css';
 import QRCode from 'qrcode';
 import * as MapZoom from './map-zoom.js';
 import * as QuestifyShare from './share.js';
+import { refreshAllComponents } from './livewire-refresh.js';
 
 window.L = L;
 window.MapZoom = MapZoom;
 window.QRCode = QRCode;
 window.QuestifyShare = QuestifyShare;
+window.questifyRefreshAll = () => refreshAllComponents(window.Livewire);
 
 // A failed Livewire roundtrip rejects an internal promise with a bare response
 // object. Nothing catches it, so Sentry only ever saw "Object captured as
