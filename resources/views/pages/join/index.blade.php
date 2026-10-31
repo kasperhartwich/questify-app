@@ -2,12 +2,14 @@
 
 use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiNotFoundException;
+use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
 use Native\Mobile\Events\Scanner\CodeScanned;
 use Native\Mobile\Facades\Scanner;
 use Native\Mobile\Facades\System;
@@ -17,7 +19,11 @@ new
 #[Title('Join a Quest')]
 class extends Component
 {
-    use WithApiClient;
+    use RequestsLocation, WithApiClient;
+
+    private const NEAREST_COUNT = 3;
+
+    private const NEARBY_RADIUS_KM = 50;
 
     public string $joinCode = '';
 
@@ -25,10 +31,76 @@ class extends Component
 
     public bool $isGuest = true;
 
+    /** locating, ready or denied: where the nearest-quests part of the screen stands. */
+    public string $nearestState = 'locating';
+
+    public string $locationStatus = '';
+
+    /** @var array<int, array<string, mixed>> */
+    public array $nearestQuests = [];
+
     public function mount(): void
     {
         $this->isNative = System::isMobile();
         $this->isGuest = ! Auth::check();
+
+        // Outside the app there is no GPS: a browser check gets Discover's default spot.
+        if (! $this->isGuest && ! $this->isNative) {
+            $this->loadNearestQuests(55.6761, 12.5683);
+        }
+    }
+
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(bool $success = false, ?float $latitude = null, ?float $longitude = null): void
+    {
+        if ($this->isGuest) {
+            return;
+        }
+
+        if (! $success || $latitude === null || $longitude === null) {
+            $this->nearestState = 'denied';
+
+            return;
+        }
+
+        $this->loadNearestQuests($latitude, $longitude);
+    }
+
+    protected function onLocationPermissionDenied(string $status): void
+    {
+        $this->locationStatus = $status;
+        $this->nearestState = 'denied';
+    }
+
+    /**
+     * The same nearby call Discover makes, cut down to the closest few.
+     */
+    private function loadNearestQuests(float $latitude, float $longitude): void
+    {
+        try {
+            $response = $this->api->quests()->nearby($latitude, $longitude, ['radius' => self::NEARBY_RADIUS_KM]);
+        } catch (ApiException) {
+            $response = [];
+        }
+
+        $this->nearestQuests = collect($response['data'] ?? [])
+            ->filter(fn (mixed $quest): bool => is_array($quest) && isset($quest['id'], $quest['title']))
+            ->sortBy(fn (array $quest): float => (float) ($quest['distance_to_start_km'] ?? INF))
+            ->take(self::NEAREST_COUNT)
+            ->values()
+            ->all();
+        $this->nearestState = 'ready';
+    }
+
+    public function formatDistance(mixed $km): ?string
+    {
+        if (! is_numeric($km) || (float) $km <= 0) {
+            return null;
+        }
+
+        return (float) $km < 1
+            ? (int) (round((float) $km * 100) * 10).' m'
+            : number_format((float) $km, 1).' km';
     }
 
     public function joinByCode(): void
@@ -122,7 +194,7 @@ class extends Component
 };
 ?>
 
-<div class="flex flex-col bg-cream px-5 pt-4">
+<div class="flex flex-col bg-cream px-5 pt-4" @unless ($isGuest) wire:init="requestLocation" @endunless>
     {{-- Back button (guest only — logged-in users have the bottom nav) --}}
     @if ($isGuest)
         <div class="flex items-center pb-2">
@@ -131,6 +203,55 @@ class extends Component
             </a>
         </div>
     @endif
+
+    {{-- The 3 nearest quests (signed-in players only: a quest page needs an account) --}}
+    @unless ($isGuest)
+        <div class="mb-2 mt-1" data-nearest-state="{{ $nearestState }}">
+            <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted">{{ __('general.nearest_quests') }}</p>
+
+            @if ($nearestState === 'ready' && count($nearestQuests) > 0)
+                @php($first = $nearestQuests[0])
+                <a href="/quests/{{ $first['id'] }}" wire:navigate data-nearest="first" class="relative mb-2.5 block overflow-hidden rounded-[18px] bg-forest-600 px-4 pb-4 pt-4 shadow-[0_4px_14px_rgba(11,61,46,0.25)]">
+                    <div class="pointer-events-none absolute right-[-24px] top-[-24px] h-[96px] w-[96px] rounded-full border-[16px] border-white/[0.08]"></div>
+                    <div class="relative flex items-center gap-1.5 text-[12px] font-semibold text-amber-400">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                        <span>{{ $this->formatDistance($first['distance_to_start_km'] ?? null) ?? __('general.nearest_closest') }}</span>
+                    </div>
+                    <h3 class="relative mt-1.5 font-heading text-[20px] font-[800] leading-tight text-white">{{ $first['title'] }}</h3>
+                    @if (! empty($first['estimated_duration_minutes']))
+                        <p class="relative mt-1 text-[12px] text-white/60">{{ $first['estimated_duration_minutes'] }} {{ __('general.minutes') }}</p>
+                    @endif
+                    <span class="relative mt-3.5 block w-full rounded-xl bg-amber-400 py-3 text-center font-heading text-[14px] font-bold text-bark">{{ __('general.nearest_open') }} &rarr;</span>
+                </a>
+
+                @foreach (array_slice($nearestQuests, 1) as $quest)
+                    <a href="/quests/{{ $quest['id'] }}" wire:navigate data-nearest="other" class="mb-2 flex items-center gap-3 rounded-[13px] border-[1.5px] border-cream-border bg-white px-3.5 py-2.5">
+                        <span class="text-forest-600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+                        <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-bark">{{ $quest['title'] }}</span>
+                        @if ($this->formatDistance($quest['distance_to_start_km'] ?? null))
+                            <span class="shrink-0 text-[12px] text-muted">{{ $this->formatDistance($quest['distance_to_start_km']) }}</span>
+                        @endif
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-muted" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                    </a>
+                @endforeach
+            @elseif ($nearestState === 'ready')
+                <p data-nearest="none" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-5 text-center text-[13px] text-muted">{{ __('general.nearest_none') }}</p>
+            @elseif ($nearestState === 'denied')
+                <div data-nearest="denied" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-4 text-center">
+                    <p class="text-[13px] text-muted">{{ $locationStatus === 'permanently_denied' ? __('general.location_permission_blocked') : __('general.nearest_location_off') }}</p>
+                    <button type="button" wire:click="requestLocation" class="mt-2.5 text-[13px] font-semibold text-forest-400">{{ __('general.nearest_try_again') }}</button>
+                </div>
+            @else
+                <p data-nearest="locating" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-5 text-center text-[13px] text-muted">{{ __('general.nearest_locating') }}</p>
+            @endif
+        </div>
+
+        <div class="flex items-center gap-3 pb-1 pt-4">
+            <div class="h-px flex-1 bg-cream-border"></div>
+            <span class="text-[11px] font-semibold uppercase tracking-widest text-muted">{{ __('general.or') }}</span>
+            <div class="h-px flex-1 bg-cream-border"></div>
+        </div>
+    @endunless
 
     {{-- Hero: headline + intro --}}
     <div class="mb-7 mt-3">
