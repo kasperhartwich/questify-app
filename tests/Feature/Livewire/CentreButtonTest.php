@@ -211,3 +211,24 @@ it('shows the amber start button on the quest page and Join quest on Discover, t
     $this->get('/quests/7')->assertOk()->assertSee('data-centre-mode="start"', false);
     $this->get('/discover/list')->assertOk()->assertSee('data-centre-mode="join"', false);
 });
+
+it('draws the progress arc from 12 o\'clock, clockwise, as the share of the quest done', function (int $done, int $total, ?string $dash) {
+    playerSessions([participation('active', [
+        'current_checkpoint_index' => $done,
+        'session' => ['session_code' => 'ABC123', 'status' => 'active', 'quest' => ['checkpoints_count' => $total]],
+    ])]);
+
+    $test = Livewire::test('centre-button')
+        ->assertSeeHtml('-rotate-90')
+        ->assertSeeHtml('text-cream-border')
+        ->assertSeeHtml('text-[26px] font-[800] text-forest-600');
+
+    $dash === null
+        ? $test->assertDontSeeHtml('stroke-dasharray')
+        : $test->assertSeeHtml('stroke-dasharray="'.$dash.' 100"');
+})->with([
+    'none of five' => [0, 5, null],
+    'one of five' => [1, 5, '20'],
+    'three of five' => [3, 5, '60'],
+    'all five' => [5, 5, '100'],
+]);

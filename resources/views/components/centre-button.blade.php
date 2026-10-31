@@ -95,7 +95,6 @@ new class extends Component
     $ring = $mode === 'start' ? 'text-forest-600' : 'text-amber-400';
     $logo = match ($mode) {
         'start' => 'bg-forest-600 text-amber-400',
-        'continue' => 'bg-amber-400 text-forest-600',
         default => 'text-forest-600',
     };
 @endphp
@@ -120,8 +119,12 @@ new class extends Component
         <div class="-mt-9 flex h-[84px] w-[84px] shrink-0 items-center justify-center rounded-full {{ $disc }}">
             <div class="relative flex h-[68px] w-[68px] items-center justify-center">
                 <svg class="absolute inset-0 {{ $mode === 'join' ? 'hidden' : '' }} {{ $mode === 'continue' ? '-rotate-90' : '' }} {{ $ring }}" width="68" height="68" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-                    <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="{{ $mode === 'continue' && $progress === null ? 1 : 0.3 }}" stroke-width="2"/>
-                    @if ($mode === 'continue' && $progress !== null)
+                    @if ($mode === 'continue')
+                        <circle class="text-cream-border" cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2"/>
+                    @else
+                        <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>
+                    @endif
+                    @if ($mode === 'continue' && $progress > 0)
                         <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ round($progress * 100) }} 100"/>
                     @endif
                 </svg>
