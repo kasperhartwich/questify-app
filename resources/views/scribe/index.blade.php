@@ -2113,7 +2113,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Submit an answer to a question. Returns correctness and score. On a quest with the <code>lockout</code> behaviour a wrong answer carries <code>locked_until</code>; the live API (questify-admin) then refuses answers from that participant with 423 and code <code>answer_locked</code> until it has passed, for X-App-Build 49 and above. The arrived response carries <code>meta.retry_after</code> and <code>meta.answer_locked_until</code> while a lockout runs.</p>
+<p>Submit an answer to a question. Returns correctness and score. On a quest with the <code>lockout</code> behaviour a wrong answer carries <code>retry_after</code> (whole seconds) and <code>locked_until</code>; the live API (questify-admin) then refuses answers from that participant with 423 and code <code>answer_locked</code> until it has passed, for X-App-Build 49 and above. The arrived response carries <code>meta.retry_after</code> and <code>meta.answer_locked_until</code> while a lockout runs.</p>
 
 <span id="example-requests-POSTapi-v1-sessions--code--answer">
 <blockquote>Example request:</blockquote>

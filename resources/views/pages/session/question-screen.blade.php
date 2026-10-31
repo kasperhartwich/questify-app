@@ -257,7 +257,7 @@ class extends Component
 
         match ($this->wrongBehaviour) {
             'retry_penalty' => $this->penaltyPoints = (int) ($data['penalty'] ?? 0),
-            'lockout' => $this->startLockout($this->secondsUntil($data['locked_until'] ?? null)),
+            'lockout' => $this->startLockout(isset($data['retry_after']) ? (int) $data['retry_after'] : $this->secondsUntil($data['locked_until'] ?? null)),
             'three_strikes_hint' => filled($data['hint'] ?? null) ? $this->revealedHint = $data['hint'] : null,
             default => null,
         };

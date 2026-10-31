@@ -209,6 +209,19 @@ it('counts down a lockout', function () {
         ->and($component->get('lockoutRemaining'))->toBeLessThanOrEqual(30);
 });
 
+it('counts down from the server retry_after, not the device clock', function () {
+    fakeGameplay(['data' => [
+        'correct' => false,
+        'behaviour' => 'lockout',
+        'retry_after' => 30,
+        'locked_until' => now()->subMinute()->toIso8601String(),
+    ]]);
+
+    questionScreen()->set('selectedAnswerId', 2)->call('submitAnswer')
+        ->assertSet('lockoutRemaining', 30)
+        ->assertSet('lockoutTotal', 30);
+});
+
 it('treats a lockout that has already elapsed as over', function () {
     fakeGameplay(['data' => [
         'correct' => false,
