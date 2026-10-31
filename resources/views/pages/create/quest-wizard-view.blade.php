@@ -588,6 +588,31 @@
                                 <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all {{ $scoringSpeedBonus ? 'left-[20px]' : 'left-[2px]' }}"></span>
                             </button>
                         </div>
+                        {{-- Wait after a wrong answer --}}
+                        @php($lockoutOn = $wrongAnswerBehaviour === 'lockout')
+                        <div class="border-b border-cream-border px-4 py-3.5" data-testid="wizard-lockout">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-[14px] font-semibold text-bark">{{ __('general.wrong_answer_wait') }}</p>
+                                    <p class="text-[11px] text-muted">{{ __('general.wrong_answer_wait_description') }}</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    wire:click="toggleWrongAnswerLockout"
+                                    data-testid="wizard-lockout-toggle"
+                                    class="relative h-[26px] w-[44px] shrink-0 rounded-[13px] transition-colors {{ $lockoutOn ? 'bg-forest-600' : 'bg-cream-border' }}"
+                                >
+                                    <span class="absolute top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-all {{ $lockoutOn ? 'left-[20px]' : 'left-[2px]' }}"></span>
+                                </button>
+                            </div>
+                            @if ($lockoutOn)
+                                <div class="mt-3 flex items-center gap-2">
+                                    <input type="number" min="1" max="300" inputmode="numeric" wire:model.blur="wrongAnswerLockoutSeconds" class="w-24 rounded-[10px] border-[1.5px] border-cream-border bg-white px-3 py-2 text-[14px] font-semibold text-bark" data-testid="wizard-lockout-seconds">
+                                    <span class="text-[12px] text-muted">{{ __('general.seconds') }}</span>
+                                </div>
+                                @error('wrongAnswerLockoutSeconds') <p class="mt-1 text-[11px] text-coral">{{ $message }}</p> @enderror
+                            @endif
+                        </div>
                         {{-- Wrong answer penalty --}}
                         <div class="flex items-center justify-between border-b border-cream-border px-4 py-3.5">
                             <div>

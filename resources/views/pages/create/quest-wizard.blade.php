@@ -75,6 +75,9 @@ class extends Component
     #[Session(key: 'quest_wizard.wrongAnswerBehaviour')]
     public string $wrongAnswerBehaviour = 'retry_free';
 
+    #[Session(key: 'quest_wizard.wrongAnswerLockoutSeconds')]
+    public int $wrongAnswerLockoutSeconds = 30;
+
     #[Session(key: 'quest_wizard.timeLimitPerQuestion')]
     public ?int $timeLimitPerQuestion = 30;
 
@@ -192,6 +195,7 @@ class extends Component
         $this->difficulty = $quest['difficulty'] ?? '';
         $this->visibility = $quest['visibility'] ?? 'public';
         $this->wrongAnswerBehaviour = $quest['wrong_answer_behaviour'] ?? 'retry_free';
+        $this->wrongAnswerLockoutSeconds = (int) ($quest['wrong_answer_lockout_seconds'] ?? 30) ?: 30;
         $this->scoringSpeedBonus = (bool) ($quest['scoring_speed_bonus_enabled'] ?? false);
         $this->scoringWrongPenalty = (bool) ($quest['scoring_wrong_attempt_penalty_enabled'] ?? false);
         $this->scoringCompletionBonus = (bool) ($quest['scoring_quest_completion_time_bonus_enabled'] ?? true);
@@ -222,6 +226,16 @@ class extends Component
         }
 
         $this->step = 1;
+    }
+
+    /**
+     * Switches the wait after a wrong answer on or off. Off goes back to free retries.
+     */
+    public function toggleWrongAnswerLockout(): void
+    {
+        $this->wrongAnswerBehaviour = $this->wrongAnswerBehaviour === WrongAnswerBehaviour::Lockout->value
+            ? WrongAnswerBehaviour::RetryFree->value
+            : WrongAnswerBehaviour::Lockout->value;
     }
 
     public function nextStep(): void
@@ -522,6 +536,9 @@ class extends Component
             'estimated_duration_minutes' => 60,
             'play_modes' => $this->playModes,
             'wrong_answer_behaviour' => $this->wrongAnswerBehaviour,
+            'wrong_answer_lockout_seconds' => $this->wrongAnswerBehaviour === WrongAnswerBehaviour::Lockout->value
+                ? $this->wrongAnswerLockoutSeconds
+                : null,
             'scoring_speed_bonus_enabled' => $this->scoringSpeedBonus,
             'scoring_wrong_attempt_penalty_enabled' => $this->scoringWrongPenalty,
             'scoring_quest_completion_time_bonus_enabled' => $this->scoringCompletionBonus,
@@ -634,6 +651,7 @@ class extends Component
                 'playModes' => ['required', 'array', 'min:1'],
                 'playModes.*' => ['in:' . implode(',', array_column(PlayMode::cases(), 'value'))],
                 'wrongAnswerBehaviour' => ['required', 'in:' . implode(',', array_column(WrongAnswerBehaviour::cases(), 'value'))],
+                'wrongAnswerLockoutSeconds' => ['required', 'integer', 'min:1', 'max:300'],
             ]),
             5 => $this->validate([
                 // Either pick one of ours or suggest your own — an admin

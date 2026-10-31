@@ -2113,7 +2113,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Submit an answer to a question. Returns correctness and score.</p>
+<p>Submit an answer to a question. Returns correctness and score. On a quest with the <code>lockout</code> behaviour a wrong answer carries <code>locked_until</code>; the live API (questify-admin) then refuses answers from that participant with 423 and code <code>answer_locked</code> until it has passed, for X-App-Build 49 and above. The arrived response carries <code>meta.retry_after</code> and <code>meta.answer_locked_until</code> while a lockout runs.</p>
 
 <span id="example-requests-POSTapi-v1-sessions--code--answer">
 <blockquote>Example request:</blockquote>
@@ -2189,6 +2189,18 @@ fetch(url, {
         &quot;behaviour&quot;: &quot;retry_free&quot;,
         &quot;attempts&quot;: 2
     }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (423):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Wait for the countdown before you answer again.&quot;,
+    &quot;code&quot;: &quot;answer_locked&quot;,
+    &quot;retry_after&quot;: 24,
+    &quot;locked_until&quot;: &quot;2026-10-31T10:15:30+00:00&quot;
 }</code>
  </pre>
             <blockquote>

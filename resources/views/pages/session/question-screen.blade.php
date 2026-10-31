@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\QuestionType;
+use App\Exceptions\Api\ApiException;
 use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +50,9 @@ class extends Component
 
     /** Seconds remaining on a lockout after an incorrect attempt (lockout). */
     public int $lockoutRemaining = 0;
+
+    /** Length of the running lockout, for the ring. */
+    public int $lockoutTotal = 0;
 
     public array $answeredQuestionIds = [];
 
@@ -127,6 +131,15 @@ class extends Component
 
         $this->questions = $questions;
         $this->totalQuestions = count($this->questions);
+
+        // The server keeps the lockout, so it is still running after the player left and came back.
+        $this->startLockout((int) data_get($response, 'meta.retry_after', 0));
+    }
+
+    private function startLockout(int $seconds): void
+    {
+        $this->lockoutRemaining = max(0, $seconds);
+        $this->lockoutTotal = $this->lockoutRemaining;
     }
 
     public function getCurrentQuestionProperty(): ?object
@@ -176,13 +189,28 @@ class extends Component
             $answerId = $this->selectedAnswerId;
         }
 
-        $response = $this->tryApiCall(fn () => $this->api->gameplay()->answer(
-            $this->code,
-            $this->participantId,
-            $currentQuestion->id,
-            $answerId,
-            $answerText,
-        ));
+        if ($this->lockoutRemaining > 0) {
+            return;
+        }
+
+        try {
+            $response = $this->api->gameplay()->answer(
+                $this->code,
+                $this->participantId,
+                $currentQuestion->id,
+                $answerId,
+                $answerText,
+            );
+        } catch (ApiException $e) {
+            // Still locked on the server (another phone, or a clock that ran ahead): show its countdown.
+            if ($e->statusCode === 423 && ($e->body['code'] ?? null) === 'answer_locked') {
+                $this->startLockout((int) ($e->body['retry_after'] ?? 0));
+
+                return;
+            }
+
+            $response = $this->tryApiCall(fn () => throw $e);
+        }
 
         if (! $response) {
             return;
@@ -205,7 +233,7 @@ class extends Component
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
         $this->revealedHint = null;
-        $this->lockoutRemaining = 0;
+        $this->startLockout(0);
 
         $next = $data['next'] ?? 'question';
         if ($next === 'quest_complete') {
@@ -225,11 +253,11 @@ class extends Component
     {
         $this->wrongBehaviour = $data['behaviour'] ?? 'retry_free';
         $this->penaltyPoints = null;
-        $this->lockoutRemaining = 0;
+        $this->startLockout(0);
 
         match ($this->wrongBehaviour) {
             'retry_penalty' => $this->penaltyPoints = (int) ($data['penalty'] ?? 0),
-            'lockout' => $this->lockoutRemaining = $this->secondsUntil($data['locked_until'] ?? null),
+            'lockout' => $this->startLockout($this->secondsUntil($data['locked_until'] ?? null)),
             'three_strikes_hint' => filled($data['hint'] ?? null) ? $this->revealedHint = $data['hint'] : null,
             default => null,
         };
@@ -255,7 +283,7 @@ class extends Component
         $this->showFeedback = false;
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
-        $this->lockoutRemaining = 0;
+        $this->startLockout(0);
         // $revealedHint is intentionally kept so the hint stays visible while retrying.
     }
 
@@ -267,7 +295,7 @@ class extends Component
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
         $this->revealedHint = null;
-        $this->lockoutRemaining = 0;
+        $this->startLockout(0);
 
         if ($this->currentQuestion === null || $this->checkpointComplete) {
             if ($this->questComplete) {
@@ -290,6 +318,7 @@ class extends Component
     $answers = $showFeedback && $lastAnswerCorrect
         ? $question->answers->sortBy(fn ($a) => $a->id === $selectedAnswerId ? 0 : 1)
         : $question->answers;
+    $locked = $lockoutRemaining > 0;
     $typeLabel = $isTrueFalse ? __('sessions.type_true_false') : ($isOpenText ? __('sessions.type_open_text') : __('sessions.type_multiple_choice'));
 @endphp
 
@@ -356,6 +385,7 @@ class extends Component
                 @if (! $showFeedback)
                     <textarea
                         wire:model="openEndedAnswer"
+                        @disabled($locked)
                         rows="4"
                         class="w-full rounded-xl border border-cream-border bg-white px-3 py-2 text-sm text-bark"
                         placeholder="{{ __('sessions.type_answer') }}"
@@ -380,7 +410,7 @@ class extends Component
                         @endphp
                         <button
                             type="button"
-                            @if (! $showFeedback) wire:click="$set('selectedAnswerId', {{ $answer->id }})" @else disabled @endif
+                            @if (! $showFeedback && ! $locked) wire:click="$set('selectedAnswerId', {{ $answer->id }})" @else disabled @endif
                             class="flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left text-sm font-semibold transition-colors {{ $rowClass }} {{ $faded ? 'opacity-50' : '' }}"
                             wire:key="answer-{{ $answer->id }}"
                             data-testid="answer-row"
@@ -401,7 +431,27 @@ class extends Component
             @endif
 
             {{-- Actions --}}
-            @if (! $showFeedback)
+            @if ($locked && ! $lastAnswerCorrect)
+                {{-- Locked out: a ring counts the seconds down, the answers stay disabled, then the player may try again --}}
+                <div
+                    x-data="{ ends: Date.now() + {{ $lockoutRemaining }} * 1000, total: {{ max($lockoutTotal, 1) }}, remaining: {{ $lockoutRemaining }} }"
+                    x-init="const t = setInterval(() => { remaining = Math.max(0, Math.ceil((ends - Date.now()) / 1000)); if (remaining <= 0) { clearInterval(t); $wire.tryAgain(); } }, 250)"
+                    class="flex flex-col items-center gap-2 py-2"
+                    role="timer"
+                    aria-live="off"
+                    data-testid="lockout-ring"
+                    wire:key="lockout-{{ $lockoutTotal }}-{{ $lockoutRemaining }}"
+                >
+                    <div class="relative flex h-[84px] w-[84px] items-center justify-center">
+                        <svg class="absolute inset-0 -rotate-90 text-amber-400" width="84" height="84" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                            <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>
+                            <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" pathLength="100" :stroke-dasharray="Math.round((remaining / total) * 100) + ' 100'" style="transition: stroke-dasharray 0.3s linear"/>
+                        </svg>
+                        <span class="font-heading text-[28px] font-[800] text-bark" x-text="remaining" data-testid="lockout-seconds">{{ $lockoutRemaining }}</span>
+                    </div>
+                    <p class="text-xs font-medium text-muted">{{ __('sessions.wait_to_answer') }}</p>
+                </div>
+            @elseif (! $showFeedback)
                 <button
                     wire:click="submitAnswer"
                     wire:loading.attr="disabled"
@@ -418,15 +468,6 @@ class extends Component
                 >
                     {{ __('general.next') }}
                 </button>
-            @elseif ($wrongBehaviour === 'lockout' && $lockoutRemaining > 0)
-                {{-- Locked out: countdown ticks, auto-retry when it reaches 0 --}}
-                <div
-                    x-data="{ remaining: @js($lockoutRemaining) }"
-                    x-init="const t = setInterval(() => { if (--remaining <= 0) { clearInterval(t); $wire.tryAgain(); } }, 1000)"
-                    class="w-full rounded-xl bg-cream-border px-4 py-3.5 text-center font-heading text-sm font-bold text-muted"
-                >
-                    {{ __('sessions.locked_out') }} <span x-text="remaining"></span>{{ __('sessions.seconds_short') }}
-                </div>
             @else
                 <button
                     wire:click="tryAgain"

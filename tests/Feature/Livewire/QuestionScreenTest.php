@@ -220,6 +220,83 @@ it('treats a lockout that has already elapsed as over', function () {
         ->assertSet('lockoutRemaining', 0);
 });
 
+it('shows the countdown ring and disables the answers while locked out', function () {
+    fakeGameplay(['data' => [
+        'correct' => false,
+        'behaviour' => 'lockout',
+        'locked_until' => now()->addSeconds(30)->toIso8601String(),
+    ]]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="lockout-ring"')
+        ->assertSee(__('sessions.wait_to_answer'))
+        ->assertDontSee(__('sessions.try_again'));
+});
+
+it('resumes a lockout the server is still running when the player comes back', function () {
+    fakeGameplay(null, ['meta' => ['answer_locked_until' => now()->addSeconds(20)->toIso8601String(), 'retry_after' => 20], 'data' => [
+        'id' => 1,
+        'title' => 'Nyhavn',
+        'questions' => [[
+            'id' => 10,
+            'question_type' => 'multiple_choice',
+            'question_text' => 'In which year was Nyhavn completed?',
+            'points' => 100,
+            'answers' => [['id' => 1, 'answer_text' => '1673'], ['id' => 2, 'answer_text' => '1750']],
+        ]],
+    ]]);
+
+    $component = questionScreen()
+        ->assertSet('lockoutRemaining', 20)
+        ->assertSeeHtml('data-testid="lockout-ring"');
+
+    // Picking an answer and submitting does nothing while locked.
+    $component->set('selectedAnswerId', 1)->call('submitAnswer')->assertSet('showFeedback', false);
+});
+
+it('starts the countdown when the server refuses an answer as locked', function () {
+    $gameplay = Mockery::mock(GameplayApiResource::class);
+    $gameplay->shouldReceive('leaderboard')->andReturn(['data' => []]);
+    $gameplay->shouldReceive('arrived')->andReturn(['data' => [
+        'id' => 1,
+        'title' => 'Nyhavn',
+        'questions' => [[
+            'id' => 10,
+            'question_type' => 'multiple_choice',
+            'question_text' => 'In which year was Nyhavn completed?',
+            'points' => 100,
+            'answers' => [['id' => 1, 'answer_text' => '1673'], ['id' => 2, 'answer_text' => '1750']],
+        ]],
+    ]]);
+    $gameplay->shouldReceive('answer')->andThrow(new ApiException(423, 'Wait', ['code' => 'answer_locked', 'retry_after' => 12]));
+    swapGameplayResource($gameplay);
+
+    questionScreen()
+        ->set('selectedAnswerId', 1)
+        ->call('submitAnswer')
+        ->assertSet('lockoutRemaining', 12)
+        ->assertSet('showFeedback', false)
+        ->assertSeeHtml('data-testid="lockout-ring"');
+});
+
+it('lets the player answer again once the lockout is over', function () {
+    fakeGameplay(['data' => [
+        'correct' => false,
+        'behaviour' => 'lockout',
+        'locked_until' => now()->addSeconds(30)->toIso8601String(),
+    ]]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->call('tryAgain')
+        ->assertSet('lockoutRemaining', 0)
+        ->assertSet('showFeedback', false)
+        ->assertDontSeeHtml('data-testid="lockout-ring"');
+});
+
 it('reveals the hint after three strikes', function () {
     fakeGameplay(['data' => [
         'correct' => false,

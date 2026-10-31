@@ -913,3 +913,16 @@ it('places a tapped checkpoint on the stop it created, even after a delete', fun
         ->and($checkpoints[2]['latitude'])->toBe(55.9)
         ->and($checkpoints[2]['longitude'])->toBe(12.9);
 });
+
+it('switches the wait after a wrong answer on and off', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->assertSet('wrongAnswerBehaviour', 'retry_free')
+        ->call('toggleWrongAnswerLockout')
+        ->assertSet('wrongAnswerBehaviour', 'lockout')
+        ->assertSet('wrongAnswerLockoutSeconds', 30)
+        ->call('toggleWrongAnswerLockout')
+        ->assertSet('wrongAnswerBehaviour', 'retry_free');
+});
