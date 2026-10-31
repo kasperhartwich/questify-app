@@ -161,8 +161,9 @@ it('says Start Quest in amber on a quest screen', function () {
         ->assertDontSee('Join quest')
         ->assertSeeHtml('data-centre-mode="start"')
         ->assertSeeHtml('aria-label="Start Quest"')
-        ->assertSeeHtml('rounded-full bg-amber-400')
-        ->assertSeeHtml('bg-forest-600 text-amber-400');
+        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6)')
+        ->assertSeeHtml('text-[26px] font-[800] text-forest-600')
+        ->assertDontSeeHtml('bg-forest-600 text-amber-400');
 });
 
 it('says Start Quest in Danish on a quest screen', function () {

@@ -87,16 +87,9 @@ new class extends Component
         'continue' => __('general.centre_continue'),
         default => __('general.centre_join'),
     };
-    $disc = match ($mode) {
-        'start' => 'bg-amber-400 shadow-[0_6px_18px_rgba(245,166,35,0.55)]',
-        'continue' => 'border border-cream-border bg-cream shadow-[0_6px_18px_rgba(11,61,46,0.28)]',
-        default => 'bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6),0_6px_18px_rgba(245,166,35,0.4)]',
-    };
-    $ring = $mode === 'start' ? 'text-forest-600' : 'text-amber-400';
-    $logo = match ($mode) {
-        'start' => 'bg-forest-600 text-amber-400',
-        default => 'text-forest-600',
-    };
+    $disc = $mode === 'continue'
+        ? 'border border-cream-border bg-cream shadow-[0_6px_18px_rgba(11,61,46,0.28)]'
+        : 'bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6),0_6px_18px_rgba(245,166,35,0.4)]';
 @endphp
 
 @if ($mode === 'start')
@@ -118,17 +111,15 @@ new class extends Component
 @endif
         <div class="-mt-9 flex h-[84px] w-[84px] shrink-0 items-center justify-center rounded-full {{ $disc }}">
             <div class="relative flex h-[68px] w-[68px] items-center justify-center">
-                <svg class="absolute inset-0 {{ $mode === 'join' ? 'hidden' : '' }} {{ $mode === 'continue' ? '-rotate-90' : '' }} {{ $ring }}" width="68" height="68" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-                    @if ($mode === 'continue')
+                @if ($mode === 'continue')
+                    <svg class="absolute inset-0 -rotate-90 text-amber-400" width="68" height="68" viewBox="0 0 36 36" fill="none" aria-hidden="true">
                         <circle class="text-cream-border" cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2"/>
-                    @else
-                        <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>
-                    @endif
-                    @if ($mode === 'continue' && $progress > 0)
-                        <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ round($progress * 100) }} 100"/>
-                    @endif
-                </svg>
-                <span class="flex h-[44px] w-[44px] items-center justify-center rounded-full font-heading text-[26px] font-[800] {{ $logo }}">Q</span>
+                        @if ($progress > 0)
+                            <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ round($progress * 100) }} 100"/>
+                        @endif
+                    </svg>
+                @endif
+                <span class="flex h-[44px] w-[44px] items-center justify-center rounded-full font-heading text-[26px] font-[800] text-forest-600">Q</span>
             </div>
         </div>
 @if ($mode === 'start')
