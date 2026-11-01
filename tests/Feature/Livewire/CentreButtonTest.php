@@ -135,12 +135,12 @@ it('draws only a big round logo, raised above the bar, with the mode text as its
 
     Livewire::test('centre-button')
         ->assertSeeHtml('data-centre-mode="join"')
-        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6)')
-        ->assertSeeHtml('text-[26px] font-[800] text-forest-600')
+        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_8px_rgba(252,232,189,0.6)')
+        ->assertSeeHtml('text-[22px] font-[800] text-forest-600')
         ->assertDontSeeHtml('bg-forest-600 shadow')
         ->assertSeeHtml('aria-label="Join quest"')
-        ->assertSeeHtml('h-[84px] w-[84px]')
-        ->assertSeeHtml('-mt-9')
+        ->assertSeeHtml('h-[72px] w-[72px]')
+        ->assertSeeHtml('-mt-7')
         ->assertDontSeeHtml('truncate')
         ->assertDontSeeHtml('<polyline');
 
@@ -161,8 +161,8 @@ it('says Start Quest in amber on a quest screen', function () {
         ->assertDontSee('Join quest')
         ->assertSeeHtml('data-centre-mode="start"')
         ->assertSeeHtml('aria-label="Start Quest"')
-        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_9px_rgba(252,232,189,0.6)')
-        ->assertSeeHtml('text-[26px] font-[800] text-forest-600')
+        ->assertSeeHtml('rounded-full bg-amber-400 shadow-[0_0_0_8px_rgba(252,232,189,0.6)')
+        ->assertSeeHtml('text-[22px] font-[800] text-forest-600')
         ->assertDontSeeHtml('bg-forest-600 text-amber-400');
 });
 
@@ -222,7 +222,7 @@ it('draws the progress arc from 12 o\'clock, clockwise, as the share of the ques
     $test = Livewire::test('centre-button')
         ->assertSeeHtml('-rotate-90')
         ->assertSeeHtml('text-cream-border')
-        ->assertSeeHtml('text-[26px] font-[800] text-forest-600');
+        ->assertSeeHtml('text-[22px] font-[800] text-forest-600');
 
     $dash === null
         ? $test->assertDontSeeHtml('stroke-dasharray')

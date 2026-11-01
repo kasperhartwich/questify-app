@@ -71,9 +71,9 @@
         {{-- Bottom Tab Bar. This is a web-view app (no native-ui / SuperNative), so the
              HTML tab bar is the real navigation and must render on-device, not just in a
              desktop browser. --}}
-        <nav id="app-tab-bar" class="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-black/[0.07] bg-white px-1 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] pt-2.5">
+        <nav id="app-tab-bar" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center border-t border-black/[0.07] bg-white px-1 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] pt-2.5">
             {{-- Discover --}}
-            <a href="/discover/list" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
+            <a href="/discover/list" class="flex max-w-[76px] flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('discover*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="3,7 9,5 15,7 21,5 21,19 15,21 9,19 3,21"/>
                     <line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="7" x2="15" y2="21"/>
@@ -83,7 +83,7 @@
             </a>
 
             {{-- Quests --}}
-            <a href="/my-quests" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
+            <a href="/my-quests" class="flex max-w-[76px] flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('my-quests*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
                     <rect x="9" y="1" width="6" height="4" rx="1"/>
@@ -97,7 +97,7 @@
             <livewire:centre-button :on-quest-screen="request()->routeIs('discover.quest')" />
 
             {{-- Create --}}
-            <a href="/create" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
+            <a href="/create" class="flex max-w-[76px] flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('create*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                     <line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/>
@@ -106,7 +106,7 @@
             </a>
 
             {{-- Profile --}}
-            <a href="/profile" class="flex flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
+            <a href="/profile" class="flex max-w-[76px] flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ request()->is('profile*') ? '#0B3D2E' : '#C0B8B0' }}" stroke-width="2" stroke-linecap="round">
                     <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
                 </svg>
