@@ -233,3 +233,28 @@ it('draws the progress arc from 12 o\'clock, clockwise, as the share of the ques
     'three of five' => [3, 5, '60'],
     'all five' => [5, 5, '100'],
 ]);
+
+it('pulses a ring while the player has a quest but is on another screen', function () {
+    playerSessions([participation('active')]);
+
+    Livewire::test('centre-button')
+        ->assertSet('pulse', true)
+        ->assertSeeHtml('data-centre-pulse="on"')
+        ->assertSeeHtml('motion-safe:animate-centre-pulse')
+        ->assertSeeHtml('bg-cream');
+});
+
+it('does not pulse on the quest screens of the session itself', function () {
+    playerSessions([participation('active')]);
+
+    Livewire::test('centre-button', ['onSessionScreen' => true])
+        ->assertSet('pulse', false)
+        ->assertDontSeeHtml('data-centre-pulse="on"');
+});
+
+it('does not pulse when the player is in no quest', function () {
+    playerSessions([]);
+
+    Livewire::test('centre-button')->assertSet('pulse', false)->assertDontSeeHtml('data-centre-pulse="on"');
+    Livewire::test('centre-button', ['onQuestScreen' => true])->assertSet('pulse', false);
+});

@@ -15,13 +15,18 @@ new class extends Component
 
     public ?float $progress = null;
 
-    public function mount(bool $onQuestScreen = false): void
+    /** A quest is waiting for the player while they are on a screen outside its session. */
+    public bool $pulse = false;
+
+    public function mount(bool $onQuestScreen = false, bool $onSessionScreen = false): void
     {
         $this->useActiveParticipationIfSignedIn();
 
         if ($this->mode === 'join' && $onQuestScreen) {
             $this->mode = 'start';
         }
+
+        $this->pulse = $this->mode === 'continue' && ! $onSessionScreen;
     }
 
     /**
@@ -109,7 +114,8 @@ new class extends Component
         class="relative z-10 flex w-[84px] shrink-0 items-center justify-center"
     >
 @endif
-        <div class="-mt-7 flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full {{ $disc }}">
+        <div class="relative -mt-7 flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full {{ $disc }}">
+            <span data-centre-pulse="{{ $pulse ? 'on' : 'off' }}" class="pointer-events-none absolute inset-0 rounded-full border-[3px] border-amber-400 {{ $pulse ? 'motion-safe:animate-centre-pulse motion-reduce:opacity-40' : 'hidden' }}" aria-hidden="true"></span>
             <div class="relative flex h-[58px] w-[58px] items-center justify-center">
                 @if ($mode === 'continue')
                     <svg class="absolute inset-0 -rotate-90 text-amber-400" width="58" height="58" viewBox="0 0 36 36" fill="none" aria-hidden="true">

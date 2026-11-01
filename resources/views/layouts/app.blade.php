@@ -94,7 +94,7 @@
             </a>
 
             {{-- Join quest, Start Quest on a quest screen, or Continue the quest the player is in --}}
-            <livewire:centre-button :on-quest-screen="request()->routeIs('discover.quest')" />
+            <livewire:centre-button :on-quest-screen="request()->routeIs('discover.quest')" :on-session-screen="request()->routeIs('session.*')" />
 
             {{-- Create --}}
             <a href="/create" class="flex max-w-[76px] flex-1 flex-col items-center justify-center gap-[4px] py-2.5" wire:navigate.hover>

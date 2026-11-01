@@ -13,6 +13,14 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --font-heading: 'Exo 2', ui-sans-serif, system-ui, sans-serif;
 
+    /* The centre button's ring while a quest waits elsewhere. */
+    --animate-centre-pulse: centre-pulse 2.4s ease-out infinite;
+
+    @keyframes centre-pulse {
+        0% { transform: scale(1); opacity: 0.55; }
+        70%, 100% { transform: scale(1.4); opacity: 0; }
+    }
+
     /* Questify brand palette */
     --color-forest-50: #e6f0ec;
     --color-forest-100: #b3d4c6;
