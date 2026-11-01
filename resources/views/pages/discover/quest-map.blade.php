@@ -75,6 +75,10 @@ class extends Component
         ?string $provider = null,
         ?string $error = null,
     ): void {
+        if (! $this->takeAwaitedFix()) {
+            return;
+        }
+
         if (! $success) {
             return;
         }

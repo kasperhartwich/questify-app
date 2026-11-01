@@ -68,6 +68,7 @@ it('asks for location when the player has turned it off', function () {
     swapNearby([nearbyQuest(1, 'Close Quest', 0.5)]);
 
     joinScreen()
+        ->set('locationAsked', true)
         ->call('onLocationPermissionStatus', 'denied')
         ->assertSet('nearestState', 'denied')
         ->assertSeeHtml('data-nearest="denied"')
@@ -78,12 +79,14 @@ it('asks for location when the player has turned it off', function () {
 
 it('shows the blocked wording when location is blocked for good', function () {
     joinScreen()
+        ->set('locationAsked', true)
         ->call('onLocationPermissionStatus', 'permanently_denied')
         ->assertSee('Location access is blocked for Questify');
 });
 
 it('treats a failed position fix as location off', function () {
     joinScreen()
+        ->set('awaitingFix', true)
         ->call('onLocationReceived', false, null, null)
         ->assertSet('nearestState', 'denied');
 });
@@ -94,6 +97,7 @@ it('loads the quests once a fix arrives', function () {
     joinScreen()
         ->set('nearestState', 'locating')
         ->assertSeeHtml('data-nearest="locating"')
+        ->set('awaitingFix', true)
         ->call('onLocationReceived', true, 55.68, 12.59)
         ->assertSet('nearestState', 'ready')
         ->assertSee('Close Quest');

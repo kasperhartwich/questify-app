@@ -134,6 +134,10 @@ class extends Component
         ?float $latitude = null,
         ?float $longitude = null,
     ): void {
+        if (! $this->takeAwaitedFix()) {
+            return;
+        }
+
         if (! $success || $latitude === null || $longitude === null) {
             return;
         }

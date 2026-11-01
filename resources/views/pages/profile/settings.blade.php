@@ -180,6 +180,8 @@ class extends Component
             $this->pushPermission = 'unknown';
         }
 
+        $this->locationAsked = true;
+
         try {
             \Native\Mobile\Facades\Geolocation::checkPermissions()->get();
         } catch (\Throwable) {

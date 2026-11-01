@@ -27,8 +27,19 @@ use Native\Mobile\Facades\Geolocation;
  */
 trait RequestsLocation
 {
+    /**
+     * Native location events are global: every component on the page hears them,
+     * also the ones another component (the centre button) asked for. A screen
+     * therefore reacts only to the answers of its own request.
+     */
+    public bool $locationAsked = false;
+
+    public bool $awaitingFix = false;
+
     public function requestLocation(): void
     {
+        $this->locationAsked = true;
+
         try {
             Geolocation::checkPermissions()->get();
         } catch (\Throwable) {
@@ -39,6 +50,10 @@ trait RequestsLocation
     #[OnNative(PermissionStatusReceived::class)]
     public function onLocationPermissionStatus(string $location = '', string $coarseLocation = '', string $fineLocation = ''): void
     {
+        if (! $this->locationAsked) {
+            return;
+        }
+
         $this->rememberLocationPermission($location);
 
         if ($location === 'granted') {
@@ -53,12 +68,17 @@ trait RequestsLocation
             return;
         }
 
+        $this->locationAsked = false;
         $this->onLocationPermissionDenied($location);
     }
 
     #[OnNative(PermissionRequestResult::class)]
     public function onLocationPermissionRequestResult(string $location = '', string $coarseLocation = '', string $fineLocation = '', ?string $error = null): void
     {
+        if (! $this->locationAsked) {
+            return;
+        }
+
         $this->rememberLocationPermission($location);
 
         if ($location === 'granted') {
@@ -75,6 +95,7 @@ trait RequestsLocation
             return;
         }
 
+        $this->locationAsked = false;
         $this->onLocationPermissionDenied($location);
     }
 
@@ -100,7 +121,22 @@ trait RequestsLocation
 
     protected function fetchCurrentPosition(): void
     {
+        $this->locationAsked = false;
+        $this->awaitingFix = true;
+
         Geolocation::getCurrentPosition($this->wantsFineLocation());
+    }
+
+    /**
+     * True once for the fix this screen asked for; a fix someone else asked
+     * for returns false and is ignored.
+     */
+    protected function takeAwaitedFix(): bool
+    {
+        $awaited = $this->awaitingFix;
+        $this->awaitingFix = false;
+
+        return $awaited;
     }
 
     /**

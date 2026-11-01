@@ -65,6 +65,7 @@ it('applies a successful location fix on the map page', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
+        ->set('awaitingFix', true)
         ->call('onLocationReceived', true, 40.0, -74.0, 5.0, 0, 'gps', null)
         ->assertSet('latitude', 40.0)
         ->assertSet('longitude', -74.0);
@@ -92,6 +93,7 @@ it('warns the user when location permission is denied', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
+        ->set('locationAsked', true)
         ->call('onLocationPermissionStatus', 'denied', 'denied', 'denied')
         ->assertDispatched('validation-notice');
 });
@@ -101,6 +103,7 @@ it('warns with the settings hint when permission is permanently denied', functio
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
+        ->set('locationAsked', true)
         ->call('onLocationPermissionRequestResult', 'permanently_denied', 'denied', 'denied')
         ->assertDispatched('validation-notice', message: __('general.location_permission_blocked'));
 });
@@ -110,6 +113,7 @@ it('reads the position once permission is granted', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::discover.quest-map')
+        ->set('locationAsked', true)
         ->call('onLocationPermissionRequestResult', 'granted', 'granted', 'granted')
         ->assertNotDispatched('api-error');
 });
@@ -132,6 +136,7 @@ it('records a granted location permission on the settings screen', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::profile.settings')
+        ->call('refreshPermissionStates')
         ->call('onLocationPermissionStatus', 'granted', 'granted', 'granted')
         ->assertSet('locationPermission', 'granted');
 });
@@ -156,4 +161,49 @@ it('stays quiet when the request result arrives with no status at all', function
         ->test('pages::discover.quest-list')
         ->call('onLocationPermissionRequestResult')
         ->assertNotDispatched('validation-notice');
+});
+
+/**
+ * Native location events reach every component on the page, so the centre
+ * button's own check must not move a screen that never asked.
+ */
+it('ignores location answers it did not ask for', function (string $component) {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test($component)
+        ->call('onLocationPermissionStatus', 'denied', 'denied', 'denied')
+        ->call('onLocationPermissionRequestResult', 'permanently_denied', 'denied', 'denied')
+        ->assertNotDispatched('validation-notice');
+})->with([
+    'map' => 'pages::discover.quest-map',
+    'list' => 'pages::discover.quest-list',
+    'wizard' => 'pages::create.quest-wizard',
+]);
+
+it('ignores a position fix it did not ask for', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::discover.quest-map')
+        ->call('onLocationReceived', true, 40.0, -74.0, 5.0, 0, 'gps', null)
+        ->assertSet('latitude', 55.6761)
+        ->assertSet('longitude', 12.5683);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->call('onLocationReceived', true, 40.0, -74.0)
+        ->assertNotDispatched('wizard-location');
+});
+
+it('takes a fix only once after asking', function () {
+    mockLocationApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('awaitingFix', true)
+        ->call('onLocationReceived', true, 40.0, -74.0)
+        ->assertDispatched('wizard-location')
+        ->call('onLocationReceived', true, 41.0, -75.0)
+        ->assertSet('awaitingFix', false);
 });
