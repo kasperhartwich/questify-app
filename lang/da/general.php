@@ -48,6 +48,7 @@ return [
     'centre_join' => 'Deltag i quest',
     'centre_start' => 'Start Quest',
     'centre_continue' => 'Quest',
+    'centre_start_quest' => 'Start :title',
     'nearest_quests' => 'Tættest på dig',
     'nearest_closest' => 'Tættest',
     'nearest_open' => 'Åbn quest',

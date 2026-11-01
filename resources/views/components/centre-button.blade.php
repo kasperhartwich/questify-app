@@ -4,10 +4,20 @@ use App\Exceptions\Api\ApiException;
 use App\Livewire\Concerns\WithApiClient;
 use App\Services\TokenStorage;
 use Livewire\Component;
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Geolocation\LocationReceived;
+use Native\Mobile\Events\Geolocation\PermissionStatusReceived;
+use Native\Mobile\Facades\Geolocation;
 
 new class extends Component
 {
     use WithApiClient;
+
+    /** The arrival distance the quest screen falls back on, in metres. */
+    private const AT_START_METERS = 30;
+
+    /** Km around the player to ask the nearby call about: just past the arrival distance. */
+    private const AT_START_SEARCH_KM = 0.1;
 
     public string $mode = 'join';
 
@@ -18,8 +28,17 @@ new class extends Component
     /** A quest is waiting for the player while they are on a screen outside its session. */
     public bool $pulse = false;
 
-    public function mount(bool $onQuestScreen = false, bool $onSessionScreen = false): void
+    /** The quest whose start the player stands at, while they are not playing. */
+    public ?int $atStartQuestId = null;
+
+    public string $atStartQuestTitle = '';
+
+    public ?int $questId = null;
+
+    public function mount(bool $onQuestScreen = false, bool $onSessionScreen = false, ?int $questId = null): void
     {
+        $this->questId = $questId;
+
         $this->useActiveParticipationIfSignedIn();
 
         if ($this->mode === 'join' && $onQuestScreen) {
@@ -27,6 +46,75 @@ new class extends Component
         }
 
         $this->pulse = $this->mode === 'continue' && ! $onSessionScreen;
+
+        $this->checkLocationWhenAllowed();
+    }
+
+    /**
+     * Looks at the player's position only when location is already allowed:
+     * the bar is on every screen and must never raise the system prompt.
+     */
+    private function checkLocationWhenAllowed(): void
+    {
+        if ($this->mode === 'continue' || ! TokenStorage::has()) {
+            return;
+        }
+
+        try {
+            Geolocation::checkPermissions()->get();
+        } catch (\Throwable) {
+            // Not running on a native device: there is no position to read.
+        }
+    }
+
+    #[OnNative(PermissionStatusReceived::class)]
+    public function onLocationPermissionStatus(string $location = ''): void
+    {
+        if ($location !== 'granted' || $this->mode === 'continue') {
+            return;
+        }
+
+        Geolocation::getCurrentPosition(false);
+    }
+
+    #[OnNative(LocationReceived::class)]
+    public function onLocationReceived(bool $success = false, ?float $latitude = null, ?float $longitude = null): void
+    {
+        if (! $success || $latitude === null || $longitude === null || $this->mode === 'continue' || ! TokenStorage::has()) {
+            return;
+        }
+
+        try {
+            $response = $this->api->quests()->nearby($latitude, $longitude, ['radius' => self::AT_START_SEARCH_KM]);
+        } catch (ApiException) {
+            return;
+        }
+
+        $this->useQuestAtStart($response['data'] ?? []);
+    }
+
+    /**
+     * Remembers the closest quest whose start is within the arrival distance.
+     *
+     * @param  array<int|string, mixed>  $quests
+     */
+    private function useQuestAtStart(array $quests): void
+    {
+        $this->atStartQuestId = null;
+        $this->atStartQuestTitle = '';
+
+        $closest = collect($quests)
+            ->filter(fn (mixed $quest): bool => is_array($quest) && isset($quest['id'], $quest['distance_to_start_km']))
+            ->filter(fn (array $quest): bool => (float) $quest['distance_to_start_km'] * 1000 <= self::AT_START_METERS)
+            ->sortBy(fn (array $quest): float => (float) $quest['distance_to_start_km'])
+            ->first();
+
+        if ($closest === null) {
+            return;
+        }
+
+        $this->atStartQuestId = (int) $closest['id'];
+        $this->atStartQuestTitle = (string) ($closest['title'] ?? '');
     }
 
     /**
@@ -87,14 +175,22 @@ new class extends Component
 ?>
 
 @php
-    $label = match ($mode) {
-        'start' => __('general.centre_start'),
-        'continue' => __('general.centre_continue'),
+    // Green: the player stands at a quest's start. On a quest screen only when it is that quest.
+    $atStart = $atStartQuestId !== null
+        && ($mode === 'join' || ($mode === 'start' && $atStartQuestId === $questId));
+    $label = match (true) {
+        $atStart => __('general.centre_start_quest', ['title' => $atStartQuestTitle]),
+        $mode === 'start' => __('general.centre_start'),
+        $mode === 'continue' => __('general.centre_continue'),
         default => __('general.centre_join'),
     };
-    $disc = $mode === 'continue'
-        ? 'border border-cream-border bg-cream shadow-[0_6px_18px_rgba(11,61,46,0.28)]'
-        : 'bg-amber-400 shadow-[0_0_0_8px_rgba(252,232,189,0.6),0_6px_18px_rgba(245,166,35,0.4)]';
+    $disc = match (true) {
+        $mode === 'continue' => 'border border-cream-border bg-cream shadow-[0_6px_18px_rgba(11,61,46,0.28)]',
+        $atStart => 'bg-forest-600 shadow-[0_0_0_8px_rgba(179,212,198,0.6),0_6px_18px_rgba(11,61,46,0.4)]',
+        default => 'bg-amber-400 shadow-[0_0_0_8px_rgba(252,232,189,0.6),0_6px_18px_rgba(245,166,35,0.4)]',
+    };
+    $letter = $atStart ? 'text-amber-400' : 'text-forest-600';
+    $target = $mode === 'join' && $atStart ? route('discover.quest', $atStartQuestId, false) : $href;
 @endphp
 
 @if ($mode === 'start')
@@ -102,14 +198,16 @@ new class extends Component
         type="button"
         wire:click="startQuest"
         data-centre-mode="start"
+        data-centre-at-start="{{ $atStart ? 'yes' : 'no' }}"
         aria-label="{{ $label }}"
         class="relative z-10 flex w-[84px] shrink-0 items-center justify-center"
     >
 @else
     <a
-        href="{{ $href }}"
+        href="{{ $target }}"
         wire:navigate.hover
         data-centre-mode="{{ $mode }}"
+        data-centre-at-start="{{ $atStart ? 'yes' : 'no' }}"
         aria-label="{{ $label }}"
         class="relative z-10 flex w-[84px] shrink-0 items-center justify-center"
     >
@@ -125,7 +223,7 @@ new class extends Component
                         @endif
                     </svg>
                 @endif
-                <span class="flex h-[38px] w-[38px] items-center justify-center rounded-full font-heading text-[22px] font-[800] text-forest-600">Q</span>
+                <span class="flex h-[38px] w-[38px] items-center justify-center rounded-full font-heading text-[22px] font-[800] {{ $letter }}">Q</span>
             </div>
         </div>
 @if ($mode === 'start')

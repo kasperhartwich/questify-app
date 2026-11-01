@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Services\Api\ApiCache;
 use App\Services\Api\QuestifyApiClient;
 use App\Services\Api\Resources\GameplayApiResource;
+use App\Services\Api\Resources\QuestApiResource;
 use App\Services\Api\Resources\SessionApiResource;
 use App\Services\Api\Resources\UserApiResource;
 use App\Services\TokenStorage;
@@ -257,4 +258,77 @@ it('does not pulse when the player is in no quest', function () {
 
     Livewire::test('centre-button')->assertSet('pulse', false)->assertDontSeeHtml('data-centre-pulse="on"');
     Livewire::test('centre-button', ['onQuestScreen' => true])->assertSet('pulse', false);
+});
+
+function nearbyQuests(array $quests): void
+{
+    $resource = Mockery::mock(QuestApiResource::class);
+    $resource->shouldReceive('nearby')->andReturn(['data' => $quests]);
+
+    swapApiResource('quests', $resource);
+}
+
+it('turns green and names the quest when the player stands at its start', function () {
+    playerSessions([]);
+    nearbyQuests([
+        ['id' => 9, 'title' => 'Far Hunt', 'distance_to_start_km' => 0.09],
+        ['id' => 7, 'title' => 'Harbour Hunt', 'distance_to_start_km' => 0.02],
+    ]);
+
+    Livewire::test('centre-button')
+        ->call('onLocationReceived', true, 55.67, 12.56)
+        ->assertSet('atStartQuestId', 7)
+        ->assertSet('mode', 'join')
+        ->assertSeeHtml('data-centre-at-start="yes"')
+        ->assertSeeHtml('aria-label="Start Harbour Hunt"')
+        ->assertSeeHtml('href="'.route('discover.quest', 7, false).'"')
+        ->assertSeeHtml('bg-forest-600 shadow')
+        ->assertDontSeeHtml('bg-amber-400 shadow')
+        ->assertSeeHtml('h-[72px] w-[72px]');
+});
+
+it('stays amber when no quest start is within 30 m', function () {
+    playerSessions([]);
+    nearbyQuests([['id' => 9, 'title' => 'Far Hunt', 'distance_to_start_km' => 0.05]]);
+
+    Livewire::test('centre-button')
+        ->call('onLocationReceived', true, 55.67, 12.56)
+        ->assertSet('atStartQuestId', null)
+        ->assertSeeHtml('data-centre-at-start="no"')
+        ->assertSeeHtml('aria-label="Join quest"')
+        ->assertSeeHtml('bg-amber-400 shadow');
+});
+
+it('ignores a failed fix and a player who is playing', function () {
+    playerSessions([participation('active')]);
+    nearbyQuests([['id' => 7, 'title' => 'Harbour Hunt', 'distance_to_start_km' => 0.01]]);
+
+    Livewire::test('centre-button')
+        ->call('onLocationReceived', true, 55.67, 12.56)
+        ->assertSet('atStartQuestId', null)
+        ->assertSet('mode', 'continue');
+
+    playerSessions([]);
+
+    Livewire::test('centre-button')
+        ->call('onLocationReceived', false, null, null)
+        ->assertSet('atStartQuestId', null);
+});
+
+it('is green on a quest screen only for the quest the player stands at', function () {
+    playerSessions([]);
+    nearbyQuests([['id' => 7, 'title' => 'Harbour Hunt', 'distance_to_start_km' => 0.01]]);
+
+    Livewire::test('centre-button', ['onQuestScreen' => true, 'questId' => 7])
+        ->call('onLocationReceived', true, 55.67, 12.56)
+        ->assertSeeHtml('data-centre-mode="start"')
+        ->assertSeeHtml('data-centre-at-start="yes"')
+        ->assertSeeHtml('aria-label="Start Harbour Hunt"')
+        ->call('startQuest')
+        ->assertDispatched('centre-start-quest');
+
+    Livewire::test('centre-button', ['onQuestScreen' => true, 'questId' => 8])
+        ->call('onLocationReceived', true, 55.67, 12.56)
+        ->assertSeeHtml('data-centre-at-start="no"')
+        ->assertSeeHtml('aria-label="Start Quest"');
 });

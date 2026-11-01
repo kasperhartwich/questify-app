@@ -48,6 +48,7 @@ return [
     'centre_join' => 'Join quest',
     'centre_start' => 'Start Quest',
     'centre_continue' => 'Quest',
+    'centre_start_quest' => 'Start :title',
     'nearest_quests' => 'Closest to you',
     'nearest_closest' => 'Closest',
     'nearest_open' => 'Open quest',
