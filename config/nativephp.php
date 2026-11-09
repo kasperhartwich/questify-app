@@ -277,7 +277,7 @@ return [
         // Info.plist overrides — applied after plugin defaults, so these are the
         // strings users actually see in the iOS permission dialogs.
         'NSLocationWhenInUseUsageDescription' => 'Questify uses your location to show quests near you and to confirm that you have reached a checkpoint while playing.',
-        'NSLocationAlwaysAndWhenInUseUsageDescription' => 'Questify follows your route while a quest is running, so checkpoints still register when the screen is off.',
+        'NSLocationAlwaysAndWhenInUseUsageDescription' => 'Questify only uses your location while the app is open, to show where you are and to confirm that you have reached a checkpoint. It never tracks you in the background.',
         'NSCameraUsageDescription' => 'Questify uses the camera to scan the QR code that joins you to a quest session.',
     ],
 

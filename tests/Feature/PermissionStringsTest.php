@@ -22,3 +22,10 @@ it('keeps the permission feature toggles boolean', function () {
     expect(config('nativephp.permissions.location'))->toBeTrue()
         ->and(config('nativephp.permissions.camera'))->toBeTrue();
 });
+
+it('does not promise background tracking in the always-and-when-in-use string', function () {
+    $value = config('nativephp.permissions.NSLocationAlwaysAndWhenInUseUsageDescription');
+
+    expect($value)->not->toContain('screen is off')
+        ->and($value)->toContain('never tracks you in the background');
+});
