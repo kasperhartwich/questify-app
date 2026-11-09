@@ -1097,3 +1097,26 @@ it('shows a translated message for empty or out-of-range points', function (mixe
         ->assertDontSee('questions.0.0.points field')
         ->assertDontSee('must be');
 })->with(['empty' => [''], 'null' => [null], 'zero' => [0], 'too many' => [1001], 'text' => ['abc']]);
+
+it('opens the checkpoint whose question has invalid points', function () {
+    mockQuestWizardApiClient();
+
+    $question = fn (mixed $points): array => [
+        'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => $points,
+        'answers' => [['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false]],
+    ];
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('activeCheckpointIndex', 1)
+        ->set('checkpoints', [
+            ['title' => 'One', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0],
+            ['title' => 'Two', 'description' => '', 'latitude' => 55.1, 'longitude' => 12.1],
+        ])
+        ->set('questions', [[$question(1001)], [$question(100)]])
+        ->call('nextStep')
+        ->assertSet('step', 3)
+        ->assertSet('activeCheckpointIndex', 0)
+        ->assertSee(__('quests.points_invalid'));
+});

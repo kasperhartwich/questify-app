@@ -690,15 +690,22 @@ class extends Component
                 throw new \Illuminate\Validation\ValidationException(validator([], []));
             }
 
-            $this->validate([
-                "questions.{$cpIndex}.*.body" => ['required', 'string'],
-                "questions.{$cpIndex}.*.points" => ['required', 'integer', 'min:1', 'max:1000'],
-            ], [
-                "questions.{$cpIndex}.*.points.required" => __('quests.points_invalid'),
-                "questions.{$cpIndex}.*.points.integer" => __('quests.points_invalid'),
-                "questions.{$cpIndex}.*.points.min" => __('quests.points_invalid'),
-                "questions.{$cpIndex}.*.points.max" => __('quests.points_invalid'),
-            ]);
+            try {
+                $this->validate([
+                    "questions.{$cpIndex}.*.body" => ['required', 'string'],
+                    "questions.{$cpIndex}.*.points" => ['required', 'integer', 'min:1', 'max:1000'],
+                ], [
+                    "questions.{$cpIndex}.*.points.required" => __('quests.points_invalid'),
+                    "questions.{$cpIndex}.*.points.integer" => __('quests.points_invalid'),
+                    "questions.{$cpIndex}.*.points.min" => __('quests.points_invalid'),
+                    "questions.{$cpIndex}.*.points.max" => __('quests.points_invalid'),
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $exception) {
+                // The error line only renders for the open checkpoint, so open the one that failed.
+                $this->activeCheckpointIndex = $cpIndex;
+
+                throw $exception;
+            }
 
             // Choice answers need text and exactly one correct option. Without
             // this the backend rejected the save with a raw, untranslated field
