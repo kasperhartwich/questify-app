@@ -522,22 +522,46 @@ it('picks the true or false icon from the answer text, not its position', functi
         ->and($falseRow)->toContain('M7 7l10 10M17 7L7 17');
 });
 
-it('shows no correct-answer reveal after a wrong answer by default', function () {
+it('shows no correct-answer reveal when the server names none', function () {
     fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
 
     questionScreen()
         ->set('selectedAnswerId', 2)
         ->call('submitAnswer')
+        ->assertSet('correctAnswerId', null)
         ->assertDontSeeHtml('data-testid="correct-answer-tag"');
 });
 
-it('marks a stand-in row as the correct answer when the design preview is on', function () {
-    config(['questify.reveal_preview' => true]);
-    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
+it('marks the right row when the server names the correct answer', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'three_strikes_hint', 'correct_answer_id' => 1]]);
 
     questionScreen()
         ->set('selectedAnswerId', 2)
         ->call('submitAnswer')
+        ->assertSet('correctAnswerId', 1)
         ->assertSeeHtml('data-testid="correct-answer-tag"')
         ->assertSee(__('sessions.correct_answer'));
+});
+
+it('forgets the revealed answer when the player tries again', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'three_strikes_hint', 'correct_answer_id' => 1]]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->call('tryAgain')
+        ->assertSet('correctAnswerId', null)
+        ->assertDontSeeHtml('data-testid="correct-answer-tag"');
+});
+
+it('shows the accepted text card for an open text question when the server names it', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'three_strikes_hint', 'correct_answer_text' => 'Anno 1743']]);
+
+    questionScreen()
+        ->set('answeredQuestionIds', [10])
+        ->set('openEndedAnswer', 'nope')
+        ->call('submitAnswer')
+        ->assertSet('correctAnswerText', 'Anno 1743')
+        ->assertSeeHtml('data-testid="correct-answer-text"')
+        ->assertSee('Anno 1743');
 });

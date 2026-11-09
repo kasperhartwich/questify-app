@@ -48,6 +48,12 @@ class extends Component
     /** Hint revealed for the current question (three_strikes_hint). Persists until the question is passed. */
     public ?string $revealedHint = null;
 
+    /** Id of the right answer, sent only from the third wrong attempt of a three-strikes quest (choice and true/false). */
+    public ?int $correctAnswerId = null;
+
+    /** The accepted answer for an open-text question, sent under the same rule. */
+    public ?string $correctAnswerText = null;
+
     /** Seconds remaining on a lockout after an incorrect attempt (lockout). */
     public int $lockoutRemaining = 0;
 
@@ -233,6 +239,8 @@ class extends Component
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
         $this->revealedHint = null;
+        $this->correctAnswerId = null;
+        $this->correctAnswerText = null;
         $this->startLockout(0);
 
         $next = $data['next'] ?? 'question';
@@ -253,6 +261,8 @@ class extends Component
     {
         $this->wrongBehaviour = $data['behaviour'] ?? 'retry_free';
         $this->penaltyPoints = null;
+        $this->correctAnswerId = isset($data['correct_answer_id']) ? (int) $data['correct_answer_id'] : null;
+        $this->correctAnswerText = filled($data['correct_answer_text'] ?? null) ? (string) $data['correct_answer_text'] : null;
         $this->startLockout(0);
 
         match ($this->wrongBehaviour) {
@@ -283,6 +293,8 @@ class extends Component
         $this->showFeedback = false;
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
+        $this->correctAnswerId = null;
+        $this->correctAnswerText = null;
         $this->startLockout(0);
         // $revealedHint is intentionally kept so the hint stays visible while retrying.
     }
@@ -295,6 +307,8 @@ class extends Component
         $this->wrongBehaviour = null;
         $this->penaltyPoints = null;
         $this->revealedHint = null;
+        $this->correctAnswerId = null;
+        $this->correctAnswerText = null;
         $this->startLockout(0);
 
         if ($this->currentQuestion === null || $this->checkpointComplete) {
@@ -320,11 +334,7 @@ class extends Component
         ? $question->answers->sortBy(fn ($a) => $a->id === $selectedAnswerId ? 0 : 1)
         : $question->answers;
     $locked = $lockoutRemaining > 0;
-    // Design preview only (QU-13): the API never says which answer is right, so with
-    // QUESTIFY_REVEAL_PREVIEW on, the first answer the player did not pick stands in for it.
-    $revealAnswerId = config('questify.reveal_preview') && $showFeedback && ! $lastAnswerCorrect && ! $isOpenText
-        ? $question->answers->first(fn ($a) => $a->id !== $selectedAnswerId)?->id
-        : null;
+    $revealAnswerId = $showFeedback && ! $lastAnswerCorrect && ! $isOpenText ? $correctAnswerId : null;
     $typeLabel = $isTrueFalse ? __('sessions.type_true_false') : ($isOpenText ? __('sessions.type_open_text') : __('sessions.type_multiple_choice'));
 @endphp
 
@@ -388,6 +398,17 @@ class extends Component
 
             {{-- Answers --}}
             @if ($isOpenText)
+                @if ($showFeedback && ! $lastAnswerCorrect && $correctAnswerText)
+                    <div class="flex items-center gap-3 rounded-xl border border-forest-600 bg-success px-3 py-3 text-sm font-semibold text-forest-600" data-testid="correct-answer-text">
+                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-forest-600 text-white">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                        </span>
+                        <span class="flex-1">
+                            <span class="block text-[10px] font-semibold uppercase tracking-wide">{{ __('sessions.correct_answer') }}</span>
+                            {{ $correctAnswerText }}
+                        </span>
+                    </div>
+                @endif
                 @if (! $showFeedback)
                     <textarea
                         wire:model="openEndedAnswer"

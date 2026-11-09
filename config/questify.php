@@ -118,17 +118,4 @@ return [
         'max_per_page' => 100,
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Correct-Answer Reveal Preview
-    |--------------------------------------------------------------------------
-    |
-    | Design preview only (QU-13). The API does not say which answer is right,
-    | so with this on, the question screen marks a stand-in row as the correct
-    | answer after a wrong one. Leave it off: players never see it.
-    |
-    */
-
-    'reveal_preview' => (bool) env('QUESTIFY_REVEAL_PREVIEW', false),
-
 ];
