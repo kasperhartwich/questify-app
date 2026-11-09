@@ -243,6 +243,7 @@ Registered users only. Multi-step form with a step progress indicator at the top
     - Question text (required)
     - Optional image
     - Question type selector: Multiple Choice / True & False / Open Text
+    - Points number input (1–1000, default 100), sent as `points`
     - Answer fields based on type:
         - Multiple choice: 2–4 answer fields, radio to mark one as correct
         - True & False: two fixed options, toggle correct answer

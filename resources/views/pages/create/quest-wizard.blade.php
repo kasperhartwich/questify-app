@@ -220,7 +220,7 @@ class extends Component
                     'body' => $question['question_text'] ?? '',
                     'type' => $question['question_type'] ?? QuestionType::MultipleChoice->value,
                     'hint' => $question['hint'] ?? ($questionIndex === 0 ? ($checkpoint['hint'] ?? '') : ''),
-                    'points' => $question['points'] ?? 10,
+                    'points' => $question['points'] ?? 100,
                     'answers' => collect($question['answers'] ?? [])
                         ->map(fn (array $answer): array => [
                             'body' => $answer['answer_text'] ?? '',
@@ -396,7 +396,7 @@ class extends Component
             'body' => '',
             'type' => QuestionType::MultipleChoice->value,
             'hint' => '',
-            'points' => 10,
+            'points' => 100,
             'answers' => [
                 ['body' => '', 'is_correct' => true],
                 ['body' => '', 'is_correct' => false],
@@ -515,6 +515,7 @@ class extends Component
                 $questionsData[] = [
                     'question_text' => $question['body'],
                     'question_type' => $question['type'],
+                    'points' => (int) ($question['points'] ?? 100),
                     'answers' => $answersData,
                 ];
             }
@@ -691,7 +692,12 @@ class extends Component
 
             $this->validate([
                 "questions.{$cpIndex}.*.body" => ['required', 'string'],
-                "questions.{$cpIndex}.*.points" => ['required', 'integer', 'min:1'],
+                "questions.{$cpIndex}.*.points" => ['required', 'integer', 'min:1', 'max:1000'],
+            ], [
+                "questions.{$cpIndex}.*.points.required" => __('quests.points_invalid'),
+                "questions.{$cpIndex}.*.points.integer" => __('quests.points_invalid'),
+                "questions.{$cpIndex}.*.points.min" => __('quests.points_invalid'),
+                "questions.{$cpIndex}.*.points.max" => __('quests.points_invalid'),
             ]);
 
             // Choice answers need text and exactly one correct option. Without

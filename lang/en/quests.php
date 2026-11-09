@@ -20,6 +20,7 @@ return [
     'answers_multiple_choice_count' => 'A multiple choice question can have two to four answers.',
     'correct_answer' => 'Correct Answer',
     'points' => 'Points',
+    'points_invalid' => 'Give each question between 1 and 1000 points.',
     'time_limit' => 'Time Limit',
     'publish' => 'Publish',
     'unpublish' => 'Unpublish',

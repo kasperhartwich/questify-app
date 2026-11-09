@@ -467,6 +467,13 @@
                                 class="w-full rounded-[12px] border-2 border-cream-border bg-white px-3.5 py-3 text-[13px] text-bark placeholder-muted/50 focus:border-forest-600 focus:outline-none focus:ring-0"
                                 placeholder="{{ __('general.hint_optional') }}"
                             />
+
+                            {{-- Points --}}
+                            <div class="flex items-center gap-3">
+                                <label for="question-points-{{ $cpI }}-{{ $qIndex }}" class="text-[13px] font-semibold text-bark">{{ __('quests.points') }}</label>
+                                <input id="question-points-{{ $cpI }}-{{ $qIndex }}" type="number" min="1" max="1000" inputmode="numeric" wire:model.blur="questions.{{ $cpI }}.{{ $qIndex }}.points" class="w-24 rounded-[10px] border-[1.5px] border-cream-border bg-white px-3 py-2 text-[14px] font-semibold text-bark" data-testid="wizard-question-points-{{ $cpI }}-{{ $qIndex }}">
+                            </div>
+                            @error("questions.{$cpI}.{$qIndex}.points") <p class="text-[10px] text-coral">{{ $message }}</p> @enderror
                         </div>
                     @endforeach
                 @endif

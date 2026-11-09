@@ -20,6 +20,7 @@ return [
     'answers_multiple_choice_count' => 'Et multiple choice-spørgsmål kan have to til fire svar.',
     'correct_answer' => 'Korrekt svar',
     'points' => 'Point',
+    'points_invalid' => 'Giv hvert spørgsmål mellem 1 og 1000 point.',
     'time_limit' => 'Tidsbegrænsning',
     'publish' => 'Udgiv',
     'unpublish' => 'Afpublicer',

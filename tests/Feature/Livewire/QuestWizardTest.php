@@ -989,3 +989,111 @@ it('does not add a fifth answer to a multiple choice question', function () {
 
     expect($component->get('questions')[0][0]['answers'])->toHaveCount(4);
 });
+
+function wizardWithPoints(mixed $points)
+{
+    mockQuestWizardApiClient();
+
+    return Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => $points,
+            'answers' => [['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false]],
+        ]]]);
+}
+
+it('starts a new question on 100 points and shows the input', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[]])
+        ->call('addQuestion', 0)
+        ->assertSet('questions.0.0.points', 100)
+        ->assertSeeHtml('data-testid="wizard-question-points-0-0"');
+});
+
+it('sends the points of each question to the API', function () {
+    $captured = null;
+
+    $mockCategories = Mockery::mock(CategoryApiResource::class);
+    $mockCategories->shouldReceive('list')->andReturn(['data' => [['id' => 1, 'name' => 'History', 'slug' => 'history', 'icon' => 'castle', 'color' => '#F59E0B', 'sort_order' => 0]]]);
+
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('store')->once()
+        ->withArgs(function ($data) use (&$captured) {
+            $captured = $data;
+
+            return true;
+        })
+        ->andReturn(['data' => ['id' => 7, 'status' => 'draft']]);
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    $question = fn (int $points): array => [
+        'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => $points,
+        'answers' => [['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false]],
+    ];
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('title', 'Points quest')
+        ->set('description', 'A quest with points')
+        ->set('categoryId', 1)
+        ->set('difficulty', 'easy')
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[$question(250), $question(100)]])
+        ->call('saveAsDraft');
+
+    expect(collect($captured['checkpoints'][0]['questions'])->pluck('points')->all())->toBe([250, 100]);
+});
+
+it('loads the saved points of each question when editing a draft', function () {
+    $mockCategories = Mockery::mock(CategoryApiResource::class);
+    $mockCategories->shouldReceive('list')->andReturn(['data' => []]);
+
+    $mockQuests = Mockery::mock(QuestApiResource::class);
+    $mockQuests->shouldReceive('show')->with(7)->andReturn(['data' => [
+        'id' => 7, 'status' => 'draft', 'title' => 'Draft',
+        'checkpoints' => [[
+            'title' => 'Stop', 'latitude' => '55.0', 'longitude' => '12.0',
+            'questions' => [
+                ['question_text' => 'One?', 'question_type' => 'multiple_choice', 'points' => 250, 'answers' => []],
+                ['question_text' => 'Two?', 'question_type' => 'multiple_choice', 'points' => null, 'answers' => []],
+            ],
+        ]],
+    ]]);
+
+    $mockClient = Mockery::mock(QuestifyApiClient::class);
+    $mockClient->shouldReceive('categories')->andReturn($mockCategories);
+    $mockClient->shouldReceive('quests')->andReturn($mockQuests);
+    $mockClient->shouldReceive('get')->with('/info')->andReturn(appInfoStub());
+    app()->instance(QuestifyApiClient::class, $mockClient);
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard', ['quest' => 7])
+        ->assertSet('questions.0.0.points', 250)
+        ->assertSet('questions.0.1.points', 100);
+});
+
+it('accepts points between 1 and 1000', function (int $points) {
+    wizardWithPoints($points)->call('nextStep')->assertSet('step', 4);
+})->with([1, 100, 1000]);
+
+it('shows a translated message for empty or out-of-range points', function (mixed $points) {
+    wizardWithPoints($points)
+        ->call('nextStep')
+        ->assertSet('step', 3)
+        ->assertHasErrors(['questions.0.0.points'])
+        ->assertSee(__('quests.points_invalid'))
+        ->assertDontSee('questions.0.0.points field')
+        ->assertDontSee('must be');
+})->with(['empty' => [''], 'null' => [null], 'zero' => [0], 'too many' => [1001], 'text' => ['abc']]);
