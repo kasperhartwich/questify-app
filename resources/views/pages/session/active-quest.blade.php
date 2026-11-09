@@ -34,7 +34,7 @@ class extends Component
 
     public bool $isNative = false;
 
-    public int $arrivalRadius = 50;
+    public int $arrivalRadius = 30;
 
     /** True once the player's latest GPS fix is within the current checkpoint's radius. */
     public bool $withinRadius = false;
@@ -85,7 +85,7 @@ class extends Component
 
         // Checkpoint coordinates come from the session (active-only, participant-scoped) — never
         // from the public quest detail endpoint, which must not leak the route (business rule 7).
-        $this->arrivalRadius = (int) (data_get($this->session, 'quest.checkpoint_arrival_radius_meters') ?? 50);
+        $this->arrivalRadius = (int) (data_get($this->session, 'quest.checkpoint_arrival_radius_meters') ?? 30);
 
         $this->checkpoints = collect($this->session['checkpoints'] ?? [])
             ->map(fn ($cp) => [

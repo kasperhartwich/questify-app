@@ -16,6 +16,7 @@ use App\Models\QuestSession;
 use App\Models\SessionParticipant;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 
 beforeEach(function () {
     Event::fake();
@@ -517,4 +518,11 @@ it('falls back to a 30 m arrival radius when the quest has none', function () {
     // 0.0002 deg is ~22 m, 0.0004 deg is ~44 m.
     $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", $body(55.6763))->assertOk();
     $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", $body(55.6765))->assertStatus(422);
+});
+
+it('defaults the quests column to a 30 m arrival radius without touching existing rows', function () {
+    $column = collect(Schema::getColumns('quests'))->firstWhere('name', 'checkpoint_arrival_radius_meters');
+
+    expect((int) trim((string) $column['default'], "'"))->toBe(30)
+        ->and($this->quest->fresh()->checkpoint_arrival_radius_meters)->toBe(50);
 });
