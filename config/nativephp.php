@@ -118,6 +118,9 @@ return [
         // stack traces instead of our error screens.
         'APP_ENV',
         'APP_DEBUG',
+
+        // Design preview only (QU-13): a packaged build must never show it.
+        'QUESTIFY_REVEAL_PREVIEW',
     ],
 
     /*
