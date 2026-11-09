@@ -412,6 +412,10 @@ class extends Component
 
     public function addAnswer(int $checkpointIndex, int $questionIndex): void
     {
+        if (count($this->questions[$checkpointIndex][$questionIndex]['answers']) >= 4) {
+            return;
+        }
+
         $this->questions[$checkpointIndex][$questionIndex]['answers'][] = [
             'body' => '',
             'is_correct' => false,
@@ -714,6 +718,16 @@ class extends Component
 
                 if ($blank || count($answers) < 2) {
                     $this->dispatch('validation-notice', message: __('quests.answers_need_text'));
+
+                    throw new \Illuminate\Validation\ValidationException(validator([], []));
+                }
+
+                $isTrueFalse = ($question['type'] ?? '') === QuestionType::TrueFalse->value;
+
+                if (($isTrueFalse && count($answers) !== 2) || (! $isTrueFalse && count($answers) > 4)) {
+                    $this->dispatch('validation-notice', message: $isTrueFalse
+                        ? __('quests.answers_true_false_count')
+                        : __('quests.answers_multiple_choice_count'));
 
                     throw new \Illuminate\Validation\ValidationException(validator([], []));
                 }

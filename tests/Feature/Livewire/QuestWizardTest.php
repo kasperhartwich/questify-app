@@ -933,3 +933,59 @@ it('never reaches the map helpers through this in x-init (QUESTIFY-APP-M)', func
     expect($view)->not->toContain('this.syncMarkers(params')
         ->and($view)->toContain('syncMarkers(params[0]?.markers');
 });
+
+it('blocks step 3 when a multiple choice question has more than four answers', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => 10,
+            'answers' => [
+                ['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false],
+                ['body' => 'C', 'is_correct' => false], ['body' => 'D', 'is_correct' => false],
+                ['body' => 'E', 'is_correct' => false],
+            ],
+        ]]])
+        ->call('nextStep')
+        ->assertDispatched('validation-notice', message: __('quests.answers_multiple_choice_count'))
+        ->assertSet('step', 3);
+});
+
+it('blocks step 3 when a true or false question does not have two answers', function () {
+    mockQuestWizardApiClient();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('step', 3)
+        ->set('checkpoints', [['title' => 'Stop', 'description' => '', 'latitude' => 55.0, 'longitude' => 12.0]])
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'true_false', 'hint' => '', 'points' => 10,
+            'answers' => [
+                ['body' => 'True', 'is_correct' => true], ['body' => 'False', 'is_correct' => false],
+                ['body' => 'Maybe', 'is_correct' => false],
+            ],
+        ]]])
+        ->call('nextStep')
+        ->assertDispatched('validation-notice', message: __('quests.answers_true_false_count'))
+        ->assertSet('step', 3);
+});
+
+it('does not add a fifth answer to a multiple choice question', function () {
+    mockQuestWizardApiClient();
+
+    $component = Livewire::actingAs(User::factory()->create())
+        ->test('pages::create.quest-wizard')
+        ->set('questions', [[[
+            'body' => 'Question?', 'type' => 'multiple_choice', 'hint' => '', 'points' => 10,
+            'answers' => [
+                ['body' => 'A', 'is_correct' => true], ['body' => 'B', 'is_correct' => false],
+                ['body' => 'C', 'is_correct' => false], ['body' => 'D', 'is_correct' => false],
+            ],
+        ]]])
+        ->call('addAnswer', 0, 0);
+
+    expect($component->get('questions')[0][0]['answers'])->toHaveCount(4);
+});

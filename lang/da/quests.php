@@ -16,6 +16,8 @@ return [
     'questions' => 'Spørgsmål',
     'answer' => 'Svar',
     'answers' => 'Svar',
+    'answers_true_false_count' => 'Et sandt/falsk-spørgsmål skal have præcis to svar.',
+    'answers_multiple_choice_count' => 'Et multiple choice-spørgsmål kan have to til fire svar.',
     'correct_answer' => 'Korrekt svar',
     'points' => 'Point',
     'time_limit' => 'Tidsbegrænsning',

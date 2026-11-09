@@ -16,6 +16,8 @@ return [
     'questions' => 'Questions',
     'answer' => 'Answer',
     'answers' => 'Answers',
+    'answers_true_false_count' => 'A true or false question needs exactly two answers.',
+    'answers_multiple_choice_count' => 'A multiple choice question can have two to four answers.',
     'correct_answer' => 'Correct Answer',
     'points' => 'Points',
     'time_limit' => 'Time Limit',

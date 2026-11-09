@@ -434,7 +434,7 @@
                                         </div>
                                     @endforeach
 
-                                    @if ($question['type'] === \App\Enums\QuestionType::MultipleChoice->value && count($question['answers']) < 6)
+                                    @if ($question['type'] === \App\Enums\QuestionType::MultipleChoice->value && count($question['answers']) < 4)
                                         <button wire:click="addAnswer({{ $cpI }}, {{ $qIndex }})" class="text-[12px] font-semibold text-forest-400">
                                             + {{ __('quests.answer') }}
                                         </button>
