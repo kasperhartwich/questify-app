@@ -56,6 +56,8 @@ return [
     'nearest_locating' => 'Finder quests i nærheden...',
     'nearest_location_off' => 'Slå placering til for at se de quests, der er tættest på dig.',
     'nearest_try_again' => 'Prøv igen',
+    'nearest_timeout' => 'Kunne ikke finde din placering. Tjek at placering er slået til, og prøv igen.',
+    'nearest_failed' => 'Kunne ikke hente quests i nærheden. Prøv igen.',
     'enter_code' => 'Indtast quest-kode',
     'scan_qr' => 'Scan QR-kode',
     'dont_have_account' => 'Har du ikke en konto?',

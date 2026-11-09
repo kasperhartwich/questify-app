@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Api\ApiException;
 use App\Models\User;
 use App\Services\Api\Resources\QuestApiResource;
 use Livewire\Features\SupportTesting\Testable;
@@ -114,4 +115,51 @@ it('answers in Danish', function () {
     app()->setLocale('da');
 
     joinScreen()->assertSee('Tættest på dig')->assertSee('Åbn quest');
+});
+
+it('stops waiting when no position arrives in time and lets the player retry', function () {
+    joinScreen()
+        ->set('nearestState', 'locating')
+        ->call('onLocationTimeout')
+        ->assertSet('nearestState', 'timeout')
+        ->assertSeeHtml('data-nearest="timeout"')
+        ->assertSee('Could not find your position')
+        ->call('retryLocation')
+        ->assertSet('nearestState', 'locating')
+        ->assertSet('locationAsked', true);
+});
+
+it('does not time out once the quests are shown', function () {
+    swapNearby([nearbyQuest(1, 'Close Quest', 0.5)]);
+
+    joinScreen()
+        ->set('awaitingFix', true)
+        ->call('onLocationReceived', true, 55.68, 12.59)
+        ->call('onLocationTimeout')
+        ->assertSet('nearestState', 'ready');
+});
+
+it('uses a fix that arrives after the timeout', function () {
+    swapNearby([nearbyQuest(1, 'Close Quest', 0.5)]);
+
+    joinScreen()
+        ->set('awaitingFix', true)
+        ->call('onLocationTimeout')
+        ->call('onLocationReceived', true, 55.68, 12.59)
+        ->assertSet('nearestState', 'ready')
+        ->assertSee('Close Quest');
+});
+
+it('says so when the nearby call fails instead of claiming there are no quests', function () {
+    $mock = Mockery::mock(QuestApiResource::class);
+    $mock->shouldReceive('nearby')->andThrow(new ApiException(500, 'boom'));
+    swapApiResource('quests', $mock);
+
+    joinScreen()
+        ->set('awaitingFix', true)
+        ->call('onLocationReceived', true, 55.68, 12.59)
+        ->assertSet('nearestState', 'failed')
+        ->assertSeeHtml('data-nearest="failed"')
+        ->assertDontSee('No quests near you yet')
+        ->assertDispatched('api-error');
 });

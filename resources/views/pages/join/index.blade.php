@@ -2,6 +2,7 @@
 
 use App\Exceptions\Api\ApiException;
 use App\Exceptions\Api\ApiNotFoundException;
+use App\Livewire\Concerns\HandlesApiErrors;
 use App\Livewire\Concerns\RequestsLocation;
 use App\Livewire\Concerns\WithApiClient;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ new
 #[Title('Join a Quest')]
 class extends Component
 {
-    use RequestsLocation, WithApiClient;
+    use HandlesApiErrors, RequestsLocation, WithApiClient;
 
     private const NEAREST_COUNT = 3;
 
@@ -31,7 +32,7 @@ class extends Component
 
     public bool $isGuest = true;
 
-    /** locating, ready or denied: where the nearest-quests part of the screen stands. */
+    /** locating, ready, denied, timeout or failed: where the nearest-quests part of the screen stands. */
     public string $nearestState = 'locating';
 
     public string $locationStatus = '';
@@ -70,6 +71,24 @@ class extends Component
         $this->loadNearestQuests($latitude, $longitude);
     }
 
+    /**
+     * Called by the screen when no position has come back in time, so the card
+     * does not sit on "Finding quests..." for ever. A fix that still arrives
+     * later is used (awaitingFix stays set).
+     */
+    public function onLocationTimeout(): void
+    {
+        if ($this->nearestState === 'locating') {
+            $this->nearestState = 'timeout';
+        }
+    }
+
+    public function retryLocation(): void
+    {
+        $this->nearestState = 'locating';
+        $this->requestLocation();
+    }
+
     protected function onLocationPermissionDenied(string $status): void
     {
         $this->locationStatus = $status;
@@ -81,10 +100,15 @@ class extends Component
      */
     private function loadNearestQuests(float $latitude, float $longitude): void
     {
-        try {
-            $response = $this->api->quests()->nearby($latitude, $longitude, ['radius' => self::NEARBY_RADIUS_KM]);
-        } catch (ApiException) {
-            $response = [];
+        $response = $this->tryApiCall(
+            fn () => $this->api->quests()->nearby($latitude, $longitude, ['radius' => self::NEARBY_RADIUS_KM])
+        );
+
+        if (! is_array($response)) {
+            $this->nearestQuests = [];
+            $this->nearestState = 'failed';
+
+            return;
         }
 
         $this->nearestQuests = collect($response['data'] ?? [])
@@ -243,10 +267,15 @@ class extends Component
             @elseif ($nearestState === 'denied')
                 <div data-nearest="denied" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-4 text-center">
                     <p class="text-[13px] text-muted">{{ $locationStatus === 'permanently_denied' ? __('general.location_permission_blocked') : __('general.nearest_location_off') }}</p>
-                    <button type="button" wire:click="requestLocation" class="mt-2.5 text-[13px] font-semibold text-forest-400">{{ __('general.nearest_try_again') }}</button>
+                    <button type="button" wire:click="retryLocation" class="mt-2.5 text-[13px] font-semibold text-forest-400">{{ __('general.nearest_try_again') }}</button>
+                </div>
+            @elseif ($nearestState === 'timeout' || $nearestState === 'failed')
+                <div data-nearest="{{ $nearestState }}" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-4 text-center">
+                    <p class="text-[13px] text-muted">{{ $nearestState === 'timeout' ? __('general.nearest_timeout') : __('general.nearest_failed') }}</p>
+                    <button type="button" wire:click="retryLocation" class="mt-2.5 text-[13px] font-semibold text-forest-400">{{ __('general.nearest_try_again') }}</button>
                 </div>
             @else
-                <p data-nearest="locating" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-5 text-center text-[13px] text-muted">{{ __('general.nearest_locating') }}</p>
+                <p data-nearest="locating" x-data x-init="setTimeout(() => $wire.onLocationTimeout(), 15000)" class="rounded-[13px] border-[1.5px] border-dashed border-cream-border px-4 py-5 text-center text-[13px] text-muted">{{ __('general.nearest_locating') }}</p>
             @endif
         </div>
 

@@ -56,6 +56,8 @@ return [
     'nearest_locating' => 'Finding quests near you...',
     'nearest_location_off' => 'Turn on location to see the quests closest to you.',
     'nearest_try_again' => 'Try again',
+    'nearest_timeout' => 'Could not find your position. Check that location is on and try again.',
+    'nearest_failed' => 'Could not load quests near you. Try again.',
     'enter_code' => 'Enter quest code',
     'scan_qr' => 'Scan QR Code',
     'dont_have_account' => "Don't have an account?",
