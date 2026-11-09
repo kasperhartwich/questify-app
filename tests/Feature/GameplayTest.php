@@ -71,7 +71,7 @@ it('records arrival at checkpoint', function () {
 
 it('exposes checkpoint coordinates on an active session (gameplay), not on a waiting one', function () {
     // Active session (from beforeEach) reveals checkpoint coordinates for gameplay.
-    $active = $this->getJson("/api/v1/sessions/{$this->session->join_code}");
+    $active = $this->getJson("/api/v1/sessions/{$this->session->join_code}?participant_id={$this->participant->id}");
     $active->assertOk()
         ->assertJsonPath('data.checkpoints.0.id', $this->checkpoint->id);
     expect($active->json('data.checkpoints.0.latitude'))->not->toBeNull();
@@ -84,6 +84,44 @@ it('exposes checkpoint coordinates on an active session (gameplay), not on a wai
     $this->getJson("/api/v1/sessions/{$waiting->join_code}")
         ->assertOk()
         ->assertJsonMissingPath('data.checkpoints');
+});
+
+it('hands out no checkpoint coordinates of an active session without a participant', function () {
+    $response = $this->getJson("/api/v1/sessions/{$this->session->join_code}")->assertOk();
+
+    expect($response->json('data.checkpoints.0.title'))->not->toBeNull()
+        ->and($response->json('data.checkpoints.0.latitude'))->toBeNull()
+        ->and($response->json('data.checkpoints.0.longitude'))->toBeNull();
+});
+
+it('reveals checkpoints up to the participant and blanks the ones ahead', function () {
+    foreach ([1, 2] as $order) {
+        Checkpoint::factory()->create([
+            'quest_id' => $this->quest->id,
+            'sort_order' => $order,
+            'latitude' => 55.0 + $order,
+            'longitude' => 12.0 + $order,
+        ]);
+    }
+    $this->participant->update(['current_checkpoint_index' => 1]);
+
+    $stops = $this->getJson("/api/v1/sessions/{$this->session->join_code}?participant_id={$this->participant->id}")
+        ->assertOk()->json('data.checkpoints');
+
+    expect($stops)->toHaveCount(3)
+        ->and($stops[0]['latitude'])->not->toBeNull()
+        ->and($stops[1]['latitude'])->not->toBeNull()
+        ->and($stops[2]['latitude'])->toBeNull()
+        ->and($stops[2]['longitude'])->toBeNull()
+        ->and($stops[2]['title'])->not->toBeNull();
+});
+
+it('ignores a participant id from another session when revealing checkpoints', function () {
+    $other = SessionParticipant::factory()->create(['current_checkpoint_index' => 5]);
+
+    $this->getJson("/api/v1/sessions/{$this->session->join_code}?participant_id={$other->id}")
+        ->assertOk()
+        ->assertJsonPath('data.checkpoints.0.latitude', null);
 });
 
 it('rejects arrival when the player is outside the checkpoint radius', function () {

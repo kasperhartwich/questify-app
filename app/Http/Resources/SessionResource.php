@@ -14,6 +14,19 @@ class SessionResource extends JsonResource
      */
     public bool $showsPlayers = true;
 
+    /**
+     * Position (0-based, in route order) of the last checkpoint whose coordinates the caller may
+     * see: the participant's current one. Null means no participant, so no coordinates at all.
+     */
+    public ?int $lastRevealedCheckpoint = null;
+
+    public function revealCheckpointsUpTo(?int $position): static
+    {
+        $this->lastRevealedCheckpoint = $position;
+
+        return $this;
+    }
+
     public function showPlayers(bool $shows): static
     {
         $this->showsPlayers = $shows;
@@ -36,14 +49,16 @@ class SessionResource extends JsonResource
             // Business rule 7: checkpoint coordinates are gameplay data, exposed only once the
             // session is active (being played) — never on the public quest detail or the pre-join
             // preview. This is the session-scoped source the active-quest screen navigates from.
+            // A stop still ahead of the caller's participant keeps its title and place in the
+            // order but has blank coordinates, so the route cannot be read off the response.
             'checkpoints' => $this->when(
                 $this->status === SessionStatus::Active && $this->relationLoaded('quest') && $this->quest->relationLoaded('checkpoints'),
-                fn () => $this->quest->checkpoints->sortBy('sort_order')->values()->map(fn ($cp) => [
+                fn () => $this->quest->checkpoints->sortBy('sort_order')->values()->map(fn ($cp, $position) => [
                     'id' => $cp->id,
                     'title' => $cp->title,
                     'description' => $cp->description,
-                    'latitude' => $cp->latitude,
-                    'longitude' => $cp->longitude,
+                    'latitude' => $this->isRevealed($position) ? $cp->latitude : null,
+                    'longitude' => $this->isRevealed($position) ? $cp->longitude : null,
                     'arrival_radius_override' => $cp->arrival_radius_override,
                 ])
             ),
@@ -63,5 +78,10 @@ class SessionResource extends JsonResource
             'completed_at' => $this->completed_at,
             'created_at' => $this->created_at,
         ];
+    }
+
+    private function isRevealed(int $position): bool
+    {
+        return $this->lastRevealedCheckpoint !== null && $position <= $this->lastRevealedCheckpoint;
     }
 }

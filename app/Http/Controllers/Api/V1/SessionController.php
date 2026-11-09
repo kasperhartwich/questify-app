@@ -97,7 +97,9 @@ class SessionController extends Controller
         $session->quest?->loadCount('checkpoints');
 
         return response()->json([
-            'data' => (new SessionResource($session))->showPlayers($access->maySeePlayers($request, $session)),
+            'data' => (new SessionResource($session))
+                ->revealCheckpointsUpTo($access->viewer($request, $session)?->current_checkpoint_index)
+                ->showPlayers($access->maySeePlayers($request, $session)),
         ]);
     }
 
