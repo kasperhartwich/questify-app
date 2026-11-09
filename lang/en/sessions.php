@@ -58,6 +58,7 @@ return [
     'type_answer' => 'Type your answer...',
     'correct' => 'Correct!',
     'wrong' => 'Wrong!',
+    'correct_answer' => 'Correct answer',
     'not_quite' => 'Not quite',
     'type_true_false' => 'True / False',
     'type_multiple_choice' => 'Multiple choice',

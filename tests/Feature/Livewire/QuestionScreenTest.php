@@ -521,3 +521,23 @@ it('picks the true or false icon from the answer text, not its position', functi
     expect($trueRow)->toContain('M5 12.5l4.5 4.5L19 7.5')
         ->and($falseRow)->toContain('M7 7l10 10M17 7L7 17');
 });
+
+it('shows no correct-answer reveal after a wrong answer by default', function () {
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertDontSeeHtml('data-testid="correct-answer-tag"');
+});
+
+it('marks a stand-in row as the correct answer when the design preview is on', function () {
+    config(['questify.reveal_preview' => true]);
+    fakeGameplay(['data' => ['correct' => false, 'behaviour' => 'retry_free']]);
+
+    questionScreen()
+        ->set('selectedAnswerId', 2)
+        ->call('submitAnswer')
+        ->assertSeeHtml('data-testid="correct-answer-tag"')
+        ->assertSee(__('sessions.correct_answer'));
+});

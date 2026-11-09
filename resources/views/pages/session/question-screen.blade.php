@@ -320,6 +320,11 @@ class extends Component
         ? $question->answers->sortBy(fn ($a) => $a->id === $selectedAnswerId ? 0 : 1)
         : $question->answers;
     $locked = $lockoutRemaining > 0;
+    // Design preview only (QU-13): the API never says which answer is right, so with
+    // QUESTIFY_REVEAL_PREVIEW on, the first answer the player did not pick stands in for it.
+    $revealAnswerId = config('questify.reveal_preview') && $showFeedback && ! $lastAnswerCorrect && ! $isOpenText
+        ? $question->answers->first(fn ($a) => $a->id !== $selectedAnswerId)?->id
+        : null;
     $typeLabel = $isTrueFalse ? __('sessions.type_true_false') : ($isOpenText ? __('sessions.type_open_text') : __('sessions.type_multiple_choice'));
 @endphp
 
@@ -401,13 +406,18 @@ class extends Component
                             $isTrueRow = in_array($answerText, ['true', 'sandt'], true)
                                 || (! in_array($answerText, ['false', 'falsk'], true) && $index === 0);
                             $isWrongPick = $showFeedback && ! $lastAnswerCorrect && $picked;
-                            $faded = ($selectedAnswerId !== null || $showFeedback) && ! $picked;
-                            $rowClass = $isWrongPick
+                            $isRevealed = $revealAnswerId === $answer->id;
+                            $faded = ($selectedAnswerId !== null || $showFeedback) && ! $picked && ! $isRevealed;
+                            $rowClass = $isRevealed
+                                ? 'border-forest-600 bg-success text-forest-600'
+                                : ($isWrongPick
                                 ? 'border-coral bg-coral-light text-coral'
-                                : ($picked ? 'border-bark bg-success text-bark' : 'border-cream-border bg-white text-bark');
-                            $badgeClass = $isWrongPick
+                                : ($picked ? 'border-bark bg-success text-bark' : 'border-cream-border bg-white text-bark'));
+                            $badgeClass = $isRevealed
+                                ? 'bg-forest-600 text-white'
+                                : ($isWrongPick
                                 ? 'bg-coral text-white'
-                                : ($picked ? 'bg-forest-600 text-white' : 'bg-cream-dark text-muted');
+                                : ($picked ? 'bg-forest-600 text-white' : 'bg-cream-dark text-muted'));
                         @endphp
                         <button
                             type="button"
@@ -417,7 +427,9 @@ class extends Component
                             data-testid="answer-row"
                         >
                             <span data-testid="answer-badge" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold {{ $badgeClass }}">
-                                @if ($isTrueFalse)
+                                @if ($isRevealed)
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                                @elseif ($isTrueFalse)
                                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                         @if ($isTrueRow)<path d="M5 12.5l4.5 4.5L19 7.5"/>@else<path d="M7 7l10 10M17 7L7 17"/>@endif
                                     </svg>
@@ -426,6 +438,9 @@ class extends Component
                                 @endif
                             </span>
                             <span class="flex-1">{{ $answer->body }}</span>
+                            @if ($isRevealed)
+                                <span class="shrink-0 rounded-full bg-forest-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white" data-testid="correct-answer-tag">{{ __('sessions.correct_answer') }}</span>
+                            @endif
                         </button>
                     @endforeach
                 </div>

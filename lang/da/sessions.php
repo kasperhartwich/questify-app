@@ -58,6 +58,7 @@ return [
     'type_answer' => 'Skriv dit svar...',
     'correct' => 'Korrekt!',
     'wrong' => 'Forkert!',
+    'correct_answer' => 'Rigtigt svar',
     'not_quite' => 'Ikke helt',
     'type_true_false' => 'Sandt / falsk',
     'type_multiple_choice' => 'Multiple choice',
