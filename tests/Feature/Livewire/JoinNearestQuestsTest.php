@@ -120,13 +120,25 @@ it('answers in Danish', function () {
 it('stops waiting when no position arrives in time and lets the player retry', function () {
     joinScreen()
         ->set('nearestState', 'locating')
+        ->assertSeeHtml('onLocationTimeout()')
         ->call('onLocationTimeout')
         ->assertSet('nearestState', 'timeout')
         ->assertSeeHtml('data-nearest="timeout"')
         ->assertSee('Could not find your position')
+        ->set('isNative', true)
         ->call('retryLocation')
         ->assertSet('nearestState', 'locating')
         ->assertSet('locationAsked', true);
+});
+
+it('reloads the default spot when Try again is pressed outside the app', function () {
+    swapNearby([nearbyQuest(1, 'Close Quest', 0.5)]);
+
+    joinScreen()
+        ->set('nearestState', 'timeout')
+        ->call('retryLocation')
+        ->assertSet('nearestState', 'ready')
+        ->assertSee('Close Quest');
 });
 
 it('does not time out once the quests are shown', function () {

@@ -85,6 +85,12 @@ class extends Component
 
     public function retryLocation(): void
     {
+        if (! $this->isNative) {
+            $this->loadNearestQuests(55.6761, 12.5683);
+
+            return;
+        }
+
         $this->nearestState = 'locating';
         $this->requestLocation();
     }
