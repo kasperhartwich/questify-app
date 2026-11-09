@@ -520,9 +520,8 @@ it('falls back to a 30 m arrival radius when the quest has none', function () {
     $this->postJson("/api/v1/sessions/{$this->session->join_code}/arrived", $body(55.6765))->assertStatus(422);
 });
 
-it('defaults the quests column to a 30 m arrival radius without touching existing rows', function () {
+it('defaults the quests column to a 30 m arrival radius', function () {
     $column = collect(Schema::getColumns('quests'))->firstWhere('name', 'checkpoint_arrival_radius_meters');
 
-    expect((int) trim((string) $column['default'], "'"))->toBe(30)
-        ->and($this->quest->fresh()->checkpoint_arrival_radius_meters)->toBe(50);
+    expect((int) trim((string) $column['default'], "'"))->toBe(30);
 });

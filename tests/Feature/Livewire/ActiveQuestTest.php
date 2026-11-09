@@ -166,6 +166,16 @@ function playSessionPayload(): array
     ]];
 }
 
+it('falls back to a 30 m arrival radius when the quest has none', function () {
+    $payload = playSessionPayload();
+    $payload['data']['quest']['checkpoint_arrival_radius_meters'] = null;
+    $sessions = Mockery::mock(SessionApiResource::class);
+    $sessions->shouldReceive('show')->andReturn($payload);
+    swapSessions($sessions);
+
+    activeQuest()->assertSet('arrivalRadius', 30);
+});
+
 it('asks the server for the checkpoints as the known participant', function () {
     session()->put('questify_participant_id', 55);
     $sessions = Mockery::mock(SessionApiResource::class);
